@@ -2,7 +2,7 @@ import { Collapse, Text, Grid } from "@nextui-org/react";
 import Image from "next/image";
 const Category = () => {
   return (
-    <div className="w-2/6 rounded-md bg-white">
+    <div className="rounded-md bg-white" style={{ width: "30%" }}>
       <Grid.Container
         style={{ borderRadius: "5px !important", boxShadow: "none" }}
       >
