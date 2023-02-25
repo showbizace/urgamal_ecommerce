@@ -31,39 +31,19 @@ const FeatureBundle = () => {
           }}
         >
           <SwiperSlide className="rounded-md">
-            <Bundle
-              src={"/bundle-1.svg"}
-              name={"Энерген Экстра"}
-              count={"108ш"}
-              price={"150’000₮"}
-            />
+            <Bundle src={"/bundle-1.svg"} name={"Энерген Экстра"} count={"108ш"} price={"150’000₮"} productIndex={2323} />
           </SwiperSlide>
           <SwiperSlide className="rounded-md">
             {" "}
-            <Bundle
-              src={"/bundle-2.svg"}
-              name={"Энерген Экстра"}
-              count={"108ш"}
-              price={"150’000₮"}
-            />
+            <Bundle src={"/bundle-2.svg"} name={"Энерген Экстра"} count={"108ш"} price={"150’000₮"} productIndex={2323} />
           </SwiperSlide>
           <SwiperSlide className="rounded-md">
             {" "}
-            <Bundle
-              src={"/bundle-3.svg"}
-              name={"Энерген Экстра"}
-              count={"108ш"}
-              price={"150’000₮"}
-            />
+            <Bundle src={"/bundle-3.svg"} name={"Энерген Экстра"} count={"108ш"} price={"150’000₮"} productIndex={2323} />
           </SwiperSlide>
           <SwiperSlide className="rounded-md">
             {" "}
-            <Bundle
-              src={"/bundle-4.svg"}
-              name={"Энерген Экстра"}
-              count={"108ш"}
-              price={"150’000₮"}
-            />
+            <Bundle src={"/bundle-4.svg"} name={"Энерген Экстра"} count={"108ш"} price={"150’000₮"} productIndex={2323} />
           </SwiperSlide>
         </Swiper>
       </div>
