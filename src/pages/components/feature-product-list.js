@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 
-import ProductCard from "./product-card";
+import ProductCardSwiper from "./product-card-swiper";
 const FeatureProductList = () => {
   return (
     <div style={{ width: "100%" }}>
@@ -31,7 +31,7 @@ const FeatureProductList = () => {
           }}
         >
           <SwiperSlide className="rounded-md">
-            <ProductCard
+            <ProductCardSwiper
               src={"/bundle-1.svg"}
               name={"Энерген Экстра"}
               count={"50ш"}
@@ -39,7 +39,7 @@ const FeatureProductList = () => {
             />
           </SwiperSlide>
           <SwiperSlide className="rounded-md">
-            <ProductCard
+            <ProductCardSwiper
               src={"/bundle-1.svg"}
               name={"Энерген Экстра"}
               count={"50ш"}
@@ -47,7 +47,7 @@ const FeatureProductList = () => {
             />
           </SwiperSlide>
           <SwiperSlide className="rounded-md">
-            <ProductCard
+            <ProductCardSwiper
               src={"/bundle-1.svg"}
               name={"Энерген Экстра"}
               count={"50ш"}
@@ -55,7 +55,7 @@ const FeatureProductList = () => {
             />
           </SwiperSlide>
           <SwiperSlide className="rounded-md">
-            <ProductCard
+            <ProductCardSwiper
               src={"/bundle-1.svg"}
               name={"Энерген Экстра"}
               count={"50ш"}
