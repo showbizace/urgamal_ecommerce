@@ -2,14 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["m.media-amazon.com"],
-
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "m.media-amazon.com",
+        hostname: "picsum.photos",
         port: "",
-        pathname: "/images/*",
+        pathname: "/**",
       },
     ],
   },

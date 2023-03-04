@@ -13,7 +13,7 @@ export default function GlobalLayout({ children }) {
       </Head>
       <Navbar />
       <Search />
-      <main>{children}</main>
+      <main className="bg-main">{children}</main>
     </div>
   );
 }

@@ -26,6 +26,11 @@ module.exports = {
         grey: "rgba(0, 30, 29, 0.55)",
         green2: "#8DC57F",
         tertiary: "#e16162",
+        "chip-text": "#173140",
+      },
+      backgroundColor: {
+        main: "#F1F4F0",
+        "chip-grey": "rgba(53, 105, 102, 0.25)",
       },
     },
   },
