@@ -37,8 +37,8 @@ export async function getServerSideProps({ params }) {
 
 const ProductDetail = ({ product }) => {
   return (
-    <GlobalLayout title={product.Name}>
-
+    <GlobalLayout  title={product.Name}>
+      
       <div className="px-32">
         <div className="flex gap-14 pt-12 justify-center">
           {/* <Image src="https://m.media-amazon.com/images/I/71MzNrCPYsL.jpg" width={50} height={50} /> */}
@@ -84,18 +84,32 @@ const ProductDetail = ({ product }) => {
           >
             {images.map((e) => (
               <div>
-                <Magnifier imgSrc={e.original} imgWidth={600} imgHeight={600} magnifierRadius={50} />
-                
+                {/* <Magnifier imgSrc={e.original} imgWidth={600} imgHeight={600} magnifierRadius={50} /> */}
+                <ReactImageMagnify
+                  {...{
+                    smallImage: {
+                      alt: "Wristwatch by Ted Baker London",
+                      isFluidWidth: true,
+                      src: e.original,
+                    },
+                    largeImage: {
+                      src: e.original,
+                      width: 1200,
+                      height: 1800,
+                    },
+                    enlargedImagePosition: "over",
+                  }}
+                />
               </div>
             ))}
           </Carousel> */}
-
+           
           <div className="flex flex-col gap-6">
             <div className=" text-lg font-semibold">{product.Name}</div>
             <div className="flex font-semibold gap-2">
               <span className="text-greenish-grey  ">Ширхэгийн үнэ:</span>
               <span className=" ">{
-                Intl.NumberFormat('mn-MN').format(product.ListPrice)}₮</span>
+              Intl.NumberFormat('mn-MN').format(product.ListPrice)}₮</span>
             </div>
             <div className="flex font-semibold gap-2" >
               <span className="text-greenish-grey  ">Бөөний үнэ:</span>
@@ -109,13 +123,13 @@ const ProductDetail = ({ product }) => {
             </div>
             <div className="flex gap-2 font-semibold">
               <span className="text-greenish-grey  ">Төрөл:</span>
-              {product.CategoryName &&
-                <ProductTypeChip name={product.CategoryName} />
+              {product.CategoryName && 
+              <ProductTypeChip name={product.CategoryName} />
               }
               <ProductTypeChip name="Бордоо" />
             </div>
             <div className="flex flex-col gap-4">
-              <span className="flex font-semibold text-greenish-grey">Хэрэглэх заавар</span>
+            <span className="flex font-semibold text-greenish-grey">Хэрэглэх заавар</span>
               <textarea
                 cols={60}
                 rows={12}
@@ -127,24 +141,24 @@ const ProductDetail = ({ product }) => {
               ></textarea>
             </div>
 
-            <div className="flex gap-6 w-full mt-5">
-              <button className=" border-tertiary border-2 text-tertiary flex-grow flex justify-between items-center px-5 py-3 rounded-md">
-                <span className="font-semibold"> Хадгалах </span>
-                <BsSuitHeart className="font-semibold" size={20} />
-              </button>
-              <button className="  bg-button-yellow text-white flex-grow flex justify-between items-center px-5 py-3 rounded-md">
-                <span className="font-semibold"> Сагсанд хийх </span>
-
-                <AiOutlineShoppingCart className="font-semibold" size={20} />
-              </button>
+            <div className="flex gap-6 w-full mt-5"> 
+                <button className=" border-tertiary border-2 text-tertiary flex-grow flex justify-between items-center px-5 py-3 rounded-md">
+                  <span className="font-semibold"> Хадгалах </span>
+                  <BsSuitHeart className="font-semibold" size={20}/>
+                </button> 
+                <button className="  bg-button-yellow text-white flex-grow flex justify-between items-center px-5 py-3 rounded-md">
+                  <span className="font-semibold"> Сагсанд хийх </span>
+                  
+                  <AiOutlineShoppingCart className="font-semibold"  size={20}/>
+                </button> 
             </div>
           </div>
-
+         
         </div>
-        <hr className="my-10" />
+        <hr className="my-10"/>
 
         <div>
-
+          
         </div>
       </div >
     </GlobalLayout >
