@@ -27,9 +27,9 @@ module.exports = {
         green2: "#8DC57F",
         tertiary: "#e16162",
         "chip-text": "#173140",
-        
+
       },
-      textColor:{
+      textColor: {
         "greenish-grey": "rgba(53, 105, 102, 0.75)",
         "description": "#001E1D",
         tertiary: "#e16162",
@@ -37,9 +37,10 @@ module.exports = {
       backgroundColor: {
         main: "#F1F4F0",
         "chip-grey": "rgba(53, 105, 102, 0.25)",
-        'button-yellow': "#F9BC60"
+        'button-yellow': "#F9BC60",
+        'grey-back': "#EBEFEE"
       },
-      borderColor:{
+      borderColor: {
         'button-yellow': "#F9BC60"
       }
     },

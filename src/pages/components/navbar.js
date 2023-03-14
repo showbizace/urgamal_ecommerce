@@ -1,7 +1,11 @@
 import Image from "next/image";
 import NavBarLinks from "../components/nav-bar-links";
 import Link from "next/link";
+import { useRouter } from 'next/router'
 const Navbar = () => {
+
+  const route = useRouter();
+
   return (
     <div
       className="bg-nav-background flex flex-row  justify-between  items-center py-2 px-32 "
@@ -30,7 +34,7 @@ const Navbar = () => {
           onClick={() => print("Hello")}
         />
         <div className="px-4">
-          <Link href={"hhhh"} onClick={() => {}} className="mx-4">
+          <Link href={"hhhh"} onClick={() => { }} className="mx-4">
             Аж ахуйн нэгж
           </Link>
         </div>
@@ -59,13 +63,16 @@ const Navbar = () => {
             15000₮
           </p>
         </div>
-        <div className="flex justify-center items-center ml-10">
-          <Image src="/user.png" width={50} height={50} className="" />
+        <div className="flex flex-row items-center" onClick={() => { route.push("/profile") }}>
+          <div className="flex justify-center items-center ml-10">
+            <Image src="/user.png" width={50} height={50} className="" />
+          </div>
+          <div className="ml-4 flex flex-col items-start w-24">
+            <p className="text-sm-1">Сайн байна уу?</p>
+            <p className="text-base">О.Золбоо</p>
+          </div>
         </div>
-        <div className="ml-4 flex flex-col items-start w-24">
-          <p className="text-sm-1">Сайн байна уу?</p>
-          <p className="text-base">О.Золбоо</p>
-        </div>
+
         <Image src="icons/arrow-down.svg" width={30} height={30} />
       </div>
     </div>

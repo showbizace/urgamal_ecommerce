@@ -11,7 +11,6 @@ const Banner = () => {
       style={{
         width: "100%",
         height: "35rem",
-        backgroundColor: "red",
       }}
     >
       <Swiper
