@@ -1,13 +1,13 @@
 import Image from 'next/image'
 import { Button } from '@mantine/core';
-const ProductCardProfile = ({ src, name, count, price }) => {
+const CollapseItem = ({ src, name, count, price }) => {
     return (
         <div className='divide-b-4 divide-slate-700 w-full' style={{ borderBottom: "2px solid #DADEDE" }}>
-            <div className='flex flex-row p-4  '>
-                <Image src={src} width={100} height={150} />
-                <div className='flex flex-col justify-between ml-3 '>
+            <div className='flex flex-row p-4'>
+                <Image src={src} width={90} height={90} />
+                <div className='flex flex-col  ml-3 justify-between'>
                     <p className="text-sm mt-1">{name}</p>
-                    <div className='flex flex-row items-center'>
+                    <div className='flex flex-row'>
                         <p className='text-grey text-xs'>Нийт : </p>
                         <p className='text-xs font-bold'>150’000₮</p>
                         <p className='text-grey text-xs ml-4'>Ширхэг:</p>
@@ -30,4 +30,4 @@ const ProductCardProfile = ({ src, name, count, price }) => {
     )
 }
 
-export default ProductCardProfile
+export default CollapseItem

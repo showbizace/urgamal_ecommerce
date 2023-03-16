@@ -8,14 +8,16 @@ const Navbar = () => {
 
   return (
     <div
-      className="bg-nav-background flex flex-row  justify-between  items-center py-2 px-32 "
+      className="bg-white flex flex-row  justify-between  items-center py-2 px-32 "
       style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}
     >
-      <p className="flex flex-row justify-center items-center">
-        ТАРИMАЛ{" "}
-        <Image src="/logo.png" width={30} height={30} className="mx-4" />{" "}
-        УРГАMАЛ
-      </p>
+      <Link href={"/home"}>
+        <p className="flex flex-row justify-center items-center">
+          ТАРИMАЛ{" "}
+          <Image src="/logo.png" width={30} height={30} className="mx-4" />{" "}
+          УРГАMАЛ
+        </p>
+      </Link>
 
       <div className="flex flex-row">
         <NavBarLinks
