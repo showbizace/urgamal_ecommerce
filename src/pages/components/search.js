@@ -1,5 +1,49 @@
 import Image from "next/image";
+import { forwardRef } from "react";
+import { Autocomplete, Group, Avatar, Text, rem } from "@mantine/core"
 const Search = () => {
+
+  const charactersList = [
+    {
+      image: '/bundle-1.svg',
+      label: 'Энерген Экстра',
+      description: '150000₮',
+    },
+
+    {
+      image: '/bundle-1.svg',
+      label: 'Энерген Экстра',
+      description: '150000₮',
+    },
+    {
+      image: '/bundle-1.svg',
+      label: 'Энерген Экстра',
+      description: '150000₮',
+    },
+    {
+      image: '/bundle-1.svg',
+      label: 'Энерген Экстра',
+      description: '150000₮',
+    },
+  ];
+
+  const data = charactersList.map((item) => ({ ...item, value: item.label }));
+
+  const Autocomplete2 = forwardRef((props, ref) => {
+    return (
+      <div ref={ref} style={{ padding: "5px", marginTop: "5px" }} >
+        <Group noWrap>
+          <Avatar src={props.image} />
+          <div>
+            <Text>{props.value}</Text>
+            <Text size="xs" color="dimmed">
+              {props.description}
+            </Text>
+          </div>
+        </Group>
+      </div>
+    )
+  })
   return (
     <div className="py-3 px-32 flex flex-row justify-between">
       <div
@@ -23,9 +67,21 @@ const Search = () => {
           />
         </div>
 
-        <input
+        <Autocomplete
           className="navbar-input"
           placeholder="Хүссэн бараагаа хайгаарай.."
+          itemComponent={Autocomplete2}
+          data={data}
+          styles={{
+            input: {
+              border: "none",
+              backgroundColor: "rgba(235, 239, 238, 0.9);"
+            },
+          }}
+          filter={(value, item) =>
+            item.value.toLowerCase().includes(value.toLowerCase().trim()) ||
+            item.description.toLowerCase().includes(value.toLowerCase().trim())
+          }
         />
         <div className="flex justify-center items-center bg-background-sort p-2 rounded-md mr-1">
           <Image src="/icons/search.svg" width={17.5} height={17.5} />
