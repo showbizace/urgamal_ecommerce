@@ -28,7 +28,7 @@ return loading && (
     </div>
   </div>
 )
-}
+
 
 export default function App({ Component, pageProps }) {
   return (
