@@ -6,11 +6,19 @@ import { Button } from '@mantine/core'
 import { useContext } from "react";
 import { Store } from "@/utils/Store";
 const Navbar = () => {
-
+  const router = useRouter()
   const { state, dispatch } = useContext(Store)
   const { cart } = state;
   const route = useRouter();
   console.log(cart, "cart")
+
+  const linkToCart = () => {
+    router.push({
+      pathname: '/cart/cartItem',
+      query: { data: { ...cart } },
+    })
+  }
+
   return (
     <div
       className="bg-white flex flex-row  justify-between  items-center py-2 px-32 "
@@ -55,7 +63,7 @@ const Navbar = () => {
             </div>
           </div>
         </Button>
-        <Button compact variant={"white"} className="static flex flex-col items-center mr-4" onClick={() => { console.log("hi") }}>
+        <Button compact variant={"white"} className="static flex flex-col items-center mr-4" onClick={() => linkToCart()}>
           <Image src="/icons/trolley.svg" width={23} height={23} />
           <div className="absolute">
             <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
