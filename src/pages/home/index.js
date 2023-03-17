@@ -64,12 +64,11 @@ export default function Home({ data }) {
                             >
                                 {data.data.map((e) => {
                                     return (
-                                        <div style={{ width: "22.3%", }} onClick={() => { clickProduct(e.id) }}>
+                                        <div style={{ width: "22.3%", }} onClick={() => { // clickProduct(e.id)
+                                        }}>
                                             <ProductCard
                                                 src={"/bundle-1.svg"}
-                                                name={e.name}
-                                                count={e.instock}
-                                                price={e.price}
+                                                data={e}
                                             />
                                         </div>
                                     )

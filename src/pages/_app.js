@@ -1,8 +1,9 @@
 import "@/styles/globals.css";
+import { StoreProvider } from "@/utils/Store";
 import { MantineProvider, createEmotionCache } from "@mantine/core";
 import Router from "next/router";
 import { useState, useEffect } from "react";
-
+import useSWR, { SWRConfig } from 'swr'
 const appendCache = createEmotionCache({ key: "mantine", prepend: false });
 
 // function Loading() {
@@ -44,7 +45,9 @@ export default function App({ Component, pageProps }) {
     >
 
       {/* <Loading /> */}
-      <Component {...pageProps} />
+      <StoreProvider>
+        <Component {...pageProps} />
+      </StoreProvider>
 
     </MantineProvider>
   );
