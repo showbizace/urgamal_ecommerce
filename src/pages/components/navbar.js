@@ -2,10 +2,15 @@ import Image from "next/image";
 import NavBarLinks from "../components/nav-bar-links";
 import Link from "next/link";
 import { useRouter } from 'next/router'
+import { Button } from '@mantine/core'
+import { useContext } from "react";
+import { Store } from "@/utils/Store";
 const Navbar = () => {
 
+  const { state, dispatch } = useContext(Store)
+  const { cart } = state;
   const route = useRouter();
-
+  console.log(cart, "cart")
   return (
     <div
       className="bg-white flex flex-row  justify-between  items-center py-2 px-32 "
@@ -21,43 +26,43 @@ const Navbar = () => {
 
       <div className="flex flex-row">
         <NavBarLinks
-          name={"Цэцэгчин"}
+          name={"Өрхийн тариаланч"}
           linkUrl={"hhhh"}
           onClick={() => print("Hello")}
         />
-        <NavBarLinks
-          name={"Ногоочин"}
+        {/* <NavBarLinks
+          name={"Мэргэжлийхэнд"}
           linkUrl={"hhhh"}
           onClick={() => print("Hello")}
-        />
-        <NavBarLinks
+        /> */}
+        {/* <NavBarLinks
           name={"Үйлдвэр"}
           linkUrl={"hhhh"}
           onClick={() => print("Hello")}
-        />
-        <div className="px-4">
-          <Link href={"hhhh"} onClick={() => { }} className="mx-4">
-            Аж ахуйн нэгж
+        /> */}
+        <div className="px-4 flex justify-center items-center">
+          <Link href={"hhhh"} onClick={() => { }} className="mx-4 text-center">
+            Мэргэжлийхэнд
           </Link>
         </div>
       </div>
       <div className="flex flex-row items-center">
-        <div className="static flex flex-col items-center mr-4">
+        <Button compact variant={"white"} className="static flex flex-col items-center mr-4">
           <Image src="/icons/hearth.svg" width={23} height={23} />
           <div className="absolute">
-            <div className="w-3 h-3 bg-number flex justify-center items-center text-white -mt-3 rounded-full text-xs ml-5">
+            <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
               <p className="text-sm-5">1</p>
             </div>
           </div>
-        </div>
-        <div className="static flex flex-col items-center mr-4">
+        </Button>
+        <Button compact variant={"white"} className="static flex flex-col items-center mr-4" onClick={() => { console.log("hi") }}>
           <Image src="/icons/trolley.svg" width={23} height={23} />
           <div className="absolute">
-            <div className="w-3 h-3 bg-number flex justify-center items-center text-white -mt-3 rounded-full text-xs ml-5">
-              <p className="text-sm-5">1</p>
+            <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
+              <p className="text-sm-5">{cart.cartItems.reduce((a, c) => a + c.quantity, 0)}</p>
             </div>
           </div>
-        </div>
+        </Button>
 
         <div className="flex flex-col ml-6 items-end w-24">
           <p className="text-sm-1 self-end">Таны сагсанд</p>

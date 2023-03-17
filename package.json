@@ -21,7 +21,10 @@
     "@mantine/notifications": "^6.0.0",
     "@next/font": "^13.1.6",
     "@nextui-org/react": "^1.0.0-beta.12",
+
     "@tabler/icons-react": "^2.10.0",
+    "cookies-next": "^2.1.1",
+
     "dayjs": "^1.11.7",
     "embla-carousel-react": "^7.0.9",
     "jquery": "^3.6.4",
