@@ -21,13 +21,13 @@ Router.onRouteChangeError = () => {
   console.log('onRouteChangeError triggered');
 
 };
-return loading && (
-  <div className='w-48 h-48 fixed flex justify-center items-center top-0 left-0 bg-white z-10'>
-    <div className='absolute' style={{ left: "50%", top: "50%" }}>
-      loading....
-    </div>
-  </div>
-)
+// return loading && (
+//   <div className='w-48 h-48 fixed flex justify-center items-center top-0 left-0 bg-white z-10'>
+//     <div className='absolute' style={{ left: "50%", top: "50%" }}>
+//       loading....
+//     </div>
+//   </div>
+// )
 
 
 export default function App({ Component, pageProps }) {
@@ -42,10 +42,10 @@ export default function App({ Component, pageProps }) {
         colorScheme: "light",
       }}
     >
-      <>
-        <Loading />
-        <Component {...pageProps} />
-      </>
+
+      {/* <Loading /> */}
+      <Component {...pageProps} />
+
     </MantineProvider>
   );
 }

@@ -1,12 +1,33 @@
 import Image from "next/image";
 
 import { Text, Button } from '@mantine/core';
+import { useEffect, useState } from "react";
 
 const ProductCard = ({ src, name, count, price }) => {
+
+  const [productCount, setProductCount] = useState(1)
+
+
+
+  const addCount = (count) => {
+    if (count - productCount > 0) {
+      setProductCount(productCount + 1)
+    } else {
+      console.log("aldaa garlaa")
+    }
+  }
+
+  const minusCount = () => {
+    if (productCount > 1) {
+      setProductCount(productCount - 1)
+    } else {
+      console.log("aldaa garlaa")
+    }
+  }
   return (
     <div
       className="flex flex-col justify-start items-center py-4 px-4 bg-white rounded-md"
-      style={{ width: "100%", height: "300px" }}
+      style={{ width: "100%", height: "330px" }} onClick={() => { console.log("hello") }}
     >
       <Image src={src} width={10} height={10} className="product-card-img" />
       <div
@@ -18,28 +39,38 @@ const ProductCard = ({ src, name, count, price }) => {
           <p className="text-[#696A6C] font-semibold text-xs">Үлдэгдэл : </p>
           <p className="text-xs font-semibold ml-1">{count}</p>
         </div>
-        <p className="font-semibold text-base mt-2">{price}</p>
+        <p className="font-semibold text-base mt-1">{price}₮</p>
         <div className="flex flex-row w-full mt-1 justify-between">
-          <div className="flex justify-center items-center bg-tertiary rounded-md px-1.5 py-1 ">
+          <Button
+            variant={"filled"}
+            color="red"
+            style={{ padding: "10px" }}
+            className="flex justify-center items-center bg-tertiary rounded-md ">
+
             <Image width={18} height={8} src="/icons/hearth2.svg" />
-          </div>
-          <div className="flex flex-row">
-            <div
-              className="flex justify-center items-center border p-2 rounded-md"
-              style={{ border: "1px solid #f9bc60" }}
+          </Button>
+          <div className="flex flex-row items-center">
+            <Button
+              variant={"outline"}
+              className="flex justify-center items-center border rounded-md"
+              color={"#f9bc60"}
+              style={{ border: "1px solid #f9bc60", padding: "10px" }}
+              onClick={() => { minusCount(count) }}
             >
-              <Image src="/icons/minus.svg" width={15} height={6} />
-            </div>
-            <p className="text-center ml-2 mr-2">5</p>
-            <div
-              className="flex justify-center items-center p-2 rounded-md"
-              style={{ border: "1px solid #f9bc60" }}
+              <Image src="/icons/minus.svg" width={13} height={6} />
+            </Button>
+            <p className="text-center text-sm ml-2 mr-2 font-semibold">{productCount}</p>
+            <Button
+              variant={"outline"}
+              className="flex justify-center items-center rounded-md"
+              style={{ border: "1px solid #f9bc60", padding: "10px" }}
+              onClick={() => { addCount(count) }}
             >
-              <Image src="/icons/add.svg" width={15} height={6} />
-            </div>
+              <Image src="/icons/add.svg" width={13} height={6} />
+            </Button>
           </div>
         </div>
-        <Button variant={"filled"} className="w-full flex justify-center items-center p-1 bg-button-yellow rounded-md mt-1 hover:cursor-pointer" color={"orange"}>
+        <Button variant={"filled"} style={{ width: "100%" }} className="flex justify-center items-center p-1 bg-button-yellow rounded-md mt-1 hover:cursor-pointer" color={"orange"}>
           <p className="text-sm text-white font-semibold ">Сагслах</p>
           <Image className="ml-2" width={18} height={18} src={"/icons/trolley2.svg"} />
         </Button>

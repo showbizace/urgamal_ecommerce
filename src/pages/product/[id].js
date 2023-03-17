@@ -8,7 +8,13 @@ import Magnifier from "../components/Magnifier/Magnifier";
 import Head from "next/head";
 import { BsSuitHeart, BsSuitHeartFill } from 'react-icons/bs';
 import { AiOutlineShoppingCart } from 'react-icons/ai';
+import ProductCardSwiper from "../components/product-card-swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
 
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/pagination";
+import ProductCard from "../components/product-card";
 const images = [
   {
     original: "https://picsum.photos/id/1018/1000/600/",
@@ -25,9 +31,8 @@ const images = [
 ];
 
 export async function getServerSideProps({ params }) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/?productid=${params.id}`)
-    .then((ree) => console.log(ree))
-    .catch((e) => console.log(e, "e"))
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/single?productid=${params.id}`)
+
 
   console.log(res);
   const data = await res.json();
@@ -145,9 +150,150 @@ const ProductDetail = ({ product }) => {
 
         </div>
         <hr className="my-10" />
-
-        <div>
-
+        <div className="w-full flex flex-col">
+          <div className="flex flex-row w-full justify-between">
+            <p className="ml-2 text-lg font-semibold">Санал болгож буй бүтээгдэхүүнүүд</p>
+            <div className="flex flex-row">
+              <div className="flex justify-center items-center rounded-full bg-white w-7 ">
+                <Image src="/icons/arrow-left.svg" width={10} height={22} />
+              </div>
+              <div className="flex justify-center items-center rounded-full w-7 ml-2 bg-background-sort pl-1 ">
+                <Image src="/icons/arrow-right.svg" width={10} height={22} />
+              </div>
+            </div>
+          </div>
+          <div style={{ width: "100%", gap: "30px", flexWrap: "wrap" }}
+            className="flex flex-row mt-12">
+            <div style={{ width: "18%", }} >
+              <ProductCard
+                src={"/bundle-1.svg"}
+                name={"Энерген Экстра"}
+                count={"50ш"}
+                price={"15’000"}
+              />
+            </div>
+            <div style={{ width: "18%", }} >
+              <ProductCard
+                src={"/bundle-1.svg"}
+                name={"Энерген Экстра"}
+                count={"50ш"}
+                price={"15’000"}
+              />
+            </div>
+            <div style={{ width: "18%", }} >
+              <ProductCard
+                src={"/bundle-1.svg"}
+                name={"Энерген Экстра"}
+                count={"50ш"}
+                price={"15’000"}
+              />
+            </div>
+            <div style={{ width: "18%", }} >
+              <ProductCard
+                src={"/bundle-1.svg"}
+                name={"Энерген Экстра"}
+                count={"50ш"}
+                price={"15’000"}
+              />
+            </div>
+            <div style={{ width: "18%", }} >
+              <ProductCard
+                src={"/bundle-1.svg"}
+                name={"Энерген Экстра"}
+                count={"50ш"}
+                price={"15’000"}
+              />
+            </div>
+            <div style={{ width: "18%", }} >
+              <ProductCard
+                src={"/bundle-1.svg"}
+                name={"Энерген Экстра"}
+                count={"50ш"}
+                price={"15’000"}
+              />
+            </div>
+            <div style={{ width: "18%", }} >
+              <ProductCard
+                src={"/bundle-1.svg"}
+                name={"Энерген Экстра"}
+                count={"50ш"}
+                price={"15’000"}
+              />
+            </div>
+            <div style={{ width: "18%", }} >
+              <ProductCard
+                src={"/bundle-1.svg"}
+                name={"Энерген Экстра"}
+                count={"50ш"}
+                price={"15’000"}
+              />
+            </div>
+            <div style={{ width: "18%", }} >
+              <ProductCard
+                src={"/bundle-1.svg"}
+                name={"Энерген Экстра"}
+                count={"50ш"}
+                price={"15’000"}
+              />
+            </div>
+            <div style={{ width: "18%", }} >
+              <ProductCard
+                src={"/bundle-1.svg"}
+                name={"Энерген Экстра"}
+                count={"50ш"}
+                price={"15’000"}
+              />
+            </div>
+            {/* <Swiper
+              slidesPerView={5}
+              spaceBetween={30}
+              auto
+              pagination={{
+                clickable: true,
+              }}
+            >
+              <SwiperSlide className="rounded-md">
+                <ProductCardSwiper
+                  src={"/bundle-1.svg"}
+                  name={"Энерген Экстра"}
+                  count={"50ш"}
+                  price={"15’000₮"}
+                />
+              </SwiperSlide>
+              <SwiperSlide className="rounded-md">
+                <ProductCardSwiper
+                  src={"/bundle-1.svg"}
+                  name={"Энерген Экстра"}
+                  count={"50ш"}
+                  price={"15’000₮"}
+                />
+              </SwiperSlide>
+              <SwiperSlide className="rounded-md">
+                <ProductCardSwiper
+                  src={"/bundle-1.svg"}
+                  name={"Энерген Экстра"}
+                  count={"50ш"}
+                  price={"15’000₮"}
+                />
+              </SwiperSlide>
+              <SwiperSlide className="rounded-md">
+                <ProductCardSwiper
+                  src={"/bundle-1.svg"}
+                  name={"Энерген Экстра"}
+                  count={"50ш"}
+                  price={"15’000₮"}
+                />
+              </SwiperSlide>
+              <SwiperSlide className="rounded-md">
+                <ProductCardSwiper
+                  src={"/bundle-1.svg"}
+                  name={"Энерген Экстра"}
+                  count={"50ш"}
+                  price={"15’000₮"}
+                />
+              </SwiperSlide>
+            </Swiper> */}
+          </div>
         </div>
       </div >
     </GlobalLayout >

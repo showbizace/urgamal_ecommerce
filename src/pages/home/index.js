@@ -38,7 +38,6 @@ export default function Home({ data }) {
 
     const router = useRouter()
 
-    console.log(data.data, "data")
     const clickProduct = (id) => {
         router.push({
             pathname: "/product/[id]",
@@ -65,7 +64,7 @@ export default function Home({ data }) {
                             >
                                 {data.data.map((e) => {
                                     return (
-                                        <div style={{ width: "22.3%", }} onClick={() => clickProduct(e.id)}>
+                                        <div style={{ width: "22.3%", }} onClick={() => { clickProduct(e.id) }}>
                                             <ProductCard
                                                 src={"/bundle-1.svg"}
                                                 name={e.name}
