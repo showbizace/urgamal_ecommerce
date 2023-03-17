@@ -4,7 +4,7 @@ import { TextInput, Button, createStyles, rem, PinInput, Group } from '@mantine/
 import React, { useState } from 'react';
 import { useForm } from '@mantine/form';
 import { useRouter } from 'next/router'
-
+import { setCookie } from 'cookies-next';
 const Login = () => {
     const pinCode = React.createRef();
     const router = useRouter()
@@ -24,17 +24,16 @@ const Login = () => {
     });
 
     const fetchData = async (value) => {
-        // let { number } = value;
-        // console.log(number, "numbers")
-        // if (number !== "" && number !== undefined !== number !== null) {
-        //     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/code?mobile=${number}`)
-        //     if (res.status === 200) {
-        //         const data = await res.json()
-        //         setIsNumber(true)
-        //         setNumber(number)
-        //     }
-        // }
-        router.push("/home")
+        let { number } = value;
+        console.log(number, "numbers")
+        if (number !== "" && number !== undefined !== number !== null) {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/code?mobile=${number}`)
+            if (res.status === 200) {
+                const data = await res.json()
+                setIsNumber(true)
+                setNumber(number)
+            }
+        }
     }
 
     const pinCodeFetch = async (value) => {
@@ -50,6 +49,7 @@ const Login = () => {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login/code`, requestOption)
             if (res.status === 200) {
                 const data = await res.json()
+                setCookie("token", data.token)
                 router.push("/home")
             } else {
                 const data = await res.json()
@@ -116,5 +116,7 @@ const Login = () => {
         </div>
     )
 }
+
+
 
 export default Login

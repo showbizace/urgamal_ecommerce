@@ -7,7 +7,6 @@ import Image from "next/image";
 
 import ProductCard from "../components/product-card";
 
-
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
@@ -17,14 +16,35 @@ import NewProduct from "../components/new-product";
 import Banner from "../components/banner";
 import BottomFooter from "../components/Footer";
 import { useRouter } from 'next/router'
-export default function Home() {
+import { useEffect } from "react";
+
+export async function getStaticProps() {
+
+    const requestOption = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ limit: 20, offset: 0 })
+    }
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/local`, requestOption)
+    const data = await res.json()
+    return {
+        props: {
+            data,
+        }
+    }
+}
+
+export default function Home({ data }) {
 
     const router = useRouter()
 
-    const clickProduct = () => {
-        router.push("/product/1")
+    console.log(data.data, "data")
+    const clickProduct = (id) => {
+        router.push({
+            pathname: "/product/[id]",
+            query: { id: id }
+        })
     }
-
     return (
         <div>
             <GlobalLayout>
@@ -43,102 +63,19 @@ export default function Home() {
                                 style={{ width: "100%", gap: "30px", flexWrap: "wrap" }}
                                 className="flex flex-row mt-12"
                             >
-                                <div style={{ width: "22.3%" }} onClick={() => clickProduct()}>
-                                    <ProductCard
-                                        src={"/bundle-1.svg"}
-                                        name={"Энерген Экстра"}
-                                        count={"50ш"}
-                                        price={"15’000₮"}
-                                    />
-                                </div>
-                                <div style={{ width: "22.4%" }}>
-                                    <ProductCard
-                                        src={"/bundle-1.svg"}
-                                        name={"Энерген Экстра"}
-                                        count={"50ш"}
-                                        price={"15’000₮"}
-                                    />
-                                </div>
-                                <div style={{ width: "22.4%" }}>
-                                    <ProductCard
-                                        src={"/bundle-1.svg"}
-                                        name={"Энерген Экстра"}
-                                        count={"50ш"}
-                                        price={"15’000₮"}
-                                    />
-                                </div>
-                                <div style={{ width: "22.4%" }}>
-                                    <ProductCard
-                                        src={"/bundle-1.svg"}
-                                        name={"Энерген Экстра"}
-                                        count={"50ш"}
-                                        price={"15’000₮"}
-                                    />
-                                </div>
-                                <div style={{ width: "22.3%" }}>
-                                    <ProductCard
-                                        src={"/bundle-1.svg"}
-                                        name={"Энерген Экстра"}
-                                        count={"50ш"}
-                                        price={"15’000₮"}
-                                    />
-                                </div>
-                                <div style={{ width: "22.4%" }}>
-                                    <ProductCard
-                                        src={"/bundle-1.svg"}
-                                        name={"Энерген Экстра"}
-                                        count={"50ш"}
-                                        price={"15’000₮"}
-                                    />
-                                </div>
-                                <div style={{ width: "22.4%" }}>
-                                    <ProductCard
-                                        src={"/bundle-1.svg"}
-                                        name={"Энерген Экстра"}
-                                        count={"50ш"}
-                                        price={"15’000₮"}
-                                    />
-                                </div>
-                                <div style={{ width: "22.4%" }}>
-                                    <ProductCard
-                                        src={"/bundle-1.svg"}
-                                        name={"Энерген Экстра"}
-                                        count={"50ш"}
-                                        price={"15’000₮"}
-                                    />
-                                </div>
-                                <div style={{ width: "22.4%" }}>
-                                    <ProductCard
-                                        src={"/bundle-1.svg"}
-                                        name={"Энерген Экстра"}
-                                        count={"50ш"}
-                                        price={"15’000₮"}
-                                    />
-                                </div>
-                                <div style={{ width: "22.3%" }}>
-                                    <ProductCard
-                                        src={"/bundle-1.svg"}
-                                        name={"Энерген Экстра"}
-                                        count={"50ш"}
-                                        price={"15’000₮"}
-                                    />
-                                </div>
-                                <div style={{ width: "22.4%" }}>
-                                    <ProductCard
-                                        src={"/bundle-1.svg"}
-                                        name={"Энерген Экстра"}
-                                        count={"50ш"}
-                                        price={"15’000₮"}
-                                    />
-                                </div>
-                                <div style={{ width: "22.4%" }}>
-                                    <ProductCard
-                                        src={"/bundle-1.svg"}
-                                        name={"Энерген Экстра"}
-                                        count={"50ш"}
-                                        price={"15’000₮"}
-                                    />
-                                </div>
+                                {data.data.map((e) => {
+                                    return (
+                                        <div style={{ width: "22.3%", }} onClick={() => clickProduct(e.id)}>
+                                            <ProductCard
+                                                src={"/bundle-1.svg"}
+                                                name={e.name}
+                                                count={e.instock}
+                                                price={e.price}
+                                            />
+                                        </div>
+                                    )
+                                })}
+
                             </div>
                         </div>
                     </div>

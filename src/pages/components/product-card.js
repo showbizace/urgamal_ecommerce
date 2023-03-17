@@ -1,17 +1,19 @@
 import Image from "next/image";
 
+import { Text, Button } from '@mantine/core';
+
 const ProductCard = ({ src, name, count, price }) => {
   return (
     <div
       className="flex flex-col justify-start items-center py-4 px-4 bg-white rounded-md"
-      style={{ width: "100%" }}
+      style={{ width: "100%", height: "300px" }}
     >
       <Image src={src} width={10} height={10} className="product-card-img" />
       <div
         className="flex flex-col justify-start items-start"
         style={{ width: "90%" }}
       >
-        <p className="text-sm mt-1">{name}</p>
+        <Text className="text-sm mt-1" lineClamp={2}>{name}</Text>
         <div className="flex flex-row mt-1">
           <p className="text-[#696A6C] font-semibold text-xs">Үлдэгдэл : </p>
           <p className="text-xs font-semibold ml-1">{count}</p>
@@ -37,6 +39,10 @@ const ProductCard = ({ src, name, count, price }) => {
             </div>
           </div>
         </div>
+        <Button variant={"filled"} className="w-full flex justify-center items-center p-1 bg-button-yellow rounded-md mt-1 hover:cursor-pointer" color={"orange"}>
+          <p className="text-sm text-white font-semibold ">Сагслах</p>
+          <Image className="ml-2" width={18} height={18} src={"/icons/trolley2.svg"} />
+        </Button>
       </div>
     </div>
   );

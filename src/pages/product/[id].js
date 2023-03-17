@@ -25,9 +25,12 @@ const images = [
 ];
 
 export async function getServerSideProps({ params }) {
-  const res = await fetch(`http://18.136.212.75:8080/product/?productid=${params.id}`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/?productid=${params.id}`)
+    .then((ree) => console.log(ree))
+    .catch((e) => console.log(e, "e"))
+
+  console.log(res);
   const data = await res.json();
-  console.log(data);
   return {
     props: {
       product: data.data,
