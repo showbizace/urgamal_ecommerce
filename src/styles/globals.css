@@ -15,7 +15,6 @@ body {
   background-color: rgba(235, 239, 238, 0.9);
   padding-left: 3%;
   padding-right: 3%;
-  outline: none;
   font-size: 0.875rem;
 }
 .mantine-1jkn80x:not([data-disabled]):hover {
@@ -48,7 +47,6 @@ body {
   width: 80%;
   height: 80%;
 }
-
 .bundle-img {
   width: 60%;
   height: 60%;

@@ -4,7 +4,7 @@ const Category = () => {
   return (
     <div
       className="rounded-md bg-white"
-      style={{ width: "30%", height: "80%" }}
+
     >
       <Grid.Container
         style={{ borderRadius: "5px !important", boxShadow: "none" }}
