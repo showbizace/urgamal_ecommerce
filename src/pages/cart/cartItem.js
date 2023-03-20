@@ -43,6 +43,7 @@ const CartItems = (props) => {
     )
   }
   const handleClick = (e) => {
+
     setIsCheck([e]);
     setIsCheck(isCheck.filter((item) => item !== e));
   };
@@ -51,7 +52,7 @@ const CartItems = (props) => {
     <tr>
       <th className="py-10">
         <Checkbox
-          id="selectAll"
+          value="selectAll"
           onClick={handleSelectAll}
           checked={isCheckAll}
         />
@@ -66,9 +67,10 @@ const CartItems = (props) => {
     <tr key={idx}>
       <td>
         <Checkbox
-          checked={isCheck.includes(item.id)}
+          value={isCheck.includes(item.Id)}
           id={item.id}
-          onClick={() => handleClick(item.id)}
+          onClick={(e) => handleClick(e, item.Id)}
+          children={<div>asd </div>}
         />
       </td>
       <td>
@@ -119,7 +121,7 @@ const CartItems = (props) => {
       </td>
       <td>
         <span className="font-[600] text-[1rem] text-[#212529]">
-          {item.price}
+          {item.ListPrice} ₮
         </span>
       </td>
     </tr>
@@ -173,18 +175,30 @@ const CartItems = (props) => {
 
             <div className="w-[30%] h-2/5	bg-white rounded-lg px-10 py-8">
               <div className="flex flex-col gap-5">
-                <span className="flex justify-between">
-                  Нийт үнэ {totalPrice()}
+                <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
+                  Нийт үнэ
+                  <span className="font-[500] text-[1.05rem] text-[#212529]">
+                     {totalPrice()}
+                  </span>
                 </span>
-                <span className="flex justify-between">
-                  Хөнглөлт <span>0₮</span>
+                <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
+                  Хөнглөлт
+                  <span className="font-[500] text-[1.05rem] text-[#212529]">
+                    - 0 ₮
+                  </span>
                 </span>
-                <span className="flex justify-between">
-                  Хүргэлт <span>5'000₮</span>
+                <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
+                  Хүргэлт
+                  <span className="font-[500] text-[1.05rem] text-[#212529]">
+                    + 5'000 ₮
+                  </span>
                 </span>
-                <hr className="h-px my-3 border-0 border-t-dashed bg-gray-300" />
-                <span className="flex justify-between">
-                  Нийлбэр үнэ <span>Grand total 123'222₮</span>
+                <hr className="h-px my-1 border-0 border-t-dashed bg-gray-300" />
+                <span className="flex justify-between mb-1 font-[400] text-[1.1rem] text-[#212529af]">
+                  Нийлбэр үнэ{" "}
+                  <span className="font-[500] text-[1.1rem] text-[#212529]">
+                    123'222 ₮
+                  </span>
                 </span>
                 <Button
                   styles={(theme) => ({
