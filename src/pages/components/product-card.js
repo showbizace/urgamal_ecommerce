@@ -9,7 +9,8 @@ const ProductCard = ({ src, data }) => {
   const [productCount, setProductCount] = useState(1)
   const { state, dispatch } = useContext(Store)
 
-  const addCount = (count) => {
+  const addCount = (event, count) => {
+    event.stopPropagation()
     if (count - productCount > 0) {
       setProductCount(productCount + 1)
     } else {
@@ -17,20 +18,22 @@ const ProductCard = ({ src, data }) => {
     }
   }
 
-  const minusCount = () => {
+  const minusCount = (event) => {
+    event.stopPropagation()
     if (productCount > 1) {
       setProductCount(productCount - 1)
     } else {
       console.log("aldaa garlaa")
     }
   }
-  const addToCartHandler = () => {
+  const addToCartHandler = (event) => {
+    event.stopPropagation()
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...data, quantity: 1, purchaseCount: productCount } });
   }
   return (
     <div
       className="flex flex-col justify-start items-center py-4 px-4 bg-white rounded-md"
-      style={{ width: "100%", height: "330px" }} onClick={() => { console.log("hello") }}
+      style={{ width: "100%", height: "330px" }}
     >
       <Image src={src} width={10} height={10} className="product-card-img" />
       <div
@@ -40,14 +43,15 @@ const ProductCard = ({ src, data }) => {
         <Text className="text-sm mt-1" lineClamp={2}>{data?.name}</Text>
         <div className="flex flex-row mt-1">
           <p className="text-[#696A6C] font-semibold text-xs">Үлдэгдэл : </p>
-          <p className="text-xs font-semibold ml-1">{data.instock}</p>
+          <p className="text-xs font-semibold ml-1">{data?.instock}</p>
         </div>
-        <p className="font-semibold text-base mt-1">{data.price}₮</p>
+        <p className="font-semibold text-base mt-1">{data?.price}₮</p>
         <div className="flex flex-row w-full mt-1 justify-between">
           <Button
             variant={"filled"}
             color="red"
             style={{ padding: "10px" }}
+            onClick={(event) => { event.stopPropagation() }}
             className="flex justify-center items-center bg-tertiary rounded-md ">
 
             <Image width={18} height={8} src="/icons/hearth2.svg" />
@@ -58,7 +62,7 @@ const ProductCard = ({ src, data }) => {
               className="flex justify-center items-center border rounded-md"
               color={"#f9bc60"}
               style={{ border: "1px solid #f9bc60", padding: "10px" }}
-              onClick={() => { minusCount(data.instock) }}
+              onClick={(event) => { minusCount(event, data.instock) }}
             >
               <Image src="/icons/minus.svg" width={13} height={6} />
             </Button>
@@ -67,13 +71,13 @@ const ProductCard = ({ src, data }) => {
               variant={"outline"}
               className="flex justify-center items-center rounded-md"
               style={{ border: "1px solid #f9bc60", padding: "10px" }}
-              onClick={() => { addCount(data.instock) }}
+              onClick={(event) => { addCount(event, data.instock) }}
             >
               <Image src="/icons/add.svg" width={13} height={6} />
             </Button>
           </div>
         </div>
-        <Button variant={"filled"} style={{ width: "100%" }} className="flex justify-center items-center p-1 bg-button-yellow rounded-md mt-1 hover:cursor-pointer" color={"orange"} onClick={() => addToCartHandler()}>
+        <Button variant={"filled"} style={{ width: "100%" }} className="flex justify-center items-center p-1 bg-button-yellow rounded-md mt-1 hover:cursor-pointer" color={"orange"} onClick={(event) => addToCartHandler(event)}>
           <p className="text-sm text-white font-semibold ">Сагслах</p>
           <Image className="ml-2" width={18} height={18} src={"/icons/trolley2.svg"} />
         </Button>

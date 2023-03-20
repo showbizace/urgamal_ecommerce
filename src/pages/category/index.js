@@ -4,6 +4,7 @@ import Category from "../../../src/pages/components/category"
 import ProductCard from '../components/product-card'
 import { Footer } from '@mantine/core'
 import BottomFooter from '../components/Footer'
+import ProductCardExample from '../components/ProductCardExample'
 const CategoryPage = () => {
     return (
         <div>
@@ -32,99 +33,99 @@ const CategoryPage = () => {
                             className="flex flex-row mt-12"
                         >
                             <div style={{ width: "22.3%" }}>
-                                <ProductCard
+                                <ProductCardExample
                                     src={"/bundle-1.svg"}
                                     name={"Энерген Экстра"}
                                     count={"50ш"}
-                                    price={"15’000₮"}
+                                    price={"15’000"}
                                 />
                             </div>
                             <div style={{ width: "22.4%" }}>
-                                <ProductCard
+                                <ProductCardExample
                                     src={"/bundle-1.svg"}
                                     name={"Энерген Экстра"}
                                     count={"50ш"}
-                                    price={"15’000₮"}
+                                    price={"15’000"}
                                 />
                             </div>
                             <div style={{ width: "22.4%" }}>
-                                <ProductCard
+                                <ProductCardExample
                                     src={"/bundle-1.svg"}
                                     name={"Энерген Экстра"}
                                     count={"50ш"}
-                                    price={"15’000₮"}
+                                    price={"15’000"}
                                 />
                             </div>
                             <div style={{ width: "22.4%" }}>
-                                <ProductCard
+                                <ProductCardExample
                                     src={"/bundle-1.svg"}
                                     name={"Энерген Экстра"}
                                     count={"50ш"}
-                                    price={"15’000₮"}
+                                    price={"15’000"}
                                 />
                             </div>
                             <div style={{ width: "22.3%" }}>
-                                <ProductCard
+                                <ProductCardExample
                                     src={"/bundle-1.svg"}
                                     name={"Энерген Экстра"}
                                     count={"50ш"}
-                                    price={"15’000₮"}
+                                    price={"15’000"}
                                 />
                             </div>
                             <div style={{ width: "22.4%" }}>
-                                <ProductCard
+                                <ProductCardExample
                                     src={"/bundle-1.svg"}
                                     name={"Энерген Экстра"}
                                     count={"50ш"}
-                                    price={"15’000₮"}
+                                    price={"15’000"}
                                 />
                             </div>
                             <div style={{ width: "22.4%" }}>
-                                <ProductCard
+                                <ProductCardExample
                                     src={"/bundle-1.svg"}
                                     name={"Энерген Экстра"}
                                     count={"50ш"}
-                                    price={"15’000₮"}
+                                    price={"15’000"}
                                 />
                             </div>
                             <div style={{ width: "22.4%" }}>
-                                <ProductCard
+                                <ProductCardExample
                                     src={"/bundle-1.svg"}
                                     name={"Энерген Экстра"}
                                     count={"50ш"}
-                                    price={"15’000₮"}
+                                    price={"15’000"}
                                 />
                             </div>
                             <div style={{ width: "22.4%" }}>
-                                <ProductCard
+                                <ProductCardExample
                                     src={"/bundle-1.svg"}
                                     name={"Энерген Экстра"}
                                     count={"50ш"}
-                                    price={"15’000₮"}
+                                    price={"15’000"}
                                 />
                             </div>
                             <div style={{ width: "22.3%" }}>
-                                <ProductCard
+                                <ProductCardExample
                                     src={"/bundle-1.svg"}
                                     name={"Энерген Экстра"}
                                     count={"50ш"}
-                                    price={"15’000₮"}
+                                    price={"15’000"}
                                 />
                             </div>
                             <div style={{ width: "22.4%" }}>
-                                <ProductCard
+                                <ProductCardExample
                                     src={"/bundle-1.svg"}
                                     name={"Энерген Экстра"}
                                     count={"50ш"}
-                                    price={"15’000₮"}
+                                    price={"15’000"}
                                 />
                             </div>
                             <div style={{ width: "22.4%" }}>
-                                <ProductCard
+                                <ProductCardExample
                                     src={"/bundle-1.svg"}
                                     name={"Энерген Экстра"}
                                     count={"50ш"}
-                                    price={"15’000₮"}
+                                    price={"15’000"}
                                 />
                             </div>
                         </div>

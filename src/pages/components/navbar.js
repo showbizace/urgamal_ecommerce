@@ -25,7 +25,7 @@ const Navbar = () => {
       style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}
     >
       <Link href={"/home"}>
-        <p className="flex flex-row justify-center items-center">
+        <p className="flex flex-row justify-center items-center text-black">
           ТАРИMАЛ{" "}
           <Image src="/logo.png" width={30} height={30} className="mx-4" />{" "}
           УРГАMАЛ
@@ -49,7 +49,7 @@ const Navbar = () => {
           onClick={() => print("Hello")}
         /> */}
         <div className="px-4 flex justify-center items-center">
-          <Link href={"hhhh"} onClick={() => { }} className="mx-4 text-center">
+          <Link href={"hhhh"} onClick={() => { }} className="mx-4 text-center text-black">
             Мэргэжлийхэнд
           </Link>
         </div>
@@ -80,7 +80,7 @@ const Navbar = () => {
         </div>
         <div className="flex flex-row items-center" onClick={() => { route.push("/profile") }}>
           <div className="flex justify-center items-center ml-10">
-            <Image src="/user.png" width={50} height={50} className="" />
+            <Image src="/user.png" width={40} height={40} className="" />
           </div>
           <div className="ml-4 flex flex-col items-start w-24">
             <p className="text-sm-1">Сайн байна уу?</p>

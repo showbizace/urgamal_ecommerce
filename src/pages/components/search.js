@@ -31,7 +31,7 @@ const Search = () => {
 
   const Autocomplete2 = forwardRef((props, ref) => {
     return (
-      <div ref={ref} style={{ padding: "5px", marginTop: "5px" }} >
+      <div ref={ref} style={{ padding: "5px", marginTop: "5px" }}  >
         <Group noWrap>
           <Avatar src={props.image} />
           <div>
@@ -45,7 +45,7 @@ const Search = () => {
     )
   })
   return (
-    <div className="py-3 px-32 flex flex-row justify-between">
+    <div className="py-2 px-32 flex flex-row justify-between">
       <div
         className="flex flex-row px-4 bg-background-sort py-2 justify-center items-center"
         style={{ borderRadius: "4.34402px" }}

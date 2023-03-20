@@ -1,20 +1,18 @@
 import Image from "next/image";
-import React from "react";
+import { useEffect, useContext } from "react";
 import GlobalLayout from "../components/GlobalLayout/GlobalLayout";
 import ProductTypeChip from "../components/ProductTypeChip/ProductTypeChip";
-import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import Magnifier from "../components/Magnifier/Magnifier";
-import Head from "next/head";
 import { BsSuitHeart, BsSuitHeartFill } from 'react-icons/bs';
 import { AiOutlineShoppingCart } from 'react-icons/ai';
-import ProductCardSwiper from "../components/product-card-swiper";
-import { Swiper, SwiperSlide } from "swiper/react";
-
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
-import ProductCard from "../components/product-card";
+import ProductCardExample from "../components/ProductCardExample";
+import { useRouter } from 'next/router'
+import { useSearchParams } from 'next/navigation'
+import { Store } from "@/utils/Store";
 const images = [
   {
     original: "https://picsum.photos/id/1018/1000/600/",
@@ -44,8 +42,18 @@ export async function getServerSideProps({ params }) {
 }
 
 const ProductDetail = ({ product }) => {
+
+  const { state, dispatch } = useContext(Store)
+
+  const addToCartHandler = () => {
+    dispatch({
+      type: 'CART_ADD_ITEM', payload: {
+        ...product, quantity: 1,
+      }
+    });
+  }
   return (
-    <GlobalLayout title={product.Name}>
+    <GlobalLayout title={product.name}>
 
       <div className="px-32">
         <div className="flex gap-14 pt-12 justify-center">
@@ -99,21 +107,21 @@ const ProductDetail = ({ product }) => {
           </Carousel> */}
 
           <div className="flex flex-col gap-6">
-            <div className=" text-lg font-semibold">{product.Name}</div>
+            <div className=" text-lg font-semibold">{product.name}</div>
             <div className="flex font-semibold gap-2">
               <span className="text-greenish-grey  ">Ширхэгийн үнэ:</span>
               <span className=" ">{
-                Intl.NumberFormat('mn-MN').format(product.ListPrice)}₮</span>
+                Intl.NumberFormat('mn-MN').format(product.price)}₮</span>
             </div>
             <div className="flex font-semibold gap-2" >
               <span className="text-greenish-grey  ">Бөөний үнэ:</span>
-              <span className="text-greenish-grey line-through "> 15’000₮</span>
+              <span className="text-greenish-grey line-through "> {Intl.NumberFormat('mn-MN').format(product.promo_price)}₮</span>
               <span className="text-greenish-grey  "> / </span>
-              <span> 15’000₮</span>
+              <span> {Intl.NumberFormat('mn-MN').format(product.price)}₮</span>
             </div>
             <div className="flex font-semibold  gap-2">
               <span className="text-greenish-grey  ">Үлдэгдэл:</span>
-              <span> 150 Ш</span>
+              <span>{product.instock}</span>
             </div>
             <div className="flex gap-2 font-semibold">
               <span className="text-greenish-grey  ">Төрөл:</span>
@@ -140,8 +148,9 @@ const ProductDetail = ({ product }) => {
                 <span className="font-semibold"> Хадгалах </span>
                 <BsSuitHeart className="font-semibold" size={20} />
               </button>
-              <button className="  bg-button-yellow text-white flex-grow flex justify-between items-center px-5 py-3 rounded-md">
-                <span className="font-semibold"> Сагсанд хийх </span>
+              <button className="bg-button-yellow text-white flex-grow flex justify-between items-center px-5 py-3 rounded-md"
+                onClick={() => addToCartHandler()} >
+                <span className="font-semibold" > Сагсанд хийх </span>
 
                 <AiOutlineShoppingCart className="font-semibold" size={20} />
               </button>
@@ -165,7 +174,7 @@ const ProductDetail = ({ product }) => {
           <div style={{ width: "100%", gap: "30px", flexWrap: "wrap" }}
             className="flex flex-row mt-12">
             <div style={{ width: "18%", }} >
-              <ProductCard
+              <ProductCardExample
                 src={"/bundle-1.svg"}
                 name={"Энерген Экстра"}
                 count={"50ш"}
@@ -173,7 +182,7 @@ const ProductDetail = ({ product }) => {
               />
             </div>
             <div style={{ width: "18%", }} >
-              <ProductCard
+              <ProductCardExample
                 src={"/bundle-1.svg"}
                 name={"Энерген Экстра"}
                 count={"50ш"}
@@ -181,7 +190,7 @@ const ProductDetail = ({ product }) => {
               />
             </div>
             <div style={{ width: "18%", }} >
-              <ProductCard
+              <ProductCardExample
                 src={"/bundle-1.svg"}
                 name={"Энерген Экстра"}
                 count={"50ш"}
@@ -189,7 +198,7 @@ const ProductDetail = ({ product }) => {
               />
             </div>
             <div style={{ width: "18%", }} >
-              <ProductCard
+              <ProductCardExample
                 src={"/bundle-1.svg"}
                 name={"Энерген Экстра"}
                 count={"50ш"}
@@ -197,7 +206,7 @@ const ProductDetail = ({ product }) => {
               />
             </div>
             <div style={{ width: "18%", }} >
-              <ProductCard
+              <ProductCardExample
                 src={"/bundle-1.svg"}
                 name={"Энерген Экстра"}
                 count={"50ш"}
@@ -205,7 +214,7 @@ const ProductDetail = ({ product }) => {
               />
             </div>
             <div style={{ width: "18%", }} >
-              <ProductCard
+              <ProductCardExample
                 src={"/bundle-1.svg"}
                 name={"Энерген Экстра"}
                 count={"50ш"}
@@ -213,7 +222,7 @@ const ProductDetail = ({ product }) => {
               />
             </div>
             <div style={{ width: "18%", }} >
-              <ProductCard
+              <ProductCardExample
                 src={"/bundle-1.svg"}
                 name={"Энерген Экстра"}
                 count={"50ш"}
@@ -221,7 +230,7 @@ const ProductDetail = ({ product }) => {
               />
             </div>
             <div style={{ width: "18%", }} >
-              <ProductCard
+              <ProductCardExample
                 src={"/bundle-1.svg"}
                 name={"Энерген Экстра"}
                 count={"50ш"}
@@ -229,7 +238,7 @@ const ProductDetail = ({ product }) => {
               />
             </div>
             <div style={{ width: "18%", }} >
-              <ProductCard
+              <ProductCardExample
                 src={"/bundle-1.svg"}
                 name={"Энерген Экстра"}
                 count={"50ш"}
@@ -237,7 +246,7 @@ const ProductDetail = ({ product }) => {
               />
             </div>
             <div style={{ width: "18%", }} >
-              <ProductCard
+              <ProductCardExample
                 src={"/bundle-1.svg"}
                 name={"Энерген Экстра"}
                 count={"50ш"}
