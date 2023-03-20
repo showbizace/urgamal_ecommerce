@@ -2,19 +2,26 @@ import GlobalLayout from "@/pages/components/GlobalLayout/GlobalLayout";
 import { Button, Checkbox, Table, ActionIcon } from "@mantine/core";
 import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import useSWR from "swr";
 import Magnifier from "../components/Magnifier/Magnifier";
 import Address from "./#shippingAddress";
-
+import { useRouter } from 'next/router'
+import { Store } from "@/utils/Store";
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-const CartItems = () => {
+const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
+  const router = useRouter()
+  const { state, dispatch } = useContext(Store)
+  const { cart } = state
   const { data, error, isLoading } = useSWR("/api/cartItem", fetcher);
+  const [total, setTotal] = useState(0)
   if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
+  console.log(cart.cartItems, "dddd")
+
 
   const handleSelectAll = (e) => {
     setIsCheckAll(!isCheckAll);
@@ -25,7 +32,18 @@ const CartItems = () => {
   };
   console.log(isCheck);
 
-  const handleClick = (e, Id) => {
+  const totalPrice = () => {
+    let sum = 0;
+    cart.cartItems.map((item) => {
+      sum = sum + parseInt(item.price)
+    })
+
+    return (
+      <span>{sum}₮</span>
+    )
+  }
+  const handleClick = (e) => {
+
     setIsCheck([e]);
     setIsCheck(isCheck.filter((item) => item !== e));
   };
@@ -45,7 +63,7 @@ const CartItems = () => {
     </tr>
   );
 
-  const rows = data.map((item, idx) => (
+  const rows = cart.cartItems.map((item, idx) => (
     <tr key={idx}>
       <td>
         <Checkbox
@@ -65,12 +83,12 @@ const CartItems = () => {
           />
           <div className="flex flex-col justify-around">
             <span className="font-[500] text-[1.002rem] text-[#212529]">
-              {item.Name}
+              {item.name}
             </span>
             <span className="font-[500] text-[0.87rem] text-[#2125297a]">
               Хэмжээ:{" "}
               <span className="text-[#212529]">
-                {item.Size ? item.Size : 2}
+                {item.purchaseCount}
               </span>
             </span>
           </div>
@@ -160,7 +178,7 @@ const CartItems = () => {
                 <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
                   Нийт үнэ
                   <span className="font-[500] text-[1.05rem] text-[#212529]">
-                    123'222 ₮
+                     {totalPrice()}
                   </span>
                 </span>
                 <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">

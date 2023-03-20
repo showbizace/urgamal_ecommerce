@@ -25,7 +25,7 @@ const ProductCard = ({ src, data }) => {
     }
   }
   const addToCartHandler = () => {
-    dispatch({ type: 'CART_ADD_ITEM', payload: { ...data, quantity: 1 } });
+    dispatch({ type: 'CART_ADD_ITEM', payload: { ...data, quantity: 1, purchaseCount: productCount } });
   }
   return (
     <div

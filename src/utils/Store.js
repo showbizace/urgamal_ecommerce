@@ -7,6 +7,8 @@ const initialState = {
 };
 
 function reducer(state, action) {
+    console.log(state, "state")
+    console.log(action, "action")
     switch (action.type) {
         case 'CART_ADD_ITEM': {
             const newItem = action.payload;
