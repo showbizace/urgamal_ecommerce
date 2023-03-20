@@ -6,22 +6,21 @@ import { useState, useEffect, useContext } from "react";
 import useSWR from "swr";
 import Magnifier from "../components/Magnifier/Magnifier";
 import Address from "./#shippingAddress";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 import { Store } from "@/utils/Store";
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
-  const router = useRouter()
-  const { state, dispatch } = useContext(Store)
-  const { cart } = state
+  const router = useRouter();
+  const { state, dispatch } = useContext(Store);
+  const { cart } = state;
   const { data, error, isLoading } = useSWR("/api/cartItem", fetcher);
-  const [total, setTotal] = useState(0)
+  const [total, setTotal] = useState(0);
   if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
-  console.log(cart.cartItems, "dddd")
-
+  console.log(cart.cartItems, "dddd");
 
   const handleSelectAll = (e) => {
     setIsCheckAll(!isCheckAll);
@@ -35,15 +34,12 @@ const CartItems = (props) => {
   const totalPrice = () => {
     let sum = 0;
     cart.cartItems.map((item) => {
-      sum = sum + parseInt(item.price)
-    })
+      sum = sum + parseInt(item.price);
+    });
 
-    return (
-      <span>{sum}₮</span>
-    )
-  }
+    return <span>{sum}₮</span>;
+  };
   const handleClick = (e) => {
-
     setIsCheck([e]);
     setIsCheck(isCheck.filter((item) => item !== e));
   };
@@ -87,9 +83,7 @@ const CartItems = (props) => {
             </span>
             <span className="font-[500] text-[0.87rem] text-[#2125297a]">
               Хэмжээ:{" "}
-              <span className="text-[#212529]">
-                {item.purchaseCount}
-              </span>
+              <span className="text-[#212529]">{item.purchaseCount}</span>
             </span>
           </div>
         </div>
@@ -142,7 +136,7 @@ const CartItems = (props) => {
               Төлбөр
             </Link>
           </div> */}
-          <div className="flex flex-row gap-10 mt-8">
+          <div className="flex flex-row gap-10 px-36 mt-8">
             <div className="flex flex-col w-[70%] gap-8">
               <div>
                 <div className=" bg-white rounded-lg px-10 py-6">
@@ -178,7 +172,7 @@ const CartItems = (props) => {
                 <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
                   Нийт үнэ
                   <span className="font-[500] text-[1.05rem] text-[#212529]">
-                     {totalPrice()}
+                    {totalPrice()}
                   </span>
                 </span>
                 <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
