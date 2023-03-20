@@ -55,9 +55,10 @@ export default function Home({ data }) {
     const router = useRouter()
     const clickProduct = (e) => {
         router.push({
+            shallow: true,
             pathname: "/product/[id]",
-            query: { id: e.id, data: e }
-        })
+            query: { id: e.id, data: e },
+        },)
     }
     return (
         <div>
