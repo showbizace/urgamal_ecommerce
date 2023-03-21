@@ -1,4 +1,3 @@
-import GlobalLayout from "@/pages/components/GlobalLayout/GlobalLayout";
 import { Button, Checkbox, Table, ActionIcon } from "@mantine/core";
 import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
