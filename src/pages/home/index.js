@@ -1,20 +1,20 @@
 import Head from "next/head";
 
-import Category from "../components/category";
-import FeatureBundle from "../components/feature-bundle";
-import FeatureProduct from "../components/feature-product";
+import Category from "../../components/category";
+import FeatureBundle from "../../components/feature-bundle";
+import FeatureProduct from "../../components/feature-product";
 import Image from "next/image";
 
-import ProductCard from "../components/product-card";
+import ProductCard from "../../components/product-card";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
-import GlobalLayout from "../components/GlobalLayout/GlobalLayout";
-import FeatureProductList from "../components/feature-product-list";
-import NewProduct from "../components/new-product";
-import Banner from "../components/banner";
-import BottomFooter from "../components/Footer";
+import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
+import FeatureProductList from "../../components/feature-product-list";
+import NewProduct from "../../components/new-product";
+import Banner from "../../components/banner";
+import BottomFooter from "../../components/Footer";
 import { useRouter } from 'next/router'
 import { useEffect, useCallback, useState } from "react";
 import { useSearchParams } from 'next/navigation'
@@ -53,6 +53,7 @@ export default function Home({ data }) {
         //add eventlistener to window
         window.addEventListener("scroll", onScroll, { passive: true });
         // remove event on unmount to prevent a memory leak with the cleanup
+        window.dispatchEvent(new Event('storage'))
         return () => {
             window.removeEventListener("scroll", onScroll, { passive: true });
         }

@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 
 import { Button, TextInput } from '@mantine/core';
-import Order from '../../components/Profile/Order';
+import Order from '../../../components/Profile/Order';
 const MyOrder = () => {
 
     const [tabs, setTabs] = useState(1)

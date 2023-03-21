@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import GlobalLayout from '../components/GlobalLayout/GlobalLayout';
+import GlobalLayout from '../../components/GlobalLayout/GlobalLayout';
 import { Button, TextInput } from '@mantine/core';
-import ProfileTabs from '../components/ProfileTab';
+import ProfileTabs from '../../components/ProfileTab';
 import { useState } from 'react';
 import $ from "jquery";
 import ProfileInfo from './tabs/ProfileInfo';
@@ -10,7 +10,7 @@ import UserLocation from './tabs/UserLocation'
 import SavedOrder from './tabs/SavedOrder';
 import MyOrder from './tabs/MyOrder';
 import PurchaseHistory from './tabs/PurchaseHistory';
-import BottomFooter from '../components/Footer';
+import BottomFooter from '../../components/Footer';
 const Profile = () => {
 
     const [tabs, setTabs] = useState(1)

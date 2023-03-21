@@ -1,15 +1,16 @@
-import GlobalLayout from "@/pages/components/GlobalLayout/GlobalLayout";
+
 import { Button, Checkbox, Table, ActionIcon } from "@mantine/core";
 import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
 import { useState, useEffect, useContext, Suspense } from "react";
 import useSWR from "swr";
-import Magnifier from "../components/Magnifier/Magnifier";
+import Magnifier from "../../components/Magnifier/Magnifier";
 import Address from "./#shippingAddress";
 import { useRouter } from 'next/router'
 import { Store } from "@/utils/Store";
 import $ from 'jquery'
 import Loading from "../home/loading";
+import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 
 const CartItems = (props) => {
 
@@ -58,8 +59,8 @@ const CartItems = (props) => {
     if (typeof window !== "undefined") {
       // client-side operation such as local storage.
       let localStorageCart = JSON.parse(localStorage.getItem("cartItems"))
-      let data = localStorageCart.cart.cartItems;
-      console.log(data, "data")
+      window.dispatchEvent(new Event('storage'))
+      let data = localStorageCart?.cart?.cartItems;
       if (localStorageCart !== null && localStorageCart.cart.cartItems.length > 0) {
         let arr = []
         data.forEach((e) => {
@@ -93,10 +94,7 @@ const CartItems = (props) => {
     setCartItem(temp)
     dispatch({ type: "CART_REMOVED_ITEM", payload: temp })
     let object = { cart: { cartItems: temp } }
-    if (typeof window !== "undefined") {
-      // client-side operation such as local storage.
-      localStorage.setItem("cartItems", JSON.stringify(object))
-    }
+
     // localStorage.setItem("")
   }
   const handleClick = (e) => {

@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import { StoreProvider } from "@/utils/Store";
 import { MantineProvider, createEmotionCache } from "@mantine/core";
+import { Notifications } from '@mantine/notifications';
 import Router from "next/router";
 import { useState, useEffect } from "react";
 import useSWR, { SWRConfig } from 'swr'
@@ -47,7 +48,7 @@ export default function App({ Component, pageProps }) {
         colorScheme: "light",
       }}
     >
-
+      <Notifications />
       {/* <Loading /> */}
       <StoreProvider>
 

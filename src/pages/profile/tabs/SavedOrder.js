@@ -1,5 +1,5 @@
 
-import ProductCardProfile from '../../components/ProductCardProfile'
+import ProductCardProfile from '../../../components/ProductCardProfile'
 import Image from 'next/image'
 const SavedOrder = () => {
     return (

@@ -24,13 +24,19 @@ function reducer(state, action) {
             let value = { ...state, cart: { ...state.cart, cartItems } }
             if (typeof window !== "undefined") {
                 // client-side operation such as local storage.
-                console.log(value, "value")
                 localStorage.setItem("cartItems", JSON.stringify(value))
+                window.dispatchEvent(new Event('storage'))
             }
             return { ...state, cart: { ...state.cart, cartItems } };
         }
         case "CART_REMOVED_ITEM": {
             const cartItems = action.payload
+            let value = { ...state, cart: { ...state.cart, cartItems } }
+            if (typeof window !== "undefined") {
+                // client-side operation such as local storage.
+                localStorage.setItem("cartItems", JSON.stringify(value))
+                window.dispatchEvent(new Event('storage'))
+            }
             return { ...state, cart: { ...state.cart, cartItems } }
         }
         default:

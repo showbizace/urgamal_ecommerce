@@ -1,4 +1,4 @@
-import ProductCardProfile from '@/pages/components/ProductCardProfile';
+
 import { Button, TextInput, Collapse } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import CollapseItem from './CollapseItem';

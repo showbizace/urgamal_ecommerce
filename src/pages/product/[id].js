@@ -1,15 +1,15 @@
 import Image from "next/image";
 import { useEffect, useContext } from "react";
-import GlobalLayout from "../components/GlobalLayout/GlobalLayout";
-import ProductTypeChip from "../components/ProductTypeChip/ProductTypeChip";
+import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
+import ProductTypeChip from "../../components/ProductTypeChip/ProductTypeChip";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import Magnifier from "../components/Magnifier/Magnifier";
+import Magnifier from "../../components/Magnifier/Magnifier";
 import { BsSuitHeart, BsSuitHeartFill } from 'react-icons/bs';
 import { AiOutlineShoppingCart } from 'react-icons/ai';
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
-import ProductCardExample from "../components/ProductCardExample";
+import ProductCardExample from "../../components/ProductCardExample";
 import { useRouter } from 'next/router'
 import { useSearchParams } from 'next/navigation'
 import { Store } from "@/utils/Store";

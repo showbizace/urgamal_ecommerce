@@ -1,4 +1,4 @@
-import GlobalLayout from "@/pages/components/GlobalLayout/GlobalLayout";
+import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import { Card, Chip, Text } from "@mantine/core";
 import { useState } from "react";
 
