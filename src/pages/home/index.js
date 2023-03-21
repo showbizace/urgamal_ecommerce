@@ -16,7 +16,8 @@ import NewProduct from "../components/new-product";
 import Banner from "../components/banner";
 import BottomFooter from "../components/Footer";
 import { useRouter } from 'next/router'
-import { useEffect } from "react";
+import { useEffect, useCallback, useState } from "react";
+import { useSearchParams } from 'next/navigation'
 
 export async function getStaticProps() {
 
@@ -36,13 +37,34 @@ export async function getStaticProps() {
 
 export default function Home({ data }) {
 
-    const router = useRouter()
+    const [positionSticky, setPositionSticky] = useState(false)
 
-    const clickProduct = (id) => {
+    const onScroll = useCallback(event => {
+        const { pageYOffset, scrollY } = window;
+        const bottom = document.documentElement.scrollHeight;
+        if ((pageYOffset >= 1308 || scrollY >= 1308) && (pageYOffset < bottom - 800 || scrollY < bottom - 800)) {
+            setPositionSticky(true)
+        } else {
+            setPositionSticky(false)
+        }
+    }, []);
+
+    useEffect(() => {
+        //add eventlistener to window
+        window.addEventListener("scroll", onScroll, { passive: true });
+        // remove event on unmount to prevent a memory leak with the cleanup
+        return () => {
+            window.removeEventListener("scroll", onScroll, { passive: true });
+        }
+    }, []);
+
+    const router = useRouter()
+    const clickProduct = (e) => {
         router.push({
+            shallow: true,
             pathname: "/product/[id]",
-            query: { id: id }
-        })
+            query: { id: e.id, data: e },
+        },)
     }
     return (
         <div>
@@ -52,20 +74,22 @@ export default function Home({ data }) {
                     <FeatureProduct />
                     <FeatureBundle />
                     <div className="flex flex-row">
-                        <div style={{ width: "30%", height: "80%" }}>
-                            <Category />
+                        <div style={{ width: "30%", height: "80%", position: "relative" }}>
+                            <Category positionSticky={positionSticky} />
                         </div>
                         <div className="flex flex-col ml-12 " style={{ width: "70%" }}>
                             <FeatureProductList />
                             <NewProduct />
+
                             <div
                                 style={{ width: "100%", gap: "30px", flexWrap: "wrap" }}
                                 className="flex flex-row mt-12"
                             >
                                 {data.data.map((e) => {
                                     return (
-                                        <div style={{ width: "22.3%", }} onClick={() => { // clickProduct(e.id)
-                                        }}>
+                                        <div style={{ width: "22.3%", }} onClick={() => clickProduct(e)}
+                                            className="transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110"
+                                        >
                                             <ProductCard
                                                 src={"/bundle-1.svg"}
                                                 data={e}
@@ -73,7 +97,6 @@ export default function Home({ data }) {
                                         </div>
                                     )
                                 })}
-
                             </div>
                         </div>
                     </div>

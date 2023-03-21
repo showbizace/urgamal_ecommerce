@@ -11,7 +11,7 @@ const FeatureBundle = () => {
   return (
     <div className=" flex flex-col pb-8">
       <div className="flex flex-row justify-between" style={{ width: "100%" }}>
-        <p className="text-lg font-semibold">Онцлох бүтээгдэхүүн</p>
+        <p className="text-lg font-semibold">Онцлох багц</p>
         <div className="flex flex-row">
           <div className="flex justify-center items-center rounded-full bg-white w-7 ">
             <Image src="/icons/arrow-left.svg" width={10} height={22} />

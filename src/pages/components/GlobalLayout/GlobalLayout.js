@@ -3,6 +3,7 @@ import React, { Children } from "react";
 import Navbar from "../navbar";
 import Search from "../search";
 
+
 export default function GlobalLayout({ children, title = 'Таримал Ургамал ХХК' }) {
   return (
     <div className="body">
@@ -14,8 +15,10 @@ export default function GlobalLayout({ children, title = 'Таримал Ург�
         <link rel="stylesheet" href="https://kit.fontawesome.com/af91f056ad.css" crossorigin="anonymous" />
         <script src="https://kit.fontawesome.com/af91f056ad.js" crossorigin="anonymous"></script>
       </Head>
-      <Navbar />
-      <Search />
+      <div id="myHeader" className="sticky top-0 z-30 shadow bg-white">
+        <Navbar />
+        <Search />
+      </div>
       <main className="bg-main">{children}</main>
     </div>
   );

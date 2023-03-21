@@ -1,17 +1,18 @@
+import { useLocalStorage } from '@mantine/hooks';
 import { createContext, useReducer } from 'react';
-
+useLocalStorage
 export const Store = createContext();
 
 const initialState = {
     cart: { cartItems: [] },
 };
-
 function reducer(state, action) {
-    console.log(state, "state")
-    console.log(action, "action")
+
     switch (action.type) {
         case 'CART_ADD_ITEM': {
             const newItem = action.payload;
+            console.log(newItem, "newItem")
+            console.log(state.cart.cartItems, "cartITems add")
             const existItem = state.cart.cartItems.find(
                 (item) => item.id === newItem.id
             );
@@ -20,11 +21,22 @@ function reducer(state, action) {
                     item.name === existItem.name ? newItem : item
                 )
                 : [...state.cart.cartItems, newItem];
+            let value = { ...state, cart: { ...state.cart, cartItems } }
+            if (typeof window !== "undefined") {
+                // client-side operation such as local storage.
+                console.log(value, "value")
+                localStorage.setItem("cartItems", JSON.stringify(value))
+            }
             return { ...state, cart: { ...state.cart, cartItems } };
+        }
+        case "CART_REMOVED_ITEM": {
+            const cartItems = action.payload
+            return { ...state, cart: { ...state.cart, cartItems } }
         }
         default:
             return state;
     }
+
 }
 
 export function StoreProvider({ children }) {
