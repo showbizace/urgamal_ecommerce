@@ -6,7 +6,7 @@ import { useState, useEffect, useContext, Suspense } from "react";
 import useSWR from "swr";
 import Magnifier from "../components/Magnifier/Magnifier";
 import Address from "./#shippingAddress";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 import { Store } from "@/utils/Store";
 import $ from 'jquery'
 import Loading from "../home/loading";
@@ -21,7 +21,6 @@ const CartItems = (props) => {
   const [cartItem, setCartItem] = useState();
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(true)
-
   const handleSelectAll = (e) => {
     setIsCheckAll(!isCheckAll)
     let arr = [];
@@ -115,6 +114,7 @@ const CartItems = (props) => {
 
     // setIsCheck([e]);
     // setIsCheck(isCheck.filter((item) => item !== e));
+
   };
 
   const ths = (
@@ -195,6 +195,7 @@ const CartItems = (props) => {
           <td>
             <span className="font-[600] text-[1rem] text-[#212529]">
               {item.ListPrice} ₮
+
             </span>
           </td>
         </tr>
@@ -218,6 +219,7 @@ const CartItems = (props) => {
             </Link>
           </div>
           <div className="flex flex-row gap-10 mt-8">
+
             <div className="flex flex-col w-[70%] gap-8">
               <div>
                 <div className=" bg-white rounded-lg px-10 py-6">
