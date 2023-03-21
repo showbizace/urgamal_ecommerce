@@ -1,4 +1,4 @@
-
+import GlobalLayout from "@/pages/components/GlobalLayout/GlobalLayout";
 import { Button, Checkbox, Table, ActionIcon } from "@mantine/core";
 import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
@@ -203,19 +203,9 @@ const CartItems = (props) => {
   return (
     <>
       <GlobalLayout>
-        <div className="bg-grey-back w-full px-32 py-8">
-          <div className="flex gap-2 ml-10">
-            <Link href="cartItem" className="text-red-500" shallow={true}>
-              Сагс
-            </Link>
-            <Link href="shippingAddress" shallow={true}>
-              Хаяг
-            </Link>
-            <Link href="checkout" shallow={true}>
-              Төлбөр
-            </Link>
-          </div>
-          <div className="flex flex-row gap-10 mt-8">
+
+        <div className="bg-grey-back w-full px-32 py-4">
+          <div className="flex flex-row gap-10 mt-8 px-32">
             <div className="flex flex-col w-[70%] gap-8">
               <div>
                 <div className=" bg-white rounded-lg px-10 py-6">
@@ -227,6 +217,7 @@ const CartItems = (props) => {
                     <Button
                       component="a"
                       href="#"
+                      compact
                       variant="subtle"
                       leftIcon={<IconTrash size="1rem" />}
                       color="red"
