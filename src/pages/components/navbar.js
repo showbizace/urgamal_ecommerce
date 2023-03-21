@@ -3,21 +3,39 @@ import NavBarLinks from "../components/nav-bar-links";
 import Link from "next/link";
 import { useRouter } from 'next/router'
 import { Button } from '@mantine/core'
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Store } from "@/utils/Store";
 const Navbar = () => {
   const router = useRouter()
   const { state, dispatch } = useContext(Store)
   const { cart } = state;
+  const [cartItem, setCartItem] = useState([])
+  const [quantity, setQuantity] = useState(0)
   const route = useRouter();
-  console.log(cart, "cart")
 
   const linkToCart = () => {
     router.push({
       pathname: '/cart/cartItem',
-      query: { data: { ...cart } },
     })
   }
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // client-side operation such as local storage.
+      let localStorageCart = JSON.parse(localStorage.getItem("cartItems"))
+      console.log(localStorageCart, "localStorageCart")
+      if (localStorageCart !== null && localStorageCart.cart.cartItems.length > 0) {
+        setCartItem(localStorageCart?.cart?.cartItems)
+        let sum = 0
+        localStorageCart.cart.cartItems.forEach((e) => {
+          if (e !== null) {
+            sum = sum + e.quantity
+          }
+        })
+        setQuantity(sum)
+      }
+    }
+  }, [])
 
   return (
     <div
@@ -67,7 +85,7 @@ const Navbar = () => {
           <Image src="/icons/trolley.svg" width={23} height={23} />
           <div className="absolute">
             <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
-              <p className="text-sm-5">{cart.cartItems.reduce((a, c) => a + c.quantity, 0)}</p>
+              <p className="text-sm-5">{quantity}</p>
             </div>
           </div>
         </Button>

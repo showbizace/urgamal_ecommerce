@@ -2,50 +2,119 @@ import GlobalLayout from "@/pages/components/GlobalLayout/GlobalLayout";
 import { Button, Checkbox, Table, ActionIcon } from "@mantine/core";
 import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, Suspense } from "react";
 import useSWR from "swr";
 import Magnifier from "../components/Magnifier/Magnifier";
 import Address from "./#shippingAddress";
 import { useRouter } from 'next/router'
 import { Store } from "@/utils/Store";
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
+import $ from 'jquery'
+import Loading from "../home/loading";
 
 const CartItems = (props) => {
+
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
   const router = useRouter()
   const { state, dispatch } = useContext(Store)
-  const { cart } = state
-  const { data, error, isLoading } = useSWR("/api/cartItem", fetcher);
   const [total, setTotal] = useState(0)
-  if (error) return <div>failed to load</div>;
-  if (isLoading) return <div>loading...</div>;
-  console.log(cart.cartItems, "dddd")
-
+  const [cartItem, setCartItem] = useState();
+  const [checked, setChecked] = useState(false);
+  const [loading, setLoading] = useState(true)
 
   const handleSelectAll = (e) => {
-    setIsCheckAll(!isCheckAll);
-    setIsCheck(data.map((li) => li.id));
-    if (isCheckAll) {
-      setIsCheck([]);
+    setIsCheckAll(!isCheckAll)
+    let arr = [];
+    if (isCheckAll === true) {
+      cartItem.forEach((e) => {
+        let clone = { ...e, }
+        clone['isChecked'] = false
+        arr.push(clone)
+      })
+      setCartItem(arr)
+    } else {
+      cartItem.forEach((e) => {
+        let clone = { ...e, }
+        clone['isChecked'] = true
+        arr.push(clone)
+      })
+      setCartItem(arr)
     }
   };
-  console.log(isCheck);
 
   const totalPrice = () => {
     let sum = 0;
-    cart.cartItems.map((item) => {
-      sum = sum + parseInt(item.price)
-    })
+    // cartItem.map((item) => {
+    //   sum = sum + parseInt(item.price)
+    // })
 
     return (
       <span>{sum}₮</span>
     )
   }
+
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // client-side operation such as local storage.
+      let localStorageCart = JSON.parse(localStorage.getItem("cartItems"))
+      let data = localStorageCart.cart.cartItems;
+      console.log(data, "data")
+      if (localStorageCart !== null && localStorageCart.cart.cartItems.length > 0) {
+        let arr = []
+        data.forEach((e) => {
+          if (e !== null) {
+            let clone = { ...e, }
+            clone['isChecked'] = false
+            arr.push(clone)
+          }
+        })
+        setCartItem(arr)
+      }
+
+    }
+  }, [])
+
+  const deleteFromCart = () => {
+    let newArr = [...cartItem]
+    newArr.forEach((e) => {
+      if (e.isChecked === true) {
+        const index = newArr.indexOf(e)
+        delete newArr[index];
+      }
+    })
+    let temp = []
+    newArr.forEach((e) => {
+      if (e !== null && e !== undefined && !e.length) {
+        temp.push(e)
+      }
+    })
+
+    setCartItem(temp)
+    dispatch({ type: "CART_REMOVED_ITEM", payload: temp })
+    let object = { cart: { cartItems: temp } }
+    if (typeof window !== "undefined") {
+      // client-side operation such as local storage.
+      localStorage.setItem("cartItems", JSON.stringify(object))
+    }
+    // localStorage.setItem("")
+  }
   const handleClick = (e) => {
 
-    setIsCheck([e]);
-    setIsCheck(isCheck.filter((item) => item !== e));
+    let newArr = [...cartItem];
+    console.log(newArr, "newArr")
+    newArr.forEach((item) => {
+      if (item !== undefined) {
+        if (item.id === e.id) {
+          item.isChecked = !e.isChecked
+        }
+      }
+    })
+
+    setCartItem(newArr)
+
+    // setIsCheck([e]);
+    // setIsCheck(isCheck.filter((item) => item !== e));
   };
 
   const ths = (
@@ -63,75 +132,81 @@ const CartItems = (props) => {
     </tr>
   );
 
-  const rows = cart.cartItems.map((item, idx) => (
-    <tr key={idx}>
-      <td>
-        <Checkbox
-          value={isCheck.includes(item.Id)}
-          id={item.id}
-          onClick={(e) => handleClick(e, item.Id)}
-          children={<div>asd </div>}
-        />
-      </td>
-      <td>
-        <div className="flex flex-row gap-8">
-          <Magnifier
-            imgSrc={"/bundle-1.svg"}
-            imgWidth={80}
-            imgHeight={80}
-            magnifierRadius={50}
-          />
-          <div className="flex flex-col justify-around">
-            <span className="font-[500] text-[1.002rem] text-[#212529]">
-              {item.name}
+  const rows = cartItem !== null && cartItem !== undefined && cartItem.map((item, idx) => {
+
+    if (item !== undefined) {
+      return (
+        <tr key={idx}>
+          <td>
+            <Checkbox
+              className="checkbox-input"
+              checked={item.isChecked}
+              id={item.id}
+              onClick={(e) => handleClick(item)}
+              children={<div>asd </div>}
+            />
+          </td>
+          <td>
+            <div className="flex flex-row gap-8">
+              <Magnifier
+                imgSrc={"/bundle-1.svg"}
+                imgWidth={80}
+                imgHeight={80}
+                magnifierRadius={50}
+              />
+              <div className="flex flex-col justify-around">
+                <span className="font-[500] text-[1.002rem] text-[#212529]">
+                  {item.name}
+                </span>
+                <span className="font-[500] text-[0.87rem] text-[#2125297a]">
+                  Хэмжээ:{" "}
+                  <span className="text-[#212529]">
+                    {item.purchaseCount}
+                  </span>
+                </span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div className="inherit">
+              <div className="flex items-center border border-[#21252923] rounded w-fit p-1">
+                <ActionIcon
+                  sx={{
+                    ":hover": { backgroundColor: "#fff5f5" },
+                  }}
+                  className="mr-3"
+                >
+                  <IconMinus size="1.2rem" color="#212529" />
+                </ActionIcon>
+                <span className="font-[500] text-[1rem] text-[#212529]">
+                  {item.qty ? item.qty : 2}
+                </span>
+                <ActionIcon
+                  sx={{
+                    ":hover": { backgroundColor: "#ebfbee" },
+                  }}
+                  className="ml-3"
+                >
+                  <IconPlus size="1.2rem" color="#212529" />
+                </ActionIcon>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span className="font-[600] text-[1rem] text-[#212529]">
+              {item.ListPrice} ₮
             </span>
-            <span className="font-[500] text-[0.87rem] text-[#2125297a]">
-              Хэмжээ:{" "}
-              <span className="text-[#212529]">
-                {item.purchaseCount}
-              </span>
-            </span>
-          </div>
-        </div>
-      </td>
-      <td>
-        <div className="inherit">
-          <div className="flex items-center border border-[#21252923] rounded w-fit p-1">
-            <ActionIcon
-              sx={{
-                ":hover": { backgroundColor: "#fff5f5" },
-              }}
-              className="mr-3"
-            >
-              <IconMinus size="1.2rem" color="#212529" />
-            </ActionIcon>
-            <span className="font-[500] text-[1rem] text-[#212529]">
-              {item.qty ? item.qty : 2}
-            </span>
-            <ActionIcon
-              sx={{
-                ":hover": { backgroundColor: "#ebfbee" },
-              }}
-              className="ml-3"
-            >
-              <IconPlus size="1.2rem" color="#212529" />
-            </ActionIcon>
-          </div>
-        </div>
-      </td>
-      <td>
-        <span className="font-[600] text-[1rem] text-[#212529]">
-          {item.ListPrice} ₮
-        </span>
-      </td>
-    </tr>
-  ));
+          </td>
+        </tr>
+      )
+    }
+  });
 
   return (
     <>
       <GlobalLayout>
         <div className="bg-grey-back w-full px-32 py-8">
-          {/* <div className="flex gap-2 ml-10">
+          <div className="flex gap-2 ml-10">
             <Link href="cartItem" className="text-red-500" shallow={true}>
               Сагс
             </Link>
@@ -141,7 +216,7 @@ const CartItems = (props) => {
             <Link href="checkout" shallow={true}>
               Төлбөр
             </Link>
-          </div> */}
+          </div>
           <div className="flex flex-row gap-10 mt-8">
             <div className="flex flex-col w-[70%] gap-8">
               <div>
@@ -157,17 +232,20 @@ const CartItems = (props) => {
                       variant="subtle"
                       leftIcon={<IconTrash size="1rem" />}
                       color="red"
+                      onClick={() => deleteFromCart()}
                     >
                       Устгах
                     </Button>
                   </div>
-                  <div className="mt-6">
-                    <Table captionSide="bottom" striped>
-                      {/* <caption>Some elements from periodic table</caption> */}
-                      <thead>{ths}</thead>
-                      <tbody>{rows}</tbody>
-                    </Table>
-                  </div>
+                  <Suspense fallback={<Loading />}>
+                    <div className="mt-6">
+                      <Table captionSide="bottom" striped>
+                        {/* <caption>Some elements from periodic table</caption> */}
+                        <thead>{ths}</thead>
+                        <tbody>{rows}</tbody>
+                      </Table>
+                    </div>
+                  </Suspense>
                 </div>
               </div>
               <Address />
@@ -178,7 +256,7 @@ const CartItems = (props) => {
                 <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
                   Нийт үнэ
                   <span className="font-[500] text-[1.05rem] text-[#212529]">
-                     {totalPrice()}
+                    {totalPrice()}
                   </span>
                 </span>
                 <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">

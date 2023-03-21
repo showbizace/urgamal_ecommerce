@@ -16,7 +16,7 @@ import NewProduct from "../components/new-product";
 import Banner from "../components/banner";
 import BottomFooter from "../components/Footer";
 import { useRouter } from 'next/router'
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { useSearchParams } from 'next/navigation'
 
 export async function getStaticProps() {
@@ -37,10 +37,16 @@ export async function getStaticProps() {
 
 export default function Home({ data }) {
 
+    const [positionSticky, setPositionSticky] = useState(false)
+
     const onScroll = useCallback(event => {
         const { pageYOffset, scrollY } = window;
-        console.log("yOffset", pageYOffset, "scrollY", scrollY);
-
+        const bottom = document.documentElement.scrollHeight;
+        if ((pageYOffset >= 1308 || scrollY >= 1308) && (pageYOffset < bottom - 800 || scrollY < bottom - 800)) {
+            setPositionSticky(true)
+        } else {
+            setPositionSticky(false)
+        }
     }, []);
 
     useEffect(() => {
@@ -69,7 +75,7 @@ export default function Home({ data }) {
                     <FeatureBundle />
                     <div className="flex flex-row">
                         <div style={{ width: "30%", height: "80%", position: "relative" }}>
-                            <Category />
+                            <Category positionSticky={positionSticky} />
                         </div>
                         <div className="flex flex-col ml-12 " style={{ width: "70%" }}>
                             <FeatureProductList />

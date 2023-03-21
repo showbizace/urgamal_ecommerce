@@ -1,9 +1,9 @@
 import { Collapse, Text, Grid } from "@nextui-org/react";
 import Image from "next/image";
-const Category = () => {
+const Category = ({ positionSticky }) => {
   return (
     <div
-      className="rounded-md bg-white"
+      className={positionSticky === true ? "rounded-md bg-white fixed w-80 top-36" : "rounded-md bg-white"}
     // fixed top-40 w-80
     >
       <Grid.Container
