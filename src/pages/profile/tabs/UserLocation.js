@@ -14,13 +14,29 @@ import {
   Image,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IconCirclePlus } from "@tabler/icons-react";
+import { getCookie } from "cookies-next";
 
 const UserLocation = () => {
-  const theme = useMantineTheme();
   const [opened, { open, close }] = useDisclosure(false);
   const [checked, setChecked] = useState(false);
+  const [post, setPost] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({});
+  const [newShippingData, setNewShippingData] = useState({
+    city: "Улаанбаатар",
+    province: "",
+    district: "",
+    committee: "",
+    street: "",
+    fence: "Тест",
+    apartment: "Тест",
+    number: "5",
+    phone: "8980676",
+    type: true,
+  });
+  const cookie = getCookie("token");
 
   const mockData = [
     {
@@ -73,6 +89,105 @@ const UserLocation = () => {
       id: 4,
     },
   ];
+
+  const handleChange = (e, type) => {
+    setNewShippingData({ ...newShippingData, [type]: e.target.value });
+  };
+
+  useEffect(() => {
+    getShippingData();
+    // if (post === true) {
+    //   var myHeaders = new Headers();
+    //   myHeaders.append("Authorization", `Bearer ${cookie}`);
+
+    //   var requestOptions = {
+    //     method: "GET",
+    //     headers: myHeaders,
+    //     redirect: "follow",
+    //   };
+    //   fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/address`, requestOptions)
+    //     .then((response) => response.text())
+    //     .then((result) => {
+    //       if (result.success === true) {
+    //         setData(result.data);
+    //       }
+    //     })
+    //     .catch((error) => console.log("error", error));
+    // }
+  }, [post]);
+
+  useEffect(() => {
+    getShippingData();
+    // if (post === true) {
+    //   var myHeaders = new Headers();
+    //   myHeaders.append("Authorization", `Bearer ${cookie}`);
+
+    //   var requestOptions = {
+    //     method: "GET",
+    //     headers: myHeaders,
+    //   };
+    //   fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/address`, requestOptions)
+    //     .then((response) => response.text())
+    //     .then((result) => {
+    //       if (result.success === true) {
+    //         setData(result.data);
+    //       }
+    //     })
+    //     .catch((error) => console.log("error", error));
+    // }
+  }, [data]);
+
+  const getShippingData = async () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${cookie}`);
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+    };
+    await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/user/address`,
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => {
+        if (result.success === true) {
+          setLoading(true);
+          if (!loading) {
+            setData(result.data);
+          }
+        }
+      });
+  };
+
+  const SubmitShippingData = async (e) => {
+    e.preventDefault();
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${cookie}`);
+    myHeaders.append("Content-Type", "application/json");
+
+    const requestOption = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(newShippingData),
+    };
+
+    await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/user/address`,
+      requestOption
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.success === true) {
+          setPost(true);
+          close;
+        } else {
+          setPost(false);
+        }
+      });
+  };
+
+  console.log(data);
 
   return (
     <div style={{ width: "72.5%" }} className="flex flex-col">
@@ -174,7 +289,10 @@ const UserLocation = () => {
               <Switch
                 checked={checked}
                 label="Орон нутаг"
-                onChange={(event) => setChecked(event.currentTarget.checked)}
+                onChange={(event) => {
+                  setChecked(event.currentTarget.checked),
+                    setNewShippingData({ type: event.currentTarget.checked });
+                }}
                 color="teal"
                 size="sm"
               />
@@ -187,25 +305,28 @@ const UserLocation = () => {
               label="Хот/Аймаг"
               placeholder="Хот / Аймаг сонгоно уу."
               required
-              defaultValue={1}
+              onChange={(e) => {
+                setNewShippingData({ ...newShippingData, city: e });
+              }}
+              defaultValue={"Улаанбаатар"}
               data={[
                 {
-                  value: 1,
+                  value: "Улаанбаатар",
                   label: "Улаанбаатар",
                   group: "Хот",
                 },
                 {
-                  value: 2,
+                  value: "Дархан",
                   label: "Дархан",
                   group: "Хот",
                 },
                 {
-                  value: 3,
+                  value: "Дундговь",
                   label: "Дундговь",
                   group: "Аймаг",
                 },
                 {
-                  value: 4,
+                  value: "Дорнод",
                   label: "Дорнод",
                   group: "Аймаг",
                 },
@@ -214,7 +335,9 @@ const UserLocation = () => {
             <Input.Wrapper
               className="w-full"
               id="input-demo"
+              value={newShippingData.district}
               withAsterisk
+              onChange={(e) => handleChange(e, "district")}
               label="Дүүрэг / Сум"
             >
               <Input id="input-demo" />
@@ -224,7 +347,9 @@ const UserLocation = () => {
             <Input.Wrapper
               className="w-full"
               id="input-demo"
+              value={newShippingData.committee}
               withAsterisk
+              onChange={(e) => handleChange(e, "committee")}
               label="Хороо / Баг"
             >
               <Input id="input-demo" />
@@ -232,8 +357,30 @@ const UserLocation = () => {
             <Input.Wrapper
               className="w-full"
               id="input-demo"
+              value={newShippingData.street}
               withAsterisk
+              onChange={(e) => handleChange(e, "street")}
+              label="Гудамж"
+            >
+              <Input id="input-demo" />
+            </Input.Wrapper>
+            <Input.Wrapper
+              className="w-full"
+              id="input-demo"
+              value={newShippingData.apartment}
+              withAsterisk
+              onChange={(e) => handleChange(e, "apartment")}
               label="Байр / Байгуулга"
+            >
+              <Input id="input-demo" />
+            </Input.Wrapper>
+            <Input.Wrapper
+              className="w-full"
+              id="input-demo"
+              value={newShippingData.number}
+              withAsterisk
+              onChange={(e) => handleChange(e, "number")}
+              label="Тоот"
             >
               <Input id="input-demo" />
             </Input.Wrapper>
@@ -242,34 +389,10 @@ const UserLocation = () => {
             <Input.Wrapper
               className="w-full"
               id="input-demo"
+              value={newShippingData.phone}
               withAsterisk
-              label="Хороо / Баг"
-            >
-              <Input id="input-demo" />
-            </Input.Wrapper>
-            <Input.Wrapper
-              className="w-full"
-              id="input-demo"
-              withAsterisk
-              label="Байр / Байгуулга"
-            >
-              <Input id="input-demo" />
-            </Input.Wrapper>
-          </div>
-          <div className="flex flex-row gap-12 mb-5  w-full">
-            <Input.Wrapper
-              className="w-full"
-              id="input-demo"
-              withAsterisk
-              label="Орц / Хаалга"
-            >
-              <Input id="input-demo" />
-            </Input.Wrapper>
-            <Input.Wrapper
-              className="w-full"
-              id="input-demo"
-              withAsterisk
-              label="Байр / Байгуулга"
+              onChange={(e) => handleChange(e, "phone")}
+              label="Утасны дугаар"
             >
               <Input id="input-demo" />
             </Input.Wrapper>
@@ -280,12 +403,14 @@ const UserLocation = () => {
             variant={"outline"}
             color={"red"}
             style={{ fontWeight: "normal" }}
+            onClick={close}
           >
             Арилгах
           </Button>
           <Button
             variant={"filled"}
             className="ml-4"
+            onClick={(e) => SubmitShippingData(e)}
             style={{ backgroundColor: "#F9BC60", fontWeight: "normal" }}
           >
             Хадгалах

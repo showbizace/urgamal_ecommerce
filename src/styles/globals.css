@@ -21,6 +21,9 @@ body {
 .mantine-1jkn80x:not([data-disabled]):hover {
   background-color: #f1b861 !important;
 }
+.radio-button .mantine-1fbks7c[data-checked] {
+  padding: 0 !important;
+}
 
 .mantine-1phcupv thead tr th {
   padding: 15px 10px !important;
