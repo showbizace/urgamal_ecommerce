@@ -6,7 +6,7 @@ import { useState, useEffect, useContext, Suspense } from "react";
 import useSWR from "swr";
 import Magnifier from "../components/Magnifier/Magnifier";
 import Address from "./#shippingAddress";
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router'
 import { Store } from "@/utils/Store";
 import $ from "jquery";
 import Loading from "../home/loading";
@@ -20,6 +20,7 @@ const CartItems = (props) => {
   const [cartItem, setCartItem] = useState();
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(true);
+
   const handleSelectAll = (e) => {
     setIsCheckAll(!isCheckAll);
     let arr = [];
@@ -197,9 +198,11 @@ const CartItems = (props) => {
       }
     });
 
+
   return (
     <>
       <GlobalLayout>
+
         <div className="bg-grey-back w-full px-32 py-4">
           <div className="flex flex-row gap-10 mt-8 px-32">
             <div className="flex flex-col w-[70%] gap-8">
