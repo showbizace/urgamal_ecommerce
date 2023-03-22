@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Banner from "./components/banner";
 import Category from "./components/category";
 import FeatureBundle from "./components/feature-bundle";
 import FeatureProduct from "./components/feature-product";
@@ -20,7 +19,5 @@ import NewProduct from "./components/new-product";
 import Login from "./login";
 
 export default function Home() {
-  return (
-    <Login />
-  );
+  return <Login />;
 }
