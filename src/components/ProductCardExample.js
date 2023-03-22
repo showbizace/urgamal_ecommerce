@@ -2,12 +2,17 @@ import Image from "next/image";
 
 import { Text, Button } from '@mantine/core';
 import { useContext, useEffect, useState } from "react";
-import { Store } from "../../utils/Store";
+import { Store } from "../utils/Store";
 
 const ProductCardExample = ({ src, name, price, count }) => {
 
     const [productCount, setProductCount] = useState(1)
     const { state, dispatch } = useContext(Store)
+
+    useEffect(() => {
+
+        window.dispatchEvent(new Event('storage'))
+    }, [])
 
     const addCount = (count) => {
         if (count - productCount > 0) {

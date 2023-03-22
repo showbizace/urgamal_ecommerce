@@ -2,7 +2,7 @@ import Image from 'next/image'
 import GlobalLayout from '../../components/GlobalLayout/GlobalLayout';
 import { Button, TextInput } from '@mantine/core';
 import ProfileTabs from '../../components/ProfileTab';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import $ from "jquery";
 import ProfileInfo from './tabs/ProfileInfo';
 import EmailPhone from './tabs/EmailPhone';
@@ -18,6 +18,10 @@ const Profile = () => {
         setTabs(e)
         console.log($(`#${e}`).children)
     }
+
+    useEffect(() => {
+        window.dispatchEvent(new Event('storage'))
+    }, [])
 
     return (
         <div>
