@@ -1,14 +1,17 @@
 import Image from "next/image";
 
-import { Text, Button } from '@mantine/core';
+import { Text, Button, LoadingOverlay } from '@mantine/core';
 import { useContext, useEffect, useState } from "react";
-import { Store } from "../../utils/Store";
-
+import { Store } from "../utils/Store";
+import { getCookie } from 'cookies-next';
+import { notifications, showNotification } from '@mantine/notifications'
+import { IconCheck } from "@tabler/icons-react";
+import { SuccessNotification } from "../utils/SuccessNotification";
 const ProductCard = ({ src, data }) => {
 
   const [productCount, setProductCount] = useState(1)
   const { state, dispatch } = useContext(Store)
-
+  const [loading, setLoading] = useState(false)
   const addCount = (event, count) => {
     event.stopPropagation()
     if (count - productCount > 0) {
@@ -26,9 +29,34 @@ const ProductCard = ({ src, data }) => {
       console.log("aldaa garlaa")
     }
   }
-  const addToCartHandler = (event) => {
+  const addToCartHandler = async (event, data) => {
     event.stopPropagation()
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...data, quantity: 1, purchaseCount: productCount } });
+    setLoading(true)
+    const token = getCookie("token")
+    console.log(token, "token");
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + token);
+    myHeaders.append('Content-Type', 'application/json',);
+    const requestOption = {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify({
+        item_id: 2101,
+        qty: productCount,
+        businessId: "local_test"
+      })
+    }
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add/local`, requestOption)
+    if (res.status === 200) {
+      const data = await res.json();
+      console.log(data, "data")
+      if (data.success === true) {
+        console.log("sucesssss")
+        SuccessNotification({ message: "Сагсанд амжилттай орлоо.!", title: "Сагс" })
+        setLoading(false)
+      }
+    }
   }
   return (
     <div
@@ -77,9 +105,13 @@ const ProductCard = ({ src, data }) => {
             </Button>
           </div>
         </div>
-        <Button variant={"filled"} style={{ width: "100%" }} className="flex justify-center items-center p-1 bg-button-yellow rounded-md mt-1 hover:cursor-pointer" color={"orange"} onClick={(event) => addToCartHandler(event)}>
-          <p className="text-sm text-white font-semibold ">Сагслах</p>
-          <Image className="ml-2" width={18} height={18} src={"/icons/trolley2.svg"} />
+        <Button variant={"filled"} style={{ width: "100%" }} className="flex justify-center items-center p-1 bg-button-yellow rounded-md mt-1 hover:cursor-pointer" color={"orange"} onClick={(event) => addToCartHandler(event, data)}>
+          {loading === true ? <LoadingOverlay
+            loaderProps={{ size: 'sm', color: 'white', }}
+            overlayOpacity={0.1} visible={loading} />
+            :
+            <div className="flex items-center"><p className="text-sm text-white font-semibold ">Сагслах</p>
+              <Image className="ml-2" width={18} height={18} src={"/icons/trolley2.svg"} /></div>}
         </Button>
       </div>
     </div>

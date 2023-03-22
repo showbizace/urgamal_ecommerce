@@ -2,8 +2,8 @@ import Image from 'next/image'
 import { useState } from 'react'
 
 import { Button, TextInput } from '@mantine/core';
-import Order from '../../components/Profile/Order';
-import PurchaseHistoryOrder from '@/pages/components/Profile/PurchaseHistoryOrder';
+import Order from '../../../components/Profile/Order';
+import PurchaseHistoryOrder from '@/components/Profile/PurchaseHistoryOrder';
 
 const PurchaseHistory = () => {
 

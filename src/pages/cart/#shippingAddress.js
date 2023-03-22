@@ -1,14 +1,5 @@
-import GlobalLayout from "@/pages/components/GlobalLayout/GlobalLayout";
-import {
-  Card,
-  Chip,
-  Text,
-  Button,
-  Modal,
-  Switch,
-  Select,
-  Input,
-} from "@mantine/core";
+import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
+import { Card, Chip, Text, Button, Modal, Switch, Select, Input } from "@mantine/core";
 import { useState } from "react";
 import { IconCirclePlus } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";

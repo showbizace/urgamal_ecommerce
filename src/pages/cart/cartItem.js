@@ -1,43 +1,44 @@
-import GlobalLayout from "@/pages/components/GlobalLayout/GlobalLayout";
 import { Button, Checkbox, Table, ActionIcon } from "@mantine/core";
 import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
 import { useState, useEffect, useContext, Suspense } from "react";
 import useSWR from "swr";
-import Magnifier from "../components/Magnifier/Magnifier";
+import Magnifier from "../../components/Magnifier/Magnifier";
 import Address from "./#shippingAddress";
 import { useRouter } from 'next/router'
 import { Store } from "@/utils/Store";
-import $ from "jquery";
+import $ from 'jquery'
 import Loading from "../home/loading";
+import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 
 const CartItems = (props) => {
+
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
-  const router = useRouter();
-  const { state, dispatch } = useContext(Store);
-  const [total, setTotal] = useState(0);
+  const router = useRouter()
+  const { state, dispatch } = useContext(Store)
+  const [total, setTotal] = useState(0)
   const [cartItem, setCartItem] = useState();
   const [checked, setChecked] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true)
 
   const handleSelectAll = (e) => {
-    setIsCheckAll(!isCheckAll);
+    setIsCheckAll(!isCheckAll)
     let arr = [];
     if (isCheckAll === true) {
       cartItem.forEach((e) => {
-        let clone = { ...e };
-        clone["isChecked"] = false;
-        arr.push(clone);
-      });
-      setCartItem(arr);
+        let clone = { ...e, }
+        clone['isChecked'] = false
+        arr.push(clone)
+      })
+      setCartItem(arr)
     } else {
       cartItem.forEach((e) => {
-        let clone = { ...e };
-        clone["isChecked"] = true;
-        arr.push(clone);
-      });
-      setCartItem(arr);
+        let clone = { ...e, }
+        clone['isChecked'] = true
+        arr.push(clone)
+      })
+      setCartItem(arr)
     }
   };
 
@@ -47,67 +48,67 @@ const CartItems = (props) => {
     //   sum = sum + parseInt(item.price)
     // })
 
-    return <span>{sum}₮</span>;
-  };
+    return (
+      <span>{sum}₮</span>
+    )
+  }
+
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       // client-side operation such as local storage.
-      let localStorageCart = JSON.parse(localStorage.getItem("cartItems"));
+      let localStorageCart = JSON.parse(localStorage.getItem("cartItems"))
+      window.dispatchEvent(new Event('storage'))
       let data = localStorageCart?.cart?.cartItems;
-      if (
-        localStorageCart !== null &&
-        localStorageCart.cart.cartItems.length > 0
-      ) {
-        let arr = [];
+      if (localStorageCart !== null && localStorageCart.cart.cartItems.length > 0) {
+        let arr = []
         data.forEach((e) => {
           if (e !== null) {
-            let clone = { ...e };
-            clone["isChecked"] = false;
-            arr.push(clone);
+            let clone = { ...e, }
+            clone['isChecked'] = false
+            arr.push(clone)
           }
-        });
-        setCartItem(arr);
+        })
+        setCartItem(arr)
       }
+
     }
-  }, []);
+  }, [])
 
   const deleteFromCart = () => {
-    let newArr = [...cartItem];
+    let newArr = [...cartItem]
     newArr.forEach((e) => {
       if (e.isChecked === true) {
-        const index = newArr.indexOf(e);
+        const index = newArr.indexOf(e)
         delete newArr[index];
       }
-    });
-    let temp = [];
+    })
+    let temp = []
     newArr.forEach((e) => {
       if (e !== null && e !== undefined && !e.length) {
-        temp.push(e);
+        temp.push(e)
       }
-    });
+    })
 
-    setCartItem(temp);
-    dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
-    let object = { cart: { cartItems: temp } };
-    if (typeof window !== "undefined") {
-      // client-side operation such as local storage.
-      localStorage.setItem("cartItems", JSON.stringify(object));
-    }
+    setCartItem(temp)
+    dispatch({ type: "CART_REMOVED_ITEM", payload: temp })
+    let object = { cart: { cartItems: temp } }
+
     // localStorage.setItem("")
-  };
+  }
   const handleClick = (e) => {
+
     let newArr = [...cartItem];
-    console.log(newArr, "newArr");
+    console.log(newArr, "newArr")
     newArr.forEach((item) => {
       if (item !== undefined) {
         if (item.id === e.id) {
-          item.isChecked = !e.isChecked;
+          item.isChecked = !e.isChecked
         }
       }
-    });
+    })
 
-    setCartItem(newArr);
+    setCartItem(newArr)
 
     // setIsCheck([e]);
     // setIsCheck(isCheck.filter((item) => item !== e));
@@ -128,76 +129,75 @@ const CartItems = (props) => {
     </tr>
   );
 
-  const rows =
-    cartItem !== null &&
-    cartItem !== undefined &&
-    cartItem.map((item, idx) => {
-      if (item !== undefined) {
-        return (
-          <tr key={idx}>
-            <td>
-              <Checkbox
-                className="checkbox-input"
-                checked={item.isChecked}
-                id={item.id}
-                onClick={(e) => handleClick(item)}
-                children={<div>asd </div>}
-              />
-            </td>
-            <td>
-              <div className="flex flex-row gap-8">
-                <Magnifier
-                  imgSrc={"/bundle-1.svg"}
-                  imgWidth={80}
-                  imgHeight={80}
-                  magnifierRadius={50}
-                />
-                <div className="flex flex-col justify-around">
-                  <span className="font-[500] text-[1.002rem] text-[#212529]">
-                    {item.name}
-                  </span>
-                  <span className="font-[500] text-[0.87rem] text-[#2125297a]">
-                    Хэмжээ:{" "}
-                    <span className="text-[#212529]">{item.purchaseCount}</span>
-                  </span>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div className="inherit">
-                <div className="flex items-center border border-[#21252923] rounded w-fit p-1">
-                  <ActionIcon
-                    sx={{
-                      ":hover": { backgroundColor: "#fff5f5" },
-                    }}
-                    className="mr-3"
-                  >
-                    <IconMinus size="1.2rem" color="#212529" />
-                  </ActionIcon>
-                  <span className="font-[500] text-[1rem] text-[#212529]">
-                    {item.qty ? item.qty : 2}
-                  </span>
-                  <ActionIcon
-                    sx={{
-                      ":hover": { backgroundColor: "#ebfbee" },
-                    }}
-                    className="ml-3"
-                  >
-                    <IconPlus size="1.2rem" color="#212529" />
-                  </ActionIcon>
-                </div>
-              </div>
-            </td>
-            <td>
-              <span className="font-[600] text-[1rem] text-[#212529]">
-                {item.ListPrice} ₮
-              </span>
-            </td>
-          </tr>
-        );
-      }
-    });
+  const rows = cartItem !== null && cartItem !== undefined && cartItem.map((item, idx) => {
 
+    if (item !== undefined) {
+      return (
+        <tr key={idx}>
+          <td>
+            <Checkbox
+              className="checkbox-input"
+              checked={item.isChecked}
+              id={item.id}
+              onClick={(e) => handleClick(item)}
+              children={<div>asd </div>}
+            />
+          </td>
+          <td>
+            <div className="flex flex-row gap-8">
+              <Magnifier
+                imgSrc={"/bundle-1.svg"}
+                imgWidth={80}
+                imgHeight={80}
+                magnifierRadius={50}
+              />
+              <div className="flex flex-col justify-around">
+                <span className="font-[500] text-[1.002rem] text-[#212529]">
+                  {item.name}
+                </span>
+                <span className="font-[500] text-[0.87rem] text-[#2125297a]">
+                  Хэмжээ:{" "}
+                  <span className="text-[#212529]">
+                    {item.purchaseCount}
+                  </span>
+                </span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div className="inherit">
+              <div className="flex items-center border border-[#21252923] rounded w-fit p-1">
+                <ActionIcon
+                  sx={{
+                    ":hover": { backgroundColor: "#fff5f5" },
+                  }}
+                  className="mr-3"
+                >
+                  <IconMinus size="1.2rem" color="#212529" />
+                </ActionIcon>
+                <span className="font-[500] text-[1rem] text-[#212529]">
+                  {item.qty ? item.qty : 2}
+                </span>
+                <ActionIcon
+                  sx={{
+                    ":hover": { backgroundColor: "#ebfbee" },
+                  }}
+                  className="ml-3"
+                >
+                  <IconPlus size="1.2rem" color="#212529" />
+                </ActionIcon>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span className="font-[600] text-[1rem] text-[#212529]">
+              {item.ListPrice} ₮
+            </span>
+          </td>
+        </tr>
+      )
+    }
+  });
 
   return (
     <>

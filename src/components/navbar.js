@@ -1,5 +1,5 @@
 import Image from "next/image";
-import NavBarLinks from "../components/nav-bar-links";
+import NavBarLinks from "../components/nav-bar-links"
 import Link from "next/link";
 import { useRouter } from 'next/router'
 import { Button } from '@mantine/core'
@@ -19,21 +19,26 @@ const Navbar = () => {
     })
   }
 
+  const handleChangeStorage = () => {
+    let localStorageCart = JSON.parse(localStorage.getItem("cartItems"));
+
+    console.log(localStorageCart, "local")
+    if (localStorageCart !== null) {
+      setCartItem(localStorageCart?.cart?.cartItems)
+      let sum = 0
+      localStorageCart.cart.cartItems.forEach((e) => {
+        if (e !== null) {
+          sum = sum + e.quantity
+        }
+      })
+      setQuantity(sum)
+    }
+  }
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       // client-side operation such as local storage.
-      let localStorageCart = JSON.parse(localStorage.getItem("cartItems"))
-      console.log(localStorageCart, "localStorageCart")
-      if (localStorageCart !== null && localStorageCart.cart.cartItems.length > 0) {
-        setCartItem(localStorageCart?.cart?.cartItems)
-        let sum = 0
-        localStorageCart.cart.cartItems.forEach((e) => {
-          if (e !== null) {
-            sum = sum + e.quantity
-          }
-        })
-        setQuantity(sum)
-      }
+      window.addEventListener('storage', handleChangeStorage);
     }
   }, [])
 

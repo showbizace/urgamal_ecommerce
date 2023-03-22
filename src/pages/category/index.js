@@ -1,11 +1,17 @@
 import Image from 'next/image'
-import GlobalLayout from '../components/GlobalLayout/GlobalLayout'
+import GlobalLayout from '../../components/GlobalLayout/GlobalLayout'
 import Category from "../../../src/pages/components/category"
-import ProductCard from '../components/product-card'
+import ProductCard from '../../components/product-card'
 import { Footer } from '@mantine/core'
-import BottomFooter from '../components/Footer'
-import ProductCardExample from '../components/ProductCardExample'
+import BottomFooter from '../../components/Footer'
+import ProductCardExample from '../../components/ProductCardExample'
+import { useEffect } from 'react'
 const CategoryPage = () => {
+
+    useEffect(() => {
+        window.dispatchEvent(new Event('storage'))
+    }, [])
+
     return (
         <div>
             <GlobalLayout />
