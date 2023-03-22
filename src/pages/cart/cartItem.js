@@ -10,7 +10,8 @@ import { Store } from "@/utils/Store";
 import $ from 'jquery'
 import Loading from "../home/loading";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
-
+import { SuccessNotification } from '../../utils/SuccessNotification'
+import { getCookie } from "cookies-next";
 const CartItems = (props) => {
 
   const [isCheckAll, setIsCheckAll] = useState(false);
@@ -75,7 +76,7 @@ const CartItems = (props) => {
     }
   }, [])
 
-  const deleteFromCart = () => {
+  const deleteFromCart = async () => {
     let newArr = [...cartItem]
     newArr.forEach((e) => {
       if (e.isChecked === true) {
@@ -93,7 +94,24 @@ const CartItems = (props) => {
     setCartItem(temp)
     dispatch({ type: "CART_REMOVED_ITEM", payload: temp })
     let object = { cart: { cartItems: temp } }
-
+    if (temp.length === 0) {
+      var myHeaders = new Headers();
+      const token = getCookie("token")
+      myHeaders.append("Authorization", "Bearer " + token);
+      myHeaders.append('Content-Type', 'application/json');
+      const requestOption = {
+        method: 'GET',
+        headers: myHeaders,
+      }
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/empty`, requestOption)
+      if (res.status === 200) {
+        const data = await res.json();
+        if (data.success === true) {
+          console.log("delete all success")
+          SuccessNotification({ message: "Сагсанд дахь бүх бараа амжилттай устлаа!", title: "Сагсны бараа" })
+        }
+      }
+    }
     // localStorage.setItem("")
   }
   const handleClick = (e) => {

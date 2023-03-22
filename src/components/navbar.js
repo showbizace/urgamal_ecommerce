@@ -22,7 +22,6 @@ const Navbar = () => {
   const handleChangeStorage = () => {
     let localStorageCart = JSON.parse(localStorage.getItem("cartItems"));
 
-    console.log(localStorageCart, "local")
     if (localStorageCart !== null) {
       setCartItem(localStorageCart?.cart?.cartItems)
       let sum = 0

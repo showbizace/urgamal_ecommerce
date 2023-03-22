@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import ProductTypeChip from "../../components/ProductTypeChip/ProductTypeChip";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -10,29 +10,14 @@ import { AiOutlineShoppingCart } from 'react-icons/ai';
 import "swiper/css";
 import "swiper/css/pagination";
 import ProductCardExample from "../../components/ProductCardExample";
-import { useRouter } from 'next/router'
-import { useSearchParams } from 'next/navigation'
+import { LoadingOverlay, Button } from "@mantine/core";
 import { Store } from "@/utils/Store";
-const images = [
-  {
-    original: "https://picsum.photos/id/1018/1000/600/",
-    thumbnail: "https://picsum.photos/id/1018/250/150/",
-  },
-  {
-    original: "https://picsum.photos/id/1015/1000/600/",
-    thumbnail: "https://picsum.photos/id/1015/250/150/",
-  },
-  {
-    original: "https://picsum.photos/id/1019/1000/600/",
-    thumbnail: "https://picsum.photos/id/1019/250/150/",
-  },
-];
-
+import { getCookie } from "cookies-next";
+import { SuccessNotification } from "../../utils/SuccessNotification";
+import { IconHeart } from "@tabler/icons-react";
 export async function getServerSideProps({ params }) {
+
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/single?productid=${params.id}`)
-
-
-  console.log(res);
   const data = await res.json();
   return {
     props: {
@@ -44,13 +29,35 @@ export async function getServerSideProps({ params }) {
 const ProductDetail = ({ product }) => {
 
   const { state, dispatch } = useContext(Store)
+  const [loading, setLoading] = useState(false)
 
-  const addToCartHandler = () => {
-    dispatch({
-      type: 'CART_ADD_ITEM', payload: {
-        ...product, quantity: 1,
+  const addToCartHandler = async () => {
+    dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity: 1, purchaseCount: 1 } });
+    setLoading(true)
+    const token = getCookie("token")
+    console.log(token, "token");
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + token);
+    myHeaders.append('Content-Type', 'application/json',);
+    const requestOption = {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify({
+        item_id: product.id,
+        qty: 1,
+        businessId: "local_test"
+      })
+    }
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add/local`, requestOption)
+    if (res.status === 200) {
+      const data = await res.json();
+      console.log(data, "data")
+      if (data.success === true) {
+        console.log("sucesssss")
+        SuccessNotification({ message: "Сагсанд амжилттай орлоо.!", title: "Сагс" })
+        setLoading(false)
       }
-    });
+    }
   }
   return (
     <GlobalLayout title={product.name}>
@@ -144,16 +151,17 @@ const ProductDetail = ({ product }) => {
             </div>
 
             <div className="flex gap-6 w-full mt-5">
-              <button className=" border-tertiary border-2 text-tertiary flex-grow flex justify-between items-center px-5 py-3 rounded-md">
-                <span className="font-semibold"> Хадгалах </span>
-                <BsSuitHeart className="font-semibold" size={20} />
-              </button>
-              <button className="bg-button-yellow text-white flex-grow flex justify-between items-center px-5 py-3 rounded-md"
+              <Button variant={"outline"} rightIcon={<IconHeart size={20} stroke={2.5} />} size="md" styles={{
+                label: { fontWeight: 500 }
+              }} color={"red"} className="flex-grow flex justify-between items-center px-5 py-3 rounded-md"  >
+                Хадгалах
+              </Button>
+              <Button variant={"filled"} style={{ width: "30%" }} size="md" color={"orange"} className="flex-grow flex justify-between items-center px-5 py-3 rounded-md" rightIcon={loading === false && <AiOutlineShoppingCart className="font-semibold" size={20} />}
                 onClick={() => addToCartHandler()} >
-                <span className="font-semibold" > Сагсанд хийх </span>
-
-                <AiOutlineShoppingCart className="font-semibold" size={20} />
-              </button>
+                {loading === true ? <LoadingOverlay
+                  loaderProps={{ size: 'sm', color: 'white', }}
+                  overlayOpacity={0.1} visible={loading} /> : <span className="font-semibold" > Сагсанд хийх </span>}
+              </Button>
             </div>
           </div>
 

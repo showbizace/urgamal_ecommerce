@@ -42,7 +42,7 @@ const ProductCard = ({ src, data }) => {
       method: 'POST',
       headers: myHeaders,
       body: JSON.stringify({
-        item_id: 2101,
+        item_id: data.id,
         qty: productCount,
         businessId: "local_test"
       })
