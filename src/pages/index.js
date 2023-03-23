@@ -19,5 +19,5 @@ import NewProduct from "./components/new-product";
 import Login from "./login";
 
 export default function Home() {
-  return <Login />;
+  return <Home />;
 }

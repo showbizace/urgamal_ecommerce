@@ -34,29 +34,36 @@ const ProductCard = ({ src, data }) => {
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...data, quantity: 1, purchaseCount: productCount } });
     setLoading(true)
     const token = getCookie("token")
-    console.log(token, "token");
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    myHeaders.append('Content-Type', 'application/json',);
-    const requestOption = {
-      method: 'POST',
-      headers: myHeaders,
-      body: JSON.stringify({
-        item_id: data.id,
-        qty: productCount,
-        businessId: "local_test"
-      })
-    }
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add/local`, requestOption)
-    if (res.status === 200) {
-      const data = await res.json();
-      console.log(data, "data")
-      if (data.success === true) {
-        console.log("sucesssss")
-        SuccessNotification({ message: "Сагсанд амжилттай орлоо.!", title: "Сагс" })
-        setLoading(false)
+    if (token !== undefined && token !== null && token !== "") {
+      console.log(token, "token");
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer " + token);
+      myHeaders.append('Content-Type', 'application/json',);
+      const requestOption = {
+        method: 'POST',
+        headers: myHeaders,
+        body: JSON.stringify({
+          item_id: data.id,
+          qty: productCount,
+          businessId: "local_test"
+        })
       }
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add/local`, requestOption)
+      if (res.status === 200) {
+        const data = await res.json();
+        console.log(data, "data")
+        if (data.success === true) {
+          console.log("sucesssss")
+          SuccessNotification({ message: "Сагсанд амжилттай орлоо.!", title: "Сагс" })
+          setLoading(false)
+        }
+      }
+    } else {
+      console.log("sucesssss")
+      SuccessNotification({ message: "Сагсанд амжилттай орлоо.!", title: "Сагс" })
+      setLoading(false)
     }
+
   }
   return (
     <div

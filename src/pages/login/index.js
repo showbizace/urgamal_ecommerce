@@ -50,7 +50,9 @@ const Login = () => {
             if (res.status === 200) {
                 const data = await res.json()
                 setCookie("token", data.token)
-                router.push("/home")
+                setCookie("number", number)
+                setCookie("addCart", true)
+                router.push("/cart/cartItem")
             } else {
                 const data = await res.json()
                 setMessage(data.message)
