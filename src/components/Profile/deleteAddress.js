@@ -13,12 +13,11 @@ export function DeleteConfirmationDialog({
         {thingToDelete?.name}
       </Text>
       <Group position="right" mt="xl">
-        <Button variant="default" radius="xl" onClick={close}>
+        <Button variant="default" onClick={close}>
           Цуцлах
         </Button>
         <Button
           type="submit"
-          radius="xl"
           loading={loading}
           onClick={(e) => onConfirm(thingToDelete?.id)}
           color="red"

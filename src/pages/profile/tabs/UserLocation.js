@@ -71,7 +71,7 @@ const UserLocation = () => {
       apartment: values.apartment,
       number: values.number,
       phone: values.phone,
-      type: values.type,
+      type: values.type === undefined ? false : values.type,
     };
 
     const requestOption = {
@@ -110,6 +110,7 @@ const UserLocation = () => {
     myHeaders.append("Content-Type", "application/json");
 
     const initialData = {
+      id: values.id,
       city: values.city,
       province: values.province,
       district: values.district,
@@ -119,7 +120,7 @@ const UserLocation = () => {
       apartment: values.apartment,
       number: values.number,
       phone: values.phone,
-      type: values.type,
+      type: values.type ? values.type : false,
     };
 
     const requestOption = {
@@ -147,7 +148,6 @@ const UserLocation = () => {
             message: result.message,
             color: "red",
           });
-          setPost(false);
         }
       });
   };
@@ -172,9 +172,8 @@ const UserLocation = () => {
         if (result.success) {
           showNotification({
             title: "Хаяг амжилттай устгалаа.",
-            message: res.data.message,
+            message: result.message,
             color: "green",
-            icon: <IconCheck />,
           });
           getShippingData();
         } else {
@@ -184,6 +183,7 @@ const UserLocation = () => {
           });
         }
       });
+    handlers.close();
   };
 
   return (
@@ -198,7 +198,10 @@ const UserLocation = () => {
                 leftIcon={<IconCirclePlus size={20} />}
                 variant="subtle"
                 compact
-                onClick={open}
+                onClick={(e) => {
+                  e.preventDefault();
+                  openProductEditingModal({}, "creation");
+                }}
               >
                 Шинэ хаяг нэмэх
               </Button>
@@ -223,14 +226,14 @@ const UserLocation = () => {
                             {item.type ? (
                               <div className="flex flex-row justify-between items-center">
                                 {/* <Text fw={500}>{item.type}</Text>  */}
-                                <Text fw={500}>{item.city}</Text>
+                                <Badge color="teal" variant="filled">
+                                  Орон нутаг
+                                </Badge>
                               </div>
                             ) : (
                               <div className="flex flex-row justify-between items-center">
                                 {/* <Text fw={500}>{item.type}</Text>  */}
-                                <Badge color="teal" variant="filled">
-                                  Орон нутаг
-                                </Badge>
+                                <Text fw={500}>Улаанбаатар</Text>
                               </div>
                             )}
                           </div>
@@ -242,22 +245,26 @@ const UserLocation = () => {
                                   <Text
                                     fz="md"
                                     c="dimmed"
-                                    className="flex flex-row "
+                                    className="flex flex-row break-word"
                                   >
                                     Хот:
                                   </Text>
-                                  <Text fz="md">{item.city}</Text>
+                                  <Text fz="md" sx={{ lineBreak: "anywhere" }}>
+                                    {item.city}
+                                  </Text>
                                 </>
                               ) : (
                                 <>
                                   <Text
                                     fz="md"
                                     c="dimmed"
-                                    className="flex flex-row "
+                                    className="flex flex-row break-word"
                                   >
                                     Аймаг:
                                   </Text>
-                                  <Text fz="md">{item.province}</Text>
+                                  <Text fz="md" sx={{ lineBreak: "anywhere" }}>
+                                    {item.province}
+                                  </Text>
                                 </>
                               )}
                             </div>
@@ -266,11 +273,13 @@ const UserLocation = () => {
                                 <Text
                                   fz="md"
                                   c="dimmed"
-                                  className="flex flex-row "
+                                  className="flex flex-row"
                                 >
                                   Дүүрэг:
                                 </Text>
-                                <Text fz="md">{item.district}</Text>
+                                <Text fz="md" sx={{ lineBreak: "anywhere" }}>
+                                  {item.district}
+                                </Text>
                               </>
                             </div>
                             <div className="flex flex-row justify-between gap-20 w-full">

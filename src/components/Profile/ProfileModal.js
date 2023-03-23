@@ -6,6 +6,7 @@ import {
   Switch,
   Select,
   Input,
+  TextInput,
   LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -27,9 +28,16 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
       type: initialData?.type,
     },
     validate: {
-      phone: (value) => (value ? null : "Утас оруулна уу!"),
+      // phone: (value) => (value ? null : "Заавал бөглөх!"),
+      // district: (value) => (value ? null : "Заавал бөглөх!"),
+      // committee: (value) => (value ? null : "Заавал бөглөх!"),
+      // street: (value) => (value ? null : "Заавал бөглөх!"),
+      // fence: (value) => (value ? null : "Заавал бөглөх!"),
+      // apartment: (value) => (value ? null : "Заавал бөглөх!"),
+      // number: (value) => (value ? null : "Заавал бөглөх!"),
     },
   });
+
   useEffect(() => {
     form.setValues(initialData);
     return () => {
@@ -62,7 +70,7 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
               <Switch
                 checked={checked}
                 label="Орон нутаг"
-                {...form.getInputProps("type")}
+                {...form.getInputProps("type", { type: "checkbox" })}
                 onChange={(event) => {
                   setChecked(event.currentTarget.checked);
                 }}
@@ -103,71 +111,65 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
               />
             </Grid.Col>
             <Grid.Col span={6}>
-              <Input.Wrapper
+              <TextInput
                 className="w-full"
-                id="input-demo"
                 withAsterisk
+                id="input-demo"
                 label="Дүүрэг / Сум"
-              >
-                <Input id="input-demo" {...form.getInputProps("district")} />
-              </Input.Wrapper>
+                {...form.getInputProps("district")}
+              />
             </Grid.Col>
             <Grid.Col span={2}>
-              <Input.Wrapper
+              <TextInput
                 className="w-full"
-                id="input-demo"
                 withAsterisk
+                id="input-demo"
                 label="Хороо / Баг"
-              >
-                <Input id="input-demo" {...form.getInputProps("committee")} />
-              </Input.Wrapper>
+                {...form.getInputProps("committee")}
+              />
             </Grid.Col>
             <Grid.Col span={2}>
-              <Input.Wrapper
+              <TextInput
                 className="w-full"
-                id="input-demo"
                 withAsterisk
+                id="input-demo"
                 label="Гудамж"
-              >
-                <Input id="input-demo" {...form.getInputProps("street")} />
-              </Input.Wrapper>
+                {...form.getInputProps("street")}
+              />
             </Grid.Col>
             <Grid.Col span={2}>
-              <Input.Wrapper
+              <TextInput
                 className="w-full"
-                id="input-demo"
                 withAsterisk
+                id="input-demo"
                 label="Байр / Байгуулга"
-              >
-                <Input id="input-demo" {...form.getInputProps("apartment")} />
-              </Input.Wrapper>
+                {...form.getInputProps("apartment")}
+              />
             </Grid.Col>
             <Grid.Col span={2}>
-              <Input.Wrapper
+              <TextInput
                 className="w-full"
-                id="input-demo"
                 withAsterisk
+                id="input-demo"
                 label="Тоот"
-              >
-                <Input id="input-demo" {...form.getInputProps("number")} />
-              </Input.Wrapper>
+                {...form.getInputProps("number")}
+              />
             </Grid.Col>
             <Grid.Col span={12}>
-              <Input.Wrapper
+              <TextInput
                 className="w-full"
-                id="input-demo"
                 withAsterisk
+                id="input-demo"
                 label="Утасны дугаар"
-              >
-                <Input id="input-demo" {...form.getInputProps("phone")} />
-              </Input.Wrapper>
+                {...form.getInputProps("phone")}
+              />
             </Grid.Col>
             <Grid.Col span={12}>
               <Group position="right">
-                <Button variant="subtle" size="xs" onClick={close}>
+                <Button variant="subtle" size="xs" color="red" onClick={close}>
                   Цуцлах
                 </Button>
-                <Button size="xs" type="submit">
+                <Button size="xs" type="submit" color="yellow">
                   {initialData?.create ? "Үүсгэх" : "Хадгалах"}
                 </Button>
               </Group>
