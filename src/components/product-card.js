@@ -70,7 +70,7 @@ const ProductCard = ({ src, data }) => {
       className="flex flex-col justify-start items-center py-4 px-4 bg-white rounded-md"
       style={{ width: "100%", height: "330px" }}
     >
-      <Image src={src} width={10} height={10} className="product-card-img" />
+      <Image src={src} width={10} height={10} className="product-card-img" loader={() => src} />
       <div
         className="flex flex-col justify-start items-start"
         style={{ width: "90%" }}

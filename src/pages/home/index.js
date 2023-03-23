@@ -139,7 +139,7 @@ export default function Home({ data }) {
                                                     className="transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110"
                                                 >
                                                     <ProductCard
-                                                        src={"/bundle-1.svg"}
+                                                        src={e.product_image !== null && e.product_image.images[0] !== null ? `http://${e.product_image.images[0]}` : "/bundle-1.svg"}
                                                         data={e}
                                                     />
                                                 </div>
