@@ -11,8 +11,10 @@ import SavedOrder from './tabs/SavedOrder';
 import MyOrder from './tabs/MyOrder';
 import PurchaseHistory from './tabs/PurchaseHistory';
 import BottomFooter from '../../components/Footer';
+import { setCookie } from 'cookies-next';
+import { useRouter } from 'next/router';
 const Profile = () => {
-
+    const router = useRouter()
     const [tabs, setTabs] = useState(1)
     const onClickTabs = (e) => {
         setTabs(e)
@@ -42,7 +44,7 @@ const Profile = () => {
                             <p className='text-2xl'>Г.Цэцгээ</p>
                             <p className='text-base'>Цэцэгчин</p>
                         </div>
-                        <Button leftIcon={<Image src={"/icons/logout-icon.svg"} width={20} height={20} />} variant="outline" color="red" className='mr-16'>
+                        <Button leftIcon={<Image src={"/icons/logout-icon.svg"} width={20} height={20} />} variant="outline" color="red" className='mr-16' onClick={() => { setCookie("token", ""), setCookie("number", ""), router.push("/home") }}>
                             Системээс гарах
                         </Button>
                     </div>

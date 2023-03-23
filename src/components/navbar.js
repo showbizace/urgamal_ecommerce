@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { Button } from '@mantine/core'
 import { useContext, useEffect, useState } from "react";
 import { Store } from "@/utils/Store";
+import { getCookie } from "cookies-next";
 const Navbar = () => {
   const router = useRouter()
   const { state, dispatch } = useContext(Store)
@@ -12,7 +13,7 @@ const Navbar = () => {
   const [cartItem, setCartItem] = useState([])
   const [quantity, setQuantity] = useState(0)
   const route = useRouter();
-
+  const [number, setNumber] = useState("")
   const linkToCart = () => {
     router.push({
       pathname: '/cart/cartItem',
@@ -22,7 +23,6 @@ const Navbar = () => {
   const handleChangeStorage = () => {
     let localStorageCart = JSON.parse(localStorage.getItem("cartItems"));
 
-    console.log(localStorageCart, "local")
     if (localStorageCart !== null) {
       setCartItem(localStorageCart?.cart?.cartItems)
       let sum = 0
@@ -39,6 +39,10 @@ const Navbar = () => {
     if (typeof window !== "undefined") {
       // client-side operation such as local storage.
       window.addEventListener('storage', handleChangeStorage);
+    }
+    const number = getCookie("number")
+    if (number !== undefined && number !== null && number !== "") {
+      setNumber(number)
     }
   }, [])
 
@@ -107,11 +111,11 @@ const Navbar = () => {
           </div>
           <div className="ml-4 flex flex-col items-start w-24">
             <p className="text-sm-1">Сайн байна уу?</p>
-            <p className="text-base">О.Золбоо</p>
+            <p className="text-base">{number !== "" ? number : "*********"}</p>
           </div>
         </div>
 
-        <Image src="icons/arrow-down.svg" width={30} height={30} />
+        <Image src="/icons/arrow-down.svg" width={30} height={30} />
       </div>
     </div>
   );
