@@ -1,28 +1,19 @@
-import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
-import {
-  Card,
-  Chip,
-  Text,
-  Button,
-  Modal,
-  Switch,
-  Skeleton,
-  Select,
-  Input,
-} from "@mantine/core";
+import { Card, Chip, Text, Button, Skeleton, Select } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { IconCirclePlus } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
+import { showNotification } from "@mantine/notifications";
 import { getCookie } from "cookies-next";
+import ProductModal from "@/components/Profile/ProfileModal";
 const cookie = getCookie("token");
 
-const Address = () => {
+const Address = ({ setSelectedShippingData, setSelect }) => {
   const [value, setValue] = useState(1);
   const [opened, { open, close }] = useDisclosure(false);
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [shippingData, setShippingData] = useState([]);
-  const [selectedShippingData, setSelectedShippingData] = useState({});
+  const [editingProdData, setEditingProdData] = useState();
 
   useEffect(() => {
     getShippingData();
@@ -49,6 +40,57 @@ const Address = () => {
       });
   };
 
+  const openProductEditingModal = (productata) => {
+    setEditingProdData({ create: true });
+    open();
+  };
+
+  const SubmitCreateShippingData = async (values) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${cookie}`);
+    myHeaders.append("Content-Type", "application/json");
+
+    const initialData = {
+      city: values.city,
+      province: values.province,
+      district: values.district,
+      committee: values.committee,
+      street: values.street,
+      fence: values.fence,
+      apartment: values.apartment,
+      number: values.number,
+      phone: values.phone,
+      type: values.type === undefined ? false : values.type,
+    };
+
+    const requestOption = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(initialData),
+    };
+
+    await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/user/address`,
+      requestOption
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.success) {
+          showNotification({
+            message: result.message,
+            color: "green",
+          });
+          getShippingData();
+          close;
+        } else {
+          showNotification({
+            message: result.message,
+            color: "red",
+          });
+        }
+      });
+  };
+
   return (
     <>
       <div className="bg-white rounded-lg px-10 py-8 h-[530px]">
@@ -62,7 +104,10 @@ const Address = () => {
                 leftIcon={<IconCirclePlus size={20} />}
                 variant="subtle"
                 compact
-                onClick={open}
+                onClick={(e) => {
+                  e.preventDefault();
+                  openProductEditingModal({}, "creation");
+                }}
               >
                 Шинэ хаяг нэмэх
               </Button>
@@ -85,15 +130,23 @@ const Address = () => {
                           sx={{ width: "100%", backgroundColor: "#5475ab0d" }}
                           className="cursor-pointer"
                           component="label"
-                          onClick={() => setSelectedShippingData(item)}
+                          onClick={() => {
+                            setSelectedShippingData(item);
+                            setSelect(true);
+                          }}
                         >
                           <div className="flex flex-row gap-6 items-center">
                             <Chip className="asdasd" value={item.id}></Chip>
                             <div>
-                              <Text fw={500}>{item.type}</Text>
-                              <Text fw={500}>{item.name}</Text>
                               <Text fz="md">
-                                Ulaanbaatar, sukhbaatar, 9-r khoroo, 289, 6 toot
+                                {item.city}-{item.district}-{item.committee}-
+                                {item.street}-{item.apartment}-{item.number}
+                              </Text>
+                              <Text fz="lg" className="flex gap-1 mt-2">
+                                Утас:
+                                <Text fz="lg" fw={500}>
+                                  {item.phone}
+                                </Text>
                               </Text>
                             </div>
                           </div>
@@ -108,137 +161,12 @@ const Address = () => {
         ) : (
           <Skeleton sx={{ height: "100%" }} visible={loading} />
         )}
-        <Modal
-          opened={opened}
-          onClose={close}
-          title="Шинэ хаяг нэмэх"
-          size="xl"
-        >
-          <div className="bg-white w-full rounded-md py-4 px-4">
-            <div className="flex flex-row justify-between mb-6">
-              <div className="mt-1">
-                <Switch
-                  checked={checked}
-                  label="Орон нутаг"
-                  onChange={(event) => setChecked(event.currentTarget.checked)}
-                  color="teal"
-                  size="sm"
-                />
-              </div>
-            </div>
-
-            <div className="mb-5 flex flex-row w-full gap-12">
-              <Select
-                className="w-full"
-                label="Хот/Аймаг"
-                placeholder="Хот / Аймаг сонгоно уу."
-                required
-                defaultValue={1}
-                data={[
-                  {
-                    value: 1,
-                    label: "Улаанбаатар",
-                    group: "Хот",
-                  },
-                  {
-                    value: 2,
-                    label: "Дархан",
-                    group: "Хот",
-                  },
-                  {
-                    value: 3,
-                    label: "Дундговь",
-                    group: "Аймаг",
-                  },
-                  {
-                    value: 4,
-                    label: "Дорнод",
-                    group: "Аймаг",
-                  },
-                ]}
-              />
-              <Input.Wrapper
-                className="w-full"
-                id="input-demo"
-                withAsterisk
-                label="Дүүрэг / Сум"
-              >
-                <Input id="input-demo" />
-              </Input.Wrapper>
-            </div>
-            <div className="flex flex-row gap-12 mb-5  w-full">
-              <Input.Wrapper
-                className="w-full"
-                id="input-demo"
-                withAsterisk
-                label="Хороо / Баг"
-              >
-                <Input id="input-demo" />
-              </Input.Wrapper>
-              <Input.Wrapper
-                className="w-full"
-                id="input-demo"
-                withAsterisk
-                label="Байр / Байгуулга"
-              >
-                <Input id="input-demo" />
-              </Input.Wrapper>
-            </div>
-            <div className="flex flex-row gap-12 mb-5  w-full">
-              <Input.Wrapper
-                className="w-full"
-                id="input-demo"
-                withAsterisk
-                label="Хороо / Баг"
-              >
-                <Input id="input-demo" />
-              </Input.Wrapper>
-              <Input.Wrapper
-                className="w-full"
-                id="input-demo"
-                withAsterisk
-                label="Байр / Байгуулга"
-              >
-                <Input id="input-demo" />
-              </Input.Wrapper>
-            </div>
-            <div className="flex flex-row gap-12 mb-5  w-full">
-              <Input.Wrapper
-                className="w-full"
-                id="input-demo"
-                withAsterisk
-                label="Орц / Хаалга"
-              >
-                <Input id="input-demo" />
-              </Input.Wrapper>
-              <Input.Wrapper
-                className="w-full"
-                id="input-demo"
-                withAsterisk
-                label="Байр / Байгуулга"
-              >
-                <Input id="input-demo" />
-              </Input.Wrapper>
-            </div>
-          </div>
-          <div className="flex flex-row justify-end mt-4 w-full">
-            <Button
-              variant={"outline"}
-              color={"red"}
-              style={{ fontWeight: "normal" }}
-              onClick={close}
-            >
-              Арилгах
-            </Button>
-            <Button
-              variant={"filled"}
-              className="ml-4"
-              style={{ backgroundColor: "#F9BC60", fontWeight: "normal" }}
-            >
-              Хадгалах
-            </Button>
-          </div>
-        </Modal>
+        <ProductModal
+          initialData={editingProdData}
+          isOpen={opened}
+          close={close}
+          onSubmit={SubmitCreateShippingData}
+        />
       </div>
     </>
   );
