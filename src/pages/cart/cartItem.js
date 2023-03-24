@@ -56,10 +56,10 @@ const CartItems = (props) => {
     let sum = 0;
     if (cartItem !== undefined) {
       cartItem.map((item) => {
-        if (item.price)
-          sum = sum + parseInt(item.price)
+        if (item.totalPrice)
+          sum = sum + parseInt(item.totalPrice)
         else {
-          sum = sum + parseInt(item.price_mnt)
+          sum = sum + parseInt(item.total)
         }
       })
 
@@ -95,7 +95,7 @@ const CartItems = (props) => {
 
     const temp = [];
     arr.forEach((e) => {
-      temp.push(e.id);
+      temp.push({ id: e.id, qty: e['purchaseCount'] });
     });
     const requestOption = {
       method: "POST",
@@ -213,8 +213,8 @@ const CartItems = (props) => {
           console.log(data, "dasdasdasd")
           if (data.success === true) {
             console.log(data.message, "message")
+            SuccessNotification({ message: "Сагсанд дахь бараа амжилттай устлаа!", title: "Сагсны бараа устгах" })
           }
-
         }
       }
     }
@@ -239,10 +239,10 @@ const CartItems = (props) => {
   };
 
   const makeOrder = async () => {
-    if (select) {
+    if (userToken !== null && userToken !== undefined && userToken !== "") {
       const data = `Хот: ${selectedShippingData.city}, Дүүрэг: ${selectedShippingData.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData.street}, Байр: ${selectedShippingData.apartment}, Тоот: ${selectedShippingData.number}, Утас: ${selectedShippingData.phone}`;
 
-      if (userToken !== null && userToken !== undefined && userToken !== "") {
+      if (select) {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "Bearer " + userToken);
         myHeaders.append("Content-Type", "application/json");
@@ -273,13 +273,14 @@ const CartItems = (props) => {
           });
         }
       } else {
-        router.push("/login");
+        showNotification({
+          message: "Хаяг сонгоно уу!",
+          color: "red",
+        });
       }
     } else {
-      showNotification({
-        message: "Хаяг сонгоно уу!",
-        color: "red",
-      });
+      router.push("/login");
+
     }
   };
 
@@ -406,13 +407,8 @@ const CartItems = (props) => {
                   Үлдэгдэл:{" "}
                   <span className="text-[#212529]">
                     {item.remainStock ? item.remainStock : item.instock - item.quantity}
-
                   </span>
-                  <span className="font-[500] text-[0.87rem] text-[#2125297a]">
-                    Үлдэгдэл:{" "}
-                    <span className="text-[#212529]">{item.remainStock}</span>
-                  </span>
-                </div>
+                </span>
               </div>
             </div>
           </td>
