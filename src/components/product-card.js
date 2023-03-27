@@ -75,7 +75,7 @@ const ProductCard = ({ src, data }) => {
         className="flex flex-col justify-start items-start"
         style={{ width: "90%" }}
       >
-        <Text className="text-sm mt-1" lineClamp={2}>{data?.name}</Text>
+        <Text className="text-2xl mt-1" lineClamp={2}>{data?.name}</Text>
         <div className="flex flex-row mt-1">
           <p className="text-[#696A6C] font-semibold text-xs">Үлдэгдэл : </p>
           <p className="text-xs font-semibold ml-1">{data?.instock}</p>

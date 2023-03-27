@@ -30,7 +30,7 @@ const ProductDetail = ({ product }) => {
 
   const { state, dispatch } = useContext(Store)
   const [loading, setLoading] = useState(false)
-
+  console.log(product, "product")
   const addToCartHandler = async () => {
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity: 1, purchaseCount: 1 } });
     setLoading(true)

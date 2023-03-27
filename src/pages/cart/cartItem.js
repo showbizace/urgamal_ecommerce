@@ -64,7 +64,6 @@ const CartItems = (props) => {
       })
 
     }
-
     return <span>{sum}₮</span>;
   };
 
