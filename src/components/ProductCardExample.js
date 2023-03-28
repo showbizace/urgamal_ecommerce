@@ -30,7 +30,7 @@ const ProductCardExample = ({ src, name, price, count }) => {
         }
     }
     const addToCartHandler = () => {
-        dispatch({ type: 'CART_ADD_ITEM', payload: { ...data, quantity: 1, purchaseCount: productCount } });
+        // dispatch({ type: 'CART_ADD_ITEM', payload: { ...data, quantity: 1, purchaseCount: productCount } });
     }
     return (
         <div

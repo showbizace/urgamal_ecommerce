@@ -20,15 +20,16 @@ function Magnifier({ imgSrc, imgHeight, imgWidth, magnifierRadius }) {
         // Set the intrinsic width of the element (optional).
         width={imgWidth}
         height={imgHeight}
+        loader={() => imgSrc}
         // Image can be a maximum of 50% of the viewport in either direction.
         style={{
           // maxHeight: "50vh",
           // maxWidth: "50vh",
-          // height: "auto",
-          // width: "auto",
+          height: `${imgHeight}px`,
+          width: `${imgWidth}px`,
           borderRadius: 10,
-          objectFit: "cover",
-          userSelect:'none'
+          objectFit: "contain",
+          userSelect: 'none'
         }}
         // Set the magnifier state on every move of the mouse over the image.
         onMouseMove={(e) => {
@@ -58,7 +59,7 @@ function Magnifier({ imgSrc, imgHeight, imgWidth, magnifierRadius }) {
           zIndex: 99,
           display: "block",
           transition: "opacity 0.2s",
-          userSelect:'none',
+          userSelect: 'none',
           // Set background to the image from props:
           background: `url("${imgSrc}") no-repeat #fff`,
           // Set sizing based on the magnifierRadius from props:

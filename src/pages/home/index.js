@@ -50,16 +50,18 @@ export default function Home({ data }) {
             setOffset(prev => prev + 1)
             window.removeEventListener('scroll', onScroll);
         }
-        // const { pageYOffset, scrollY, innerHeight } = window;
-        // const bottom = document.documentElement.scrollHeight;
-        // if ((pageYOffset >= 1308 || scrollY >= 1308) && (pageYOffset < bottom - 800 || scrollY < bottom - 800)) {
-        //     setPositionSticky(true)
-        // } else {
-        //     setPositionSticky(false)
-        // }
-        // if ((innerHeight + Math.ceil(pageYOffset)) >= document.body.offsetHeight) {
-        //     alert('At the bottom!')
-        // }
+        const { pageYOffset, scrollY, innerHeight } = window;
+        const bottom = document.documentElement.scrollHeight;
+        if ((pageYOffset >= 1308 || scrollY >= 1308) && (pageYOffset < bottom - 800 || scrollY < bottom - 800)) {
+            setPositionSticky(true)
+            console.log("true")
+        } else {
+            setPositionSticky(false)
+            console.log("false")
+        }
+        if ((innerHeight + Math.ceil(pageYOffset)) >= document.body.offsetHeight) {
+            setPositionSticky(false)
+        }
     }, []);
 
     useEffect(() => {

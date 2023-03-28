@@ -30,7 +30,7 @@ const ProductDetail = ({ product }) => {
 
   const { state, dispatch } = useContext(Store)
   const [loading, setLoading] = useState(false)
-
+  console.log(product, "product")
   const addToCartHandler = async () => {
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity: 1, purchaseCount: 1 } });
     setLoading(true)
@@ -66,7 +66,7 @@ const ProductDetail = ({ product }) => {
         <div className="flex gap-14 pt-12 justify-center">
           {/* <Image src="https://m.media-amazon.com/images/I/71MzNrCPYsL.jpg" width={50} height={50} /> */}
           {/* <Image src="/bundle-1.svg" width={315} height={380} /> */}
-          <Magnifier imgSrc={'/bundle-1.svg'} imgWidth={515} imgHeight={515} magnifierRadius={50} />
+          <Magnifier imgSrc={product.product_image !== null ? `http://${product.product_image.images[0]}` : ""} imgWidth={515} imgHeight={515} magnifierRadius={50} />
           {/* <ReactImageMagnify
             {...{
               smallImage: {

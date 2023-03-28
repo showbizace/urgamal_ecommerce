@@ -82,5 +82,5 @@ body {
 .product-card-img {
   width: 100%;
   height: 40%;
-  object-fit: fill;
+  object-fit: contain;
 }
