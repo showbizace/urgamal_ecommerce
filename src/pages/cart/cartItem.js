@@ -4,7 +4,7 @@ import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
 import { useState, useEffect, useContext, Suspense } from "react";
 import Magnifier from "../../components/Magnifier/Magnifier";
-import Address from "./#shippingAddress";
+import Address from "./shippingAddress";
 import { useRouter } from "next/router";
 import { Store } from "@/utils/Store";
 import $ from "jquery";
