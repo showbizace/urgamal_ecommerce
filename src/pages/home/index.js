@@ -52,6 +52,8 @@ export default function Home({ data }) {
       setIsBottom(true)
       setOffset(prev => prev + 1)
       window.removeEventListener('scroll', onScroll);
+    } else {
+      window.addEventListener("scroll", onScroll,);
     }
     const { pageYOffset, scrollY, innerHeight } = window;
     const bottom = document.documentElement.scrollHeight;

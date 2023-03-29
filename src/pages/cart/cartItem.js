@@ -3,7 +3,6 @@ import { showNotification } from "@mantine/notifications";
 import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
 import { useState, useEffect, useContext, Suspense } from "react";
-import useSWR from "swr";
 import Magnifier from "../../components/Magnifier/Magnifier";
 import Address from "./#shippingAddress";
 import { useRouter } from "next/router";
@@ -445,7 +444,7 @@ const CartItems = (props) => {
                   </ActionIcon>
                   <span className="font-[500] text-[1rem] text-[#212529]">
                     {item.purchaseCount !== undefined &&
-                    item.purchaseCount !== null
+                      item.purchaseCount !== null
                       ? item.purchaseCount
                       : item.quantity}
                   </span>

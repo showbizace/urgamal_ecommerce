@@ -58,9 +58,60 @@ const CategoryPage = () => {
             }
         }
     }
+    const getParentProduct = async (id, parent, val) => {
+        console.log(parent, " parent")
+        var myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/json',);
+        const requestOption = {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify({
+                "main_cat_id": id,
+                "parent_cat_id": parent,
+                "limit": 20,
+                "offset": 0
+            })
+        }
+        if (val === true) {
+            setLoading(true)
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/local`, requestOption)
+            if (res.status === 200) {
+                const data = await res.json()
+                if (data.success === true) {
+                    setProduct(data.data)
+                    setLoading(false)
+                }
+            }
+        }
+    }
+    const getChildProduct = async (id, parent, child) => {
+        console.log(parent, " parent")
+        var myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/json',);
+        const requestOption = {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify({
+                "main_cat_id": id,
+                "parent_cat_id": parent,
+                "child_cat_id": child,
+                "limit": 20,
+                "offset": 0
+            })
+        }
 
+        setLoading(true)
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/local`, requestOption)
+        if (res.status === 200) {
+            const data = await res.json()
+            if (data.success === true) {
+                setProduct(data.data)
+                setLoading(false)
+            }
+        }
+
+    }
     const getMainProduct = async (id, val) => {
-        console.log(id, "val")
         var myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json',);
         const requestOption = {
@@ -124,18 +175,20 @@ const CategoryPage = () => {
                                         {main !== undefined && main.map((e) => {
                                             if (e.id == id) {
                                                 return (
-                                                    <Collapse title={e.name} style={{ width: "100%", }} cs={{ paddingTop: "0px" }} expanded={true} onChange={(el, value, val) => { getMainProduct(e.id, val) }} >
+                                                    <Collapse title={e.name} style={{ width: "100%", }} cs={{ paddingTop: "0px" }} expanded={true} onChange={(x, value, val) => { getMainProduct(e.id, val) }} >
                                                         {parent !== undefined && parent.map((el) => {
                                                             if (e.id === el.main_cat_id) {
                                                                 return (
                                                                     <Collapse.Group divider={false}>
-                                                                        <Collapse title={el.name}>
+                                                                        <Collapse title={el.name}
+                                                                            onChange={(x, value, val) => { getParentProduct(e.id, el.id, val) }}>
                                                                             <Text>{el.name}</Text>
                                                                             <div className="max-h-64 overflow-auto scrollbar-hide">
                                                                                 {child !== undefined && child.map((item) => {
                                                                                     if (e.id === item.main_cat_id && el.id === item.parent_id) {
                                                                                         return (
-                                                                                            <Text style={{ width: "100%" }}>{item.name}</Text>
+                                                                                            <Text style={{ width: "100%" }} onClick={() => getChildProduct(e.id, el.id, item.id)}>{item.name}
+                                                                                            </Text>
                                                                                         )
                                                                                     }
                                                                                 })}
@@ -150,19 +203,19 @@ const CategoryPage = () => {
                                             } else {
                                                 return (
                                                     <Collapse title={e.name} style={{ width: "100%", }} cs={{ paddingTop: "0px" }}
-                                                        onChange={(el, value, val) => { getMainProduct(e.id, val) }}
+                                                        onChange={(x, value, val) => { getMainProduct(e.id, val) }}
                                                     >
                                                         {parent !== undefined && parent.map((el) => {
                                                             if (e.id === el.main_cat_id) {
                                                                 return (
                                                                     <Collapse.Group divider={false}>
-                                                                        <Collapse title={el.name}>
+                                                                        <Collapse title={el.name} onChange={(x, value, val) => { getParentProduct(e.id, el.id, val) }}>
                                                                             <div className="max-h-64 overflow-auto scrollbar-hide">
                                                                                 {child !== undefined && child.map((item) => {
                                                                                     if (e.id === item.main_cat_id && el.id === item.parent_id) {
                                                                                         return (
 
-                                                                                            <Text style={{ width: "100%" }}>{item.name}</Text>
+                                                                                            <Text style={{ width: "100%" }} onClick={() => getChildProduct(e.id, el.id, item.id)}>{item.name}</Text>
 
                                                                                         )
                                                                                     }
