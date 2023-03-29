@@ -56,13 +56,11 @@ const CartItems = (props) => {
     let sum = 0;
     if (cartItem !== undefined) {
       cartItem.map((item) => {
-        if (item.totalPrice)
-          sum = sum + parseInt(item.totalPrice)
+        if (item.totalPrice) sum = sum + parseInt(item.totalPrice);
         else {
-          sum = sum + parseInt(item.total)
+          sum = sum + parseInt(item.total);
         }
-      })
-
+      });
     }
     return <span>{sum}₮</span>;
   };
@@ -70,31 +68,33 @@ const CartItems = (props) => {
   const getUserCartItem = async (token) => {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
-    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append("Content-Type", "application/json");
     const temp = [];
     const requestOption = {
-      method: 'GET',
+      method: "GET",
       headers: myHeaders,
-    }
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart`, requestOption)
+    };
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/cart`,
+      requestOption
+    );
     if (res.status === 200) {
       const data = await res.json();
-      console.log(data, "data")
+      console.log(data, "data");
       if (data.success === true) {
-        if (data.result.length > 0)
-          setCartItem(data.result[0].cart_items)
+        if (data.result.length > 0) setCartItem(data.result[0].cart_items);
       }
     }
-  }
+  };
   const addToCartMultiple = async (arr, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Authorization", "Bearer " + token);
-    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append("Content-Type", "application/json");
 
     const temp = [];
     arr.forEach((e) => {
-      temp.push({ id: e.id, qty: e['purchaseCount'] });
+      temp.push({ id: e.id, qty: e["purchaseCount"] });
     });
     const requestOption = {
       method: "POST",
@@ -108,10 +108,9 @@ const CartItems = (props) => {
       requestOption
     );
     if (res.status === 200) {
-
       const data = await res.json();
-      console.log(data, "data multople add to cart")
-      setCookie("addCart", false)
+      console.log(data, "data multople add to cart");
+      setCookie("addCart", false);
     }
   };
 
@@ -144,11 +143,10 @@ const CartItems = (props) => {
       if (token !== undefined && token !== null && token !== "") {
         setAddressVisible(true);
         if (addToCart === true) {
-
-          addToCartMultiple(arr, token)
-          getUserCartItem(token)
+          addToCartMultiple(arr, token);
+          getUserCartItem(token);
         } else {
-          getUserCartItem(token)
+          getUserCartItem(token);
         }
       } else {
         setAddressVisible(false);
@@ -157,16 +155,15 @@ const CartItems = (props) => {
   }, []);
 
   const deleteFromCart = async () => {
-
-    let newArr = [...cartItem]
-    let removedArr = []
+    let newArr = [...cartItem];
+    let removedArr = [];
     let cartId;
     newArr.forEach((e) => {
       if (e.isChecked === true) {
         const index = newArr.indexOf(e);
         delete newArr[index];
-        cartId = e.cartid
-        removedArr.push({ "productid": e.productid })
+        cartId = e.cartid;
+        removedArr.push({ productid: e.productid });
       }
     });
     let temp = [];
@@ -176,48 +173,59 @@ const CartItems = (props) => {
       }
     });
 
-
-    setCartItem(temp)
-    dispatch({ type: "CART_REMOVED_ITEM", payload: temp })
-    if (userToken !== null && userToken !== undefined !== "") {
+    setCartItem(temp);
+    dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
+    if (userToken !== null && (userToken !== undefined) !== "") {
       if (temp.length === 0) {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "Bearer " + userToken);
-        myHeaders.append('Content-Type', 'application/json');
+        myHeaders.append("Content-Type", "application/json");
         const requestOption = {
-          method: 'GET',
+          method: "GET",
           headers: myHeaders,
-        }
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/empty`, requestOption)
+        };
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/cart/empty`,
+          requestOption
+        );
         if (res.status === 200) {
           const data = await res.json();
           if (data.success === true) {
-            console.log("delete all success")
-            SuccessNotification({ message: "Сагсанд дахь бүх бараа амжилттай устлаа!", title: "Сагсны бараа" })
+            console.log("delete all success");
+            SuccessNotification({
+              message: "Сагсанд дахь бүх бараа амжилттай устлаа!",
+              title: "Сагсны бараа",
+            });
           }
         }
       } else {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "Bearer " + userToken);
-        myHeaders.append('Content-Type', 'application/json',);
-        let data = { "cartid": cartId, data: removedArr }
+        myHeaders.append("Content-Type", "application/json");
+        let data = { cartid: cartId, data: removedArr };
         const requestOption = {
-          method: 'POST',
+          method: "POST",
           headers: myHeaders,
-          body: JSON.stringify(data)
-        }
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/item/remove`, requestOption)
+          body: JSON.stringify(data),
+        };
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/cart/item/remove`,
+          requestOption
+        );
         if (res.status === 200) {
-          const data = await res.json()
-          console.log(data, "dasdasdasd")
+          const data = await res.json();
+          console.log(data, "dasdasdasd");
           if (data.success === true) {
-            console.log(data.message, "message")
-            SuccessNotification({ message: "Сагсанд дахь бараа амжилттай устлаа!", title: "Сагсны бараа устгах" })
+            console.log(data.message, "message");
+            SuccessNotification({
+              message: "Сагсанд дахь бараа амжилттай устлаа!",
+              title: "Сагсны бараа устгах",
+            });
           }
         }
       }
     }
-    removedArr = []
+    removedArr = [];
     // localStorage.setItem("")
   };
   const handleClick = (e) => {
@@ -279,7 +287,6 @@ const CartItems = (props) => {
       }
     } else {
       router.push("/login");
-
     }
   };
 
@@ -305,17 +312,20 @@ const CartItems = (props) => {
         method: "POST",
         headers: myHeaders,
         body: JSON.stringify({
-          "productid": product.productid,
-          "quantity": count,
-          "cartid": product.cartid
-        })
-      }
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`, requestOption)
+          productid: product.productid,
+          quantity: count,
+          cartid: product.cartid,
+        }),
+      };
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
+        requestOption
+      );
 
       if (res.status === 200) {
         const data = await res.json();
         if (data.success === true) {
-          console.log(data.message, "message")
+          console.log(data.message, "message");
         }
       }
     }
@@ -334,30 +344,32 @@ const CartItems = (props) => {
         if (e.id === product.id) {
           temp[index] = clone;
         }
-      })
-      setCartItem(temp)
+      });
+      setCartItem(temp);
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + userToken);
-      myHeaders.append('Content-Type', 'application/json',);
+      myHeaders.append("Content-Type", "application/json");
       const requestOption = {
-        method: 'POST',
+        method: "POST",
         headers: myHeaders,
         body: JSON.stringify({
-          "productid": product.productid,
-          "quantity": count,
-          "cartid": product.cartid
-        })
-      }
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`, requestOption)
+          productid: product.productid,
+          quantity: count,
+          cartid: product.cartid,
+        }),
+      };
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
+        requestOption
+      );
       if (res.status === 200) {
-        const data = await res.json()
-        console.log(data, "dasdasdasd")
+        const data = await res.json();
+        console.log(data, "dasdasdasd");
         if (data.success === true) {
-          console.log(data.message, "message")
-          setButtonPressed(false)
+          console.log(data.message, "message");
+          setButtonPressed(false);
         }
       }
-
     }
   };
 
@@ -377,82 +389,96 @@ const CartItems = (props) => {
     </tr>
   );
 
-  const rows = cartItem !== null && cartItem !== undefined && cartItem.map((item, idx) => {
-
-    if (item !== undefined) {
-      return (
-        <tr key={idx}>
-          <td>
-            <Checkbox
-              className="checkbox-input"
-              checked={item.isChecked}
-              id={item.id}
-              onClick={(e) => handleClick(item)}
-            />
-          </td>
-          <td>
-            <div className="flex flex-row gap-8">
-              <Magnifier
-                imgSrc={"/bundle-1.svg"}
-                imgWidth={80}
-                imgHeight={80}
-                magnifierRadius={50}
+  const rows =
+    cartItem !== null &&
+    cartItem !== undefined &&
+    cartItem.map((item, idx) => {
+      if (item !== undefined) {
+        return (
+          <tr key={idx}>
+            <td>
+              <Checkbox
+                className="checkbox-input"
+                checked={item.isChecked}
+                id={item.id}
+                onClick={(e) => handleClick(item)}
               />
-              <div className="flex flex-col justify-around">
-                <span className="font-[500] text-[1.002rem] text-[#212529]">
-                  {item.name}
-                </span>
-                <span className="font-[500] text-[0.87rem] text-[#2125297a]">
-                  Үлдэгдэл:{" "}
-                  <span className="text-[#212529]">
-                    {item.remainStock ? item.remainStock : item.instock - item.quantity}
+            </td>
+            <td>
+              <div className="flex flex-row gap-8">
+                <Magnifier
+                  imgSrc={"/bundle-1.svg"}
+                  imgWidth={80}
+                  imgHeight={80}
+                  magnifierRadius={50}
+                />
+                <div className="flex flex-col justify-around">
+                  <span className="font-[500] text-[1.002rem] text-[#212529]">
+                    {item.name}
                   </span>
-                </span>
+                  <span className="font-[500] text-[0.87rem] text-[#2125297a]">
+                    Үлдэгдэл:{" "}
+                    <span className="text-[#212529]">
+                      {item.remainStock
+                        ? item.remainStock
+                        : item.instock - item.quantity}
+                    </span>
+                  </span>
+                </div>
               </div>
-            </div>
-          </td>
-          <td>
-            <div className="inherit">
-              <div className="flex items-center border border-[#21252923] rounded w-fit p-1">
-                <ActionIcon
-                  sx={{
-                    ":hover": { backgroundColor: "#fff5f5" },
-                  }}
-                  className="mr-3"
-                  onClick={() => item.purchaseCount ? minusQuantity(item.purchaseCount, item) : minusQuantity(item.quantity, item)}
-                >
-                  <IconMinus size="1.2rem" color="#212529" />
-                </ActionIcon>
-                <span className="font-[500] text-[1rem] text-[#212529]">
-                  {item.purchaseCount !== undefined && item.purchaseCount !== null ? item.purchaseCount : item.quantity}
-                </span>
-                <ActionIcon
-                  sx={{
-                    ":hover": { backgroundColor: "#ebfbee" },
-                  }}
-                  className="ml-3"
-                  onClick={() => item.purchaseCount ? addQuantity(item.purchaseCount, item) : addQuantity(item.quantity, item)}
-                >
-                  <IconPlus size="1.2rem" color="#212529" />
-                </ActionIcon>
+            </td>
+            <td>
+              <div className="inherit">
+                <div className="flex items-center border border-[#21252923] rounded w-fit p-1">
+                  <ActionIcon
+                    sx={{
+                      ":hover": { backgroundColor: "#fff5f5" },
+                    }}
+                    className="mr-3"
+                    onClick={() =>
+                      item.purchaseCount
+                        ? minusQuantity(item.purchaseCount, item)
+                        : minusQuantity(item.quantity, item)
+                    }
+                  >
+                    <IconMinus size="1.2rem" color="#212529" />
+                  </ActionIcon>
+                  <span className="font-[500] text-[1rem] text-[#212529]">
+                    {item.purchaseCount !== undefined &&
+                    item.purchaseCount !== null
+                      ? item.purchaseCount
+                      : item.quantity}
+                  </span>
+                  <ActionIcon
+                    sx={{
+                      ":hover": { backgroundColor: "#ebfbee" },
+                    }}
+                    className="ml-3"
+                    onClick={() =>
+                      item.purchaseCount
+                        ? addQuantity(item.purchaseCount, item)
+                        : addQuantity(item.quantity, item)
+                    }
+                  >
+                    <IconPlus size="1.2rem" color="#212529" />
+                  </ActionIcon>
+                </div>
               </div>
-            </div>
-          </td>
-          <td width={"100px"} style={{ textAlign: "center" }}>
-            <span className="font-[600] text-[1rem] text-[#212529]">
-              {item.price ? item.price : item.price_mnt} ₮
-            </span>
-          </td>
-          <td width={"100px"} style={{ textAlign: "center" }}>
-            <span className="font-[600] text-[1rem] text-[#212529]">
-              {item.totalPrice ? item.totalPrice : item.total} ₮
-            </span>
-          </td>
-        </tr>
-      )
-    }
-  });
-
+            </td>
+            <td width={"100px"} style={{ textAlign: "center" }}>
+              <span className="font-[600] text-[1rem] text-[#212529]">
+                {item.price ? item.price : item.price_mnt} ₮
+              </span>
+            </td>
+            <td width={"100px"} style={{ textAlign: "center" }}>
+              <span className="font-[600] text-[1rem] text-[#212529]">
+                {item.totalPrice ? item.totalPrice : item.total} ₮
+              </span>
+            </td>
+          </tr>
+        );
+      }
+    });
 
   return (
     <>

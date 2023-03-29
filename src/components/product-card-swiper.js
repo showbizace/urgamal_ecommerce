@@ -11,7 +11,7 @@ const ProductCardSwiper = ({ src, name, count, price }) => {
         <p className="text-sm mt-1">{name}</p>
         <div className="flex flex-row mt-1">
           <p className="text-[#696A6C] font-semibold text-xs">Үлдэгдэл : </p>
-          <p className="text-xs font-semibold ml-1">{count}</p>
+          <p className="text-xs font-semibold ml-1">{count > 10}</p>
         </div>
         <p className="font-semibold text-base mt-2">{price}</p>
         <div className="flex flex-row w-full mt-1 justify-between">

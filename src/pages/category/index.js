@@ -1,3 +1,4 @@
+
 import Image from 'next/image'
 import GlobalLayout from '../../components/GlobalLayout/GlobalLayout'
 import Category from '@/components/category'
@@ -8,6 +9,9 @@ import ProductCardExample from '../../components/ProductCardExample'
 import { useEffect, useState } from 'react'
 
 const CategoryPage = () => {
+  useEffect(() => {
+    window.dispatchEvent(new Event("storage"));
+  }, []);
 
     const [main, setMain] = useState()
     const [parent, setParent] = useState()
@@ -151,9 +155,12 @@ const CategoryPage = () => {
                     </div>
                 </div>
             </div>
-            <BottomFooter />
+          </div>
         </div>
-    )
-}
+      </div>
+      <BottomFooter />
+    </div>
+  );
+};
 
-export default CategoryPage
+export default CategoryPage;
