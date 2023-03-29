@@ -135,9 +135,7 @@ const CategoryPage = () => {
                                                                                 {child !== undefined && child.map((item) => {
                                                                                     if (e.id === item.main_cat_id && el.id === item.parent_id) {
                                                                                         return (
-
                                                                                             <Text style={{ width: "100%" }}>{item.name}</Text>
-
                                                                                         )
                                                                                     }
                                                                                 })}

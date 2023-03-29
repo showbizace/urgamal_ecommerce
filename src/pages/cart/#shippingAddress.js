@@ -1,4 +1,12 @@
-import { Card, Chip, Text, Button, Skeleton, Select } from "@mantine/core";
+import {
+  Card,
+  Chip,
+  Chips,
+  Text,
+  Button,
+  Skeleton,
+  Select,
+} from "@mantine/core";
 import { useEffect, useState } from "react";
 import { IconCirclePlus } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
@@ -17,6 +25,9 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
 
   useEffect(() => {
     getShippingData();
+    setSelectedShippingData(shippingData[1]);
+    setValue(shippingData[1]);
+    console.log(value);
   }, []);
 
   const getShippingData = async () => {
@@ -118,14 +129,13 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
                   sx={{ display: "flex", flexDirection: "column", gap: "15px" }}
                 >
                   {shippingData?.map((item, idx) => (
-                    <div>
+                    <div key={idx}>
                       <Chip.Group
                         multiple={false}
                         value={value}
                         onChange={() => setValue(item.id)}
                       >
                         <Card
-                          key={idx}
                           shadow="sm"
                           sx={{ width: "100%", backgroundColor: "#5475ab0d" }}
                           className="cursor-pointer"
@@ -136,7 +146,7 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
                           }}
                         >
                           <div className="flex flex-row gap-6 items-center">
-                            <Chip className="asdasd" value={item.id}></Chip>
+                            <Chip value={item.id} defaultChecked={value}></Chip>
                             <div>
                               <Text fz="md">
                                 {item.city}-{item.district}-{item.committee}-
