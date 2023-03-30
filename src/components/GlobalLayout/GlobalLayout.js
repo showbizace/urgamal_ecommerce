@@ -21,7 +21,7 @@ export default function GlobalLayout({
           rel="stylesheet"
         />
         <title>{title}</title>
-        <meta name={title} content={title} />
+        <meta name="description" content={title} />
         <link
           rel="stylesheet"
           href="https://kit.fontawesome.com/af91f056ad.css"
