@@ -21,6 +21,7 @@ export default function GlobalLayout({
           rel="stylesheet"
         />
         <title>{title}</title>
+        <meta charset="utf-8" />
         <meta name="description" content={title} />
         <link
           rel="stylesheet"
