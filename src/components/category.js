@@ -1,9 +1,12 @@
 import { Collapse, Text, Grid } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 
 const Category = ({ positionSticky, parent, main, child }) => {
+
+  const router = useRouter()
   return (
     <div
       className={positionSticky === true ? "rounded-md bg-white fixed w-80 top-36" : "rounded-md bg-white"}
@@ -25,22 +28,29 @@ const Category = ({ positionSticky, parent, main, child }) => {
           />
         </div>
         <Grid style={{ width: "100%" }} grow gutter="xs">
-          <Collapse.Group divider={false} css={{ marginTop: "0px" }}  >
+          <Collapse.Group divider={false} css={{ marginTop: "0px" }} >
             {main !== undefined && main.map((e) => {
               return (
-                <Collapse title={e.name} style={{ width: "100%", }} cs={{ paddingTop: "0px" }}>
+                <Collapse title={e.name} style={{ width: "100%", }} cs={{ paddingTop: "0px" }} onClick={() => {
+                  router.push({
+                    shallow: true,
+                    pathname: "/category/[id]",
+                    query: { id: e.id },
+                  },)
+                }}>
                   {parent !== undefined && parent.map((el) => {
                     if (e.id === el.main_cat_id) {
                       return (
                         <Collapse.Group divider={false}>
                           <Collapse title={el.name}>
+                            <Text>{el.name}</Text>
                             <div className="max-h-64 overflow-auto scrollbar-hide">
                               {child !== undefined && child.map((item) => {
                                 if (e.id === item.main_cat_id && el.id === item.parent_id) {
                                   return (
-                                    <Link>
-                                      <Text style={{ width: "100%" }}>{item.name}</Text>
-                                    </Link>
+
+                                    <Text style={{ width: "100%" }}>{item.name}</Text>
+
                                   )
                                 }
                               })}
