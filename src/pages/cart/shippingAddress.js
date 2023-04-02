@@ -27,7 +27,6 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
     getShippingData();
     setSelectedShippingData(shippingData[1]);
     setValue(shippingData[1]);
-    console.log(value);
   }, []);
 
   const getShippingData = async () => {

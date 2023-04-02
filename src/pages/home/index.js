@@ -169,11 +169,13 @@ export default function Home({ data }) {
     <div>
       <GlobalLayout>
         <Banner />
-        <div className="px-32 mb-16">
+        <div className="px-10 mb-16">
           <FeatureProduct />
           <FeatureBundle />
           <div className="flex flex-row">
-            <div style={{ width: "30%", height: "80%", position: "relative" }}>
+            <div
+              style={{ width: "325px", height: "80%", position: "relative" }}
+            >
               <Category
                 positionSticky={positionSticky}
                 parent={parent}
