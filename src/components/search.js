@@ -87,14 +87,16 @@ const Search = () => {
           <Image src="/icons/search.svg" width={20} height={20} />
         </div>
       </div>
-      <div className="w-6/12 flex flex-row justify-between mx-4">
-        <div className="flex flex-row items-center">
-          <Image src="/icons/sales.svg" width={25} height={25} />
-          <p className="ml-2 text-sm">Онцлох хямдрал</p>
-        </div>
-        <div className="flex flex-row items-center">
-          <Image src="/icons/new-prod.svg" width={25} height={25} />
-          <p className="ml-2 text-sm">Шинэ бүтээгдэхүүн</p>
+      <div className="w-6/12 flex flex-row justify-between">
+        <div className="flex gap-10">
+          <div className="flex flex-row items-center">
+            <Image src="/icons/sales.svg" width={25} height={25} />
+            <p className="ml-2 text-sm">Онцлох хямдрал</p>
+          </div>
+          <div className="flex flex-row items-center">
+            <Image src="/icons/new-prod.svg" width={25} height={25} />
+            <p className="ml-2 text-sm">Шинэ бүтээгдэхүүн</p>
+          </div>
         </div>
         <div className="flex flex-row items-center">
           <Image src="/icons/phone.svg" width={25} height={25} />

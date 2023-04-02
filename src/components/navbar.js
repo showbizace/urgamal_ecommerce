@@ -16,12 +16,8 @@ const Navbar = () => {
   const [quantity, setQuantity] = useState(0);
   const [cartData, setCartData] = useState("");
   const route = useRouter();
-<<<<<<< HEAD
   const [number, setNumber] = useState("");
-=======
-  const [number, setNumber] = useState("")
-  const [total, setTotal] = useState(0)
->>>>>>> 0c7d499ea949b428028c296ac0b2472854170705
+  const [total, setTotal] = useState(0);
   const linkToCart = () => {
     router.push({
       pathname: "/cart/cartItem",
@@ -31,29 +27,17 @@ const Navbar = () => {
   const handleChangeStorage = () => {
     let localStorageCart = JSON.parse(localStorage.getItem("cartItems"));
     if (localStorageCart !== null) {
-<<<<<<< HEAD
       setCartItem(localStorageCart?.cart?.cartItems);
       let sum = 0;
+      let total = 0;
       localStorageCart.cart.cartItems.forEach((e) => {
         if (e !== null) {
           sum = sum + e.quantity;
+          total = total + parseInt(e.price);
         }
       });
       setQuantity(sum);
-=======
-      setCartItem(localStorageCart?.cart?.cartItems)
-      let sum = 0
-      let total = 0
-      localStorageCart.cart.cartItems.forEach((e) => {
-        if (e !== null) {
-          sum = sum + e.quantity
-          total = total + parseInt(e.price)
-        }
-      })
-      console.log(localStorageCart, "local")
-      setQuantity(sum)
-      setTotal(total)
->>>>>>> 0c7d499ea949b428028c296ac0b2472854170705
+      setTotal(total);
     }
   };
 
@@ -146,26 +130,26 @@ const Navbar = () => {
         <div>
           <p className="text-sm-1 self-end">Таны сагсанд</p>
           <p className="text-sm-1" style={{ fontSize: "16px" }}>
-<<<<<<< HEAD
             {cartData.total}₮
-=======
-            {total}₮
->>>>>>> 0c7d499ea949b428028c296ac0b2472854170705
           </p>
         </div>
 
         <div
           className="flex flex-row items-center cursor-pointer"
           onClick={() => {
-            route.push("/profile");
+            if (cookie === undefined || null) {
+              router.push("/login");
+            } else {
+              route.push("/profile");
+            }
           }}
         >
-          <div className="flex justify-center items-center ml-6">
-            <Image src="/user.png" width={70} height={70} />
+          <div className="flex justify-center items-center ml-8">
+            <Image src="/user.png" width={40} height={40} />
           </div>
-          <div className="ml-4 flex flex-col items-start w-full">
+          <div className=" flex flex-col items-end">
             {cookie === undefined || null ? (
-              <p className="text-md-1">Нэвтрэх</p>
+              <p className="text-md ml-4">Нэвтрэх</p>
             ) : (
               <>
                 <p className="text-sm-1">Сайн байна уу?</p>
