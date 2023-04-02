@@ -1,8 +1,6 @@
-import { Collapse, Text, Grid } from "@nextui-org/react";
-import Image from "next/image";
-import Link from "next/link";
+import { Collapse, Text, Grid, Card } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { IconChevronRight } from "@tabler/icons-react";
 
 const Category = ({ positionSticky, parent, main, child }) => {
   const router = useRouter();
@@ -10,74 +8,75 @@ const Category = ({ positionSticky, parent, main, child }) => {
     <div
       className={
         positionSticky === true
-          ? "rounded-md bg-white fixed w-40 top-36"
+          ? "rounded-md bg-white sticky top-36"
           : "rounded-md bg-white"
       }
-      // fixed top-40 w-80
     >
       <Grid.Container
         style={{ borderRadius: "5px !important", boxShadow: "none" }}
       >
-        <div
-          className="flex flex-row justify-between px-4 py-4 w-full mx-4"
-          style={{ borderBottom: "1px solid rgba(132, 132, 132, 0.18)" }}
-        >
-          <p className="font-semibold text-lg">Ангилал</p>
-          <Image
-            src={"/icons/plant.svg"}
-            width={25}
-            height={25}
-            color={"#8DC57F"}
-          />
-        </div>
-        <Grid style={{ width: "100%" }} grow gutter="xs">
-          <Collapse.Group divider={false} css={{ marginTop: "0px" }}>
+        <Grid style={{ width: "100%" }} gutter="xs">
+          <Card.Header>
+            <p className="font-semibold text-lg">Ангилал</p>
+          </Card.Header>
+          <Card.Divider align="center" />
+          <Card.Body
+            css={{ paddingTop: "0px", paddingBottom: "0px", overflow: "auto" }}
+          >
             {main !== undefined &&
               main.map((e) => {
                 return (
                   <Collapse
+                    divider={false}
                     title={e.name}
                     style={{ width: "100%" }}
-                    cs={{ paddingTop: "0px" }}
-                    onClick={() => {
-                      router.push({
-                        shallow: true,
-                        pathname: "/category/[id]",
-                        query: { id: e.id },
-                      });
-                    }}
+                    css={{ paddingTop: "0px" }}
                   >
                     {parent !== undefined &&
                       parent.map((el) => {
                         if (e.id === el.main_cat_id) {
                           return (
-                            <Collapse.Group divider={false}>
-                              <Collapse title={el.name}>
-                                <Text>{el.name}</Text>
-                                <div className="max-h-64 overflow-auto scrollbar-hide">
-                                  {child !== undefined &&
-                                    child.map((item) => {
-                                      if (
-                                        e.id === item.main_cat_id &&
-                                        el.id === item.parent_id
-                                      ) {
-                                        return (
-                                          <Text style={{ width: "100%" }}>
-                                            {item.name}
-                                          </Text>
-                                        );
-                                      }
-                                    })}
-                                </div>
-                              </Collapse>
-                            </Collapse.Group>
+                            <div>
+                              <Collapse.Group divider={false}>
+                                <Collapse title={el.name}>
+                                  <div className="max-h-64 overflow-auto scrollbar-hide">
+                                    {child !== undefined &&
+                                      child.map((item) => {
+                                        if (
+                                          e.id === item.main_cat_id &&
+                                          el.id === item.parent_id
+                                        ) {
+                                          return (
+                                            <div
+                                              className="flex flex-row justify-between pt-3 px-3 cursor-pointer"
+                                              onClick={() => {
+                                                router.push({
+                                                  shallow: true,
+                                                  pathname: "/category/[id]",
+                                                  query: { id: e.id },
+                                                });
+                                              }}
+                                            >
+                                              <Text>{item.name}</Text>
+                                              <IconChevronRight
+                                                color="#7E868C"
+                                                stroke={1.5}
+                                              />
+                                            </div>
+                                          );
+                                        }
+                                      })}
+                                  </div>
+                                </Collapse>
+                              </Collapse.Group>
+                            </div>
                           );
                         }
                       })}
                   </Collapse>
                 );
               })}
-          </Collapse.Group>
+          </Card.Body>
         </Grid>
       </Grid.Container>
     </div>

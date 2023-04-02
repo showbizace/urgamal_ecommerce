@@ -62,6 +62,22 @@ const FeatureProductList = () => {
               price={"15’000₮"}
             />
           </SwiperSlide>
+          <SwiperSlide className="rounded-md">
+            <ProductCardSwiper
+              src={"/bundle-1.svg"}
+              name={"Энерген Экстра"}
+              count={"50ш"}
+              price={"15’000₮"}
+            />
+          </SwiperSlide>
+          <SwiperSlide className="rounded-md">
+            <ProductCardSwiper
+              src={"/bundle-1.svg"}
+              name={"Энерген Экстра"}
+              count={"50ш"}
+              price={"15’000₮"}
+            />
+          </SwiperSlide>
         </Swiper>
       </div>
     </div>
