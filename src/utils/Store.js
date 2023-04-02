@@ -11,8 +11,6 @@ function reducer(state, action) {
     switch (action.type) {
         case 'CART_ADD_ITEM': {
             const newItem = action.payload;
-            console.log(newItem, "newItem")
-            console.log(state.cart.cartItems, "cartITems add")
             const existItem = state.cart.cartItems.find(
                 (item) => item.id === newItem.id
             );
@@ -21,6 +19,9 @@ function reducer(state, action) {
                     item.name === existItem.name ? newItem : item
                 )
                 : [...state.cart.cartItems, newItem];
+            cartItems.forEach((e) => {
+                e['total'] = parseInt(e['price']) * parseInt(e['quantity'])
+            })
             let value = { ...state, cart: { ...state.cart, cartItems } }
             if (typeof window !== "undefined") {
                 // client-side operation such as local storage.

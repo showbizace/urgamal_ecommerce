@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { forwardRef } from "react";
 import { Autocomplete, Group, Avatar, Text, rem } from "@mantine/core"
+import { useRouter } from "next/router";
 const Search = () => {
 
+  const router = useRouter()
   const charactersList = [
     {
       image: '/bundle-1.svg',
@@ -99,7 +101,7 @@ const Search = () => {
         <div className="flex flex-row items-center">
           <Image src="/icons/phone.svg" width={25} height={25} />
           <p className="ml-2 text-sm text-green">72720808 </p>
-          <p className="text-sm font-light ml-1 text-[#696A6C]"> / Тусламж</p>
+          <p className="text-sm font-light ml-1 text-[#696A6C] hover:text-black hover:font-semibold " onClick={() => router.push("/location")}> / Байршил</p>
         </div>
       </div>
     </div>
