@@ -1,6 +1,6 @@
 import Image from "next/image";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
-import { Button, NavLink, TextInput } from "@mantine/core";
+import { Button, Group, NavLink, Stack, TextInput } from "@mantine/core";
 import ProfileTabs from "../../components/ProfileTab";
 import { useContext, useEffect, useState } from "react";
 import $ from "jquery";
@@ -15,32 +15,33 @@ import { setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import {
 	IconActivity,
+	IconBox,
 	IconChevronRight,
 	IconFingerprint,
 	IconGauge,
 	IconHome2,
+	IconLogout,
 	IconUserCheck,
 } from "@tabler/icons-react";
 import { UserContext } from "@/utils/userContext";
 const Profile = () => {
 	const router = useRouter();
-	const [tabs, setTabs] = useState(1);
 	const [activeTab, setActiveTab] = useState(0);
 	const userInfo = useContext(UserContext);
-	const onClickTabs = (e) => {
-		setTabs(e);
-	};
+
 	const data = [
 		{
-			icon: IconUserCheck,
+			icon: <IconUserCheck size="1.3rem" stroke={1.5} />,
 			label: "Хувийн мэдээлэл",
 		},
 		{
-			icon: IconFingerprint,
-			label: "Security",
-			rightSection: <IconChevronRight size="1rem" stroke={1.5} />,
+			icon: <IconBox size="1.3rem" stroke={1.5} />,
+			label: "Захиалга",
 		},
-		{ icon: IconActivity, label: "Activity" },
+		{
+			icon: <IconLogout color="red" size="1.3rem" stroke={1.5} />,
+			label: "Системээс гарах",
+		},
 	];
 	const items = data.map((item, index) => (
 		<NavLink
@@ -49,7 +50,7 @@ const Profile = () => {
 			label={item.label}
 			description={item.description}
 			rightSection={item.rightSection}
-			icon={<item.icon size="1rem" stroke={1.5} />}
+			icon={item.icon}
 			onClick={() => setActiveTab(index)}
 		/>
 	));
@@ -60,15 +61,14 @@ const Profile = () => {
 
 	return (
 		<GlobalLayout>
-			<div className="bg-grey-back w-full px-20 py-8 h-full">
-				<div className=" mt-6 flex flex-row h-full">
-					<div className="bg-white rounded-md min-w-[400px]  h-full">{items}</div>
-					{tabs === 1 && <ProfileInfo />}
-					{tabs === 2 && <EmailPhone />}
-					{tabs === 3 && <UserLocation />}
-					{tabs === 4 && <SavedOrder />}
-					{tabs === 5 && <MyOrder />}
-					{tabs === 6 && <PurchaseHistory />}
+			<div className="bg-grey-back flex flex-grow items-stretch ">
+				<Stack justify="space-between" className="bg-white rounded-md min-w-[250px] ">
+					<div>{items.slice(0, 2)}</div>
+					{items[2]}
+				</Stack>
+				<div className="flex flex-grow px-10 py-6">
+					{activeTab === 0 && <ProfileInfo />}
+					{activeTab === 1 && <UserLocation />}
 				</div>
 			</div>
 		</GlobalLayout>

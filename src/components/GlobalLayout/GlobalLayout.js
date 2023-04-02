@@ -31,7 +31,7 @@ export default function GlobalLayout({ children, title = "Таримал Ург�
 					<Navbar />
 					<Search />
 				</div>
-				<main className="bg-main flex-grow">{children}</main>
+				<main className="bg-main flex flex-grow">{children}</main>
 				<BottomFooter />
 			</body>
 		</div>
