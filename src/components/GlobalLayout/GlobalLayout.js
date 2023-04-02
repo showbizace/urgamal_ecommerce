@@ -17,14 +17,7 @@ export default function GlobalLayout({ children, title = "Таримал Ург�
 				<title>{title}</title>
 				<meta charSet="utf-8" />
 				<meta name="description" content={title} />
-				<link
-					rel="stylesheet"
-					href="https://kit.fontawesome.com/af91f056ad.css"
-					crossOrigin="anonymous"
-				/>
-				<script
-					src="https://kit.fontawesome.com/af91f056ad.js"
-					crossOrigin="anonymous"></script>
+
 			</Head>
 			<body className="flex flex-col min-h-screen">
 				<div id="myHeader" className="sticky top-0 z-30 shadow bg-white">

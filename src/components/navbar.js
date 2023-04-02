@@ -65,7 +65,7 @@ const Navbar = () => {
       .then((req) => req.json())
       .then((res) => {
         if (res.success === true) {
-          setCartData(res.result[0]);
+          setCartData(res.result);
         }
       });
   };
@@ -92,7 +92,7 @@ const Navbar = () => {
         <div className="px-4 flex justify-center items-center">
           <Link
             href={"hhhh"}
-            onClick={() => {}}
+            onClick={() => { }}
             className="mx-4 text-center text-black"
           >
             Мэргэжлийхэнд

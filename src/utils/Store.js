@@ -14,14 +14,13 @@ function reducer(state, action) {
             const existItem = state.cart.cartItems.find(
                 (item) => item.id === newItem.id
             );
+            console.log(existItem, "existITem")
             const cartItems = existItem
                 ? state.cart.cartItems.map((item) =>
                     item.name === existItem.name ? newItem : item
                 )
                 : [...state.cart.cartItems, newItem];
-            cartItems.forEach((e) => {
-                e['total'] = parseInt(e['price']) * parseInt(e['quantity'])
-            })
+
             let value = { ...state, cart: { ...state.cart, cartItems } }
             if (typeof window !== "undefined") {
                 // client-side operation such as local storage.

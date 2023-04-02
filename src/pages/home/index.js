@@ -203,7 +203,7 @@ export default function Home({ data }) {
                           <ProductCard
                             src={
                               e.product_image !== null &&
-                              e.product_image.images[0] !== null
+                                e.product_image.images[0] !== null
                                 ? `http://${e.product_image.images[0]}`
                                 : "/bundle-1.svg"
                             }

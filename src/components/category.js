@@ -1,6 +1,5 @@
 import { Collapse, Text, Grid } from "@nextui-org/react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -10,10 +9,10 @@ const Category = ({ positionSticky, parent, main, child }) => {
     <div
       className={
         positionSticky === true
-          ? "rounded-md bg-white fixed w-40 top-36"
+          ? "rounded-md bg-white fixed w-80 top-36"
           : "rounded-md bg-white"
       }
-      // fixed top-40 w-80
+    // fixed top-40 w-80
     >
       <Grid.Container
         style={{ borderRadius: "5px !important", boxShadow: "none" }}
