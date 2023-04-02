@@ -58,6 +58,7 @@ const ProductCard = ({ src, data }) => {
         const data = await res.json();
         console.log(data, "data");
         if (data.success === true) {
+          console.log("sucesssss");
           SuccessNotification({
             message: "Сагсанд амжилттай орлоо.!",
             title: "Сагс",
@@ -76,20 +77,17 @@ const ProductCard = ({ src, data }) => {
   };
   return (
     <div
-      className="flex flex-col justify-start items-center py-4 px-4 bg-white rounded-md"
-      style={{ width: "100%", height: "330px" }}
+      className="flex flex-col justify-between items-center py-4 px-4 bg-white rounded-md"
+      style={{ width: "100%", height: "400px" }}
     >
       <Image
         src={src}
-        width={10}
-        height={10}
         className="product-card-img"
+        width={40}
+        height={40}
         loader={() => src}
       />
-      <div
-        className="flex flex-col justify-start items-start"
-        style={{ width: "90%" }}
-      >
+      <div className="flex flex-col justify-start items-start">
         <Text className="text-2xl mt-1" lineClamp={2}>
           {data?.name}
         </Text>
@@ -105,7 +103,7 @@ const ProductCard = ({ src, data }) => {
               </p>
             </>
           ) : data?.instock > 0 ? (
-            "үлдэгдэлгүй"
+            <p className="text-[#696A6C] font-semibold text-xs">үлдэгдэлгүй</p>
           ) : (
             ""
           )}

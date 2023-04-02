@@ -173,9 +173,7 @@ export default function Home({ data }) {
           <FeatureProduct />
           <FeatureBundle />
           <div className="flex flex-row">
-            <div
-              style={{ width: "325px", height: "80%", position: "relative" }}
-            >
+            <div className="w-full">
               <Category
                 positionSticky={positionSticky}
                 parent={parent}
@@ -183,22 +181,22 @@ export default function Home({ data }) {
                 child={child}
               />
             </div>
-            <div className="flex flex-col ml-12 " style={{ width: "70%" }}>
+            <div className="flex flex-col ml-8 w-3/4">
               <FeatureProductList />
               <NewProduct />
               <Suspense fallback={<Loading />}>
                 <div className="flex flex-col">
                   <div
-                    style={{ width: "100%", gap: "30px", flexWrap: "wrap" }}
+                    style={{ width: "100%", gap: "20px", flexWrap: "wrap" }}
                     className="flex flex-row mt-12"
                     id={"content"}
                   >
                     {productData.map((e) => {
                       return (
                         <div
-                          style={{ width: "22.3%" }}
+                          style={{ width: "23.4%" }}
                           onClick={() => clickProduct(e)}
-                          className="transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110"
+                          className="transition ease-in-out w-1/4	delay-100 hover:-translate-y-1 hover:scale-110"
                         >
                           <ProductCard
                             src={
