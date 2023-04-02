@@ -14,6 +14,7 @@ const Navbar = () => {
   const [quantity, setQuantity] = useState(0)
   const route = useRouter();
   const [number, setNumber] = useState("")
+  const [total, setTotal] = useState(0)
   const linkToCart = () => {
     router.push({
       pathname: '/cart/cartItem',
@@ -25,12 +26,16 @@ const Navbar = () => {
     if (localStorageCart !== null) {
       setCartItem(localStorageCart?.cart?.cartItems)
       let sum = 0
+      let total = 0
       localStorageCart.cart.cartItems.forEach((e) => {
         if (e !== null) {
           sum = sum + e.quantity
+          total = total + parseInt(e.price)
         }
       })
+      console.log(localStorageCart, "local")
       setQuantity(sum)
+      setTotal(total)
     }
   }
 
@@ -101,7 +106,7 @@ const Navbar = () => {
         <div className="flex flex-col ml-6 items-end w-24">
           <p className="text-sm-1 self-end">Таны сагсанд</p>
           <p className="text-sm-1" style={{ fontSize: "16px" }}>
-            15000₮
+            {total}₮
           </p>
         </div>
         <div className="flex flex-row items-center" onClick={() => { route.push("/profile") }}>
