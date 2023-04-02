@@ -1,29 +1,27 @@
 import Image from "next/image";
 import { forwardRef } from "react";
-import { Autocomplete, Group, Avatar, Text, rem } from "@mantine/core"
+import { Autocomplete, Group, Avatar, Text, rem } from "@mantine/core";
 const Search = () => {
-
   const charactersList = [
     {
-      image: '/bundle-1.svg',
-      label: 'Энерген Экстра',
-      description: '150000₮',
-    },
-
-    {
-      image: '/bundle-1.svg',
-      label: 'Энерген Экстра',
-      description: '150000₮',
+      image: "/bundle-1.svg",
+      label: "Энерген Экстра",
+      description: "150000₮",
     },
     {
-      image: '/bundle-1.svg',
-      label: 'Энерген Экстра',
-      description: '150000₮',
+      image: "/bundle-1.svg",
+      label: "Энерген Экстра",
+      description: "150000₮",
     },
     {
-      image: '/bundle-1.svg',
-      label: 'Энерген Экстра',
-      description: '150000₮',
+      image: "/bundle-1.svg",
+      label: "Энерген Экстра",
+      description: "150000₮",
+    },
+    {
+      image: "/bundle-1.svg",
+      label: "Энерген Экстра",
+      description: "150000₮",
     },
   ];
 
@@ -31,7 +29,7 @@ const Search = () => {
 
   const Autocomplete2 = forwardRef((props, ref) => {
     return (
-      <div ref={ref} style={{ padding: "5px", marginTop: "5px" }}  >
+      <div ref={ref} style={{ padding: "5px", marginTop: "5px" }}>
         <Group noWrap>
           <Avatar src={props.image} />
           <div>
@@ -42,10 +40,10 @@ const Search = () => {
           </div>
         </Group>
       </div>
-    )
-  })
+    );
+  });
   return (
-    <div className="py-2 px-32 flex flex-row justify-between">
+    <div className="py-2 px-10 flex flex-row justify-between">
       <div
         className="flex flex-row px-4 bg-background-sort py-2 justify-center items-center"
         style={{ borderRadius: "4.34402px" }}
@@ -75,7 +73,7 @@ const Search = () => {
           styles={{
             input: {
               border: "none",
-              backgroundColor: "rgba(235, 239, 238, 0.9);"
+              backgroundColor: "rgba(235, 239, 238, 0.9);",
             },
           }}
           filter={(value, item) =>
@@ -84,7 +82,7 @@ const Search = () => {
           }
         />
         <div className="flex justify-center items-center bg-background-sort p-2 rounded-md mr-1">
-          <Image src="/icons/search.svg" width={17.5} height={17.5} />
+          <Image src="/icons/search.svg" width={20} height={20} />
         </div>
       </div>
       <div className="w-6/12 flex flex-row justify-between mx-4">

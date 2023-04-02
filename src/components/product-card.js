@@ -58,7 +58,6 @@ const ProductCard = ({ src, data }) => {
         const data = await res.json();
         console.log(data, "data");
         if (data.success === true) {
-          console.log("sucesssss");
           SuccessNotification({
             message: "Сагсанд амжилттай орлоо.!",
             title: "Сагс",
