@@ -19,6 +19,15 @@ const CategoryPage = () => {
     const [child, setChild] = useState()
     const [product, setProduct] = useState()
     const [loading, setLoading] = useState(false)
+
+    const clickProduct = (e) => {
+        router.push({
+            shallow: true,
+            pathname: "/product/[id]",
+            query: { id: e.id, data: e },
+        },)
+    }
+
     useEffect(() => {
         setLoading(true)
         window.dispatchEvent(new Event('storage'))
@@ -171,7 +180,7 @@ const CategoryPage = () => {
                                     />
                                 </div>
                                 <Grid style={{ width: "100%" }} grow gutter="xs">
-                                    <Collapse.Group divider={false} css={{ marginTop: "0px" }} >
+                                    <Collapse.Group divider={true} css={{ marginTop: "0px" }} >
                                         {main !== undefined && main.map((e) => {
                                             if (e.id == id) {
                                                 return (
@@ -179,7 +188,7 @@ const CategoryPage = () => {
                                                         {parent !== undefined && parent.map((el) => {
                                                             if (e.id === el.main_cat_id) {
                                                                 return (
-                                                                    <Collapse.Group divider={false}>
+                                                                    <Collapse.Group divider={true}>
                                                                         <Collapse title={el.name}
                                                                             onChange={(x, value, val) => { getParentProduct(e.id, el.id, val) }}>
                                                                             <Text>{el.name}</Text>

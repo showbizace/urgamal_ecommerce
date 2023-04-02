@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-
+import { IconBrandInstagram, IconBrandFacebook, IconPhoneCall } from '@tabler/icons-react'
 const BottomFooter = () => {
 
     const router = useRouter()
@@ -11,9 +11,9 @@ const BottomFooter = () => {
                 <Image src="/logo.png" width={62} height={116} className="mx-4" />{" "}
                 <p className="text-sm mt-2">“Таримал ургамал” ХХК</p>
                 <div className="flex flex-row mt-4 gap-8">
-                    <Image src={"/icons/call2.svg"} width={20} height={20} />
-                    <Image src={"/icons/instagram.svg"} width={20} height={20} />
-                    <Image src={"/icons/facebook.svg"} width={20} height={20} />
+                    <IconPhoneCall width={25} height={25} />
+                    <IconBrandInstagram width={25} height={25} className="hover:text-white" />
+                    <IconBrandFacebook width={25} height={25} className="hover:text-white" />
                 </div>
             </div>
             <div className="flex flex-col">

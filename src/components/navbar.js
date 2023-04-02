@@ -16,7 +16,12 @@ const Navbar = () => {
   const [quantity, setQuantity] = useState(0);
   const [cartData, setCartData] = useState("");
   const route = useRouter();
+<<<<<<< HEAD
   const [number, setNumber] = useState("");
+=======
+  const [number, setNumber] = useState("")
+  const [total, setTotal] = useState(0)
+>>>>>>> 0c7d499ea949b428028c296ac0b2472854170705
   const linkToCart = () => {
     router.push({
       pathname: "/cart/cartItem",
@@ -26,6 +31,7 @@ const Navbar = () => {
   const handleChangeStorage = () => {
     let localStorageCart = JSON.parse(localStorage.getItem("cartItems"));
     if (localStorageCart !== null) {
+<<<<<<< HEAD
       setCartItem(localStorageCart?.cart?.cartItems);
       let sum = 0;
       localStorageCart.cart.cartItems.forEach((e) => {
@@ -34,6 +40,20 @@ const Navbar = () => {
         }
       });
       setQuantity(sum);
+=======
+      setCartItem(localStorageCart?.cart?.cartItems)
+      let sum = 0
+      let total = 0
+      localStorageCart.cart.cartItems.forEach((e) => {
+        if (e !== null) {
+          sum = sum + e.quantity
+          total = total + parseInt(e.price)
+        }
+      })
+      console.log(localStorageCart, "local")
+      setQuantity(sum)
+      setTotal(total)
+>>>>>>> 0c7d499ea949b428028c296ac0b2472854170705
     }
   };
 
@@ -126,7 +146,11 @@ const Navbar = () => {
         <div>
           <p className="text-sm-1 self-end">Таны сагсанд</p>
           <p className="text-sm-1" style={{ fontSize: "16px" }}>
+<<<<<<< HEAD
             {cartData.total}₮
+=======
+            {total}₮
+>>>>>>> 0c7d499ea949b428028c296ac0b2472854170705
           </p>
         </div>
 
