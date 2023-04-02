@@ -9,7 +9,7 @@ import Bundle from "./bundle";
 
 const FeatureBundle = () => {
   return (
-    <div className=" flex flex-col pb-8">
+    <div className=" flex flex-col pb-12">
       <div className="flex flex-row justify-between" style={{ width: "100%" }}>
         <p className="text-lg font-semibold">Онцлох багц</p>
         <div className="flex flex-row">
@@ -31,19 +31,43 @@ const FeatureBundle = () => {
           }}
         >
           <SwiperSlide className="rounded-md">
-            <Bundle src={"/bundle-1.svg"} name={"Энерген Экстра"} count={"108ш"} price={"150’000₮"} productIndex={2323} />
+            <Bundle
+              src={"/bundle-1.svg"}
+              name={"Энерген Экстра"}
+              count={"108ш"}
+              price={"150’000₮"}
+              productIndex={2323}
+            />
           </SwiperSlide>
           <SwiperSlide className="rounded-md">
             {" "}
-            <Bundle src={"/bundle-2.svg"} name={"Энерген Экстра"} count={"108ш"} price={"150’000₮"} productIndex={2323} />
+            <Bundle
+              src={"/bundle-2.svg"}
+              name={"Энерген Экстра"}
+              count={"108ш"}
+              price={"150’000₮"}
+              productIndex={2323}
+            />
           </SwiperSlide>
           <SwiperSlide className="rounded-md">
             {" "}
-            <Bundle src={"/bundle-3.svg"} name={"Энерген Экстра"} count={"108ш"} price={"150’000₮"} productIndex={2323} />
+            <Bundle
+              src={"/bundle-3.svg"}
+              name={"Энерген Экстра"}
+              count={"108ш"}
+              price={"150’000₮"}
+              productIndex={2323}
+            />
           </SwiperSlide>
           <SwiperSlide className="rounded-md">
             {" "}
-            <Bundle src={"/bundle-4.svg"} name={"Энерген Экстра"} count={"108ш"} price={"150’000₮"} productIndex={2323} />
+            <Bundle
+              src={"/bundle-4.svg"}
+              name={"Энерген Экстра"}
+              count={"108ш"}
+              price={"150’000₮"}
+              productIndex={2323}
+            />
           </SwiperSlide>
         </Swiper>
       </div>
