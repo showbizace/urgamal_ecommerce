@@ -79,7 +79,6 @@ const CartItems = (props) => {
     );
     if (res.status === 200) {
       const data = await res.json();
-      console.log(data, "data");
       if (data.success === true) {
         if (data.result.length > 0) setCartItem(data.result[0].cart_items);
       }
@@ -246,9 +245,8 @@ const CartItems = (props) => {
 
   const makeOrder = async () => {
     if (userToken !== null && userToken !== undefined && userToken !== "") {
-      const data = `Хот: ${selectedShippingData.city}, Дүүрэг: ${selectedShippingData.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData.street}, Байр: ${selectedShippingData.apartment}, Тоот: ${selectedShippingData.number}, Утас: ${selectedShippingData.phone}`;
-
       if (select) {
+        const data = `Хот: ${selectedShippingData.city}, Дүүрэг: ${selectedShippingData.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData.street}, Байр: ${selectedShippingData.apartment}, Тоот: ${selectedShippingData.number}, Утас: ${selectedShippingData.phone}`;
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "Bearer " + userToken);
         myHeaders.append("Content-Type", "application/json");
