@@ -1,4 +1,5 @@
-import { Button, Checkbox, Table, ActionIcon } from "@mantine/core";
+import { Button, Checkbox, Table, ActionIcon, Modal } from "@mantine/core";
+import { useDisclosure } from '@mantine/hooks';
 import { showNotification } from "@mantine/notifications";
 import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
@@ -12,6 +13,8 @@ import Loading from "../home/loading";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import { SuccessNotification } from "../../utils/SuccessNotification";
 import { getCookie, setCookie } from "cookies-next";
+import debounce from 'lodash.debounce';
+
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
@@ -30,7 +33,7 @@ const CartItems = (props) => {
   const [selectedShippingData, setSelectedShippingData] = useState({});
   const [select, setSelect] = useState(false);
   const [buttonPressed, setButtonPressed] = useState(false);
-
+  const [opened, { open, close }] = useDisclosure(false);
   const handleSelectAll = (e) => {
     setIsCheckAll(!isCheckAll);
     let arr = [];
@@ -244,6 +247,7 @@ const CartItems = (props) => {
   };
 
   const makeOrder = async () => {
+    open()
     if (userToken !== null && userToken !== undefined && userToken !== "") {
       if (select) {
         const data = `Хот: ${selectedShippingData.city}, Дүүрэг: ${selectedShippingData.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData.street}, Байр: ${selectedShippingData.apartment}, Тоот: ${selectedShippingData.number}, Утас: ${selectedShippingData.phone}`;
@@ -268,7 +272,7 @@ const CartItems = (props) => {
             setCartItem(temp);
             dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
             SuccessNotification({ message: data.message, title: "Захиалга" });
-            router.push("/home");
+            // router.push("/home");
           }
         } else if (res.status === 500) {
           showNotification({
@@ -434,8 +438,8 @@ const CartItems = (props) => {
                     className="mr-3"
                     onClick={() =>
                       item.purchaseCount
-                        ? minusQuantity(item.purchaseCount, item)
-                        : minusQuantity(item.quantity, item)
+                        ? debounce(() => minusQuantity(item.purchaseCount, item), 2000)
+                        : debounce(() => minusQuantity(item.quantity, item), 2000)
                     }
                   >
                     <IconMinus size="1.2rem" color="#212529" />
@@ -453,8 +457,8 @@ const CartItems = (props) => {
                     className="ml-3"
                     onClick={() =>
                       item.purchaseCount
-                        ? addQuantity(item.purchaseCount, item)
-                        : addQuantity(item.quantity, item)
+                        ? debounce(() => addQuantity(item.purchaseCount, item), 2000)
+                        : debounce(() => addQuantity(item.quantity, item), 2000)
                     }
                   >
                     <IconPlus size="1.2rem" color="#212529" />
@@ -479,6 +483,18 @@ const CartItems = (props) => {
 
   return (
     <>
+      <Modal opened={opened} onClose={close} title="Дансны мэдээлэл" centered>
+        <div className="flex flex-col">
+          <div className="flex flex-row">
+            <p className="font-semibold">Дансны дугаар : </p>
+            <p className="ml-2" >dasd : </p>
+          </div>
+          <div className="mt-2 flex flex-row">
+            <p className="font-semibold">Гүйлгээний утга : </p>
+            <p className="ml-2">dasda : </p>
+          </div>
+        </div>
+      </Modal>
       <GlobalLayout>
         <div className="bg-grey-back w-full px-8 py-4">
           <div className="flex flex-row gap-10 mt-8 px-32">
