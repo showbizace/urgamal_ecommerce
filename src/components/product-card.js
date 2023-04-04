@@ -86,6 +86,7 @@ const ProductCard = ({ src, data }) => {
         width={40}
         height={40}
         loader={() => src}
+        alt={src}
       />
       <div className="flex flex-col justify-start items-start">
         <Text className="text-2xl mt-1" lineClamp={2}>

@@ -77,7 +77,7 @@ const ProductDetail = ({ product }) => {
           <Magnifier
             imgSrc={
               product.product_image !== null
-                ? `http://${product.product_image.images[0]}`
+                ? `https://${product.product_image.images[0]}`
                 : "/bundle-1.svg"
             }
             imgWidth={515}

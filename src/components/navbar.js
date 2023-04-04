@@ -33,9 +33,10 @@ const Navbar = () => {
       localStorageCart.cart.cartItems.forEach((e) => {
         if (e !== null) {
           sum = sum + e.quantity;
-          total = total + parseInt(e.price);
+          total = total + parseInt(e.total)
         }
       });
+      console.log(localStorageCart, "local")
       setQuantity(sum);
       setTotal(total);
     }
@@ -65,7 +66,7 @@ const Navbar = () => {
       .then((req) => req.json())
       .then((res) => {
         if (res.success === true) {
-          setCartData(res.result[0]);
+          setCartData(res.result);
         }
       });
   };
@@ -76,11 +77,11 @@ const Navbar = () => {
       style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}
     >
       <Link href={"/home"}>
-        <p className="flex flex-row justify-center items-center text-black">
+        <div className="flex flex-row justify-center items-center text-black">
           ТАРИMАЛ{" "}
           <Image src="/logo.png" width={30} height={30} className="mx-4" />{" "}
           УРГАMАЛ
-        </p>
+        </div>
       </Link>
 
       <div className="flex flex-row">
@@ -92,7 +93,7 @@ const Navbar = () => {
         <div className="px-4 flex justify-center items-center">
           <Link
             href={"hhhh"}
-            onClick={() => {}}
+            onClick={() => { }}
             className="mx-4 text-center text-black"
           >
             Мэргэжлийхэнд
@@ -130,7 +131,7 @@ const Navbar = () => {
         <div>
           <p className="text-sm-1 self-end">Таны сагсанд</p>
           <p className="text-sm-1" style={{ fontSize: "16px" }}>
-            {cartData.total}₮
+            {total}₮
           </p>
         </div>
 
@@ -147,18 +148,18 @@ const Navbar = () => {
           <div className="flex justify-center items-center ml-8">
             <Image src="/user.png" width={40} height={40} />
           </div>
-          <div className=" flex flex-col items-end">
+          {/* <div className=" flex flex-col items-end">
             {cookie === undefined || null ? (
               <p className="text-md ml-4">Нэвтрэх</p>
             ) : (
-              <>
+              <div>
                 <p className="text-sm-1">Сайн байна уу?</p>
-                <p className="text-base">
+                <p className="text-sm">
                   {number !== "" ? number : "*********"}
                 </p>
-              </>
+              </div>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

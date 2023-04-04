@@ -15,12 +15,17 @@ function reducer(state, action) {
                 (item) => item.id === newItem.id
             );
             const cartItems = existItem
-                ? state.cart.cartItems.map((item) =>
-                    item.name === existItem.name ? newItem : item
+                ? state.cart.cartItems.map((item) => {
+                    if (item.name === existItem.name) {
+                        return newItem
+                    } else {
+                        return item
+                    }
+                }
                 )
                 : [...state.cart.cartItems, newItem];
             cartItems.forEach((e) => {
-                e['total'] = parseInt(e['price']) * parseInt(e['quantity'])
+                e['total'] = e['purchaseCount'] * e['price']
             })
             let value = { ...state, cart: { ...state.cart, cartItems } }
             if (typeof window !== "undefined") {
