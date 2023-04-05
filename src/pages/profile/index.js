@@ -29,18 +29,22 @@ import {
 import { UserContext } from "@/utils/userContext";
 import UserBasicInfo from "@/components/UserProfileForms/UserBasicInfo";
 import UserAddress from "@/components/UserProfileForms/UserAddress";
+import BottomFooter from "@/components/Footer";
 const Profile = () => {
+  const token = getCookie("token");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
   const [userInfo, setUserInfo] = useState(null);
+  const [addressData, setAddressData] = useState(null);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     getUserInfo();
+    getUserAddress();
   }, []);
 
   const getUserInfo = async () => {
     setLoading(true);
-    const token = getCookie("token");
+
     console.log(token);
     if (!token) {
       router.push("/login");
@@ -48,7 +52,7 @@ const Profile = () => {
     const requestOption = {
       method: "GET",
       headers: {
-        Authorization: "Bearer " + token,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     };
@@ -64,6 +68,29 @@ const Profile = () => {
     }
     setLoading(false);
   };
+
+  const getUserAddress = async () => {
+    setLoading(true);
+    var requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/user/address`,
+      requestOptions
+    )
+      .then((req) => req.json())
+      .then((res) => {
+        if (res.success === true) {
+          setLoading(false);
+          setAddressData(res.data);
+        }
+      });
+    setLoading(false);
+  };
+
   const handleLogOut = () => {
     removeCookies("token");
     router.replace("/");
@@ -91,6 +118,8 @@ const Profile = () => {
       description={item.description}
       rightSection={item.rightSection}
       icon={item.icon}
+      color="yellow"
+      variant="subtle"
       onClick={() => (index === 2 ? handleLogOut() : setActiveTab(index))}
       className="rounded-md"
     />
@@ -98,7 +127,7 @@ const Profile = () => {
 
   return (
     <GlobalLayout>
-      <div className="bg-grey-back flex flex-grow items-stretch ">
+      <div className="bg-grey-back h-[70vh] flex flex-grow items-stretch ">
         <Stack
           justify="space-between"
           className="bg-white min-w-[250px] my-4 ml-4 rounded-md px-3 py-2"
@@ -112,8 +141,8 @@ const Profile = () => {
               defaultValue="info"
               variant="outline"
               classNames={{
-                root: "bg-white w-full rounded-md px-4 py-2",
-                panel: "mt-7  pl-6 h-full flex-grow",
+                root: "bg-white  h-full w-full rounded-md px-4 py-2",
+                panel: "mt-7 pl-6 flex-grow",
               }}
             >
               <Tabs.List>
@@ -131,16 +160,21 @@ const Profile = () => {
                 </Tabs.Tab>
               </Tabs.List>
               <Tabs.Panel value="info" className="mt-6">
-                <UserBasicInfo data={userInfo} />
+                <UserBasicInfo
+                  key={userInfo?.toString()}
+                  data={userInfo}
+                  refresh={getUserInfo}
+                />
               </Tabs.Panel>
               <Tabs.Panel value="address" className="mt-6">
-                <UserAddress />
+                <UserAddress data={addressData} refresh={getUserAddress} />
               </Tabs.Panel>
             </Tabs>
           )}
           {activeTab === 1 && <MyOrder />}
         </div>
       </div>
+      <BottomFooter />
     </GlobalLayout>
   );
 };

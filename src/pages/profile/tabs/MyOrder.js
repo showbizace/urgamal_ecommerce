@@ -114,10 +114,16 @@ const MyOrder = () => {
           )}
         </div>
         {tabs === 1 && (
-          <div className="max-h-80 overflow-auto">
+          <div className="max-h-80 overflow-auto flex flex-col gap-6 mt-4">
             {order !== undefined &&
               order.map((e) => {
-                return <Order data={e} />;
+                return (
+                  <>
+                    <Order data={e} />
+                    <Order data={e} />
+                    <Order data={e} />
+                  </>
+                );
               })}
           </div>
         )}

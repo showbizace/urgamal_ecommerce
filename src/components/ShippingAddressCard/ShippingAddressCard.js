@@ -8,7 +8,6 @@ import {
   Text,
   Transition,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import {
   IconChevronDown,
   IconChevronUp,
@@ -17,9 +16,7 @@ import {
 } from "@tabler/icons-react";
 import React from "react";
 
-export default function ShippingAddressCard({ name, address }) {
-  const [opened, { toggle }] = useDisclosure(false);
-
+export default function ShippingAddressCard({ name, address, onUpdate }) {
   return (
     <Card p="xs" radius="md" withBorder>
       <Group position="apart">
@@ -27,10 +24,18 @@ export default function ShippingAddressCard({ name, address }) {
           {name}
         </Text>
         <Group spacing="xs">
-          <ActionIcon color="blue" radius="xl">
+          <ActionIcon
+            color="blue"
+            radius="xl"
+            onClick={() => onUpdate(address)}
+          >
             <IconEdit size="1.2rem" />
           </ActionIcon>
-          <ActionIcon color="red" radius="xl">
+          <ActionIcon
+            color="red"
+            radius="xl"
+            onClick={() => onDelete(address.id)}
+          >
             <IconTrash size="1.2rem" />
           </ActionIcon>
         </Group>
@@ -39,17 +44,23 @@ export default function ShippingAddressCard({ name, address }) {
         <div className="flex flex-col gap-2 w-full">{address.type}</div>
         <div className="flex flex-col gap-4 w-full pr-8">
           <Text size="sm" weight={500} color="grey">
-            {`${address.city ? address.city : ""} ${
+            {/* {`${address.city ? address.city : ""} ${
               address.district ? address.district : ""
             } ${address.committee ? address.committee : ""}
             ${address.street ? address.street : ""} ${
               address.apartment ? address.apartment : ""
             } ${address.number ? address.number : ""} 
-            ${address.phone ? address.phone : ""}`.replaceAll(/\s+/g, ", ")}
+            ${address.phone ? address.phone : ""}`.replaceAll(/\s+/g, ", ")} */}
+            {`${address.city ? address.city : ""}, ${
+              address.district ? address.district : ""
+            }, ${address.committee ? address.committee : ""},
+            ${address.street ? address.street : ""}, ${
+              address.apartment ? address.apartment : ""
+            }, ${address.number ? address.number : ""}, 
+            ${address.phone ? address.phone : ""}`}
           </Text>
           <Text size="xs" weight={500}>
-            Нэмэлт тайлбар:
-            {address.note}
+            Нэмэлт тайлбар: {address.note}
           </Text>
         </div>
       </div>

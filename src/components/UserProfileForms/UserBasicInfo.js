@@ -15,8 +15,7 @@ import {
   IconCirclePlus,
 } from "@tabler/icons-react";
 import { getCookie } from "cookies-next";
-export default function UserBasicInfo({ data }) {
-  console.log(data);
+export default function UserBasicInfo({ data, refresh }) {
   const form = useForm({
     initialValues: {
       givenName: data?.given_name,
@@ -52,6 +51,7 @@ export default function UserBasicInfo({ data }) {
           icon: <IconCheck />,
           color: "green",
         });
+        refresh();
       })
       .catch((error) => {
         showNotification({
@@ -90,8 +90,12 @@ export default function UserBasicInfo({ data }) {
           />
         </Stack>
         <Group mt="xl" position="right">
-          <Button variant="subtle">Цуцлах</Button>
-          <Button type="submit">Засврлах</Button>
+          <Button variant="subtle" color="red">
+            Цуцлах
+          </Button>
+          <Button type="submit" color="yellow">
+            Засварлах
+          </Button>
         </Group>
       </form>
     </div>
