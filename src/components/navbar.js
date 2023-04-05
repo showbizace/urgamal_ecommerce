@@ -33,10 +33,10 @@ const Navbar = () => {
       localStorageCart.cart.cartItems.forEach((e) => {
         if (e !== null) {
           sum = sum + e.quantity;
-          total = total + parseInt(e.total)
+          total = total + parseInt(e.total);
         }
       });
-      console.log(localStorageCart, "local")
+      console.log(localStorageCart, "local");
       setQuantity(sum);
       setTotal(total);
     }
@@ -87,18 +87,15 @@ const Navbar = () => {
       <div className="flex flex-row">
         <NavBarLinks
           name={"Өрхийн тариаланч"}
-          linkUrl={"hhhh"}
-          onClick={() => print("Hello")}
+          linkUrl={"/"}
+          onClick={() => {}}
         />
-        <div className="px-4 flex justify-center items-center">
-          <Link
-            href={"hhhh"}
-            onClick={() => { }}
-            className="mx-4 text-center text-black"
-          >
-            Мэргэжлийхэнд
-          </Link>
-        </div>
+        <NavBarLinks
+          name={"Мэргэжлийхэнд"}
+          linkUrl={"/"}
+          onClick={() => {}}
+          isLast
+        />
       </div>
       <div className="flex flex-row items-center">
         {/* <Button
