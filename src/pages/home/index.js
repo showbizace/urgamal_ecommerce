@@ -184,13 +184,13 @@ export default function Home({ data }) {
               />
             </div>
             <div className="flex flex-col ml-12 " style={{ width: "70%" }}>
-              <FeatureProductList />
-              <NewProduct />
+              {/* <FeatureProductList /> */}
+              {/* <NewProduct /> */}
               <Suspense fallback={<Loading />}>
                 <div className="flex flex-col">
                   <div
                     style={{ width: "100%", gap: "30px", flexWrap: "wrap" }}
-                    className="flex flex-row mt-12"
+                    className="flex flex-row "
                     id={"content"}
                   >
                     {productData.map((e) => {

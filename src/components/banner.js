@@ -18,7 +18,7 @@ const Banner = () => {
         observer={true}
         observeParents={true}
         parallax={true}
-        navigation={true}
+        // navigation={true}
       >
         <SwiperSlide>
           <div style={{ width: "100%", height: "100%" }}>
@@ -44,7 +44,7 @@ const Banner = () => {
             </p>
           </div>
         </SwiperSlide>
-        <SwiperSlide>Slide 2</SwiperSlide>
+        {/* <SwiperSlide>Slide 2</SwiperSlide> */}
       </Swiper>
     </div>
   );

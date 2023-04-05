@@ -69,15 +69,15 @@ const ProductDetail = ({ product }) => {
     }
   };
   return (
-    <GlobalLayout title={product.name}>
+    <GlobalLayout title={product?.name}>
       <div className="px-32">
         <div className="flex gap-14 pt-12 justify-center">
           {/* <Image src="https://m.media-amazon.com/images/I/71MzNrCPYsL.jpg" width={50} height={50} /> */}
           {/* <Image src="/bundle-1.svg" width={315} height={380} /> */}
           <Magnifier
             imgSrc={
-              product.product_image !== null
-                ? `https://${product.product_image.images[0]}`
+              product?.product_image !== null
+                ? `https://${product?.product_image.images[0]}`
                 : "/bundle-1.svg"
             }
             imgWidth={515}
@@ -131,11 +131,11 @@ const ProductDetail = ({ product }) => {
           </Carousel> */}
 
           <div className="flex flex-col gap-6">
-            <div className=" text-lg font-semibold">{product.name}</div>
+            <div className=" text-lg font-semibold">{product?.name}</div>
             <div className="flex font-semibold gap-2">
               <span className="text-greenish-grey  ">Ширхэгийн үнэ:</span>
               <span className=" ">
-                {Intl.NumberFormat("mn-MN").format(product.price)}₮
+                {Intl.NumberFormat("mn-MN").format(product?.price)}₮
               </span>
             </div>
             <div className="flex font-semibold gap-2">
