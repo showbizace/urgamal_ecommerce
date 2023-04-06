@@ -2,11 +2,12 @@ import Image from "next/image";
 import NavBarLinks from "../components/nav-bar-links";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Button } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
 import { Store } from "@/utils/Store";
 import { getCookie } from "cookies-next";
 import { ErrorNotificatipon } from "../utils/SuccessNotification";
+import { openContextModal } from "@mantine/modals";
 const cookie = getCookie("token");
 
 const Navbar = () => {
@@ -33,7 +34,7 @@ const Navbar = () => {
       localStorageCart.cart.cartItems.forEach((e) => {
         if (e !== null) {
           sum = sum + e.quantity;
-          total = total + parseInt(e.totalPrice)
+          total = total + parseInt(e.totalPrice);
         }
       });
       setQuantity(sum);
@@ -87,12 +88,12 @@ const Navbar = () => {
         <NavBarLinks
           name={"Өрхийн тариаланч"}
           linkUrl={"/"}
-          onClick={() => { }}
+          onClick={() => {}}
         />
         <NavBarLinks
           name={"Мэргэжлийхэнд"}
           linkUrl={"/"}
-          onClick={() => { }}
+          onClick={() => {}}
           isLast
         />
       </div>
@@ -135,7 +136,16 @@ const Navbar = () => {
           className="flex flex-row items-center cursor-pointer"
           onClick={() => {
             if (cookie === undefined || null) {
-              router.push("/login");
+              openContextModal({
+                modal: "login",
+                id: "login-modal",
+                title: (
+                  <Text size="sm" weight={400}>
+                    Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
+                  </Text>
+                ),
+                centered: true,
+              });
             } else {
               route.push("/profile");
             }

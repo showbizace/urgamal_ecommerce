@@ -21,6 +21,7 @@ import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import { SuccessNotification } from "../../utils/SuccessNotification";
 import { getCookie, setCookie } from "cookies-next";
 import debounce from "lodash.debounce";
+import { openContextModal } from "@mantine/modals";
 
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
@@ -274,7 +275,7 @@ const CartItems = (props) => {
         if (res.status === 200) {
           const data = await res.json();
           if (data.success === true) {
-            open()
+            open();
             let temp = [];
             setCartItem(temp);
             dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
@@ -294,7 +295,16 @@ const CartItems = (props) => {
         });
       }
     } else {
-      router.push("/login");
+      openContextModal({
+        modal: "login",
+        id: "login-modal",
+        title: (
+          <Text size="sm" weight={400}>
+            Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
+          </Text>
+        ),
+        centered: true,
+      });
     }
   };
 
@@ -463,7 +473,7 @@ const CartItems = (props) => {
                   </ActionIcon>
                   <span className="font-[500] text-[1rem] text-[#212529]">
                     {item.purchaseCount !== undefined &&
-                      item.purchaseCount !== null
+                    item.purchaseCount !== null
                       ? item.purchaseCount
                       : item.quantity}
                   </span>
