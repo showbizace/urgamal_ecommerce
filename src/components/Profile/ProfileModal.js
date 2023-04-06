@@ -8,14 +8,15 @@ import {
   Input,
   TextInput,
   LoadingOverlay,
+  Textarea,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { isNotEmpty, useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 
 function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
-  const [checked, setChecked] = useState(false);
   const form = useForm({
     initialValues: {
+      name: initialData?.name,
       city: initialData?.city,
       province: initialData?.province,
       district: initialData?.district,
@@ -25,17 +26,23 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
       apartment: initialData?.apartment,
       number: initialData?.number,
       phone: initialData?.phone,
-      type: initialData?.type,
+      type: false,
+      note: initialData?.note,
     },
     validate: {
-      // phone: (value) => (value ? null : "Заавал бөглөх!"),
-      // district: (value) => (value ? null : "Заавал бөглөх!"),
-      // committee: (value) => (value ? null : "Заавал бөглөх!"),
-      // street: (value) => (value ? null : "Заавал бөглөх!"),
-      // fence: (value) => (value ? null : "Заавал бөглөх!"),
-      // apartment: (value) => (value ? null : "Заавал бөглөх!"),
-      // number: (value) => (value ? null : "Заавал бөглөх!"),
+      name: isNotEmpty("Заавал бөглөх"),
+      city: (value, values) =>
+        !values.type && value === undefined ? "Заавал бөглөх city" : null,
+      province: (value, values) =>
+        values.type && value === undefined ? "Заавал бөглөх province" : null,
+      district: isNotEmpty("Заавал бөглөх"),
+      committee: isNotEmpty("Заавал бөглөх"),
+      street: isNotEmpty("Заавал бөглөх"),
+      apartment: isNotEmpty("Заавал бөглөх"),
+      number: isNotEmpty("Заавал бөглөх"),
+      phone: isNotEmpty("Заавал бөглөх"),
     },
+    validateInputOnChange: true,
   });
 
   useEffect(() => {
@@ -54,6 +61,7 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
       }}
       title={initialData?.create ? "Шинэ хаяг нэмэх" : "Хаяг засах"}
       size="lg"
+      centered
       closeOnClickOutside={false}
     >
       <LoadingOverlay visible={loading} overlayBlur={2} />
@@ -68,14 +76,18 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
           <Grid grow>
             <Grid.Col span={12}>
               <Switch
-                checked={checked}
                 label="Орон нутаг"
                 {...form.getInputProps("type", { type: "checkbox" })}
-                onChange={(event) => {
-                  setChecked(event.currentTarget.checked);
-                }}
                 color="teal"
                 size="sm"
+              />
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <TextInput
+                withAsterisk
+                id="input-name"
+                label="Нэр"
+                {...form.getInputProps("name")}
               />
             </Grid.Col>
             <Grid.Col span={6}>
@@ -84,8 +96,8 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
                 label="Хот/Аймаг"
                 placeholder="Хот / Аймаг сонгоно уу."
                 required
-                {...form.getInputProps(checked ? "province" : "city")}
-                defaultValue={"Улаанбаатар"}
+                {...form.getInputProps(form.values.type ? "province" : "city")}
+                withinPortal
                 data={[
                   {
                     value: "Улаанбаатар",
@@ -114,7 +126,7 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
               <TextInput
                 className="w-full"
                 withAsterisk
-                id="input-demo"
+                id="input-district"
                 label="Дүүрэг / Сум"
                 {...form.getInputProps("district")}
               />
@@ -123,7 +135,7 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
               <TextInput
                 className="w-full"
                 withAsterisk
-                id="input-demo"
+                id="input-committee"
                 label="Хороо / Баг"
                 {...form.getInputProps("committee")}
               />
@@ -132,7 +144,7 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
               <TextInput
                 className="w-full"
                 withAsterisk
-                id="input-demo"
+                id="input-street"
                 label="Гудамж"
                 {...form.getInputProps("street")}
               />
@@ -141,7 +153,7 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
               <TextInput
                 className="w-full"
                 withAsterisk
-                id="input-demo"
+                id="input-apartment"
                 label="Байр / Байгуулга"
                 {...form.getInputProps("apartment")}
               />
@@ -150,7 +162,7 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
               <TextInput
                 className="w-full"
                 withAsterisk
-                id="input-demo"
+                id="input-number"
                 label="Тоот"
                 {...form.getInputProps("number")}
               />
@@ -159,9 +171,20 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
               <TextInput
                 className="w-full"
                 withAsterisk
-                id="input-demo"
+                id="input-phone"
+                type="tel"
                 label="Утасны дугаар"
                 {...form.getInputProps("phone")}
+              />
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Textarea
+                className="w-full"
+                withAsterisk
+                id="input-note"
+                label="Нэмэлт тайлбар"
+                {...form.getInputProps("note")}
+                maxLength={250}
               />
             </Grid.Col>
             <Grid.Col span={12}>
