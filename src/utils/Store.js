@@ -45,6 +45,28 @@ function reducer(state, action) {
             }
             return { ...state, cart: { ...state.cart, cartItems } }
         }
+        case 'CART_ADD_QUANTITY': {
+            const cartItems = action.payload
+            let value = { ...state, cart: { ...state.cart, cartItems } }
+            if (typeof window !== "undefined") {
+                // client-side operation such as local storage.
+                localStorage.setItem("cartItems", JSON.stringify(value))
+                window.dispatchEvent(new Event('storage'))
+            }
+            return { ...state, cart: { ...state.cart, cartItems } }
+
+        }
+        case 'CART_REMOVE_QUANTITY': {
+            const cartItems = action.payload
+            let value = { ...state, cart: { ...state.cart, cartItems } }
+            if (typeof window !== "undefined") {
+                // client-side operation such as local storage.
+                localStorage.setItem("cartItems", JSON.stringify(value))
+                window.dispatchEvent(new Event('storage'))
+            }
+            return { ...state, cart: { ...state.cart, cartItems } }
+
+        }
         default:
             return state;
     }

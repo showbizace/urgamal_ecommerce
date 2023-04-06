@@ -33,10 +33,9 @@ const Navbar = () => {
       localStorageCart.cart.cartItems.forEach((e) => {
         if (e !== null) {
           sum = sum + e.quantity;
-          total = total + parseInt(e.total)
+          total = total + parseInt(e.totalPrice)
         }
       });
-      console.log(localStorageCart, "local")
       setQuantity(sum);
       setTotal(total);
     }

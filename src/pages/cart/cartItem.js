@@ -247,7 +247,6 @@ const CartItems = (props) => {
   };
 
   const makeOrder = async () => {
-    open()
     if (userToken !== null && userToken !== undefined && userToken !== "") {
       if (select) {
         const data = `Хот: ${selectedShippingData.city}, Дүүрэг: ${selectedShippingData.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData.street}, Байр: ${selectedShippingData.apartment}, Тоот: ${selectedShippingData.number}, Утас: ${selectedShippingData.phone}`;
@@ -268,6 +267,7 @@ const CartItems = (props) => {
         if (res.status === 200) {
           const data = await res.json();
           if (data.success === true) {
+            open()
             let temp = [];
             setCartItem(temp);
             dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
@@ -306,6 +306,10 @@ const CartItems = (props) => {
         }
       });
       setCartItem(temp);
+      dispatch({
+        type: "CART_REMOVE_QUANTITY",
+        payload: temp,
+      });
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + userToken);
       myHeaders.append("Content-Type", "application/json");
@@ -347,6 +351,10 @@ const CartItems = (props) => {
         }
       });
       setCartItem(temp);
+      dispatch({
+        type: "CART_ADD_QUANTITY",
+        payload: temp,
+      });
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + userToken);
       myHeaders.append("Content-Type", "application/json");
@@ -359,16 +367,18 @@ const CartItems = (props) => {
           cartid: product.cartid,
         }),
       };
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
-        requestOption
-      );
-      if (res.status === 200) {
-        const data = await res.json();
-        console.log(data, "dasdasdasd");
-        if (data.success === true) {
-          console.log(data.message, "message");
-          setButtonPressed(false);
+      if (userToken !== null && userToken !== "" && userToken !== undefined) {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
+          requestOption
+        );
+        if (res.status === 200) {
+          const data = await res.json();
+          console.log(data, "dasdasdasd");
+          if (data.success === true) {
+            console.log(data.message, "message");
+            setButtonPressed(false);
+          }
         }
       }
     }
@@ -438,8 +448,8 @@ const CartItems = (props) => {
                     className="mr-3"
                     onClick={() =>
                       item.purchaseCount
-                        ? debounce(() => minusQuantity(item.purchaseCount, item), 2000)
-                        : debounce(() => minusQuantity(item.quantity, item), 2000)
+                        ? minusQuantity(item.purchaseCount, item)
+                        : minusQuantity(item.quantity, item)
                     }
                   >
                     <IconMinus size="1.2rem" color="#212529" />
@@ -457,8 +467,8 @@ const CartItems = (props) => {
                     className="ml-3"
                     onClick={() =>
                       item.purchaseCount
-                        ? debounce(() => addQuantity(item.purchaseCount, item), 2000)
-                        : debounce(() => addQuantity(item.quantity, item), 2000)
+                        ? addQuantity(item.purchaseCount, item)
+                        : addQuantity(item.quantity)
                     }
                   >
                     <IconPlus size="1.2rem" color="#212529" />

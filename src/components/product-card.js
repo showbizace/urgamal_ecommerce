@@ -66,7 +66,8 @@ const ProductCard = ({ src, data }) => {
           setLoading(false);
         }
       }
-    } else {
+    }
+    else {
       console.log("sucesssss");
       SuccessNotification({
         message: "Сагсанд амжилттай орлоо.!",
