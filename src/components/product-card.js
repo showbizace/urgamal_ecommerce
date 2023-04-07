@@ -29,6 +29,7 @@ const ProductCard = ({ src, data }) => {
     }
   };
   const addToCartHandler = async (event, data) => {
+
     event.stopPropagation();
     dispatch({
       type: "CART_ADD_ITEM",

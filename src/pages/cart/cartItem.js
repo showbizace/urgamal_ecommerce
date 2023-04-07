@@ -34,6 +34,7 @@ const CartItems = (props) => {
   const [isChangeQuantity, setIsChangeQuantity] = useState(false);
   const [total, setTotal] = useState();
   const [stock, setStock] = useState();
+  const [orderId, setOrderId] = useState()
   const [purchaseQuantity, setPurchaseQuantity] = useState();
   const [isChangeAdd, setIsChangeAdd] = useState(false);
   const [userToken, setUserToken] = useState("");
@@ -275,6 +276,7 @@ const CartItems = (props) => {
           const data = await res.json();
           if (data.success === true) {
             open()
+            setOrderId(data.orderid)
             let temp = [];
             setCartItem(temp);
             dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
@@ -519,7 +521,7 @@ const CartItems = (props) => {
             {/* <p className="font-semibold">Гүйлгээний утга : </p> */}
             <p className="ml-2"></p>
             <p className="mt-4">
-              Та гүйлгээний утган дээрээ өөрийн утасны дугаараа заавал
+              Та гүйлгээний утган дээр <span className="font-semibold">{orderId}</span> дугаартай захиалгын дугаар болон өөрийн утасны дугаараа заавал
               оруулаарай!
             </p>
           </div>
