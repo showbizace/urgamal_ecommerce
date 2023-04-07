@@ -21,6 +21,7 @@ import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import { SuccessNotification } from "../../utils/SuccessNotification";
 import { getCookie, setCookie } from "cookies-next";
 import debounce from "lodash.debounce";
+import { openContextModal } from "@mantine/modals";
 
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
@@ -296,7 +297,16 @@ const CartItems = (props) => {
         });
       }
     } else {
-      router.push("/login");
+      openContextModal({
+        modal: "login",
+        id: "login-modal",
+        title: (
+          <Text size="sm" weight={400}>
+            Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
+          </Text>
+        ),
+        centered: true,
+      });
     }
   };
 
