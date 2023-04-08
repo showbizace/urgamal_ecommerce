@@ -22,9 +22,8 @@ import MySkeleton from "@/components/MySkeleton";
 import Loading from "./loading";
 export async function getStaticProps() {
   const requestOption = {
-    method: "POST",
+    method: "GET",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ limit: 20, offset: 0 }),
   };
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/product/local`,
