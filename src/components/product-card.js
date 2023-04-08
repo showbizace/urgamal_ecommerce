@@ -29,7 +29,6 @@ const ProductCard = ({ src, data }) => {
     }
   };
   const addToCartHandler = async (event, data) => {
-
     event.stopPropagation();
     dispatch({
       type: "CART_ADD_ITEM",
@@ -67,8 +66,7 @@ const ProductCard = ({ src, data }) => {
           setLoading(false);
         }
       }
-    }
-    else {
+    } else {
       console.log("sucesssss");
       SuccessNotification({
         message: "Сагсанд амжилттай орлоо.!",
@@ -90,7 +88,7 @@ const ProductCard = ({ src, data }) => {
         loader={() => src}
         alt={src}
       />
-      <div className="flex flex-col justify-start items-start">
+      <div className="flex flex-col justify-start items-start w-full">
         <Text className="text-2xl mt-1" lineClamp={2}>
           {data?.name}
         </Text>
@@ -112,8 +110,8 @@ const ProductCard = ({ src, data }) => {
           )}
         </div>
         <p className="font-semibold text-base mt-1">{data?.price}₮</p>
-        <div className="flex flex-row w-full mt-1 justify-between">
-          <Button
+        <div className="flex flex-row gap-4 w-full mt-1 justify-between">
+          {/* <Button
             variant={"filled"}
             color="red"
             style={{ padding: "10px" }}
@@ -123,7 +121,8 @@ const ProductCard = ({ src, data }) => {
             className="flex justify-center items-center bg-tertiary rounded-md "
           >
             <Image width={18} height={8} src="/icons/hearth2.svg" />
-          </Button>
+          </Button> */}
+
           <div className="flex flex-row items-center">
             <Button
               variant={"outline"}
@@ -150,8 +149,28 @@ const ProductCard = ({ src, data }) => {
               <Image src="/icons/add.svg" width={13} height={6} />
             </Button>
           </div>
+          <Button
+            variant={"filled"}
+            className="bg-button-yellow rounded-md  hover:cursor-pointer"
+            color={"orange"}
+            onClick={(event) => addToCartHandler(event, data)}
+          >
+            {loading === true ? (
+              <LoadingOverlay
+                loaderProps={{ size: "sm", color: "white" }}
+                overlayOpacity={0.1}
+                visible={loading}
+              />
+            ) : (
+              <div className="flex items-center">
+                <p className="text-sm text-white font-semibold ">Сагслах</p>
+                {/* <Image width={18} height={18} src={"/icons/trolley2.svg"} /> */}
+              </div>
+            )}
+          </Button>
         </div>
-        <Button
+
+        {/* <Button
           variant={"filled"}
           style={{ width: "100%" }}
           className="flex justify-center items-center p-1 bg-button-yellow rounded-md mt-1 hover:cursor-pointer"
@@ -175,7 +194,7 @@ const ProductCard = ({ src, data }) => {
               />
             </div>
           )}
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

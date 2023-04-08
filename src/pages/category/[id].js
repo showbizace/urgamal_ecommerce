@@ -1,11 +1,10 @@
 import Image from "next/image";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import { Collapse, Text, Grid } from "@nextui-org/react";
-import Category from "@/components/category";
 import ProductCard from "../../components/product-card";
 import { Footer, Skeleton } from "@mantine/core";
 import BottomFooter from "../../components/Footer";
-import ProductCardExample from "../../components/ProductCardExample";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import MySkeleton from "@/components/MySkeleton";
@@ -312,27 +311,46 @@ const CategoryPage = () => {
                 style={{ borderRadius: "5px !important", boxShadow: "none" }}
               >
                 <div
-                  className="flex flex-row justify-between px-4 py-4 w-full mx-4"
+                  className="flex flex-row justify-between py-4 px-4 w-full"
                   style={{
                     borderBottom: "1px solid rgba(132, 132, 132, 0.18)",
                   }}
                 >
                   <p className="font-semibold text-lg">Ангилал</p>
-                  <Image
-                    src={"/icons/plant.svg"}
-                    width={25}
-                    height={25}
-                    color={"#8DC57F"}
-                  />
                 </div>
                 <Grid style={{ width: "100%" }} grow gutter="xs">
-                  <Collapse.Group divider={true} css={{ marginTop: "0px" }}>
+                  <Collapse.Group
+                    divider={false}
+                    css={{
+                      marginTop: "0px",
+                      paddingTop: "0.6rem",
+                      paddingBottom: "0.6rem",
+                      paddingRight: "1rem",
+                      paddingLeft: "1rem",
+                    }}
+                  >
                     {main !== undefined &&
                       main.map((e) => {
                         if (e.id == id) {
                           return (
                             <Collapse
-                              title={e.name}
+                              title={[
+                                <Link
+                                  href={`/category/${e.id}`}
+                                  as="/category"
+                                  shallow
+                                  className="hover:text-[#fd7e14]"
+                                  // onClick={() => {
+                                  //   router.push({
+                                  //     shallow: true,
+                                  //     pathname: "/category/[id]",
+                                  //     query: { id: e.id },
+                                  //   });
+                                  // }}
+                                >
+                                  {e.name}
+                                </Link>,
+                              ]}
                               style={{ width: "100%" }}
                               cs={{ paddingTop: "0px" }}
                               expanded={true}
@@ -344,15 +362,9 @@ const CategoryPage = () => {
                                 parent.map((el) => {
                                   if (e.id === el.main_cat_id) {
                                     return (
-                                      <Collapse.Group divider={true}>
-                                        <Collapse
-                                          title={el.name}
-                                          onChange={(x, value, val) => {
-                                            getParentProduct(e.id, el.id, val);
-                                          }}
-                                        >
-                                          <Text>{el.name}</Text>
-                                          <div className="max-h-64 overflow-auto scrollbar-hide">
+                                      <Collapse.Group divider={false}>
+                                        <Collapse title={el.name}>
+                                          <div className="max-h-96 overflow-auto scrollbar-hide">
                                             {child !== undefined &&
                                               child.map((item) => {
                                                 if (
@@ -361,14 +373,13 @@ const CategoryPage = () => {
                                                 ) {
                                                   return (
                                                     <Text
-                                                      style={{ width: "100%" }}
-                                                      onClick={() =>
-                                                        getChildProduct(
-                                                          e.id,
-                                                          el.id,
-                                                          item.id
-                                                        )
-                                                      }
+                                                      className="w-full p-4 cursor-pointer hover:text-red"
+                                                      onClick={() => {
+                                                        router.push({
+                                                          pathname: `/category/${e.id}`,
+                                                          shallow: true,
+                                                        });
+                                                      }}
                                                     >
                                                       {item.name}
                                                     </Text>
