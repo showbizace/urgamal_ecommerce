@@ -2,71 +2,62 @@ import Image from "next/image";
 import { forwardRef, useEffect, useState } from "react";
 import { Autocomplete, Group, Avatar, Text, rem } from "@mantine/core";
 import { useRouter } from "next/router";
+import axios from "axios";
+import useSWR from "swr";
+import { useDebouncedValue } from "@mantine/hooks";
+import { IconPackage } from "@tabler/icons-react";
+
+const fetcher = (url) =>
+  axios
+    .get(url)
+    .then((res) => res.data.data)
+    .catch(() => {});
+
 const Search = () => {
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debounced] = useDebouncedValue(searchQuery, 250);
   // const [data, setData] = useState()
-  const charactersList = [
-    {
-      image: "/bundle-1.svg",
-      label: "Энерген Экстра",
-      description: "150000₮",
-    },
-    {
-      image: "/bundle-1.svg",
-      label: "Энерген Экстра",
-      description: "150000₮",
-    },
-    {
-      image: "/bundle-1.svg",
-      label: "Энерген Экстра",
-      description: "150000₮",
-    },
-    {
-      image: "/bundle-1.svg",
-      label: "Энерген Экстра",
-      description: "150000₮",
-    },
-  ];
-  const data = charactersList.map((item) => ({ ...item, value: item.label }));
 
-  // useEffect(() => {
-  //   getSearchData()
-  // }, [])
+  const { data, error, isLoading, mutate, isValidating } = useSWR(
+    `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/product/local?limit=${10}&query=${debounced}`,
+    fetcher
+  );
+  const suggestions = data
+    ? data.map((e) => {
+        return {
+          value: e.name,
+          id: e.id,
+          image: e.product_image?.images?.[0],
+          description: e.description,
+        };
+      })
+    : [];
 
-  // const getSearchData = async () => {
-  //   if (token !== undefined && token !== null && token !== "") {
-  //     console.log(token, "token");
-  //     var myHeaders = new Headers();
-  //     myHeaders.append("Authorization", "Bearer " + token);
-  //     myHeaders.append("Content-Type", "application/json");
-  //     const requestOption = {
-  //       method: "GET",
-  //       headers: myHeaders,
-  //     };
-  //     const res = await fetch(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/product/search?search=${data}`,
-  //       requestOption
-  //     );
-  //     if (res.status === 200) {
-  //       const data = await res.json();
-  //       console.log(data, "data");
-  //       if (data.success === true) {
-  //         setData(data.data[10])
-  //       }
-  //     }
-  //   }
-  // }
+  useEffect(() => {
+    mutate();
+  }, [debounced]);
 
-  const Autocomplete2 = forwardRef((props, ref) => {
+  const AutocompleteItem = forwardRef(({ image, value, ...others }, ref) => {
     return (
-      <div ref={ref} style={{ padding: "10px", marginTop: "5px" }}>
+      <div
+        ref={ref}
+        style={{ padding: "10px", marginTop: "5px" }}
+        className=" hover:cursor-pointer hover:bg-gray-100 hover:rounded-md"
+        {...others}
+      >
         <Group noWrap>
-          <Avatar src={props.image} />
+          <Avatar src={image} alt="Зураг">
+            {" "}
+            <IconPackage stroke={1.5} />
+          </Avatar>
           <div>
-            <Text>{props.value}</Text>
-            <Text size="xs" color="dimmed">
-              {props.description}
-            </Text>
+            <Text>{value}</Text>
+            {/* <Text size="xs" color="dimmed">
+              {props?.description}
+            </Text> */}
           </div>
         </Group>
       </div>
@@ -81,7 +72,10 @@ const Search = () => {
         <Image src={"/icons/cube.svg"} width={18} height={18} />
         <p className=" text-white ml-2 font-normal text-sm">Бүх ангилал</p>
       </div>
-      <div className=" bg-search-background rounded-md ml-4 flex flex-row py-1 justify-between" style={{ width: "76%", }}>
+      <div
+        className=" bg-search-background rounded-md ml-4 flex flex-row py-1 justify-between"
+        style={{ width: "76%" }}
+      >
         <div
           className="flex justify-center items-center flex-row px-4 my-1"
           style={{ borderRight: "1px solid rgba(0, 30, 29, 0.14)" }}
@@ -98,27 +92,52 @@ const Search = () => {
         <Autocomplete
           className="navbar-input"
           placeholder="Хүссэн бараагаа хайгаарай.."
-          itemComponent={Autocomplete2}
-          data={data !== undefined && data}
+          itemComponent={AutocompleteItem}
+          data={suggestions ? suggestions : []}
+          limit={10}
           styles={{
             root: {
               paddingLeft: "5px",
-              paddingRight: "5px"
+              paddingRight: "5px",
             },
             input: {
               border: "none",
               backgroundColor: "rgba(235, 239, 238, 0.9);",
             },
           }}
-          oncha
-          filter={(value, item) => {
-
+          value={searchQuery}
+          onChange={setSearchQuery}
+          onKeyDown={(e) => {
+            if (e.code === "Enter") {
+              router.push({
+                pathname: "/products",
+                query: { q: searchQuery },
+              });
+            }
+          }}
+          onItemSubmit={({ id }) =>
+            router.push({
+              pathname: "/product/[id]",
+              query: { id },
+            })
           }
-          }
+          // filter={(value, item) =>
+          //   item.value.toLowerCase().includes(value.toLowerCase().trim()) ||
+          //   item.description.toLowerCase().includes(value.toLowerCase().trim())
+          // }
+          // onFocus={mutate}
         />
-        <div className="flex justify-center items-center bg-background-sort p-2 rounded-md mr-1">
+        <button
+          className="flex justify-center items-center bg-background-sort p-2 rounded-md mr-1"
+          onClick={() => {
+            router.push({
+              pathname: "/products",
+              query: { q: searchQuery },
+            });
+          }}
+        >
           <Image src="/icons/search.svg" width={20} height={20} />
-        </div>
+        </button>
       </div>
       <div className="flex flex-row justify-end" style={{ width: "13%" }}>
         {/* <div className="flex gap-10">
