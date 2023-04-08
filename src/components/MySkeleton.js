@@ -1,10 +1,7 @@
 import { Skeleton } from "@mantine/core";
-const MySkeleton = () => {
+const MySkeleton = ({ key }) => {
   return (
-    <div
-      style={{ width: "22.3%", height: "330px" }}
-      className="bg-white rounded-md"
-    >
+    <div key={key || ""} className="bg-white rounded-md h-full w-full">
       <Skeleton mb="xl" width={"100%"} height={"40%"} />
       <div className="p-3 -mt-4">
         <Skeleton height={12} />
