@@ -20,14 +20,25 @@ import { useEffect, useCallback, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import MySkeleton from "@/components/MySkeleton";
 import Loading from "./loading";
+import useSWRInfinite from "swr/infinite";
+import ProductGridList from "@/components/ProductGridList/ProductGridList";
+import axios from "axios";
+
+const fetcher = (url) =>
+  axios
+    .get(url, { headers: { "Content-Type": "application/json" } })
+    .then((res) => {
+      return res.data.data;
+    })
+    .catch((error) => console.log(error));
+const PAGE_SIZE = 25;
 export async function getStaticProps() {
   const requestOption = {
-    method: "POST",
+    method: "GET",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ limit: 20, offset: 0 }),
   };
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/product/local`,
+    `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=0&limit=${PAGE_SIZE}`,
     requestOption
   );
   const data = await res.json();
@@ -40,26 +51,15 @@ export async function getStaticProps() {
 
 export default function Home({ data }) {
   const [positionSticky, setPositionSticky] = useState(false);
-  const [isBottom, setIsBottom] = useState(false);
-  const [productData, setProductData] = useState([]);
-  const arr = [1, 2, 3, 4, 5, 6];
-  const [offset, setOffset] = useState(0);
+  const [products, setProducts] = useState([]);
+
   const [main, setMain] = useState();
   const [parent, setParent] = useState();
   const [child, setChild] = useState();
 
   const onScroll = useCallback((event) => {
-    const wrappedElement = document.getElementById("content");
-    if (isBottomhh(wrappedElement)) {
-      setIsBottom(true);
-      setOffset((prev) => prev + 1);
-      window.removeEventListener("scroll", onScroll);
-    } else {
-      window.addEventListener("scroll", onScroll);
-    }
     const { pageYOffset, scrollY, innerHeight } = window;
     const bottom = document.documentElement.scrollHeight;
-
     if (
       (pageYOffset >= 1308 || scrollY >= 1308) &&
       (pageYOffset < bottom - 800 || scrollY < bottom - 800)
@@ -73,47 +73,51 @@ export default function Home({ data }) {
     }
   }, []);
 
+  const {
+    data: fetchData,
+    mutate,
+    size,
+    setSize,
+    isValidating,
+    isLoading,
+    error,
+  } = useSWRInfinite(
+    (index) =>
+      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index}&limit=${PAGE_SIZE}`,
+    fetcher,
+    { revalidateFirstPage: false }
+  );
   useEffect(() => {
-    if (isBottom === true) {
-      window.addEventListener("scroll", onScroll);
-      getProduct();
-    }
-  }, [isBottom]);
-
-  function isBottomhh(el) {
-    return el.getBoundingClientRect().bottom <= window.innerHeight;
-  }
-
-  const getProduct = async () => {
-    console.log(offset, "offset");
-    const requestOption = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ limit: 20, offset: offset }),
-    };
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/product/local`,
-      requestOption
-    );
-    const data = await res.json();
-    const dataState = data.data;
-    if (dataState.length > 0) {
-      let temp = [...productData];
-      const merge = temp.concat(dataState);
-      setProductData(merge);
-      setIsBottom(false);
-    } else {
-      window.removeEventListener("scroll", onScroll);
-      setIsBottom(false);
-    }
+    fetchData && setProducts((prev) => [...prev, fetchData]);
+  }, [fetchData]);
+  const isLoadingMore =
+    isLoading ||
+    (size > 0 && fetchData && typeof fetchData[size - 1] === "undefined");
+  const isEmpty = fetchData?.[0]?.length === 0;
+  const isReachingEnd =
+    isEmpty ||
+    (fetchData && fetchData[fetchData.length - 1]?.length < PAGE_SIZE);
+  const isRefreshing = isValidating && fetchData && fetchData.length === size;
+  const infiniteScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 350 >=
+        document.documentElement.offsetHeight &&
+      !isEmpty &&
+      !isReachingEnd
+    )
+      setSize(size + 1);
   };
+  useEffect(() => {
+    window.addEventListener("scroll", infiniteScroll);
+    return () => window.removeEventListener("scroll", infiniteScroll);
+  }, [fetchData]);
 
   useEffect(() => {
     //add eventlistener to window
     window.addEventListener("scroll", onScroll);
     // remove event on unmount to prevent a memory leak with the cleanup
     window.dispatchEvent(new Event("storage"));
-    setProductData(data.data);
+    setProducts(data.data);
     getAllCategory();
     return () => {
       window.removeEventListener("scroll", onScroll);
@@ -186,43 +190,26 @@ export default function Home({ data }) {
             <div className="flex flex-col md:w-[7x%] lg:w-[73%]">
               {/* <FeatureProductList /> */}
               {/* <NewProduct /> */}
-              <Suspense fallback={<Loading />}>
-                <div className="flex flex-col">
-                  <div className="grid grid-cols-4 gap-8 " id={"content"}>
-                    {productData.map((e) => {
-                      return (
-                        <div
-                          onClick={() => clickProduct(e)}
-                          className="transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110
-                            w-full
-                          "
-                        >
-                          <ProductCard
-                            src={
-                              e.product_image !== null &&
-                              e.product_image.images[0] !== null
-                                ? `${e.product_image.images[0]}`
-                                : "/bundle-1.svg"
-                            }
-                            data={e}
-                          />
-                        </div>
-                      );
-                    })}
-                    {isBottom === true ? (
-                      arr.map((e) => <MySkeleton />)
-                    ) : (
-                      <div></div>
-                    )}
+
+              <ProductGridList showSkeleton={isLoading || isValidating}>
+                {products.map((e, index) => (
+                  <div
+                    key={`${index}-${e.id}`}
+                    onClick={() => clickProduct(e)}
+                    className="transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110"
+                  >
+                    <ProductCard
+                      src={
+                        e.product_image !== null &&
+                        e.product_image.images?.[0] !== null
+                          ? `${e.product_image.images[0]}`
+                          : "/bundle-1.svg"
+                      }
+                      data={e}
+                    />
                   </div>
-                  {/* <div className="mt-6 flex justify-center items-center w-full">
-                                    <LoadingOverlay
-                                        loaderProps={{ size: 'sm', color: 'blue', }}
-                                        visible={true}
-                                    />
-                                </div> */}
-                </div>
-              </Suspense>
+                ))}
+              </ProductGridList>
             </div>
           </div>
         </div>

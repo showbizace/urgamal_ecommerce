@@ -11,7 +11,6 @@ import { useRouter } from "next/router";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Virtuoso, VirtuosoGrid } from "react-virtuoso";
 import useSWRInfinite from "swr/infinite";
-
 const fetcher = (url) =>
   axios
     .get(url, { headers: { "Content-Type": "application/json" } })
@@ -26,9 +25,7 @@ export default function SearchResult() {
   const { data, mutate, size, setSize, isValidating, isLoading, error } =
     useSWRInfinite(
       (index) =>
-        `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${
-          index + 1
-        }&limit=${PAGE_SIZE}&query=${q}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index}&limit=${PAGE_SIZE}&query=${q}`,
       fetcher,
       { revalidateFirstPage: false }
     );
@@ -162,7 +159,14 @@ export default function SearchResult() {
               onClick={() => clickProduct(e)}
               className="transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110"
             >
-              <ProductCard src={"/bundle-1.svg"} data={e} />
+              <ProductCard
+                src={
+                  e.product_image !== null && e.product_image.images[0] !== null
+                    ? `${e.product_image.images[0]}`
+                    : "/bundle-1.svg"
+                }
+                data={e}
+              />
             </div>
           ))}
         </ProductGridList>
