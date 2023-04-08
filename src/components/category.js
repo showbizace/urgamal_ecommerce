@@ -19,33 +19,42 @@ const Category = ({ positionSticky, parent, main, child }) => {
         style={{ borderRadius: "5px !important", boxShadow: "none" }}
       >
         <div
-          className="flex flex-row justify-between px-4 py-4 w-full mx-4"
+          className="flex flex-row justify-between py-4 px-4 w-full"
           style={{ borderBottom: "1px solid rgba(132, 132, 132, 0.18)" }}
         >
           <p className="font-semibold text-lg">Ангилал</p>
-          <Image
-            src={"/icons/plant.svg"}
-            width={25}
-            height={25}
-            color={"#8DC57F"}
-          />
         </div>
         <Grid style={{ width: "100%" }} grow gutter="xs">
-          <Collapse.Group divider={false} css={{ marginTop: "0px" }}>
+          <Collapse.Group
+            divider={false}
+            accordion={false}
+            css={{
+              marginTop: "0px",
+              paddingTop: "0.6rem",
+              paddingBottom: "0.6rem",
+              paddingRight: "1rem",
+              paddingLeft: "1rem",
+            }}
+          >
             {main !== undefined &&
               main.map((e) => {
                 return (
                   <Collapse
-                    title={e.name}
-                    style={{ width: "100%" }}
-                    cs={{ paddingTop: "0px" }}
-                    onClick={() => {
-                      router.push({
-                        shallow: true,
-                        pathname: "/category/[id]",
-                        query: { id: e.id },
-                      });
-                    }}
+                    title={[
+                      <span
+                        className="hover:text-[#fd7e14]"
+                        onClick={() => {
+                          router.push({
+                            shallow: true,
+                            pathname: "/category/[id]",
+                            query: { id: e.id },
+                          });
+                        }}
+                      >
+                        {e.name}
+                      </span>,
+                    ]}
+                    expanded={false}
                   >
                     {parent !== undefined &&
                       parent.map((el) => {
@@ -53,7 +62,6 @@ const Category = ({ positionSticky, parent, main, child }) => {
                           return (
                             <Collapse.Group divider={false}>
                               <Collapse title={el.name}>
-                                <Text>{el.name}</Text>
                                 <div className="max-h-96 overflow-auto scrollbar-hide">
                                   {child !== undefined &&
                                     child.map((item) => {
@@ -62,7 +70,7 @@ const Category = ({ positionSticky, parent, main, child }) => {
                                         el.id === item.parent_id
                                       ) {
                                         return (
-                                          <Text style={{ width: "100%" }}>
+                                          <Text className="w-full p-4 cursor-pointer hover:text-red">
                                             {item.name}
                                           </Text>
                                         );

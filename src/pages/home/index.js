@@ -171,11 +171,11 @@ export default function Home({ data }) {
     <div>
       <GlobalLayout>
         <Banner />
-        <div className="px-32 mb-16">
+        <div className="px-10 mb-16">
           {/* <FeatureProduct /> */}
           {/* <FeatureBundle /> */}
-          <div className="flex flex-row mt-12">
-            <div style={{ width: "30%", height: "80%", position: "relative" }}>
+          <div className="flex flex-row justify-between mt-12">
+            <div style={{ width: "25%", height: "80%", position: "relative" }}>
               <Category
                 positionSticky={positionSticky}
                 parent={parent}
@@ -183,22 +183,19 @@ export default function Home({ data }) {
                 child={child}
               />
             </div>
-            <div className="flex flex-col ml-12 " style={{ width: "70%" }}>
+            <div className="flex flex-col md:w-[7x%] lg:w-[73%]">
               {/* <FeatureProductList /> */}
               {/* <NewProduct /> */}
               <Suspense fallback={<Loading />}>
                 <div className="flex flex-col">
-                  <div
-                    style={{ width: "100%", gap: "30px", flexWrap: "wrap" }}
-                    className="flex flex-row "
-                    id={"content"}
-                  >
+                  <div className="grid grid-cols-4 gap-8 " id={"content"}>
                     {productData.map((e) => {
                       return (
                         <div
-                          style={{ width: "22.3%" }}
                           onClick={() => clickProduct(e)}
-                          className="transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110"
+                          className="transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110
+                            w-full
+                          "
                         >
                           <ProductCard
                             src={
