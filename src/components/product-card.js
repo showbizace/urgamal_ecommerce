@@ -29,6 +29,7 @@ const ProductCard = ({ src, data }) => {
     }
   };
   const addToCartHandler = async (event, data) => {
+
     event.stopPropagation();
     dispatch({
       type: "CART_ADD_ITEM",
@@ -66,7 +67,8 @@ const ProductCard = ({ src, data }) => {
           setLoading(false);
         }
       }
-    } else {
+    }
+    else {
       console.log("sucesssss");
       SuccessNotification({
         message: "Сагсанд амжилттай орлоо.!",

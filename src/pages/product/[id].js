@@ -10,11 +10,12 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import "swiper/css";
 import "swiper/css/pagination";
 import ProductCardExample from "../../components/ProductCardExample";
-import { LoadingOverlay, Button } from "@mantine/core";
+import { LoadingOverlay, Button, Badge } from "@mantine/core";
 import { Store } from "@/utils/Store";
 import { getCookie } from "cookies-next";
 import { SuccessNotification } from "../../utils/SuccessNotification";
 import { IconHeart } from "@tabler/icons-react";
+import BottomFooter from "@/components/Footer";
 export async function getServerSideProps({ params }) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/product/single?productid=${params.id}`
@@ -69,15 +70,15 @@ const ProductDetail = ({ product }) => {
     }
   };
   return (
-    <GlobalLayout title={product.name}>
-      <div className="px-32">
+    <GlobalLayout title={product?.name}>
+      <div className="px-32 pb-28">
         <div className="flex gap-14 pt-12 justify-center">
           {/* <Image src="https://m.media-amazon.com/images/I/71MzNrCPYsL.jpg" width={50} height={50} /> */}
           {/* <Image src="/bundle-1.svg" width={315} height={380} /> */}
           <Magnifier
             imgSrc={
-              product.product_image !== null
-                ? `https://${product.product_image.images[0]}`
+              product?.product_image !== null
+                ? `${product?.product_image.images[0]}`
                 : "/bundle-1.svg"
             }
             imgWidth={515}
@@ -131,25 +132,36 @@ const ProductDetail = ({ product }) => {
           </Carousel> */}
 
           <div className="flex flex-col gap-6">
-            <div className=" text-lg font-semibold">{product.name}</div>
+            <div className=" text-lg font-semibold">{product?.name}</div>
             <div className="flex font-semibold gap-2">
               <span className="text-greenish-grey  ">Ширхэгийн үнэ:</span>
               <span className=" ">
-                {Intl.NumberFormat("mn-MN").format(product.price)}₮
+                {Intl.NumberFormat("mn-MN").format(product?.price)}₮
               </span>
             </div>
             <div className="flex font-semibold gap-2">
               <span className="text-greenish-grey  ">Бөөний үнэ:</span>
               <span className="text-greenish-grey line-through ">
                 {" "}
-                {Intl.NumberFormat("mn-MN").format(product.promo_price)}₮
+                {Intl.NumberFormat("mn-MN").format(product.price)}₮
               </span>
               <span className="text-greenish-grey  "> / </span>
-              <span> {Intl.NumberFormat("mn-MN").format(product.price)}₮</span>
+              <span>
+                {" "}
+                {Intl.NumberFormat("mn-MN").format(product.promo_price)}₮
+              </span>
             </div>
-            <div className="flex font-semibold  gap-2">
+            <div className="flex font-semibold  gap-2 items-center">
               <span className="text-greenish-grey  ">Үлдэгдэл:</span>
-              <span>{product.instock}</span>
+              {product.instock > 10 ? (
+                <Badge color="green">Үлдэгдэл хангалттай байгаа</Badge>
+              ) : product.instock == 0 ? (
+                <Badge color="red">Үлдэгдэлгүй</Badge>
+              ) : (
+                <span className="text-greenish-grey  ">
+                  {product.instock} {product.unit}
+                </span>
+              )}
             </div>
             <div className="flex gap-2 font-semibold">
               <span className="text-greenish-grey  ">Төрөл:</span>
@@ -158,20 +170,22 @@ const ProductDetail = ({ product }) => {
               )}
               <ProductTypeChip name="Бордоо" />
             </div>
-            <div className="flex flex-col gap-4">
-              <span className="flex font-semibold text-greenish-grey">
-                Хэрэглэх заавар
-              </span>
-              <textarea
-                cols={60}
-                rows={12}
-                readOnly
-                className=" overflow-x-hidden overflow-y-hidden focus: outline-0 py-3 px-3 rounded-md"
-                value="Хэрэглэх заавар, Хэрэглэх заавар, Хэрэглэх заавар, Хэрэглэх заавар, Хэрэглэх заавар, Хэрэглэх заавар, Хэрэглэх заавар,Хэрэглэх заавар, Хэрэглэх заавар, Хэрэглэх заавар, Хэрэглэх
-                заавар, Хэрэглэх заавар, Хэрэглэх заавар, Хэрэглэх заавар, Хэрэглэх заавар, Хэрэглэх заавар, Хэрэглэх заавар, Хэрэглэх заавар , Хэрэглэх заавар, Хэрэглэх заавар, Хэрэглэх заавар,
-                Хэрэглэх заавар, Хэрэглэх"
-              ></textarea>
-            </div>
+            {product.instruction ? (
+              <div className="flex flex-col gap-4">
+                <span className="flex font-semibold text-greenish-grey">
+                  Хэрэглэх заавар
+                </span>
+                <textarea
+                  cols={60}
+                  rows={12}
+                  readOnly
+                  className=" overflow-x-hidden overflow-y-hidden focus: outline-0 py-3 px-3 rounded-md"
+                  value={product.instruction}
+                ></textarea>
+              </div>
+            ) : (
+              <div></div>
+            )}
 
             <div className="flex gap-6 w-full mt-5">
               <Button
@@ -188,7 +202,6 @@ const ProductDetail = ({ product }) => {
               </Button>
               <Button
                 variant={"filled"}
-                style={{ width: "30%" }}
                 size="md"
                 color={"orange"}
                 className="flex-grow flex justify-between items-center px-5 py-3 rounded-md"
@@ -209,13 +222,13 @@ const ProductDetail = ({ product }) => {
                     visible={loading}
                   />
                 ) : (
-                  <span className="font-semibold"> Сагсанд хийх </span>
+                  "Сагсанд хийх "
                 )}
               </Button>
             </div>
           </div>
         </div>
-        <hr className="my-10" />
+        {/* <hr className="my-10" />
         <div className="w-full flex flex-col">
           <div className="flex flex-row w-full justify-between">
             <p className="ml-2 text-lg font-semibold">
@@ -313,8 +326,8 @@ const ProductDetail = ({ product }) => {
                 count={"50ш"}
                 price={"15’000"}
               />
-            </div>
-            {/* <Swiper
+            </div> */}
+        {/* <Swiper
               slidesPerView={5}
               spaceBetween={30}
               auto
@@ -363,9 +376,10 @@ const ProductDetail = ({ product }) => {
                 />
               </SwiperSlide>
             </Swiper> */}
-          </div>
-        </div>
+        {/* </div> */}
+        {/* </div> */}
       </div>
+      <BottomFooter />
     </GlobalLayout>
   );
 };

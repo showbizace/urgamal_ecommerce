@@ -1,5 +1,12 @@
-import { Button, Checkbox, Table, ActionIcon, Modal } from "@mantine/core";
-import { useDisclosure } from '@mantine/hooks';
+import {
+  Button,
+  Checkbox,
+  Table,
+  ActionIcon,
+  Modal,
+  Group,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
@@ -13,7 +20,8 @@ import Loading from "../home/loading";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import { SuccessNotification } from "../../utils/SuccessNotification";
 import { getCookie, setCookie } from "cookies-next";
-import debounce from 'lodash.debounce';
+import debounce from "lodash.debounce";
+import { openContextModal } from "@mantine/modals";
 
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
@@ -27,6 +35,7 @@ const CartItems = (props) => {
   const [isChangeQuantity, setIsChangeQuantity] = useState(false);
   const [total, setTotal] = useState();
   const [stock, setStock] = useState();
+  const [orderId, setOrderId] = useState()
   const [purchaseQuantity, setPurchaseQuantity] = useState();
   const [isChangeAdd, setIsChangeAdd] = useState(false);
   const [userToken, setUserToken] = useState("");
@@ -247,7 +256,6 @@ const CartItems = (props) => {
   };
 
   const makeOrder = async () => {
-    open()
     if (userToken !== null && userToken !== undefined && userToken !== "") {
       if (select) {
         const data = `Хот: ${selectedShippingData.city}, Дүүрэг: ${selectedShippingData.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData.street}, Байр: ${selectedShippingData.apartment}, Тоот: ${selectedShippingData.number}, Утас: ${selectedShippingData.phone}`;
@@ -268,6 +276,8 @@ const CartItems = (props) => {
         if (res.status === 200) {
           const data = await res.json();
           if (data.success === true) {
+            open()
+            setOrderId(data.orderid)
             let temp = [];
             setCartItem(temp);
             dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
@@ -287,7 +297,16 @@ const CartItems = (props) => {
         });
       }
     } else {
-      router.push("/login");
+      openContextModal({
+        modal: "login",
+        id: "login-modal",
+        title: (
+          <Text size="sm" weight={400}>
+            Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
+          </Text>
+        ),
+        centered: true,
+      });
     }
   };
 
@@ -306,6 +325,10 @@ const CartItems = (props) => {
         }
       });
       setCartItem(temp);
+      dispatch({
+        type: "CART_REMOVE_QUANTITY",
+        payload: temp,
+      });
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + userToken);
       myHeaders.append("Content-Type", "application/json");
@@ -347,6 +370,10 @@ const CartItems = (props) => {
         }
       });
       setCartItem(temp);
+      dispatch({
+        type: "CART_ADD_QUANTITY",
+        payload: temp,
+      });
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + userToken);
       myHeaders.append("Content-Type", "application/json");
@@ -359,16 +386,18 @@ const CartItems = (props) => {
           cartid: product.cartid,
         }),
       };
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
-        requestOption
-      );
-      if (res.status === 200) {
-        const data = await res.json();
-        console.log(data, "dasdasdasd");
-        if (data.success === true) {
-          console.log(data.message, "message");
-          setButtonPressed(false);
+      if (userToken !== null && userToken !== "" && userToken !== undefined) {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
+          requestOption
+        );
+        if (res.status === 200) {
+          const data = await res.json();
+          console.log(data, "dasdasdasd");
+          if (data.success === true) {
+            console.log(data.message, "message");
+            setButtonPressed(false);
+          }
         }
       }
     }
@@ -438,8 +467,8 @@ const CartItems = (props) => {
                     className="mr-3"
                     onClick={() =>
                       item.purchaseCount
-                        ? debounce(() => minusQuantity(item.purchaseCount, item), 2000)
-                        : debounce(() => minusQuantity(item.quantity, item), 2000)
+                        ? minusQuantity(item.purchaseCount, item)
+                        : minusQuantity(item.quantity, item)
                     }
                   >
                     <IconMinus size="1.2rem" color="#212529" />
@@ -457,8 +486,8 @@ const CartItems = (props) => {
                     className="ml-3"
                     onClick={() =>
                       item.purchaseCount
-                        ? debounce(() => addQuantity(item.purchaseCount, item), 2000)
-                        : debounce(() => addQuantity(item.quantity, item), 2000)
+                        ? addQuantity(item.purchaseCount, item)
+                        : addQuantity(item.quantity)
                     }
                   >
                     <IconPlus size="1.2rem" color="#212529" />
@@ -483,16 +512,34 @@ const CartItems = (props) => {
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title="Дансны мэдээлэл" centered>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="Дансны мэдээлэл"
+        centered
+        padding="lg"
+        size="md"
+        withCloseButton={false}
+        closeOnClickOutside={false}
+      >
         <div className="flex flex-col">
           <div className="flex flex-row">
             <p className="font-semibold">Дансны дугаар : </p>
-            <p className="ml-2" >dasd : </p>
+            <p className="ml-2">51780115496 Хаан банк </p>
           </div>
           <div className="mt-2 flex flex-row">
-            <p className="font-semibold">Гүйлгээний утга : </p>
-            <p className="ml-2">dasda : </p>
+            {/* <p className="font-semibold">Гүйлгээний утга : </p> */}
+            <p className="ml-2"></p>
+            <p className="mt-4">
+              Та гүйлгээний утган дээр <span className="font-semibold">{orderId}</span> дугаартай захиалгын дугаар болон өөрийн утасны дугаараа заавал
+              оруулаарай!
+            </p>
           </div>
+          <Group position="right" mt="45px">
+            <Button color="yellow" onClick={close}>
+              Ойлголоо
+            </Button>
+          </Group>
         </div>
       </Modal>
       <GlobalLayout>
@@ -578,6 +625,7 @@ const CartItems = (props) => {
                       marginRight: 15,
                     },
                   })}
+                  color="yellow"
                   variant="filled"
                   radius="md"
                   size="md"

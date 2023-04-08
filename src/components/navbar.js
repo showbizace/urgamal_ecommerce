@@ -2,11 +2,12 @@ import Image from "next/image";
 import NavBarLinks from "../components/nav-bar-links";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Button } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
 import { Store } from "@/utils/Store";
 import { getCookie } from "cookies-next";
 import { ErrorNotificatipon } from "../utils/SuccessNotification";
+import { openContextModal } from "@mantine/modals";
 const cookie = getCookie("token");
 
 const Navbar = () => {
@@ -33,10 +34,13 @@ const Navbar = () => {
       localStorageCart.cart.cartItems.forEach((e) => {
         if (e !== null) {
           sum = sum + e.quantity;
-          total = total + parseInt(e.total)
+          if (e.totalPrice !== undefined && e.totalPrice !== null) {
+            total = total + parseInt(e.totalPrice)
+          } else {
+            total = total + parseInt(e.total)
+          }
         }
       });
-      console.log(localStorageCart, "local")
       setQuantity(sum);
       setTotal(total);
     }
@@ -87,18 +91,15 @@ const Navbar = () => {
       <div className="flex flex-row">
         <NavBarLinks
           name={"Өрхийн тариаланч"}
-          linkUrl={"hhhh"}
-          onClick={() => print("Hello")}
+          linkUrl={"/"}
+          onClick={() => { }}
         />
-        <div className="px-4 flex justify-center items-center">
-          <Link
-            href={"hhhh"}
-            onClick={() => { }}
-            className="mx-4 text-center text-black"
-          >
-            Мэргэжлийхэнд
-          </Link>
-        </div>
+        <NavBarLinks
+          name={"Мэргэжлийхэнд"}
+          linkUrl={"/"}
+          onClick={() => { }}
+          isLast
+        />
       </div>
       <div className="flex flex-row items-center">
         {/* <Button
@@ -139,7 +140,16 @@ const Navbar = () => {
           className="flex flex-row items-center cursor-pointer"
           onClick={() => {
             if (cookie === undefined || null) {
-              router.push("/login");
+              openContextModal({
+                modal: "login",
+                id: "login-modal",
+                title: (
+                  <Text size="sm" weight={400}>
+                    Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
+                  </Text>
+                ),
+                centered: true,
+              });
             } else {
               route.push("/profile");
             }

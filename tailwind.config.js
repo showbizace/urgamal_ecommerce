@@ -3,10 +3,10 @@ module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     screens: {
-      "sm": "640px",
-      "md": "768px",
-      "lg": "1024px",
-      "xl": "1280px"
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
     },
     fontSize: {
       "sm-1": " 0.7rem",
@@ -33,22 +33,22 @@ module.exports = {
         green2: "#8DC57F",
         tertiary: "#e16162",
         "chip-text": "#173140",
-
       },
       textColor: {
         "greenish-grey": "rgba(53, 105, 102, 0.75)",
-        "description": "#001E1D",
+        description: "#001E1D",
         tertiary: "#e16162",
       },
       backgroundColor: {
         main: "#F1F4F0",
         "chip-grey": "rgba(53, 105, 102, 0.25)",
-        'button-yellow': "#F9BC60",
-        'grey-back': "#EBEFEE"
+        "button-yellow": "#F9BC60",
+        "grey-back": "#EBEFEE",
+        "sutble-blue": "rgba(25, 113, 194, 0.2)",
       },
       borderColor: {
-        'button-yellow': "#F9BC60"
-      }
+        "button-yellow": "#F9BC60",
+      },
     },
   },
   plugins: [],
