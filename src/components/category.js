@@ -1,8 +1,6 @@
 import { Collapse, Text, Grid } from "@nextui-org/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 const Category = ({ positionSticky, parent, main, child }) => {
   const router = useRouter();
@@ -41,18 +39,21 @@ const Category = ({ positionSticky, parent, main, child }) => {
                 return (
                   <Collapse
                     title={[
-                      <span
+                      <Link
+                        href={`/category/${e.id}`}
+                        as="/category"
+                        shallow
                         className="hover:text-[#fd7e14]"
-                        onClick={() => {
-                          router.push({
-                            shallow: true,
-                            pathname: "/category/[id]",
-                            query: { id: e.id },
-                          });
-                        }}
+                        // onClick={() => {
+                        //   router.push({
+                        //     shallow: true,
+                        //     pathname: "/category/[id]",
+                        //     query: { id: e.id },
+                        //   });
+                        // }}
                       >
                         {e.name}
-                      </span>,
+                      </Link>,
                     ]}
                     expanded={false}
                   >
@@ -70,7 +71,15 @@ const Category = ({ positionSticky, parent, main, child }) => {
                                         el.id === item.parent_id
                                       ) {
                                         return (
-                                          <Text className="w-full p-4 cursor-pointer hover:text-red">
+                                          <Text
+                                            className="w-full p-4 cursor-pointer hover:text-red"
+                                            onClick={() => {
+                                              router.push({
+                                                pathname: `/category/${e.id}`,
+                                                shallow: true,
+                                              });
+                                            }}
+                                          >
                                             {item.name}
                                           </Text>
                                         );
