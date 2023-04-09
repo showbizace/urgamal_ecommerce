@@ -103,8 +103,8 @@ const ProductDetail = ({ product }) => {
   }, []);
   return (
     <GlobalLayout title={product?.name}>
-      <div className="flex flex-col w-full min-h-screen xl:px-28 lg:px-20 md:px-16 sm:px-11 py-12  items-start ">
-        <div className="flex  w-full gap-6 justify-center">
+      <div className="flex flex-col w-full min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 py-12  items-start ">
+        <div className="flex  w-full gap-20 justify-start">
           <Category
             positionSticky={false}
             parent={parent}

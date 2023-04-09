@@ -1,25 +1,28 @@
 import { Collapse, Text, Grid } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { IconChevronRight } from "@tabler/icons-react";
 
-const Category = ({ positionSticky, parent, main, child }) => {
+const Category = ({ positionSticky, parent, main, child, padding }) => {
   const router = useRouter();
   return (
     <div
       className={
         positionSticky === true
           ? "rounded-md bg-white fixed top-36  max-w-[20vw] w-[20vw] xl:block lg:block md:block sm:hidden xs2:hidden xs:hidden"
-          : "rounded-md bg-white   max-w-[20vw] w-[20vw] xl:block lg:block md:block sm:hidden xs2:hidden xs:hidden"
+          : "rounded-md bg-white max-w-[20vw] w-[20vw] xl:block lg:block md:block sm:hidden xs2:hidden xs:hidden"
       }
       // fixed top-40 w-80
     >
       <Grid.Container
-        style={{ borderRadius: "5px !important", boxShadow: "none" }}
+        style={{
+          borderRadius: "5px !important",
+          boxShadow: "none",
+          padding: "1rem",
+          padding: padding ? padding : "0px",
+        }}
       >
-        <div
-          className="flex flex-row justify-between py-4 px-4 w-full"
-          style={{ borderBottom: "1px solid rgba(132, 132, 132, 0.18)" }}
-        >
+        <div className="flex flex-row justify-between w-full">
           <p className="font-semibold text-lg">Ангилал</p>
         </div>
         <Grid style={{ width: "100%" }} grow gutter="xs">
@@ -30,14 +33,17 @@ const Category = ({ positionSticky, parent, main, child }) => {
               marginTop: "0px",
               paddingTop: "0.6rem",
               paddingBottom: "0.6rem",
-              paddingRight: "1rem",
-              paddingLeft: "1rem",
+              paddingRight: "0",
+              paddingLeft: "0",
             }}
           >
             {main !== undefined &&
               main.map((e) => {
                 return (
                   <Collapse
+                    id="1"
+                    tabIndex={1}
+                    arrowIcon={[<IconChevronRight color="#fcbc60" />]}
                     title={[
                       <a
                         href={`/category/main/${e.id}`}
@@ -70,6 +76,11 @@ const Category = ({ positionSticky, parent, main, child }) => {
                           return (
                             <Collapse.Group divider={false}>
                               <Collapse
+                                id="2"
+                                tabIndex={2}
+                                arrowIcon={[
+                                  <IconChevronRight color="#fcbc60" />,
+                                ]}
                                 title={[
                                   <a
                                     href={`/category/parent/${el.id}`}
