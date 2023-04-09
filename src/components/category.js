@@ -8,8 +8,8 @@ const Category = ({ positionSticky, parent, main, child }) => {
     <div
       className={
         positionSticky === true
-          ? "rounded-md bg-white fixed top-36"
-          : "rounded-md bg-white w-full"
+          ? "rounded-md bg-white fixed top-36  max-w-[20vw] w-[20vw] xl:block lg:block md:block sm:hidden xs2:hidden xs:hidden"
+          : "rounded-md bg-white   max-w-[20vw] w-[20vw] xl:block lg:block md:block sm:hidden xs2:hidden xs:hidden"
       }
       // fixed top-40 w-80
     >
@@ -39,30 +39,58 @@ const Category = ({ positionSticky, parent, main, child }) => {
                 return (
                   <Collapse
                     title={[
-                      <Link
-                        href={`/category/${e.id}`}
-                        as="/category"
-                        shallow
+                      <a
+                        href={`/category/main/${e.id}`}
                         className="hover:text-[#fd7e14]"
-                        // onClick={() => {
-                        //   router.push({
-                        //     shallow: true,
-                        //     pathname: "/category/[id]",
-                        //     query: { id: e.id },
-                        //   });
-                        // }}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          router.push(`/category/main/${e.id}`);
+                        }}
                       >
                         {e.name}
-                      </Link>,
+                      </a>,
                     ]}
-                    expanded={false}
+                    // expanded={
+                    //   parent !== undefined &&
+                    //   selectedCategoryType &&
+                    //   ((selectedCategoryType === "parent" &&
+                    //     main.find(
+                    //       (mainCat) => mainCat.id == selectedCategoryId
+                    //     )) ||
+                    //     (selectedCategoryType === "child" &&
+                    //       child.find(
+                    //         (childCat) =>
+                    //           childCat.main_cat_id == selectedCategoryId
+                    //       )))
+                    // }
                   >
                     {parent !== undefined &&
                       parent.map((el) => {
                         if (e.id === el.main_cat_id) {
                           return (
                             <Collapse.Group divider={false}>
-                              <Collapse title={el.name}>
+                              <Collapse
+                                title={[
+                                  <a
+                                    href={`/category/parent/${el.id}`}
+                                    className="hover:text-[#fd7e14]"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      router.push(`/category/parent/${el.id}`);
+                                    }}
+                                  >
+                                    {el.name}
+                                  </a>,
+                                ]}
+                                // expanded={
+                                //   selectedCategoryType &&
+                                //   selectedCategoryType === "child" &&
+                                //   child.find(
+                                //     (childCat) =>
+                                //       childCat.parent_id == selectedCategoryId
+                                //   )
+                                // }
+                              >
                                 <div className="max-h-96 overflow-auto scrollbar-hide">
                                   {child !== undefined &&
                                     child.map((item) => {
@@ -75,8 +103,7 @@ const Category = ({ positionSticky, parent, main, child }) => {
                                             className="w-full p-4 cursor-pointer hover:text-red"
                                             onClick={() => {
                                               router.push({
-                                                pathname: `/category/${e.id}`,
-                                                shallow: true,
+                                                pathname: `/category/child/${item.id}`,
                                               });
                                             }}
                                           >

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import useSWR from "swr";
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconPackage } from "@tabler/icons-react";
+import { IconCategory, IconPackage, IconSearch } from "@tabler/icons-react";
 
 const fetcher = (url) =>
   axios
@@ -66,16 +66,13 @@ const Search = () => {
   return (
     <div className="py-2 px-10 flex flex-row justify-between w-full">
       <div
-        className="flex flex-row px-4 bg-background-sort py-2 justify-center items-center"
-        style={{ borderRadius: "4.34402px", width: "10%" }}
+        className="flex flex-row px-4 bg-background-sort py-2 justify-center items-center w-max"
+        style={{ borderRadius: "4.34402px" }}
       >
-        <Image src={"/icons/cube.svg"} width={18} height={18} />
-        <p className=" text-white ml-2 font-normal text-sm">Бүх ангилал</p>
+        <IconCategory color="white" size="1.5rem" stroke={1.8} />
+        <p className=" text-white ml-2 font-semibold text-base">Бүх ангилал</p>
       </div>
-      <div
-        className=" bg-search-background rounded-md ml-4 flex flex-row py-1 justify-between"
-        style={{ width: "76%" }}
-      >
+      <div className=" bg-search-background rounded-md ml-4 flex flex-row py-1 justify-between flex-grow max-w-[40%]">
         <div
           className="flex justify-center items-center flex-row px-4 my-1"
           style={{ borderRight: "1px solid rgba(0, 30, 29, 0.14)" }}
@@ -136,10 +133,10 @@ const Search = () => {
             });
           }}
         >
-          <Image src="/icons/search.svg" width={20} height={20} />
+          <IconSearch color="white" size="1.2rem" />
         </button>
       </div>
-      <div className="flex flex-row justify-end" style={{ width: "13%" }}>
+      <div className="flex flex-row justify-end  w-max">
         {/* <div className="flex gap-10">
           <div className="flex flex-row items-center">
             <Image src="/icons/sales.svg" width={25} height={25} />

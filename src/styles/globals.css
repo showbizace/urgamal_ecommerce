@@ -103,3 +103,17 @@ body {
   scrollbar-width: none;
   /* Firefox */
 }
+.image-container {
+  width: 20rem;
+  height: 20rem;
+}
+
+.image-container > div {
+  position: unset !important;
+}
+.image-container image {
+  object-fit: contain;
+  width: 100% !important;
+  position: relative !important;
+  height: unset !important;
+}

@@ -13,6 +13,7 @@ import {
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { IconRefresh, IconReload } from "@tabler/icons-react";
+import axios from "axios";
 import { setCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 
@@ -49,33 +50,30 @@ export default function LoginModal({ context, id }) {
     setLoading(false);
   };
   const handleLogin = async () => {
-    const requestOption = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mobile: mobileNumber, code: otp }),
-    };
-    try {
-      const res = await fetch(
+    axios
+      .post(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/login/code`,
-        requestOption
-      );
-      if (res.status === 200) {
-        const data = await res.json();
-        setCookie("token", data.token);
-        setCookie("number", number);
-        setCookie("addCart", true);
-        showNotification({
-          message: "Амжилттай нэвтэрлээ",
-          color: "green",
-        });
-        context.closeModal(id);
-      } else {
+        { mobile: mobileNumber, code: otp },
+        { headers: { "Content-Type": "application/json" } }
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          setCookie("token", res.data.token);
+          setCookie("number", mobileNumber);
+          setCookie("addCart", true);
+          showNotification({
+            message: "Амжилттай нэвтэрлээ",
+            color: "green",
+          });
+          context.closeModal(id);
+        }
+      })
+      .catch((error) => {
         showNotification({
           message: "Код буруу эсвэл хүчинтэй хугацаа дууссан байна.",
           color: "red",
         });
-      }
-    } catch {}
+      });
   };
   return (
     <Container>
