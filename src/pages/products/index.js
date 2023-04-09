@@ -9,7 +9,7 @@ import { IconSearch, IconSearchOff } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { Suspense, useEffect, useRef, useState } from "react";
-import { Virtuoso, VirtuosoGrid } from "react-virtuoso";
+// import { Virtuoso, VirtuosoGrid } from "react-virtuoso";
 import useSWRInfinite from "swr/infinite";
 const fetcher = (url) =>
   axios
@@ -20,20 +20,20 @@ const fetcher = (url) =>
     .catch((error) => console.log(error));
 const PAGE_SIZE = 25;
 
-export async function getStaticProps({ query }) {
-  const { q } = router.query;
+export async function getServerSideProps({ query }) {
+  const { q } = query;
   const requestOption = {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   };
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=0&limit=${PAGE_SIZE}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=0&limit=${PAGE_SIZE}&query=${q}`,
     requestOption
   );
   const data = await res.json();
   return {
     props: {
-      data,
+      initialData: data.data,
     },
   };
 }
@@ -77,9 +77,7 @@ export default function SearchResult({ initialData }) {
     return () => window.removeEventListener("scroll", infiniteScroll);
   }, [data]);
   useEffect(() => {
-    fetchData &&
-      !isEmpty &&
-      setProducts(products.concat(...data[fetchData.length - 1]));
+    data && !isEmpty && setProducts(products.concat(...data[data.length - 1]));
   }, [data]);
   useEffect(() => {
     window.dispatchEvent(new Event("storage"));

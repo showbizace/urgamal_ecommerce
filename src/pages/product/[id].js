@@ -180,7 +180,6 @@ const ProductDetail = ({ product }) => {
                   {product.CategoryName && (
                     <ProductTypeChip name={product.CategoryName} />
                   )}
-                  <ProductTypeChip name="Бордоо" />
                 </div>
                 {product.instruction ? (
                   <div className="flex flex-col gap-4">

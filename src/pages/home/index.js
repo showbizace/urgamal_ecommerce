@@ -53,9 +53,9 @@ export default function Home({ data }) {
   const [positionSticky, setPositionSticky] = useState(false);
   const [products, setProducts] = useState([]);
 
-  const [main, setMain] = useState();
-  const [parent, setParent] = useState();
-  const [child, setChild] = useState();
+  const [main, setMain] = useState([]);
+  const [parent, setParent] = useState([]);
+  const [child, setChild] = useState([]);
 
   const onScroll = useCallback((event) => {
     const { pageYOffset, scrollY, innerHeight } = window;
@@ -129,43 +129,33 @@ export default function Home({ data }) {
   }, []);
 
   const getAllCategory = async () => {
-    const requestOption = {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    };
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/category/main`,
-      requestOption
-    );
-    if (res.status === 200) {
-      const data = await res.json();
-      if (data.success === true) {
-        setMain(data.data);
-        localStorage.setItem("main", JSON.stringify(data.data));
-      }
-    }
-    const res2 = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/category/parent`,
-      requestOption
-    );
-    if (res2.status === 200) {
-      const data = await res2.json();
-      if (data.success === true) {
-        setParent(data.data);
-        localStorage.setItem("parent", JSON.stringify(data.data));
-      }
-    }
-    const res3 = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/category/child`,
-      requestOption
-    );
-    if (res3.status === 200) {
-      const data = await res3.json();
-      if (data.success === true) {
-        setChild(data.data);
-        localStorage.setItem("child", JSON.stringify(data.data));
-      }
-    }
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/category/all?type=separate`, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
+        localStorage.setItem(
+          "main",
+          JSON.stringify(response.data.data.mainCats)
+        );
+        localStorage.setItem(
+          "parent",
+          JSON.stringify(response.data.data.parentCats)
+        );
+        localStorage.setItem(
+          "child",
+          JSON.stringify(response.data.data.childCats)
+        );
+        setMain(response.data.data.mainCats);
+        setParent(response.data.data.parentCats);
+        setChild(response.data.data.childCats);
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log();
+        } else {
+        }
+      });
   };
 
   return (

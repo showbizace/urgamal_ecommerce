@@ -26,16 +26,28 @@ export async function getServerSideProps({ query }) {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   };
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=0&limit=${PAGE_SIZE}&${type}_cat_id=${catId}`,
-    requestOption
-  );
-  const data = await res.json();
-  return {
-    props: {
-      initialData: data.data,
-    },
-  };
+  try {
+    const res = await fetch(
+      `${
+        process.env.NEXT_PUBLIC_API_URL
+      }/product/local?offset=0&limit=${PAGE_SIZE}&${type}_cat_id=${
+        catId !== "undefined" ? catId : 0
+      }`,
+      requestOption
+    );
+    const data = await res.json();
+    return {
+      props: {
+        initialData: data.data,
+      },
+    };
+  } catch {
+    return {
+      props: {
+        initialData: [],
+      },
+    };
+  }
 }
 
 const CategoryPage = ({ initialData }) => {
@@ -116,9 +128,6 @@ const CategoryPage = ({ initialData }) => {
       fetcher,
       { revalidateFirstPage: false }
     );
-  useEffect(() => {
-    data && !isEmpty && setProducts(products.concat(...data[data.length - 1]));
-  }, [data]);
 
   useEffect(() => {
     setSize(1);
@@ -130,6 +139,11 @@ const CategoryPage = ({ initialData }) => {
   const isReachingEnd =
     isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE);
   const isRefreshing = isValidating && data && data.length === size;
+  useEffect(() => {
+    data?.[0] &&
+      !isEmpty &&
+      setProducts(products.concat(...data[data.length - 1]));
+  }, [data]);
   useEffect(() => {
     setLoading(true);
     window.dispatchEvent(new Event("storage"));
@@ -191,6 +205,8 @@ const CategoryPage = ({ initialData }) => {
             parent={parent}
             main={main}
             child={child}
+            selectedCategoryType={type}
+            selectedCategoryId={catId}
           />
 
           <div

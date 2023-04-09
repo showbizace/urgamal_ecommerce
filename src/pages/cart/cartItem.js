@@ -5,6 +5,7 @@ import {
   ActionIcon,
   Modal,
   Group,
+  Text,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
@@ -22,6 +23,7 @@ import { SuccessNotification } from "../../utils/SuccessNotification";
 import { getCookie, setCookie } from "cookies-next";
 import debounce from "lodash.debounce";
 import { openContextModal } from "@mantine/modals";
+import BottomFooter from "@/components/Footer";
 
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
@@ -35,7 +37,7 @@ const CartItems = (props) => {
   const [isChangeQuantity, setIsChangeQuantity] = useState(false);
   const [total, setTotal] = useState();
   const [stock, setStock] = useState();
-  const [orderId, setOrderId] = useState()
+  const [orderId, setOrderId] = useState();
   const [purchaseQuantity, setPurchaseQuantity] = useState();
   const [isChangeAdd, setIsChangeAdd] = useState(false);
   const [userToken, setUserToken] = useState("");
@@ -276,8 +278,8 @@ const CartItems = (props) => {
         if (res.status === 200) {
           const data = await res.json();
           if (data.success === true) {
-            open()
-            setOrderId(data.orderid)
+            open();
+            setOrderId(data.orderid);
             let temp = [];
             setCartItem(temp);
             dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
@@ -299,7 +301,6 @@ const CartItems = (props) => {
     } else {
       openContextModal({
         modal: "login",
-        id: "login-modal",
         title: (
           <Text size="sm" weight={400}>
             Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
@@ -475,7 +476,7 @@ const CartItems = (props) => {
                   </ActionIcon>
                   <span className="font-[500] text-[1rem] text-[#212529]">
                     {item.purchaseCount !== undefined &&
-                      item.purchaseCount !== null
+                    item.purchaseCount !== null
                       ? item.purchaseCount
                       : item.quantity}
                   </span>
@@ -531,8 +532,9 @@ const CartItems = (props) => {
             {/* <p className="font-semibold">Гүйлгээний утга : </p> */}
             <p className="ml-2"></p>
             <p className="mt-4">
-              Та гүйлгээний утган дээр <span className="font-semibold">{orderId}</span> дугаартай захиалгын дугаар болон өөрийн утасны дугаараа заавал
-              оруулаарай!
+              Та гүйлгээний утган дээр{" "}
+              <span className="font-semibold">{orderId}</span> дугаартай
+              захиалгын дугаар болон өөрийн утасны дугаараа заавал оруулаарай!
             </p>
           </div>
           <Group position="right" mt="45px">
@@ -545,7 +547,7 @@ const CartItems = (props) => {
       <GlobalLayout>
         <div className="bg-grey-back w-full px-8 py-4">
           <div className="flex flex-row gap-10 mt-8 px-32">
-            <div className="flex flex-col w-[70%] gap-8">
+            <div className="flex flex-col w-[70%] gap-8 h-screen">
               <div>
                 <div className=" bg-white rounded-lg px-10 py-6">
                   <div className="flex flex-row justify-between">
@@ -637,12 +639,13 @@ const CartItems = (props) => {
               </div>
             </div>
           </div>
-          <div className="mt-20">
+          {/* <div className="mt-20">
             <div>
               <span>Санал Болгох Бүтээгдэхүүн</span>
             </div>
-          </div>
+          </div> */}
         </div>
+        <BottomFooter />
       </GlobalLayout>
     </>
   );

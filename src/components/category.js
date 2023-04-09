@@ -39,21 +39,30 @@ const Category = ({ positionSticky, parent, main, child }) => {
                 return (
                   <Collapse
                     title={[
-                      <Link
+                      <a
                         href={`/category/main/${e.id}`}
                         className="hover:text-[#fd7e14]"
-                        // onClick={() => {
-                        //   router.push({
-                        //     shallow: true,
-                        //     pathname: "/category/[id]",
-                        //     query: { id: e.id },
-                        //   });
-                        // }}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          router.push(`/category/main/${e.id}`);
+                        }}
                       >
                         {e.name}
-                      </Link>,
+                      </a>,
                     ]}
-                    expanded={false}
+                    // expanded={
+                    //   parent !== undefined &&
+                    //   selectedCategoryType &&
+                    //   ((selectedCategoryType === "parent" &&
+                    //     main.find(
+                    //       (mainCat) => mainCat.id == selectedCategoryId
+                    //     )) ||
+                    //     (selectedCategoryType === "child" &&
+                    //       child.find(
+                    //         (childCat) =>
+                    //           childCat.main_cat_id == selectedCategoryId
+                    //       )))
+                    // }
                   >
                     {parent !== undefined &&
                       parent.map((el) => {
@@ -62,13 +71,25 @@ const Category = ({ positionSticky, parent, main, child }) => {
                             <Collapse.Group divider={false}>
                               <Collapse
                                 title={[
-                                  <Link
+                                  <a
                                     href={`/category/parent/${el.id}`}
                                     className="hover:text-[#fd7e14]"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      router.push(`/category/parent/${el.id}`);
+                                    }}
                                   >
                                     {el.name}
-                                  </Link>,
+                                  </a>,
                                 ]}
+                                // expanded={
+                                //   selectedCategoryType &&
+                                //   selectedCategoryType === "child" &&
+                                //   child.find(
+                                //     (childCat) =>
+                                //       childCat.parent_id == selectedCategoryId
+                                //   )
+                                // }
                               >
                                 <div className="max-h-96 overflow-auto scrollbar-hide">
                                   {child !== undefined &&

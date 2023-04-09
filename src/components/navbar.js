@@ -142,7 +142,6 @@ const Navbar = () => {
             if (cookie === undefined || null) {
               openContextModal({
                 modal: "login",
-                id: "login-modal",
                 title: (
                   <Text size="sm" weight={400}>
                     Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
