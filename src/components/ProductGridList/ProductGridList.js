@@ -8,6 +8,7 @@ export default function ProductGridList({
   isEmpty,
   emptyStateMessage,
   query,
+  cols,
 }) {
   return isEmpty ? (
     <div className="w-full h-screen flex justify-center items-start mt-32">
@@ -26,8 +27,9 @@ export default function ProductGridList({
     </div>
   ) : (
     <SimpleGrid
-      cols={4}
-      spacing="lg"
+      cols={cols}
+      spacing={20}
+      verticalSpacing={20}
       m={0}
       className="flex-grow"
       breakpoints={[

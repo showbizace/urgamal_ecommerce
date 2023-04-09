@@ -12,7 +12,6 @@ const cookie = getCookie("token");
 
 const Navbar = () => {
   const router = useRouter();
-  const { state, dispatch } = useContext(Store);
   const [cartItem, setCartItem] = useState([]);
   const [quantity, setQuantity] = useState(0);
   const [cartData, setCartData] = useState("");
@@ -76,33 +75,34 @@ const Navbar = () => {
   };
 
   return (
-    <div
-      className="bg-white flex flex-row  justify-between  items-center py-2 px-10"
-      style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}
-    >
-      <Link href={"/home"}>
-        <div className="flex flex-row justify-center items-center text-black">
-          ТАРИMАЛ{" "}
-          <Image src="/logo.png" width={30} height={30} className="mx-4" />{" "}
-          УРГАMАЛ
-        </div>
-      </Link>
+    <>
+      <div
+        className="bg-white  sm:hidden xs:hidden xs2:hidden md:flex lg:flex flex-row justify-between items-center py-2 px-10"
+        style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}
+      >
+        <Link href={"/home"}>
+          <div className="flex flex-row justify-center items-center text-black">
+            ТАРИMАЛ{" "}
+            <Image src="/logo.png" width={30} height={30} className="mx-4" />{" "}
+            УРГАMАЛ
+          </div>
+        </Link>
 
-      <div className="flex flex-row">
-        <NavBarLinks
-          name={"Өрхийн тариаланч"}
-          linkUrl={"/"}
-          onClick={() => {}}
-        />
-        <NavBarLinks
-          name={"Мэргэжлийнхэнд "}
-          linkUrl={"/"}
-          onClick={() => {}}
-          isLast
-        />
-      </div>
-      <div className="flex flex-row items-center">
-        {/* <Button
+        <div className="flex flex-row">
+          <NavBarLinks
+            name={"Өрхийн тариаланч"}
+            linkUrl={"/"}
+            onClick={() => {}}
+          />
+          <NavBarLinks
+            name={"Мэргэжлийнхэнд "}
+            linkUrl={"/"}
+            onClick={() => {}}
+            isLast
+          />
+        </div>
+        <div className="flex flex-row items-center">
+          {/* <Button
           compact
           variant={"white"}
           className="static flex flex-col items-center mr-4"
@@ -115,49 +115,49 @@ const Navbar = () => {
           </div>
         </Button> */}
 
-        <Button
-          compact
-          variant={"white"}
-          className="static flex flex-col items-center mr-4"
-          onClick={() => linkToCart()}
-        >
-          <Image src="/icons/trolley.svg" width={23} height={23} />
-          <div className="absolute">
-            <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
-              <p className="text-sm-5">{quantity}</p>
+          <Button
+            compact
+            variant={"white"}
+            className="static flex flex-col items-center mr-4"
+            onClick={() => linkToCart()}
+          >
+            <Image src="/icons/trolley.svg" width={23} height={23} />
+            <div className="absolute">
+              <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
+                <p className="text-sm-5">{quantity}</p>
+              </div>
             </div>
-          </div>
-        </Button>
+          </Button>
 
-        <div>
-          <p className="text-sm-1 self-end">Таны сагсанд</p>
-          <p className="text-sm-1" style={{ fontSize: "16px" }}>
-            {total}₮
-          </p>
-        </div>
-
-        <div
-          className="flex flex-row items-center cursor-pointer"
-          onClick={() => {
-            if (cookie === undefined || null) {
-              openContextModal({
-                modal: "login",
-                title: (
-                  <Text size="sm" weight={400}>
-                    Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
-                  </Text>
-                ),
-                centered: true,
-              });
-            } else {
-              route.push("/profile");
-            }
-          }}
-        >
-          <div className="flex justify-center items-center ml-8">
-            <Image src="/user.png" width={40} height={40} />
+          <div>
+            <p className="text-sm-1 self-end">Таны сагсанд</p>
+            <p className="text-sm-1" style={{ fontSize: "16px" }}>
+              {total}₮
+            </p>
           </div>
-          {/* <div className=" flex flex-col items-end">
+
+          <div
+            className="flex flex-row items-center cursor-pointer"
+            onClick={() => {
+              if (cookie === undefined || null) {
+                openContextModal({
+                  modal: "login",
+                  title: (
+                    <Text size="sm" weight={400}>
+                      Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
+                    </Text>
+                  ),
+                  centered: true,
+                });
+              } else {
+                route.push("/profile");
+              }
+            }}
+          >
+            <div className="flex justify-center items-center ml-8">
+              <Image src="/user.png" width={40} height={40} />
+            </div>
+            {/* <div className=" flex flex-col items-end">
             {cookie === undefined || null ? (
               <p className="text-md ml-4">Нэвтрэх</p>
             ) : (
@@ -169,9 +169,93 @@ const Navbar = () => {
               </div>
             )}
           </div> */}
+          </div>
         </div>
       </div>
-    </div>
+      <div
+        className="bg-white  sm:flex xs:flex xs2:flex md:hidden lg:hidden flex-row justify-between items-center py-2 px-10"
+        style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}
+      >
+        <Link href={"/home"}>
+          <div className="flex flex-row justify-center items-center text-black">
+            ТАРИMАЛ{" "}
+            <Image src="/logo.png" width={30} height={30} className="mx-4" />{" "}
+            УРГАMАЛ
+          </div>
+        </Link>
+
+        {/* <div className="flex flex-row">
+          <NavBarLinks
+            name={"Өрхийн тариаланч"}
+            linkUrl={"/"}
+            onClick={() => {}}
+          />
+          <NavBarLinks
+            name={"Мэргэжлийнхэнд "}
+            linkUrl={"/"}
+            onClick={() => {}}
+            isLast
+          />
+        </div> */}
+        <div className="flex flex-row items-center">
+          <Button
+            compact
+            variant={"white"}
+            className="static flex flex-col items-center mr-4"
+            onClick={() => linkToCart()}
+          >
+            <Image src="/icons/trolley.svg" width={23} height={23} />
+            <div className="absolute">
+              <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
+                <p className="text-sm-5">{quantity}</p>
+              </div>
+            </div>
+          </Button>
+
+          <div>
+            <p className="text-sm-1 self-end">Таны сагсанд</p>
+            <p className="text-sm-1" style={{ fontSize: "16px" }}>
+              {total}₮
+            </p>
+          </div>
+
+          <div
+            className="flex flex-row items-center cursor-pointer"
+            onClick={() => {
+              if (cookie === undefined || null) {
+                openContextModal({
+                  modal: "login",
+                  title: (
+                    <Text size="sm" weight={400}>
+                      Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
+                    </Text>
+                  ),
+                  centered: true,
+                });
+              } else {
+                route.push("/profile");
+              }
+            }}
+          >
+            <div className="flex justify-center items-center ml-8">
+              <Image src="/user.png" width={40} height={40} />
+            </div>
+            {/* <div className=" flex flex-col items-end">
+          {cookie === undefined || null ? (
+            <p className="text-md ml-4">Нэвтрэх</p>
+          ) : (
+            <div>
+              <p className="text-sm-1">Сайн байна уу?</p>
+              <p className="text-sm">
+                {number !== "" ? number : "*********"}
+              </p>
+            </div>
+          )}
+        </div> */}
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

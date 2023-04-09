@@ -32,11 +32,11 @@ export default function GlobalLayout({
           crossorigin="anonymous"
         ></script>
       </Head>
-      <div id="myHeader" className="sticky top-0 z-30 shadow bg-white">
+      <div id="myHeader" className="sticky mb-12 top-0 z-30 shadow bg-white">
         <Navbar />
         <Search />
+        <main className="bg-main">{children}</main>
       </div>
-      <main className="bg-main">{children}</main>
     </div>
   );
 }

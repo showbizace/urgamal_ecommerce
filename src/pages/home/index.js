@@ -1,25 +1,13 @@
-import Head from "next/head";
-
 import Category from "../../components/category";
-import FeatureBundle from "../../components/feature-bundle";
-import FeatureProduct from "../../components/feature-product";
-import Image from "next/image";
 
 import ProductCard from "../../components/product-card";
-import { Skeleton } from "@mantine/core";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
-import FeatureProductList from "../../components/feature-product-list";
-import NewProduct from "../../components/new-product";
 import Banner from "../../components/banner";
 import BottomFooter from "../../components/Footer";
-import { useRouter } from "next/router";
-import { useEffect, useCallback, useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import MySkeleton from "@/components/MySkeleton";
-import Loading from "./loading";
+import { useEffect, useCallback, useState } from "react";
 import useSWRInfinite from "swr/infinite";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
 import axios from "axios";
@@ -161,24 +149,31 @@ export default function Home({ data }) {
   return (
     <div>
       <GlobalLayout>
-        <Banner />
         <div className="px-10 mb-16">
           {/* <FeatureProduct /> */}
           {/* <FeatureBundle /> */}
-          <div className="flex flex-row justify-between mt-12">
-            <div style={{ width: "25%", height: "80%", position: "relative" }}>
-              <Category
-                positionSticky={positionSticky}
-                parent={parent}
-                main={main}
-                child={child}
-              />
+          <div className="flex flex-col justify-between">
+            <div className="flex flex-row mt-12 rounded-md bg-white">
+              <div className="w-1/4 h-[380px] px-6 py-4 overflow-auto ">
+                <Category
+                  positionSticky={positionSticky}
+                  parent={parent}
+                  main={main}
+                  child={child}
+                />
+              </div>
+              <div className="rounded w-3/4 p-4">
+                <Banner />
+              </div>
             </div>
-            <div className="flex flex-col md:w-[7x%] lg:w-[73%]">
+            <div className="flex flex-col mt-12 md:w-[7x%] lg:w-[100%]">
               {/* <FeatureProductList /> */}
               {/* <NewProduct /> */}
 
-              <ProductGridList showSkeleton={isLoading || isValidating}>
+              <ProductGridListF
+                showSkeleton={isLoading || isValidating}
+                cols={5}
+              >
                 {products.map((e, index) => (
                   <ProductCard
                     key={`product-card-key-${index}-${e.id}`}
@@ -186,7 +181,7 @@ export default function Home({ data }) {
                     data={e}
                   />
                 ))}
-              </ProductGridList>
+              </ProductGridListF>
             </div>
           </div>
         </div>

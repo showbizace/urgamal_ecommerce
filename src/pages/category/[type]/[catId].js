@@ -199,7 +199,7 @@ const CategoryPage = ({ initialData }) => {
     <div>
       <GlobalLayout />
       <div className=" px-10 bg-main h-full flex flex-col">
-        <div className="flex flex-row py-12 w-full  ">
+        <div className="flex flex-row py-12 w-full justify-between ">
           <Category
             positionSticky={false}
             parent={parent}
@@ -207,10 +207,11 @@ const CategoryPage = ({ initialData }) => {
             child={child}
             selectedCategoryType={type}
             selectedCategoryId={catId}
+            padding="1rem"
           />
 
           <div
-            className="flex flex-row ml-12"
+            className="flex flex-row "
             style={{ width: "70%", gap: "30px", flexWrap: "wrap" }}
             id={"content"}
           >
@@ -259,6 +260,7 @@ const CategoryPage = ({ initialData }) => {
                   ? parent.find((e) => e.id === catId)?.name
                   : ""
               }
+              cols={4}
             >
               {products.map((e, index) => (
                 <ProductCard
