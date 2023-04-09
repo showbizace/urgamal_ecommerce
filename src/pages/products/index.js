@@ -19,17 +19,39 @@ const fetcher = (url) =>
     })
     .catch((error) => console.log(error));
 const PAGE_SIZE = 25;
-export default function SearchResult() {
+
+export async function getStaticProps({ query }) {
+  const { q } = router.query;
+  const requestOption = {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  };
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=0&limit=${PAGE_SIZE}`,
+    requestOption
+  );
+  const data = await res.json();
+  return {
+    props: {
+      data,
+    },
+  };
+}
+
+export default function SearchResult({ initialData }) {
   const router = useRouter();
   const { q } = router.query;
+  const [products, setProducts] = useState([]);
   const { data, mutate, size, setSize, isValidating, isLoading, error } =
     useSWRInfinite(
       (index) =>
-        `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index}&limit=${PAGE_SIZE}&query=${q}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${
+          index + 1
+        }&limit=${PAGE_SIZE}&query=${q}`,
       fetcher,
       { revalidateFirstPage: false }
     );
-  const products = data ? [].concat(...data) : [];
+
   const isLoadingMore =
     isLoading || (size > 0 && data && typeof data[size - 1] === "undefined");
   const isEmpty = data?.[0]?.length === 0;
@@ -54,14 +76,15 @@ export default function SearchResult() {
     window.addEventListener("scroll", infiniteScroll);
     return () => window.removeEventListener("scroll", infiniteScroll);
   }, [data]);
-
+  useEffect(() => {
+    fetchData &&
+      !isEmpty &&
+      setProducts(products.concat(...data[fetchData.length - 1]));
+  }, [data]);
   useEffect(() => {
     window.dispatchEvent(new Event("storage"));
-
+    setProducts(initialData);
     getAllCategory();
-
-    console.log(data, "data");
-    console.log(error, "error");
     // getProduct();
   }, []);
 
@@ -94,14 +117,6 @@ export default function SearchResult() {
         }
       });
   };
-
-  const ItemContainer = <div className=" p-2 w-1/3 flex flex-none md:w-1/2 " />;
-
-  const ItemWrapper = (
-    <div className=" flex-1 h-24 w-24 border-solid border-black border-8"></div>
-  );
-
-  const ListContainer = <div className="flex flex-wrap "></div>;
   return (
     <GlobalLayout>
       <div className="flex w-full min-h-screen px-10 py-12 gap-6">
@@ -113,22 +128,6 @@ export default function SearchResult() {
             child={child}
           />
         </div>
-        {isEmpty && (
-          <div className="w-full h-full flex justify-center items-start mt-32">
-            <Stack align="center">
-              <IconSearch size="2rem" stroke={1.5} />
-              <Text size="lg" weight={500}>
-                Хайлт илэрцгүй
-              </Text>
-              <Text size="md" weight={500}>
-                "{q}"{" "}
-                <Text span size="md" weight={400}>
-                  хайлтад тохирох бараа олдсонгүй
-                </Text>
-              </Text>
-            </Stack>
-          </div>
-        )}
         {/* <div 
           ref={parentRef}
           className="w-full mb-8 h-screen max-h-screen overflow-y-scroll"
@@ -140,34 +139,24 @@ export default function SearchResult() {
             customScrollParent={parentRef.current}
             itemClassName="md:w-[20%]  m-8"
             listClassName="flex flex-wrap"
-            itemContent={(index) => (
-              <div
-                key={`${index}-${products[index].id}`}
-                onClick={() => clickProduct(e)}
-                className="transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110"
-              >
-                <ProductCard src={"/bundle-1.svg"} data={products[index]} />
-              </div>
+            itemContent={(index) => ( 
+                <ProductCard src={"/bundle-1.svg"} data={products[index]} /> 
             )}
             
           /> 
         </div> */}
-        <ProductGridList showSkeleton={isLoading || isValidating}>
+        <ProductGridList
+          showSkeleton={isLoading || isValidating}
+          isEmpty={isEmpty}
+          emptyStateMessage="хайлтад тохирох бараа олдсонгүй"
+          query={q}
+        >
           {products.map((e, index) => (
-            <div
-              key={`${index}-${e.id}`}
-              onClick={() => clickProduct(e)}
-              className="transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110"
-            >
-              <ProductCard
-                src={
-                  e.product_image !== null && e.product_image.images[0] !== null
-                    ? `${e.product_image.images[0]}`
-                    : "/bundle-1.svg"
-                }
-                data={e}
-              />
-            </div>
+            <ProductCard
+              key={`product-card-key-${index}-${e.id}`}
+              src={e.product_image?.images?.[0]}
+              data={e}
+            />
           ))}
         </ProductGridList>
       </div>

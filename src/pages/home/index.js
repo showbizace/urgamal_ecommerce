@@ -23,6 +23,7 @@ import Loading from "./loading";
 import useSWRInfinite from "swr/infinite";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
 import axios from "axios";
+const PAGE_SIZE = 20;
 
 const fetcher = (url) =>
   axios
@@ -31,7 +32,6 @@ const fetcher = (url) =>
       return res.data.data;
     })
     .catch((error) => console.log(error));
-const PAGE_SIZE = 25;
 export async function getStaticProps() {
   const requestOption = {
     method: "GET",
@@ -83,12 +83,16 @@ export default function Home({ data }) {
     error,
   } = useSWRInfinite(
     (index) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index}&limit=${PAGE_SIZE}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${
+        index + 1
+      }&limit=${PAGE_SIZE}`,
     fetcher,
     { revalidateFirstPage: false }
   );
   useEffect(() => {
-    fetchData && setProducts((prev) => [...prev, fetchData]);
+    fetchData &&
+      !isEmpty &&
+      setProducts(products.concat(...fetchData?.[fetchData.length - 1]));
   }, [fetchData]);
   const isLoadingMore =
     isLoading ||
@@ -163,14 +167,7 @@ export default function Home({ data }) {
       }
     }
   };
-  const router = useRouter();
-  const clickProduct = (e) => {
-    router.push({
-      shallow: true,
-      pathname: "/product/[id]",
-      query: { id: e.id, data: e },
-    });
-  };
+
   return (
     <div>
       <GlobalLayout>
@@ -193,21 +190,11 @@ export default function Home({ data }) {
 
               <ProductGridList showSkeleton={isLoading || isValidating}>
                 {products.map((e, index) => (
-                  <div
-                    key={`${index}-${e.id}`}
-                    onClick={() => clickProduct(e)}
-                    className="transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-110"
-                  >
-                    <ProductCard
-                      src={
-                        e.product_image !== null &&
-                        e.product_image.images?.[0] !== null
-                          ? `${e.product_image.images[0]}`
-                          : "/bundle-1.svg"
-                      }
-                      data={e}
-                    />
-                  </div>
+                  <ProductCard
+                    key={`product-card-key-${index}-${e.id}`}
+                    src={e.product_image?.images?.[0]}
+                    data={e}
+                  />
                 ))}
               </ProductGridList>
             </div>

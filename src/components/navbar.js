@@ -35,9 +35,9 @@ const Navbar = () => {
         if (e !== null) {
           sum = sum + e.quantity;
           if (e.totalPrice !== undefined && e.totalPrice !== null) {
-            total = total + parseInt(e.totalPrice)
+            total = total + parseInt(e.totalPrice);
           } else {
-            total = total + parseInt(e.total)
+            total = total + parseInt(e.total);
           }
         }
       });
@@ -92,12 +92,12 @@ const Navbar = () => {
         <NavBarLinks
           name={"Өрхийн тариаланч"}
           linkUrl={"/"}
-          onClick={() => { }}
+          onClick={() => {}}
         />
         <NavBarLinks
-          name={"Мэргэжлийхэнд"}
+          name={"Мэргэжлийнхэнд "}
           linkUrl={"/"}
-          onClick={() => { }}
+          onClick={() => {}}
           isLast
         />
       </div>
