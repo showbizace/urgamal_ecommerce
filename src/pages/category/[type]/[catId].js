@@ -53,33 +53,15 @@ export async function getServerSideProps({ query }) {
 const CategoryPage = ({ initialData }) => {
   const router = useRouter();
   const { type, catId } = router.query;
-  const [main, setMain] = useState([]);
   const [parent, setParent] = useState([]);
   const [child, setChild] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const getCurrentCategoryPath = (main, parent, child) => {
-    if (type === "main") {
-      const current = main.find((e) => e.id == catId);
-      if (current) {
-        return [
-          {
-            title: current.name,
-            href: `/category/main/${current.id}`,
-          },
-        ];
-      } else {
-        return [];
-      }
-    } else if (type === "parent") {
+  const getCurrentCategoryPath = (parent, child) => {
+    if (type === "parent") {
       const current = parent.find((e) => e.id == catId);
       if (current) {
-        const mainCat = main.find((e) => e.id == current.main_cat_id);
         return [
-          {
-            title: mainCat ? mainCat.name : "",
-            href: `/category/main/${mainCat ? mainCat.id : ""}`,
-          },
           {
             title: current.name,
             href: `/category/parent/${current.id}`,
@@ -90,15 +72,9 @@ const CategoryPage = ({ initialData }) => {
       }
     } else if (type === "child") {
       const current = child.find((e) => e.id == catId);
-      console.log(current, "currentcurrent");
       if (current) {
-        const mainCat = main.find((e) => e.id == current.main_cat_id);
         const parentCat = parent.find((e) => e.id == current.parent_id);
         return [
-          {
-            title: mainCat ? mainCat.name : "",
-            href: `/category/main/${mainCat ? mainCat.id : ""}`,
-          },
           {
             title: parentCat ? parentCat.name : "",
             href: `/category/parent/${parentCat ? parentCat.id : ""}`,
@@ -116,8 +92,8 @@ const CategoryPage = ({ initialData }) => {
     }
   };
   const currentCategoryPath = useMemo(
-    () => getCurrentCategoryPath(main, parent, child),
-    [main, parent, child, router.pathname]
+    () => getCurrentCategoryPath(parent, child),
+    [parent, child, router.pathname]
   );
   const { data, mutate, size, setSize, isValidating, isLoading, error } =
     useSWRInfinite(
@@ -164,6 +140,24 @@ const CategoryPage = ({ initialData }) => {
     window.addEventListener("scroll", infiniteScroll);
     return () => window.removeEventListener("scroll", infiniteScroll);
   }, [data]);
+  function myFunction() {
+    var navbar = document.getElementById("category-menu");
+    var content = document.getElementById("content");
+    var sticky = navbar.offsetTop;
+    if (window.pageYOffset >= sticky) {
+      navbar.classList.add("fixed", "top-2");
+      content.classList.add("ml-[301px]");
+    } else {
+      navbar.classList.remove("fixed");
+      content.classList.remove("ml-[301px]");
+    }
+  }
+  useEffect(() => {
+    window.addEventListener("scroll", myFunction);
+    return () => {
+      window.removeEventListener("scroll", myFunction);
+    };
+  }, []);
 
   const getAllCategory = async () => {
     axios
@@ -183,7 +177,6 @@ const CategoryPage = ({ initialData }) => {
           "child",
           JSON.stringify(response.data.data.childCats)
         );
-        setMain(response.data.data.mainCats);
         setParent(response.data.data.parentCats);
         setChild(response.data.data.childCats);
       })
@@ -194,16 +187,14 @@ const CategoryPage = ({ initialData }) => {
         }
       });
   };
-
   return (
     <div>
       <GlobalLayout />
       <div className=" px-10 bg-main h-full flex flex-col">
-        <div className="flex flex-row py-12 w-full justify-between ">
+        <div className="flex flex-row py-12 w-full justify-between gap-10 ">
           <Category
             positionSticky={false}
             parent={parent}
-            main={main}
             child={child}
             selectedCategoryType={type}
             selectedCategoryId={catId}
@@ -211,8 +202,8 @@ const CategoryPage = ({ initialData }) => {
           />
 
           <div
-            className="flex flex-row "
-            style={{ width: "70%", gap: "30px", flexWrap: "wrap" }}
+            className="flex flex-row w-full"
+            style={{ gap: "30px", flexWrap: "wrap" }}
             id={"content"}
           >
             <div className="flex flex-row justify-between w-full">
@@ -252,9 +243,7 @@ const CategoryPage = ({ initialData }) => {
               isEmpty={isEmpty}
               emptyStateMessage="ангиллын бараа олдсонгүй"
               query={
-                type === "main"
-                  ? main.find((e) => e.id === catId)?.name
-                  : type === "parent"
+                type === "parent"
                   ? parent.find((e) => e.id === catId)?.name
                   : type === "child"
                   ? parent.find((e) => e.id === catId)?.name

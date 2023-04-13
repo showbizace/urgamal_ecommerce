@@ -64,16 +64,16 @@ const Search = () => {
     );
   });
   return (
-    <div className="py-2 px-10 flex flex-row justify-between w-full">
-      <div
+    <div className="py-2 px-10 flex flex-row justify-center w-full">
+      {/* <div
         className="flex flex-row px-4 bg-background-sort py-2 justify-center items-center w-max"
         style={{ borderRadius: "4.34402px" }}
       >
         <IconCategory color="white" size="1.5rem" stroke={1.8} />
         <p className=" text-white ml-2 font-semibold text-base">Бүх ангилал</p>
-      </div>
+      </div> */}
       <div className=" bg-search-background rounded-md ml-4 flex flex-row py-1 justify-between flex-grow max-w-[40%]">
-        <div
+        {/* <div
           className="flex justify-center items-center flex-row px-4 my-1"
           style={{ borderRight: "1px solid rgba(0, 30, 29, 0.14)" }}
         >
@@ -84,7 +84,7 @@ const Search = () => {
             height={13}
             className="ml-1"
           />
-        </div>
+        </div> */}
 
         <Autocomplete
           className="navbar-input"

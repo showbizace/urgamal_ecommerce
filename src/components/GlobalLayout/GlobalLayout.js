@@ -32,10 +32,12 @@ export default function GlobalLayout({
           crossorigin="anonymous"
         ></script>
       </Head>
-      <div id="myHeader" className="sticky mb-12 top-0 z-30 shadow bg-white">
-        <Navbar />
-        <Search />
-        <main className="bg-main">{children}</main>
+      <div className="sticky top-0 z-30 shadow bg-white">
+        {/* <Search /> */}
+        <main className="flex flex-col justify-between bg-main">
+          <Navbar />
+          {children}
+        </main>
       </div>
     </div>
   );

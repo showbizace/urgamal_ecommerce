@@ -7,10 +7,15 @@ import "swiper/css/pagination";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import Banner from "../../components/banner";
 import BottomFooter from "../../components/Footer";
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useState, useContext } from "react";
 import useSWRInfinite from "swr/infinite";
+import useSWR from "swr";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
 import axios from "axios";
+import AllCategory from "@/components/AllCategory/AllCategory";
+import { UserConfigContext } from "@/utils/userConfigContext";
+import Image from "next/image";
+import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 const PAGE_SIZE = 20;
 
 const fetcher = (url) =>
@@ -19,7 +24,7 @@ const fetcher = (url) =>
     .then((res) => {
       return res.data.data;
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {});
 export async function getStaticProps() {
   const requestOption = {
     method: "GET",
@@ -60,7 +65,15 @@ export default function Home({ data }) {
       setPositionSticky(false);
     }
   }, []);
-
+  const {
+    data: categories,
+    error: categoriesError,
+    isLoading: categoriesLoading,
+  } = useSWR(
+    `${process.env.NEXT_PUBLIC_API_URL}/category/all?type=nest`,
+    fetcher,
+    { refreshInterval: 0 }
+  );
   const {
     data: fetchData,
     mutate,
@@ -145,6 +158,7 @@ export default function Home({ data }) {
         }
       });
   };
+  const userConfigs = useContext(UserConfigContext);
 
   return (
     <div>
@@ -152,36 +166,61 @@ export default function Home({ data }) {
         <div className="px-10 mb-16">
           {/* <FeatureProduct /> */}
           {/* <FeatureBundle /> */}
-          <div className="flex flex-col justify-between">
-            <div className="flex flex-row mt-12 rounded-md bg-white">
-              <div className="w-1/4 h-[380px] px-6 py-4 overflow-auto ">
-                <Category
-                  positionSticky={positionSticky}
-                  parent={parent}
-                  main={main}
-                  child={child}
-                />
-              </div>
-              <div className="rounded w-3/4 p-4">
-                <Banner />
-              </div>
-            </div>
-            <div className="flex flex-col mt-12 md:w-[7x%] lg:w-[100%]">
+          <div className="flex flex-col justify-between relative">
+            <div className="flex flex-col  md:w-[7x%] lg:w-[100%]">
               {/* <FeatureProductList /> */}
               {/* <NewProduct /> */}
-
-              <ProductGridListF
-                showSkeleton={isLoading || isValidating}
-                cols={5}
-              >
-                {products.map((e, index) => (
-                  <ProductCard
-                    key={`product-card-key-${index}-${e.id}`}
-                    src={e.product_image?.images?.[0]}
-                    data={e}
+              <div className="flex flex-row bg-white mt-2 rounded-sm">
+                <div className="py-3 ">
+                  {categoriesLoading && <div></div>}
+                  {categoriesError && <div></div>}
+                  {categories && (
+                    <AllCategory
+                      categories={
+                        categories.find(
+                          (main) =>
+                            main.id.toString() ===
+                              userConfigs.preferenceConfig || 1
+                        ).parent_categories
+                      }
+                      isLoading={categoriesLoading}
+                    />
+                  )}
+                </div>
+                <div className="relative rounded w-full">
+                  <Banner />
+                </div>
+              </div>
+              {categories
+                ?.find(
+                  (main) => main.id.toString() === userConfigs.preferenceConfig
+                )
+                .parent_categories.map((el) => (
+                  <ProductListWithCategory
+                    key={`list-with-category-${el.id}`}
+                    categoryId={el.id}
+                    categoryName={el.name}
+                    categoryIcon={
+                      el.id.toString() === "1" || el.id.toString() === "4" ? (
+                        <Image
+                          src={"/icons/2.svg"}
+                          fill
+                          draggable={false}
+                          style={{ userSelect: "none" }}
+                        />
+                      ) : (
+                        <Image
+                          src={"/icons/5.svg"}
+                          fill
+                          draggable={false}
+                          style={{ userSelect: "none" }}
+                        />
+                      )
+                    }
+                    cols={5}
+                    className="mt-12"
                   />
                 ))}
-              </ProductGridListF>
             </div>
           </div>
         </div>
