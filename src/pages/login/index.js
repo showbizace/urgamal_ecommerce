@@ -53,9 +53,14 @@ const Login = () => {
 				requestOption
 			);
 			if (res.status === 200) {
+				const bigDate = 30 * 24 * 60 * 60 * 1000;
 				const data = await res.json();
-				setCookie("token", data.token);
-				setCookie("number", number);
+				setCookie("token", data.token, {
+					maxAge: bigDate,
+				});
+				setCookie("number", number, {
+					maxAge: bigDate,
+				});
 				setCookie("addCart", true);
 				router.push("/cart/cartItem");
 			} else {
