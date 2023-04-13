@@ -5,18 +5,36 @@
 body {
   width: 100%;
   height: 100%;
-  background-color: #f6f7fb;
+  background-color: #bbbbbb;
   font-family: "Open Sans", sans-serif;
   font-weight: 400;
 }
-
-.navbar-input {
-  width: 100%;
-  background-color: rgba(235, 239, 238, 0.9);
-  padding-left: 3%;
-  padding-right: 3%;
-  font-size: 0.875rem;
+.swiper-button-prev {
+  background-color: #f1b13a;
+  border-radius: 999px;
+  height: unset !important;
+  width: unset !important;
+  padding: 0.6rem 0.8rem;
 }
+.swiper-button-prev::after {
+  font-size: 0.7rem !important;
+  font-weight: bold;
+  color: white;
+}
+.swiper-button-next {
+  height: unset !important;
+  width: unset !important;
+  background-color: #f1b13a;
+  /* opacity: 1; */
+  border-radius: 999px;
+  padding: 0.6rem 0.8rem;
+}
+.swiper-button-next::after {
+  font-size: 0.7rem !important;
+  font-weight: bold;
+  color: white;
+}
+
 /* sorry zolboo uchriin olchooroi (tiirsen bolno) */
 .mantine-1jkn80x:not([data-disabled]):hover {
   background-color: #f1b861 !important;

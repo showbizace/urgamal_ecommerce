@@ -1,15 +1,15 @@
 import "@/styles/globals.css";
 import { StoreProvider } from "@/utils/Store";
-import { UserProvider } from "@/utils/userProvider";
-import { MantineProvider, createEmotionCache } from "@mantine/core";
+import { MantineProvider, createEmotionCache, rem } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import Router from "next/router";
 import { useState, useEffect, use } from "react";
 const appendCache = createEmotionCache({ key: "mantine", prepend: false });
 import { ModalsProvider } from "@mantine/modals";
 import LoginModal from "@/components/LoginModal/LoginModal";
-
+import { UserConfigProvider } from "@/utils/userConfigProvider";
+import CategoryContextProvider from "@/utils/categoryContext";
 // function Loading() {
 //   const [loading, setLoading] = useState(false);
 
@@ -32,7 +32,8 @@ Router.onRouteChangeError = () => {
 //   </div>
 // )
 
-export default function App({ Component, pageProps, userInfo }) {
+export default function App({ Component, pageProps }) {
+  const userConfigs = getCookie("preference_config");
   return (
     <MantineProvider
       withCSSVariables
@@ -42,47 +43,23 @@ export default function App({ Component, pageProps, userInfo }) {
       theme={{
         /** Put your mantine theme override here */
         colorScheme: "light",
+        focusRingStyles: {
+          styles: (theme) => ({ outline: `${rem(2)} solid #f9bc609d` }),
+          inputStyles: (theme) => ({ outline: `${rem(2)} solid #f9bc609d` }),
+        },
       }}
     >
       <Notifications />
       {/* <Loading /> */}
       <ModalsProvider modals={{ login: LoginModal }}>
-        <UserProvider userInfo={userInfo}>
-          <StoreProvider>
-            <Component {...pageProps} />
-          </StoreProvider>
-        </UserProvider>
+        <UserConfigProvider preferenceConfig={userConfigs ? userConfigs : null}>
+          <CategoryContextProvider>
+            <StoreProvider>
+              <Component {...pageProps} />
+            </StoreProvider>
+          </CategoryContextProvider>
+        </UserConfigProvider>
       </ModalsProvider>
     </MantineProvider>
   );
 }
-
-App.getInitialProps = async ({ req, res }) => {
-  const userToken = getCookie("token", { req, res });
-  if (!userToken) {
-    return {
-      userInfo: null,
-    };
-  }
-  try {
-    const result = await fetch(`${process.env.API_URL}/user/profile`, {
-      headers: {
-        Authorization: userToken,
-      },
-    });
-    const jsonData = await result.json();
-    const userData = jsonData.data;
-    return {
-      userInfo: {
-        givenName: userData.given_name,
-        familyName: userData.family_name,
-        email: userData.email,
-        mobile: userData.mobile,
-      },
-    };
-  } catch (error) {
-    return {
-      userInfo: null,
-    };
-  }
-};

@@ -8,7 +8,7 @@ import { notifications, showNotification } from "@mantine/notifications";
 import { IconCheck, IconPhotoOff } from "@tabler/icons-react";
 import { SuccessNotification } from "../utils/SuccessNotification";
 import { useRouter } from "next/router";
-const ProductCard = ({ key, src, data }) => {
+const ProductCard = ({ key, src, data, shouldScale = true }) => {
   const [productCount, setProductCount] = useState(1);
   const { state, dispatch } = useContext(Store);
   const [loading, setLoading] = useState(false);
@@ -90,9 +90,13 @@ const ProductCard = ({ key, src, data }) => {
   };
   return (
     <div
-      key={key}
+      key={key ? key : null}
       onClick={clickProduct(data)}
-      className="transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 hover:cursor-pointer"
+      className={
+        shouldScale
+          ? "transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 hover:cursor-pointer"
+          : "hover:cursor-pointer"
+      }
     >
       <div
         className="flex flex-col justify-between items-center py-4 px-4 bg-white rounded-md "
@@ -125,7 +129,7 @@ const ProductCard = ({ key, src, data }) => {
         )}
 
         <div className="flex flex-col justify-start items-start w-full">
-          <Text className="text-2xl mt-1" lineClamp={2}>
+          <Text className="text-2xl mt-1 text-start" lineClamp={2}>
             {data?.name}
           </Text>
           <div className="flex flex-row items-center justify-center mt-1 gap-1">
