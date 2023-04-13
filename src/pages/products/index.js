@@ -158,7 +158,6 @@ export default function SearchResult({ initialData }) {
           ))}
         </ProductGridList>
       </div>
-      <BottomFooter />
     </GlobalLayout>
   );
 }
