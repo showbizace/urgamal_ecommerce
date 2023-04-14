@@ -60,7 +60,10 @@ const ProductDetail = ({ product }) => {
 				businessId: "local_test",
 			}),
 		};
-		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add/local`, requestOption);
+		const addReq = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/cart/add/local`,
+			requestOption
+		);
 		SuccessNotification({
 			message: "Сагсанд амжилттай орлоо!",
 			title: `${product?.name}`,

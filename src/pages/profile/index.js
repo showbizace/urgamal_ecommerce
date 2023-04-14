@@ -73,7 +73,7 @@ const Profile = () => {
 			},
 		};
 
-		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/address`, requestOptions)
+		fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/address`, requestOptions)
 			.then((req) => req.json())
 			.then((res) => {
 				if (res.success === true) {
