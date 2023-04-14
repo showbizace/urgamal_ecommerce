@@ -476,7 +476,7 @@ const CartItems = (props) => {
                   </ActionIcon>
                   <span className="font-[500] text-[1rem] text-[#212529]">
                     {item.purchaseCount !== undefined &&
-                    item.purchaseCount !== null
+                      item.purchaseCount !== null
                       ? item.purchaseCount
                       : item.quantity}
                   </span>
@@ -512,7 +512,7 @@ const CartItems = (props) => {
     });
 
   return (
-    <>
+    <div className="bg-grey-back pb-12">
       <Modal
         opened={opened}
         onClose={close}
@@ -544,110 +544,111 @@ const CartItems = (props) => {
           </Group>
         </div>
       </Modal>
-      <GlobalLayout>
-        <div className="bg-grey-back w-full px-8 py-4">
-          <div className="flex flex-row gap-10 mt-8 px-32">
-            <div className="flex flex-col w-[70%] gap-8 h-screen">
-              <div>
-                <div className=" bg-white rounded-lg px-10 py-6">
-                  <div className="flex flex-row justify-between">
-                    <span className="font-[500] text-[1.3rem] text-[#212529]">
-                      Сагс
-                    </span>
-                    <div className="font-[400] text-[1rem] text-[#ff6868]"></div>
-                    <Button
-                      component="a"
-                      href="#"
-                      compact
-                      variant="subtle"
-                      leftIcon={<IconTrash size="1rem" />}
-                      color="red"
-                      onClick={() => deleteFromCart()}
-                    >
-                      Устгах
-                    </Button>
-                  </div>
-                  <Suspense fallback={<Loading />}>
-                    <div className="mt-6">
-                      <Table captionSide="bottom" striped>
-                        {/* <caption>Some elements from periodic table</caption> */}
-                        <thead>{ths}</thead>
-                        <tbody>{rows}</tbody>
-                      </Table>
-                    </div>
-                  </Suspense>
+      <GlobalLayout />
+      <div className=" w-full px-4">
+        <div className="flex flex-row gap-10 mt-8 px-32">
+          <div className="flex flex-col w-[70%] gap-8">
+            <div>
+              <div className=" bg-white rounded-lg px-10 py-6">
+                <div className="flex flex-row justify-between">
+                  <span className="font-[500] text-[1.3rem] text-[#212529]">
+                    Сагс
+                  </span>
+                  <div className="font-[400] text-[1rem] text-[#ff6868]"></div>
+                  <Button
+                    component="a"
+                    href="#"
+                    compact
+                    variant="subtle"
+                    leftIcon={<IconTrash size="1rem" />}
+                    color="red"
+                    onClick={() => deleteFromCart()}
+                  >
+                    Устгах
+                  </Button>
                 </div>
+                <Suspense fallback={<Loading />}>
+                  <div className="mt-6" style={{ maxHeight: "480px", overflow: "auto" }}>
+                    <Table captionSide="bottom" striped>
+                      {/* <caption>Some elements from periodic table</caption> */}
+                      <thead>{ths}</thead>
+                      <tbody>{rows}</tbody>
+                    </Table>
+                  </div>
+                </Suspense>
               </div>
-              {addressVisible === true && (
-                <Address
-                  setSelectedShippingData={setSelectedShippingData}
-                  setSelect={setSelect}
-                />
-              )}
             </div>
+            {addressVisible === true && (
+              <Address
+                setSelectedShippingData={setSelectedShippingData}
+                setSelect={setSelect}
+              />
+            )}
+          </div>
 
-            <div className="w-[30%] h-2/5	bg-white rounded-lg px-10 py-8">
-              <div className="flex flex-col gap-5">
-                <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
-                  Нийт үнэ
-                  <span className="font-[500] text-[1.05rem] text-[#212529]">
-                    {totalPrice()}
-                  </span>
+          <div className="w-[30%] h-2/5	bg-white rounded-lg px-10 py-8">
+            <div className="flex flex-col gap-5">
+              <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
+                Нийт үнэ
+                <span className="font-[500] text-[1.05rem] text-[#212529]">
+                  {totalPrice()}
                 </span>
-                <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
-                  Хөнгөлөлт
-                  <span className="font-[500] text-[1.05rem] text-[#212529]">
-                    0 ₮
-                  </span>
+              </span>
+              <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
+                Хөнгөлөлт
+                <span className="font-[500] text-[1.05rem] text-[#212529]">
+                  0 ₮
                 </span>
-                <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
-                  Хүргэлт
-                  <span className="font-[500] text-[1.05rem] text-[#212529]">
-                    0 ₮
-                  </span>
+              </span>
+              <span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
+                Хүргэлт
+                <span className="font-[500] text-[1.05rem] text-[#212529]">
+                  0 ₮
                 </span>
-                <hr className="h-px my-1 border-0 border-t-dashed bg-gray-300" />
-                <span className="flex justify-between mb-1 font-[400] text-[1.1rem] text-[#212529af]">
-                  Нийлбэр үнэ{" "}
-                  <span className="font-[500] text-[1.1rem] text-[#212529]">
-                    {totalPrice()}
-                  </span>
+              </span>
+              <hr className="h-px my-1 border-0 border-t-dashed bg-gray-300" />
+              <span className="flex justify-between mb-1 font-[400] text-[1.1rem] text-[#212529af]">
+                Нийлбэр үнэ{" "}
+                <span className="font-[500] text-[1.1rem] text-[#212529]">
+                  {totalPrice()}
                 </span>
-                <Button
-                  styles={(theme) => ({
-                    root: {
-                      backgroundColor: "#f9bc60",
-                      border: 0,
-                      height: 42,
-                      paddingLeft: 20,
-                      paddingRight: 20,
-                    },
+              </span>
+              <Button
+                styles={(theme) => ({
+                  root: {
+                    backgroundColor: "#f9bc60",
+                    border: 0,
+                    height: 42,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                  },
 
-                    leftIcon: {
-                      marginRight: 15,
-                    },
-                  })}
-                  color="yellow"
-                  variant="filled"
-                  radius="md"
-                  size="md"
-                  uppercase
-                  onClick={() => makeOrder()}
-                >
-                  Захиалга хийх
-                </Button>
-              </div>
+                  leftIcon: {
+                    marginRight: 15,
+                  },
+                })}
+                color="yellow"
+                variant="filled"
+                radius="md"
+                size="md"
+                uppercase
+                onClick={() => makeOrder()}
+              >
+                Захиалга хийх
+              </Button>
             </div>
           </div>
-          {/* <div className="mt-20">
+        </div>
+        {/* <div className="mt-20">
             <div>
               <span>Санал Болгох Бүтээгдэхүүн</span>
             </div>
           </div> */}
-        </div>
-        <BottomFooter />
-      </GlobalLayout>
-    </>
+        {/* <BottomFooter /> */}
+      </div>
+
+
+    </div>
   );
 };
 

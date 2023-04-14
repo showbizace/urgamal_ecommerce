@@ -103,7 +103,7 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
 
   return (
     <>
-      <div className="bg-white rounded-lg px-10 py-8 h-[530px]">
+      <div className="bg-white rounded-lg px-10 py-8 max-h-96">
         {!loading ? (
           <>
             <div className="flex flex-row justify-between">
