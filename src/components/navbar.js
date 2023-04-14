@@ -2,261 +2,327 @@ import Image from "next/image";
 import NavBarLinks from "../components/nav-bar-links";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Button, Text } from "@mantine/core";
-import { useContext, useEffect, useState } from "react";
+import {
+	Autocomplete,
+	Avatar,
+	Button,
+	Group,
+	Loader,
+	Select,
+	Text,
+	Tooltip,
+} from "@mantine/core";
+import { forwardRef, useContext, useEffect, useState } from "react";
 import { Store } from "@/utils/Store";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { ErrorNotificatipon } from "../utils/SuccessNotification";
 import { openContextModal } from "@mantine/modals";
+import {
+	IconArrowsExchange,
+	IconArrowsExchange2,
+	IconHomeEco,
+	IconPackage,
+	IconReportSearch,
+	IconSearch,
+	IconStatusChange,
+} from "@tabler/icons-react";
+
+import axios from "axios";
+import useSWR from "swr";
+import { useDebouncedValue } from "@mantine/hooks";
+import { CategoryContext } from "@/utils/categoryContext";
+import { UserConfigContext } from "@/utils/userConfigContext";
+
+const fetcher = (url) =>
+	axios
+		.get(url)
+		.then((res) => res.data.data)
+		.catch(() => {});
 const cookie = getCookie("token");
-
 const Navbar = () => {
-  const router = useRouter();
-  const [cartItem, setCartItem] = useState([]);
-  const [quantity, setQuantity] = useState(0);
-  const [cartData, setCartData] = useState("");
-  const route = useRouter();
-  const [number, setNumber] = useState("");
-  const [total, setTotal] = useState(0);
-  const linkToCart = () => {
-    router.push({
-      pathname: "/cart/cartItem",
-    });
-  };
+	const router = useRouter();
+	const [searchQuery, setSearchQuery] = useState("");
+	const [debounced] = useDebouncedValue(searchQuery, 250);
+	const userContext = useContext(UserConfigContext);
+	// const [data, setData] = useState()
+	const {
+		data: categories,
+		error: catsError,
+		isLoading: catsLoading,
+		catsIsValidating,
+	} = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/category/all?type=nest`, fetcher, {
+		refreshInterval: 0,
+	});
+	const { data, error, isLoading, mutate, isValidating } = useSWR(
+		`${process.env.NEXT_PUBLIC_API_URL}/product/local?limit=${10}&query=${debounced}`,
+		fetcher
+	);
 
-  const handleChangeStorage = () => {
-    let localStorageCart = JSON.parse(localStorage.getItem("cartItems"));
-    if (localStorageCart !== null) {
-      setCartItem(localStorageCart?.cart?.cartItems);
-      let sum = 0;
-      let total = 0;
-      localStorageCart.cart.cartItems.forEach((e) => {
-        if (e !== null) {
-          sum = sum + e.quantity;
-          if (e.totalPrice !== undefined && e.totalPrice !== null) {
-            total = total + parseInt(e.totalPrice);
-          } else {
-            total = total + parseInt(e.total);
-          }
-        }
-      });
-      setQuantity(sum);
-      setTotal(total);
-    }
-  };
+	const suggestions = data
+		? data.map((e) => {
+				return {
+					value: e.name,
+					id: e.id,
+					image: e.product_image?.images?.[0],
+					description: e.description,
+				};
+		  })
+		: [];
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      // client-side operation such as local storage.
-      window.addEventListener("storage", handleChangeStorage);
-    }
-    const number = getCookie("number");
-    if (number !== undefined && number !== null && number !== "") {
-      setNumber(number);
-    }
-    getCartTotal();
-  }, []);
+	useEffect(() => {
+		mutate();
+	}, [debounced]);
 
-  const getCartTotal = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${cookie}`);
+	const AutocompleteItem = forwardRef(({ image, value, ...others }, ref) => {
+		return (
+			<div
+				ref={ref}
+				style={{ padding: "10px", marginTop: "5px" }}
+				className=" hover:cursor-pointer hover:bg-gray-100 hover:rounded-md"
+				{...others}>
+				<Group noWrap>
+					<Avatar src={image} alt="Зураг">
+						{" "}
+						<IconPackage stroke={1.5} />
+					</Avatar>
+					<div>
+						<Text>{value}</Text>
+						{/* <Text size="xs" color="dimmed">
+              {props?.description}
+            </Text> */}
+					</div>
+				</Group>
+			</div>
+		);
+	});
+	const [cartItem, setCartItem] = useState([]);
+	const [quantity, setQuantity] = useState(0);
+	const [cartData, setCartData] = useState("");
+	const route = useRouter();
+	const [number, setNumber] = useState("");
+	const [total, setTotal] = useState(0);
+	const linkToCart = () => {
+		router.push({
+			pathname: "/cart/cartItem",
+		});
+	};
 
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-    };
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart`, requestOptions)
-      .then((req) => req.json())
-      .then((res) => {
-        if (res.success === true) {
-          setCartData(res.result);
-        }
-      });
-  };
+	const handleChangeStorage = () => {
+		let localStorageCart = JSON.parse(localStorage.getItem("cartItems"));
+		if (localStorageCart !== null) {
+			setCartItem(localStorageCart?.cart?.cartItems);
+			let sum = 0;
+			let total = 0;
+			localStorageCart.cart.cartItems.forEach((e) => {
+				if (e !== null) {
+					sum = sum + e.quantity;
+					if (e.totalPrice !== undefined && e.totalPrice !== null) {
+						total = total + parseInt(e.totalPrice);
+					} else {
+						total = total + parseInt(e.total);
+					}
+				}
+			});
+			setQuantity(sum);
+			setTotal(total);
+		}
+	};
 
-  return (
-    <>
-      <div
-        className="bg-white  sm:hidden xs:hidden xs2:hidden md:flex lg:flex flex-row justify-between items-center py-2 px-10"
-        style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}
-      >
-        <Link href={"/home"}>
-          <div className="flex flex-row justify-center items-center text-black">
-            ТАРИMАЛ{" "}
-            <Image src="/logo.png" width={30} height={30} className="mx-4" />{" "}
-            УРГАMАЛ
-          </div>
-        </Link>
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			// client-side operation such as local storage.
+			window.addEventListener("storage", handleChangeStorage);
+		}
+		const number = getCookie("number");
+		if (number !== undefined && number !== null && number !== "") {
+			setNumber(number);
+		}
+		getCartTotal();
+	}, []);
 
-        <div className="flex flex-row">
-          <NavBarLinks
-            name={"Өрхийн тариаланч"}
-            linkUrl={"/"}
-            onClick={() => {}}
-          />
-          <NavBarLinks
-            name={"Мэргэжлийнхэнд "}
-            linkUrl={"/"}
-            onClick={() => {}}
-            isLast
-          />
-        </div>
-        <div className="flex flex-row items-center">
-          {/* <Button
-          compact
-          variant={"white"}
-          className="static flex flex-col items-center mr-4"
-        >
-          <Image src="/icons/hearth.svg" width={23} height={23} />
-          <div className="absolute">
-            <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
-              <p className="text-sm-5">1</p>
-            </div>
-          </div>
-        </Button> */}
+	const getCartTotal = async () => {
+		var myHeaders = new Headers();
+		myHeaders.append("Authorization", `Bearer ${cookie}`);
 
-          <Button
-            compact
-            variant={"white"}
-            className="static flex flex-col items-center mr-4"
-            onClick={() => linkToCart()}
-          >
-            <Image src="/icons/trolley.svg" width={23} height={23} />
-            <div className="absolute">
-              <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
-                <p className="text-sm-5">{quantity}</p>
-              </div>
-            </div>
-          </Button>
+		var requestOptions = {
+			method: "GET",
+			headers: myHeaders,
+		};
+		fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart`, requestOptions)
+			.then((req) => req.json())
+			.then((res) => {
+				if (res.success === true) {
+					setCartData(res.result);
+				}
+			});
+	};
+	const [userConfigValue, setUserConfigValue] = useState(userContext.preferenceConfig);
 
-          <div>
-            <p className="text-sm-1 self-end">Таны сагсанд</p>
-            <p className="text-sm-1" style={{ fontSize: "16px" }}>
-              {total}₮
-            </p>
-          </div>
+	useEffect(() => {
+		setUserConfigValue(userContext.configId);
+	}, [userContext.preferenceConfig, userContext.configId]);
 
-          <div
-            className="flex flex-row items-center cursor-pointer"
-            onClick={() => {
-              if (cookie === undefined || null) {
-                openContextModal({
-                  modal: "login",
-                  title: (
-                    <Text size="sm" weight={400}>
-                      Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
-                    </Text>
-                  ),
-                  centered: true,
-                });
-              } else {
-                route.push("/profile");
-              }
-            }}
-          >
-            <div className="flex justify-center items-center ml-8">
-              <Image src="/user.png" width={40} height={40} />
-            </div>
-            {/* <div className=" flex flex-col items-end">
-            {cookie === undefined || null ? (
-              <p className="text-md ml-4">Нэвтрэх</p>
-            ) : (
-              <div>
-                <p className="text-sm-1">Сайн байна уу?</p>
-                <p className="text-sm">
-                  {number !== "" ? number : "*********"}
-                </p>
-              </div>
-            )}
-          </div> */}
-          </div>
-        </div>
-      </div>
-      <div
-        className="bg-white  sm:flex xs:flex xs2:flex md:hidden lg:hidden flex-row justify-between items-center py-2 px-10"
-        style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}
-      >
-        <Link href={"/home"}>
-          <div className="flex flex-row justify-center items-center text-black">
-            ТАРИMАЛ{" "}
-            <Image src="/logo.png" width={30} height={30} className="mx-4" />{" "}
-            УРГАMАЛ
-          </div>
-        </Link>
+	const handleConfigSelection = (value) => {
+		if (userConfigValue !== value) {
+			setCookie("preference_config", value, {
+				maxAge: 30 * 24 * 60 * 60 * 1000,
+			});
+			route.reload();
+		}
+	};
 
-        {/* <div className="flex flex-row">
-          <NavBarLinks
-            name={"Өрхийн тариаланч"}
-            linkUrl={"/"}
-            onClick={() => {}}
-          />
-          <NavBarLinks
-            name={"Мэргэжлийнхэнд "}
-            linkUrl={"/"}
-            onClick={() => {}}
-            isLast
-          />
-        </div> */}
-        <div className="flex flex-row items-center">
-          <Button
-            compact
-            variant={"white"}
-            className="static flex flex-col items-center mr-4"
-            onClick={() => linkToCart()}
-          >
-            <Image src="/icons/trolley.svg" width={23} height={23} />
-            <div className="absolute">
-              <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
-                <p className="text-sm-5">{quantity}</p>
-              </div>
-            </div>
-          </Button>
+	return (
+		<div
+			className="bg-white  sm:hidden xs:hidden xs2:hidden md:block lg:block block py-2 px-12 "
+			style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}>
+			<div className="flex justify-between items-center">
+				<Link href={"/home"}>
+					<div className="flex justify-center items-center ">
+						<Image src="/logo.png" width={36} height={36} />
+					</div>
+				</Link>
+				<div className="flex justify-center items-center gap-3 flex-grow mx-11">
+					{catsError && <div>error</div>}
+					{catsLoading && (
+						<div>
+							<Loader variant="dots" color="yellow" />
+						</div>
+					)}
+					{categories && (
+						<Tooltip withArrow label="Танд зөвхөн уг төрлийн бараа, ангиллууд харагдана">
+							<Select
+								// variant="filled"
+								size="md"
+								radius="xl"
+								value={userConfigValue}
+								onChange={(value) => handleConfigSelection(value)}
+								// rightSection={<IconArrowsExchange2 size="1rem" />}
+								// rightSectionWidth={30}
+								// styles={{ rightSection: { pointerEvents: "none" } }}
+								styles={(theme) => ({
+									item: {
+										"&[data-selected]": {
+											"&, &:hover": {
+												backgroundColor: "#f9bc60",
+											},
+										},
 
-          <div>
-            <p className="text-sm-1 self-end">Таны сагсанд</p>
-            <p className="text-sm-1" style={{ fontSize: "16px" }}>
-              {total}₮
-            </p>
-          </div>
-
-          <div
-            className="flex flex-row items-center cursor-pointer"
-            onClick={() => {
-              if (cookie === undefined || null) {
-                openContextModal({
-                  modal: "login",
-                  title: (
-                    <Text size="sm" weight={400}>
-                      Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
-                    </Text>
-                  ),
-                  centered: true,
-                });
-              } else {
-                route.push("/profile");
-              }
-            }}
-          >
-            <div className="flex justify-center items-center ml-8">
-              <Image src="/user.png" width={40} height={40} />
-            </div>
-            {/* <div className=" flex flex-col items-end">
-          {cookie === undefined || null ? (
-            <p className="text-md ml-4">Нэвтрэх</p>
-          ) : (
-            <div>
-              <p className="text-sm-1">Сайн байна уу?</p>
-              <p className="text-sm">
-                {number !== "" ? number : "*********"}
-              </p>
-            </div>
-          )}
-        </div> */}
-          </div>
-        </div>
-      </div>
-    </>
-  );
+										// applies styles to hovered item (with mouse or keyboard)
+										"&[data-hovered]": {},
+									},
+								})}
+								data={
+									catsError
+										? []
+										: categories?.map((e) => {
+												return {
+													value: e.id?.toString(),
+													label: e.name,
+												};
+										  })
+								}
+								icon={
+									userConfigValue === "1" ? (
+										<IconHomeEco stroke={1.5} color="#204900" />
+									) : (
+										<IconReportSearch stroke={1.5} color="#5E4333" />
+									)
+								}
+							/>
+						</Tooltip>
+					)}
+					<div className="max-w-lg flex-grow">
+						<Autocomplete
+							size="md"
+							placeholder="Бараа хайх..."
+							itemComponent={AutocompleteItem}
+							data={suggestions ? suggestions : []}
+							limit={10}
+							styles={{
+								root: {
+									paddingLeft: "5px",
+									paddingRight: 0,
+									borderRadius: 25,
+									flexGrow: 4,
+								},
+								input: {
+									borderRadius: 25,
+									"::placeholder": {
+										fontSize: ".95rem",
+									},
+								},
+								rightSection: {
+									margin: 0,
+									padding: 0,
+								},
+							}}
+							value={searchQuery}
+							onChange={setSearchQuery}
+							onKeyDown={(e) => {
+								if (e.code === "Enter") {
+									router.push({
+										pathname: "/products",
+										query: { q: searchQuery },
+									});
+								}
+							}}
+							onItemSubmit={({ id }) =>
+								router.push({
+									pathname: "/product/[id]",
+									query: { id },
+								})
+							}
+							rightSection={
+								<button
+									className="m-auto h-full bg-background-sort p-2 px-6 rounded-full "
+									onClick={() => {
+										router.push({
+											pathname: "/products",
+											query: { q: searchQuery },
+										});
+									}}>
+									<IconSearch color="white" size="1.2rem" stroke={2.5} />
+								</button>
+							}
+						/>
+					</div>
+				</div>
+				<div className="flex items-center gap-4">
+					<Button compact variant={"white"} onClick={() => linkToCart()}>
+						<Image src="/icons/trolley.svg" width={23} height={23} />
+						<div className="absolute">
+							<div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
+								<p className="text-sm-5">{quantity}</p>
+							</div>
+						</div>
+					</Button>
+					<Avatar
+						src={null}
+						size={40}
+						alt="user"
+						radius="xl"
+						component="button"
+						onClick={() => {
+							if (!userContext.auth) {
+								openContextModal({
+									modal: "login",
+									title: (
+										<Text size="sm" weight={400}>
+											Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
+										</Text>
+									),
+									centered: true,
+								});
+							} else {
+								route.push("/profile");
+							}
+						}}>
+						<Image src="/user.png" width={40} height={40} />
+					</Avatar>
+				</div>
+			</div>
+		</div>
+	);
 };
 
 export default Navbar;

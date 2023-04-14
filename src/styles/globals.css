@@ -1,119 +1,156 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer base {
+	::-webkit-scrollbar {
+		width: 0.7rem;
+		height: 20px;
+	}
+	::-webkit-scrollbar-track {
+		border-radius: 100vh;
+		background: #f7f4ed;
+	}
 
+	::-webkit-scrollbar-thumb {
+		background: rgb(212, 212, 212);
+		border-radius: 100vh;
+		border: 3px solid #f6f7ed;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background: rgb(168, 168, 168);
+	}
+}
 body {
-  width: 100%;
-  height: 100%;
-  background-color: #f6f7fb;
-  font-family: "Open Sans", sans-serif;
-  font-weight: 400;
+	width: 100%;
+	height: 100%;
+	background-color: #bbbbbb;
+	font-family: "Open Sans", sans-serif;
+	font-weight: 400;
+}
+.swiper-button-prev {
+	background-color: #f1b13a;
+	border-radius: 999px;
+	height: unset !important;
+	width: unset !important;
+	padding: 0.6rem 0.8rem;
+}
+.swiper-button-prev::after {
+	font-size: 0.7rem !important;
+	font-weight: bold;
+	color: white;
+}
+.swiper-button-next {
+	height: unset !important;
+	width: unset !important;
+	background-color: #f1b13a;
+	/* opacity: 1; */
+	border-radius: 999px;
+	padding: 0.6rem 0.8rem;
+}
+.swiper-button-next::after {
+	font-size: 0.7rem !important;
+	font-weight: bold;
+	color: white;
 }
 
-.navbar-input {
-  width: 100%;
-  background-color: rgba(235, 239, 238, 0.9);
-  padding-left: 3%;
-  padding-right: 3%;
-  font-size: 0.875rem;
-}
 /* sorry zolboo uchriin olchooroi (tiirsen bolno) */
 .mantine-1jkn80x:not([data-disabled]):hover {
-  background-color: #f1b861 !important;
+	background-color: #f1b861 !important;
 }
 .radio-button .mantine-1fbks7c[data-checked] {
-  padding: 0 !important;
+	padding: 0 !important;
 }
 
 .nextui-c-lfcDHB {
-  padding: 1rem 0 1rem 0 !important;
+	padding: 1rem 0 1rem 0 !important;
 }
 
 .nextui-c-fMAxGR {
-  padding-bottom: 0 !important;
+	padding-bottom: 0 !important;
 }
 
 .mantine-1phcupv thead tr th {
-  padding: 15px 10px !important;
+	padding: 15px 10px !important;
 }
 
 .radio-button .mantine-1fbks7c {
-  display: flex;
-  justify-content: center;
-  width: 30px !important;
-  height: 30px !important;
-  padding: 0;
+	display: flex;
+	justify-content: center;
+	width: 30px !important;
+	height: 30px !important;
+	padding: 0;
 }
 
 .radio-button .mantine-1rzfdiy {
-  width: auto;
+	width: auto;
 }
 
 .radio-button .mantine-yxmaw9 {
-  display: flex;
-  align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 .image {
-  width: 100%;
-  height: 100%;
-  position: relative !important;
-  object-fit: cover;
+	width: 100%;
+	height: 100%;
+	position: relative !important;
+	object-fit: cover;
 }
 
 .swiper {
-  width: 100%;
-  height: 100%;
+	width: 100%;
+	height: 100%;
 }
 
 .swiper-slide {
-  text-align: center;
-  font-size: 18px;
-  background: #fff;
+	text-align: center;
+	font-size: 18px;
+	background: #fff;
 
-  /* Center slide text vertically */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	/* Center slide text vertically */
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .category-img {
-  width: 80%;
-  height: 80%;
+	width: 80%;
+	height: 80%;
 }
 .bundle-img {
-  width: 60%;
-  height: 60%;
-  object-fit: fill;
+	width: 60%;
+	height: 60%;
+	object-fit: fill;
 }
 
 .product-card-img {
-  width: 100%;
-  height: 50%;
-  object-fit: contain;
+	width: 100%;
+	height: 50%;
+	object-fit: contain;
 }
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;
+	display: none;
 }
 
 /* For IE, Edge and Firefox */
 .scrollbar-hide {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
+	-ms-overflow-style: none;
+	/* IE and Edge */
+	scrollbar-width: none;
+	/* Firefox */
 }
 .image-container {
-  width: 20rem;
-  height: 20rem;
+	width: 20rem;
+	height: 20rem;
 }
 
 .image-container > div {
-  position: unset !important;
+	position: unset !important;
 }
 .image-container image {
-  object-fit: contain;
-  width: 100% !important;
-  position: relative !important;
-  height: unset !important;
+	object-fit: contain;
+	width: 100% !important;
+	position: relative !important;
+	height: unset !important;
 }

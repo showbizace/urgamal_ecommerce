@@ -9,9 +9,10 @@ export default function ProductGridList({
   emptyStateMessage,
   query,
   cols,
+  className,
 }) {
   return isEmpty ? (
-    <div className="w-full h-screen flex justify-center items-start mt-32">
+    <div className={`w-full h-screen flex justify-center items-start mt-32`}>
       <Stack align="center">
         <IconSearch size="2rem" stroke={1.5} />
         <Text size="lg" weight={500}>
@@ -30,8 +31,7 @@ export default function ProductGridList({
       cols={cols}
       spacing={20}
       verticalSpacing={20}
-      m={0}
-      className="flex-grow"
+      className={`flex-grow ${className}`}
       breakpoints={[
         { maxWidth: "62rem", cols: 3, spacing: "md" },
         { maxWidth: "48rem", cols: 2, spacing: "sm" },

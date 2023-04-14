@@ -8,7 +8,7 @@ import { notifications, showNotification } from "@mantine/notifications";
 import { IconCheck, IconPhotoOff } from "@tabler/icons-react";
 import { SuccessNotification } from "../utils/SuccessNotification";
 import { useRouter } from "next/router";
-const ProductCard = ({ key, src, data }) => {
+const ProductCard = ({ key, src, data, shouldScale = true }) => {
   const [productCount, setProductCount] = useState(1);
   const { state, dispatch } = useContext(Store);
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,6 @@ const ProductCard = ({ key, src, data }) => {
     if (count - productCount > 0) {
       setProductCount(productCount + 1);
     } else {
-      console.log("aldaa garlaa");
     }
   };
 
@@ -28,7 +27,6 @@ const ProductCard = ({ key, src, data }) => {
     if (productCount > 1) {
       setProductCount(productCount - 1);
     } else {
-      console.log("");
     }
   };
   const addToCartHandler = async (event, data) => {
@@ -40,7 +38,6 @@ const ProductCard = ({ key, src, data }) => {
     setLoading(true);
     const token = getCookie("token");
     if (token !== undefined && token !== null && token !== "") {
-      console.log(token, "token");
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + token);
       myHeaders.append("Content-Type", "application/json");
@@ -59,9 +56,7 @@ const ProductCard = ({ key, src, data }) => {
       );
       if (res.status === 200) {
         const data = await res.json();
-        console.log(data, "data");
         if (data.success === true) {
-          console.log("sucesssss");
           SuccessNotification({
             message: "Сагсанд амжилттай орлоо!",
             title: "Сагс",
@@ -70,7 +65,6 @@ const ProductCard = ({ key, src, data }) => {
         }
       }
     } else {
-      console.log("sucesssss");
       SuccessNotification({
         message: "Сагсанд амжилттай орлоо!",
         title: "Сагс",
@@ -80,7 +74,6 @@ const ProductCard = ({ key, src, data }) => {
   };
 
   const clickProduct = (data) => (e) => {
-    console.log("its working");
     e.preventDefault();
     router.push({
       shallow: true,
@@ -90,9 +83,13 @@ const ProductCard = ({ key, src, data }) => {
   };
   return (
     <div
-      key={key}
+      key={key ? key : null}
       onClick={clickProduct(data)}
-      className="transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 hover:cursor-pointer"
+      className={
+        shouldScale
+          ? "transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 hover:cursor-pointer"
+          : "hover:cursor-pointer"
+      }
     >
       <div
         className="flex flex-col justify-between items-center py-4 px-4 bg-white rounded-md "
@@ -125,7 +122,7 @@ const ProductCard = ({ key, src, data }) => {
         )}
 
         <div className="flex flex-col justify-start items-start w-full">
-          <Text className="text-2xl mt-1" lineClamp={2}>
+          <Text className="text-2xl mt-1 text-start" lineClamp={2}>
             {data?.name}
           </Text>
           <div className="flex flex-row items-center justify-center mt-1 gap-1">

@@ -25,7 +25,6 @@ const Login = () => {
 
 	const fetchData = async (value) => {
 		let { number } = value;
-		console.log(number, "numbers");
 		if (number !== "" && ((number !== undefined) !== number) !== null) {
 			const res = await fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/auth/code?mobile=${number}`
@@ -40,7 +39,6 @@ const Login = () => {
 
 	const pinCodeFetch = async (value) => {
 		let code = value;
-		console.log(typeof code);
 		if (code.length === 6) {
 			setError(false);
 			const requestOption = {
@@ -53,9 +51,14 @@ const Login = () => {
 				requestOption
 			);
 			if (res.status === 200) {
+				const bigDate = 30 * 24 * 60 * 60 * 1000;
 				const data = await res.json();
-				setCookie("token", data.token);
-				setCookie("number", number);
+				setCookie("token", data.token, {
+					maxAge: bigDate,
+				});
+				setCookie("number", number, {
+					maxAge: bigDate,
+				});
 				setCookie("addCart", true);
 				router.push("/cart/cartItem");
 			} else {
