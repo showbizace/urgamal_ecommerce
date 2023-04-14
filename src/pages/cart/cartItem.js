@@ -7,6 +7,7 @@ import {
 	Group,
 	Text,
 	Badge,
+	Tabs,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
@@ -25,6 +26,8 @@ import { getCookie, setCookie } from "cookies-next";
 import debounce from "lodash.debounce";
 import { openContextModal } from "@mantine/modals";
 import BottomFooter from "@/components/Footer";
+import axios from "axios";
+import Image from "next/image";
 
 const CartItems = (props) => {
 	const [isCheckAll, setIsCheckAll] = useState(false);
@@ -34,6 +37,8 @@ const CartItems = (props) => {
 	const [cartItem, setCartItem] = useState();
 	const [checked, setChecked] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [paymentData, setPaymentData] = useState();
+	const [invoiceId, setInvoiceId] = useState(null);
 	const [addressVisible, setAddressVisible] = useState(false);
 	const [isChangeQuantity, setIsChangeQuantity] = useState(false);
 	const [total, setTotal] = useState();
@@ -119,7 +124,6 @@ const CartItems = (props) => {
 		);
 		if (res.status === 200) {
 			const data = await res.json();
-			console.log(data, "data multople add to cart");
 			setCookie("addCart", false);
 		}
 	};
@@ -198,7 +202,6 @@ const CartItems = (props) => {
 				if (res.status === 200) {
 					const data = await res.json();
 					if (data.success === true) {
-						console.log("delete all success");
 						SuccessNotification({
 							message: "Сагсанд дахь бүх бараа амжилттай устлаа!",
 							title: "Сагсны бараа",
@@ -221,9 +224,7 @@ const CartItems = (props) => {
 				);
 				if (res.status === 200) {
 					const data = await res.json();
-					console.log(data, "dasdasdasd");
 					if (data.success === true) {
-						console.log(data.message, "message");
 						SuccessNotification({
 							message: "Сагсанд дахь бараа амжилттай устлаа!",
 							title: "Сагсны бараа устгах",
@@ -237,7 +238,6 @@ const CartItems = (props) => {
 	};
 	const handleClick = (e) => {
 		let newArr = [...cartItem];
-		console.log(newArr, "newArr");
 		newArr.forEach((item) => {
 			if (item !== undefined) {
 				if (item.id === e.id) {
@@ -256,34 +256,76 @@ const CartItems = (props) => {
 		if (userToken) {
 			if (select) {
 				const data = `Хот: ${selectedShippingData.city}, Дүүрэг: ${selectedShippingData.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData.street}, Байр: ${selectedShippingData.apartment}, Тоот: ${selectedShippingData.number}, Утас: ${selectedShippingData.phone}`;
-				var myHeaders = new Headers();
-				myHeaders.append("Authorization", "Bearer " + userToken);
-				myHeaders.append("Content-Type", "application/json");
+				const axiosReqOption = {
+					headers: {
+						Authorization: "Bearer " + userToken,
+						"Content-Type": "application/json",
+					},
+				};
 				const requestOption = {
 					method: "POST",
-					headers: myHeaders,
+					headers: {
+						Authorization: "Bearer " + userToken,
+						"Content-Type": "application/json",
+					},
 					body: JSON.stringify({
 						address: data,
 					}),
 				};
-				const res = await fetch(
-					`${process.env.NEXT_PUBLIC_API_URL}/order`,
-					requestOption
-				);
-				if (res.status === 200) {
-					const data = await res.json();
-					if (data.success === true) {
-						open();
-						setOrderId(data.orderid);
-						let temp = [];
-						setCartItem(temp);
-						dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
-						SuccessNotification({ message: data.message, title: "Захиалга" });
-						// router.push("/home");
+				try {
+					const res = await fetch(
+						`${process.env.NEXT_PUBLIC_API_URL}/order`,
+						requestOption
+					);
+					if (res.status === 200) {
+						const data = await res.json();
+						if (data.success === true) {
+							// open();
+							setOrderId(data.orderid);
+							let temp = [];
+							const cartItems = cartItem;
+							setCartItem(temp);
+							dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
+							// SuccessNotification({ message: data.message, title: "Захиалга" });
+							axios
+								.post(
+									`${process.env.NEXT_PUBLIC_API_URL}/payment`,
+									{ orderid: data.orderid },
+									axiosReqOption
+								)
+								.then((res) => {
+									setPaymentData(res.data.data);
+									open();
+									// openContextModal({
+									// 	modal: "payment",
+									// 	title: "Төлбөр төлөлт",
+									// 	paymentData: res.data.data,
+									// 	centered: true,
+									// });
+								})
+								.catch((err) => {
+									if (err.response) {
+										showNotification({
+											message: err.response.data,
+											color: "red",
+										});
+									} else {
+										showNotification({
+											message: "Төлбөрийн мэдээлэл авахад алдаа гарлаа",
+											color: "red",
+										});
+									}
+								});
+						}
+					} else if (res.status === 500) {
+						showNotification({
+							message: "Сагсанд бараа байхгүй байна!",
+							color: "red",
+						});
 					}
-				} else if (res.status === 500) {
+				} catch (error) {
 					showNotification({
-						message: "Сагсанд бараа байхгүй байна!",
+						message: "Захиалга үүсгэхэд алдаа гарлаа!",
 						color: "red",
 					});
 				}
@@ -345,7 +387,6 @@ const CartItems = (props) => {
 			if (res.status === 200) {
 				const data = await res.json();
 				if (data.success === true) {
-					console.log(data.message, "message");
 				}
 			}
 		}
@@ -389,9 +430,7 @@ const CartItems = (props) => {
 				);
 				if (res.status === 200) {
 					const data = await res.json();
-					console.log(data, "dasdasdasd");
 					if (data.success === true) {
-						console.log(data.message, "message");
 						setButtonPressed(false);
 					}
 				}
@@ -484,11 +523,7 @@ const CartItems = (props) => {
 											":hover": { backgroundColor: "#ebfbee" },
 										}}
 										className="ml-3"
-										onClick={() =>
-											item.purchaseCount
-												? addQuantity(item.purchaseCount, item)
-												: addQuantity(item.quantity)
-										}>
+										onClick={() => addQuantity(item.purchaseCount, item)}>
 										<IconPlus size="1.2rem" color="#212529" />
 									</ActionIcon>
 								</div>
@@ -514,30 +549,75 @@ const CartItems = (props) => {
 			<Modal
 				opened={opened}
 				onClose={close}
-				title="Дансны мэдээлэл"
+				title="Төлбөр"
 				centered
-				padding="lg"
 				size="md"
 				withCloseButton={false}
 				closeOnClickOutside={false}>
-				<div className="flex flex-col">
-					<div className="flex flex-row">
-						<p className="font-semibold">Дансны дугаар : </p>
-						<p className="ml-2">51780115496 Хаан банк </p>
-					</div>
-					<div className="mt-2 flex flex-row">
-						{/* <p className="font-semibold">Гүйлгээний утга : </p> */}
-						<p className="ml-2"></p>
-						<p className="mt-4">
-							Та гүйлгээний утган дээр <span className="font-semibold">{orderId}</span>{" "}
-							дугаартай захиалгын дугаар болон өөрийн утасны дугаараа заавал оруулаарай!
-						</p>
-					</div>
-					<Group position="right" mt="45px">
-						<Button color="yellow" onClick={close}>
-							Ойлголоо
-						</Button>
-					</Group>
+				<div className="flex flex-col gap-2">
+					<Tabs
+						defaultValue="qpay"
+						variant="default"
+						classNames={{
+							panel: "my-8",
+						}}>
+						<Tabs.List grow>
+							<Tabs.Tab value="qpay">Qpay- р төлөх</Tabs.Tab>
+							<Tabs.Tab value="apps">Төлбөрийн апп-ууд</Tabs.Tab>
+						</Tabs.List>
+
+						<Tabs.Panel value="qpay" pt="xs">
+							<div className="h-full w-full flex flex-col justify-center items-center">
+								<div className="relative h-60 w-60">
+									<Image
+										alt="qpay-qr"
+										fill
+										src={`data:image/jpeg;base64, ${paymentData?.qr_image}`}
+									/>
+								</div>
+								{/* <Text>Захиалгын дүн: {JSON.stringify(Object.keys(paymentData))}</Text> */}
+							</div>
+						</Tabs.Panel>
+						<Tabs.Panel value="apps" pt="xs">
+							<div className="h-full w-full flex flex-col justify-center items-center">
+								<Text align="center">
+									Та доорх төлбөрийн апп-уудаар төлбөрөө гар утаснаасаа шууд хийх
+									боломжтой.{" "}
+								</Text>
+								<div className="flex flex-wrap justify-center items-start gap-4 mt-6">
+									{paymentData?.urls.map((payment) => {
+										return (
+											<div className="flex flex-col justify-center gap-3">
+												<Link href={payment.link}>
+													<div className="relative h-14 w-14">
+														<Image
+															alt="qpay-qr"
+															fill
+															loader={() => payment?.logo}
+															src={payment?.logo}
+															className="rounded-lg"
+														/>
+													</div>
+												</Link>
+												{/* <Text>{payment.description}</Text> */}
+											</div>
+										);
+									})}
+								</div>
+							</div>
+						</Tabs.Panel>
+					</Tabs>
+					<Button
+						variant="subtle"
+						onClick={() => {
+							close();
+							router.push({
+								pathname: "/profile",
+								query: { cr: "order" },
+							});
+						}}>
+						Буцах
+					</Button>
 				</div>
 			</Modal>
 			<GlobalLayout>
@@ -621,7 +701,7 @@ const CartItems = (props) => {
 									radius="md"
 									size="md"
 									uppercase
-									onClick={() => makeOrder()}>
+									onClick={makeOrder}>
 									Захиалга хийх
 								</Button>
 							</div>

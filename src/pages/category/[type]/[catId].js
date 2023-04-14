@@ -17,7 +17,7 @@ const fetcher = (url) =>
 		.then((res) => {
 			return res.data.data;
 		})
-		.catch((error) => console.log(error));
+		.catch((error) => {});
 const PAGE_SIZE = 10;
 
 export async function getServerSideProps({ query }) {
@@ -169,7 +169,6 @@ const CategoryPage = ({ initialData }) => {
 			})
 			.catch((error) => {
 				if (error.response) {
-					console.log();
 				} else {
 				}
 			});

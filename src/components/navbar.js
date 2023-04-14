@@ -318,7 +318,6 @@ const Navbar = () => {
             component="button"
             onClick={() => {
               if (!userContext.auth) {
-                console.log(userContext, "user context values");
                 openContextModal({
                   modal: "login",
                   title: (

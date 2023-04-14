@@ -76,7 +76,6 @@ export default function LoginModal({ context, id }) {
 				}
 			})
 			.catch((error) => {
-				console.log(error, auth);
 				showNotification({
 					message: "Код буруу эсвэл хүчинтэй хугацаа дууссан байна.",
 					color: "red",

@@ -19,7 +19,6 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
     if (count - productCount > 0) {
       setProductCount(productCount + 1);
     } else {
-      console.log("aldaa garlaa");
     }
   };
 
@@ -28,7 +27,6 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
     if (productCount > 1) {
       setProductCount(productCount - 1);
     } else {
-      console.log("");
     }
   };
   const addToCartHandler = async (event, data) => {
@@ -40,7 +38,6 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
     setLoading(true);
     const token = getCookie("token");
     if (token !== undefined && token !== null && token !== "") {
-      console.log(token, "token");
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + token);
       myHeaders.append("Content-Type", "application/json");
@@ -59,9 +56,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
       );
       if (res.status === 200) {
         const data = await res.json();
-        console.log(data, "data");
         if (data.success === true) {
-          console.log("sucesssss");
           SuccessNotification({
             message: "Сагсанд амжилттай орлоо!",
             title: "Сагс",
@@ -70,7 +65,6 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
         }
       }
     } else {
-      console.log("sucesssss");
       SuccessNotification({
         message: "Сагсанд амжилттай орлоо!",
         title: "Сагс",
@@ -80,7 +74,6 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
   };
 
   const clickProduct = (data) => (e) => {
-    console.log("its working");
     e.preventDefault();
     router.push({
       shallow: true,
