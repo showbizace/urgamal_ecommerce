@@ -13,22 +13,14 @@ import PurchaseHistory from "./tabs/PurchaseHistory";
 import { getCookie, removeCookies } from "cookies-next";
 import { useRouter } from "next/router";
 import {
-	IconActivity,
 	IconBox,
-	IconChevronRight,
-	IconFingerprint,
-	IconGauge,
-	IconHome2,
-	IconLocation,
 	IconLogout,
 	IconMap2,
-	IconShip,
 	IconUserCheck,
 	IconUserEdit,
 } from "@tabler/icons-react";
 import UserBasicInfo from "@/components/UserProfileForms/UserBasicInfo";
 import UserAddress from "@/components/UserProfileForms/UserAddress";
-import BottomFooter from "@/components/Footer";
 import { UserConfigContext } from "@/utils/userConfigContext";
 const Profile = () => {
 	const token = getCookie("token");
@@ -39,14 +31,16 @@ const Profile = () => {
 	const [addressData, setAddressData] = useState(null);
 	const [loading, setLoading] = useState(false);
 	useEffect(() => {
+		const { cr } = router.query;
+		if (cr && cr === "order") {
+			setActiveTab(1);
+		}
 		getUserInfo();
 		getUserAddress();
 	}, []);
 
 	const getUserInfo = async () => {
 		setLoading(true);
-
-		console.log(token);
 		if (!token) {
 			router.push("/login");
 		}
@@ -78,7 +72,8 @@ const Profile = () => {
 				Authorization: `Bearer ${token}`,
 			},
 		};
-		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/address`, requestOptions)
+
+		fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/address`, requestOptions)
 			.then((req) => req.json())
 			.then((res) => {
 				if (res.success === true) {
@@ -126,7 +121,7 @@ const Profile = () => {
 
 	return (
 		<GlobalLayout>
-			<div className="bg-grey-back h-[70vh] flex flex-grow items-stretch ">
+			<div className="bg-grey-back h-[80vh] flex flex-grow items-stretch ">
 				<Stack
 					justify="space-between"
 					className="bg-white min-w-[250px] my-4 ml-4 rounded-md px-3 py-2">
@@ -143,10 +138,10 @@ const Profile = () => {
 								panel: "mt-7 pl-6 flex-grow",
 							}}>
 							<Tabs.List>
-								<Tabs.Tab value="info" icon={<IconUserEdit size="1.3rem" stroke={1.5} />}>
+								<Tabs.Tab value="info" icon={<IconUserEdit size="1rem" stroke={1.5} />}>
 									Хувийн мэдээлэл
 								</Tabs.Tab>
-								<Tabs.Tab value="address" icon={<IconMap2 size="1.3rem" stroke={1.5} />}>
+								<Tabs.Tab value="address" icon={<IconMap2 size="1rem" stroke={1.5} />}>
 									Хүргэлтийн хаяг
 								</Tabs.Tab>
 							</Tabs.List>

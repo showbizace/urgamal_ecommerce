@@ -4,7 +4,11 @@ import Navbar from "../navbar";
 import Search from "../search";
 import BottomFooter from "../Footer";
 
-export default function GlobalLayout({ children, title = "Таримал Ургамал ХХК" }) {
+export default function GlobalLayout({
+	children,
+	footer = true,
+	title = "Таримал Ургамал ХХК",
+}) {
 	return (
 		<div>
 			<Head>
@@ -29,7 +33,7 @@ export default function GlobalLayout({ children, title = "Таримал Ург�
 				<main className="flex flex-col justify-between bg-main">
 					<Navbar />
 					{children}
-					<BottomFooter />
+					{footer && <BottomFooter />}
 				</main>
 			</div>
 		</div>

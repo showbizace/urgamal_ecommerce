@@ -7,6 +7,7 @@ import {
 	Group,
 	Text,
 	Badge,
+	Tabs,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
@@ -25,6 +26,8 @@ import { getCookie, setCookie } from "cookies-next";
 import debounce from "lodash.debounce";
 import { openContextModal } from "@mantine/modals";
 import BottomFooter from "@/components/Footer";
+import axios from "axios";
+import Image from "next/image";
 
 const CartItems = (props) => {
 	const [isCheckAll, setIsCheckAll] = useState(false);
@@ -34,6 +37,8 @@ const CartItems = (props) => {
 	const [cartItem, setCartItem] = useState();
 	const [checked, setChecked] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [paymentData, setPaymentData] = useState();
+	const [invoiceId, setInvoiceId] = useState(null);
 	const [addressVisible, setAddressVisible] = useState(false);
 	const [isChangeQuantity, setIsChangeQuantity] = useState(false);
 	const [total, setTotal] = useState();
@@ -119,7 +124,6 @@ const CartItems = (props) => {
 		);
 		if (res.status === 200) {
 			const data = await res.json();
-			console.log(data, "data multople add to cart");
 			setCookie("addCart", false);
 		}
 	};
@@ -198,7 +202,6 @@ const CartItems = (props) => {
 				if (res.status === 200) {
 					const data = await res.json();
 					if (data.success === true) {
-						console.log("delete all success");
 						SuccessNotification({
 							message: "Сагсанд дахь бүх бараа амжилттай устлаа!",
 							title: "Сагсны бараа",
@@ -221,9 +224,7 @@ const CartItems = (props) => {
 				);
 				if (res.status === 200) {
 					const data = await res.json();
-					console.log(data, "dasdasdasd");
 					if (data.success === true) {
-						console.log(data.message, "message");
 						SuccessNotification({
 							message: "Сагсанд дахь бараа амжилттай устлаа!",
 							title: "Сагсны бараа устгах",
@@ -237,7 +238,6 @@ const CartItems = (props) => {
 	};
 	const handleClick = (e) => {
 		let newArr = [...cartItem];
-		console.log(newArr, "newArr");
 		newArr.forEach((item) => {
 			if (item !== undefined) {
 				if (item.id === e.id) {
@@ -256,34 +256,76 @@ const CartItems = (props) => {
 		if (userToken) {
 			if (select) {
 				const data = `Хот: ${selectedShippingData.city}, Дүүрэг: ${selectedShippingData.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData.street}, Байр: ${selectedShippingData.apartment}, Тоот: ${selectedShippingData.number}, Утас: ${selectedShippingData.phone}`;
-				var myHeaders = new Headers();
-				myHeaders.append("Authorization", "Bearer " + userToken);
-				myHeaders.append("Content-Type", "application/json");
+				const axiosReqOption = {
+					headers: {
+						Authorization: "Bearer " + userToken,
+						"Content-Type": "application/json",
+					},
+				};
 				const requestOption = {
 					method: "POST",
-					headers: myHeaders,
+					headers: {
+						Authorization: "Bearer " + userToken,
+						"Content-Type": "application/json",
+					},
 					body: JSON.stringify({
 						address: data,
 					}),
 				};
-				const res = await fetch(
-					`${process.env.NEXT_PUBLIC_API_URL}/order`,
-					requestOption
-				);
-				if (res.status === 200) {
-					const data = await res.json();
-					if (data.success === true) {
-						open();
-						setOrderId(data.orderid);
-						let temp = [];
-						setCartItem(temp);
-						dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
-						SuccessNotification({ message: data.message, title: "Захиалга" });
-						// router.push("/home");
+				try {
+					const res = await fetch(
+						`${process.env.NEXT_PUBLIC_API_URL}/order`,
+						requestOption
+					);
+					if (res.status === 200) {
+						const data = await res.json();
+						if (data.success === true) {
+							// open();
+							setOrderId(data.orderid);
+							let temp = [];
+							const cartItems = cartItem;
+							setCartItem(temp);
+							dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
+							// SuccessNotification({ message: data.message, title: "Захиалга" });
+							axios
+								.post(
+									`${process.env.NEXT_PUBLIC_API_URL}/payment`,
+									{ orderid: data.orderid },
+									axiosReqOption
+								)
+								.then((res) => {
+									setPaymentData(res.data.data);
+									open();
+									// openContextModal({
+									// 	modal: "payment",
+									// 	title: "Төлбөр төлөлт",
+									// 	paymentData: res.data.data,
+									// 	centered: true,
+									// });
+								})
+								.catch((err) => {
+									if (err.response) {
+										showNotification({
+											message: err.response.data,
+											color: "red",
+										});
+									} else {
+										showNotification({
+											message: "Төлбөрийн мэдээлэл авахад алдаа гарлаа",
+											color: "red",
+										});
+									}
+								});
+						}
+					} else if (res.status === 500) {
+						showNotification({
+							message: "Сагсанд бараа байхгүй байна!",
+							color: "red",
+						});
 					}
-				} else if (res.status === 500) {
+				} catch (error) {
 					showNotification({
-						message: "Сагсанд бараа байхгүй байна!",
+						message: "Захиалга үүсгэхэд алдаа гарлаа!",
 						color: "red",
 					});
 				}
@@ -345,7 +387,6 @@ const CartItems = (props) => {
 			if (res.status === 200) {
 				const data = await res.json();
 				if (data.success === true) {
-					console.log(data.message, "message");
 				}
 			}
 		}
@@ -389,9 +430,7 @@ const CartItems = (props) => {
 				);
 				if (res.status === 200) {
 					const data = await res.json();
-					console.log(data, "dasdasdasd");
 					if (data.success === true) {
-						console.log(data.message, "message");
 						setButtonPressed(false);
 					}
 				}
@@ -439,21 +478,11 @@ const CartItems = (props) => {
 										{item.name}
 									</span>
 									<span className="font-[500] text-[0.87rem] text-[#2125297a]">
-										Агуулахын үлдэгдэл:{" "}
+										Үлдэгдэл:{" "}
 										<span className="text-[#212529]">
-											{item.instock > 10 ? (
-												<Badge color="teal" size="xs">
-													Хангалттай
-												</Badge>
-											) : item.instock == 0 ? (
-												<Badge color="yellow" size="xs">
-													Үлдэгдэлгүй
-												</Badge>
-											) : (
-												<span className="text-greenish-grey  ">
-													{item.instock} {item.unit}
-												</span>
-											)}
+											{item.remainStock
+												? item.remainStock
+												: item.instock - item.quantity}
 										</span>
 									</span>
 								</div>
@@ -471,11 +500,13 @@ const CartItems = (props) => {
 											item.purchaseCount
 												? minusQuantity(item.purchaseCount, item)
 												: minusQuantity(item.quantity, item)
-										}>
+										}
+									>
 										<IconMinus size="1.2rem" color="#212529" />
 									</ActionIcon>
 									<span className="font-[500] text-[1rem] text-[#212529]">
-										{item.purchaseCount !== undefined && item.purchaseCount !== null
+										{item.purchaseCount !== undefined &&
+											item.purchaseCount !== null
 											? item.purchaseCount
 											: item.quantity}
 									</span>
@@ -488,7 +519,8 @@ const CartItems = (props) => {
 											item.purchaseCount
 												? addQuantity(item.purchaseCount, item)
 												: addQuantity(item.quantity)
-										}>
+										}
+									>
 										<IconPlus size="1.2rem" color="#212529" />
 									</ActionIcon>
 								</div>
@@ -519,7 +551,8 @@ const CartItems = (props) => {
 				padding="lg"
 				size="md"
 				withCloseButton={false}
-				closeOnClickOutside={false}>
+				closeOnClickOutside={false}
+			>
 				<div className="flex flex-col">
 					<div className="flex flex-row">
 						<p className="font-semibold">Дансны дугаар : </p>
@@ -529,8 +562,9 @@ const CartItems = (props) => {
 						{/* <p className="font-semibold">Гүйлгээний утга : </p> */}
 						<p className="ml-2"></p>
 						<p className="mt-4">
-							Та гүйлгээний утган дээр <span className="font-semibold">{orderId}</span>{" "}
-							дугаартай захиалгын дугаар болон өөрийн утасны дугаараа заавал оруулаарай!
+							Та гүйлгээний утган дээр{" "}
+							<span className="font-semibold">{orderId}</span> дугаартай
+							захиалгын дугаар болон өөрийн утасны дугаараа заавал оруулаарай!
 						</p>
 					</div>
 					<Group position="right" mt="45px">
@@ -547,7 +581,9 @@ const CartItems = (props) => {
 							<div>
 								<div className=" bg-white rounded-lg px-10 py-6">
 									<div className="flex flex-row justify-between">
-										<span className="font-[500] text-[1.3rem] text-[#212529]">Сагс</span>
+										<span className="font-[500] text-[1.3rem] text-[#212529]">
+											Сагс
+										</span>
 										<div className="font-[400] text-[1rem] text-[#ff6868]"></div>
 										<Button
 											component="a"
@@ -556,7 +592,8 @@ const CartItems = (props) => {
 											variant="subtle"
 											leftIcon={<IconTrash size="1rem" />}
 											color="red"
-											onClick={() => deleteFromCart()}>
+											onClick={() => deleteFromCart()}
+										>
 											Устгах
 										</Button>
 									</div>
@@ -589,11 +626,15 @@ const CartItems = (props) => {
 								</span>
 								<span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
 									Хөнгөлөлт
-									<span className="font-[500] text-[1.05rem] text-[#212529]">0 ₮</span>
+									<span className="font-[500] text-[1.05rem] text-[#212529]">
+										0 ₮
+									</span>
 								</span>
 								<span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
 									Хүргэлт
-									<span className="font-[500] text-[1.05rem] text-[#212529]">0 ₮</span>
+									<span className="font-[500] text-[1.05rem] text-[#212529]">
+										0 ₮
+									</span>
 								</span>
 								<hr className="h-px my-1 border-0 border-t-dashed bg-gray-300" />
 								<span className="flex justify-between mb-1 font-[400] text-[1.1rem] text-[#212529af]">
@@ -621,7 +662,8 @@ const CartItems = (props) => {
 									radius="md"
 									size="md"
 									uppercase
-									onClick={() => makeOrder()}>
+									onClick={() => makeOrder()}
+								>
 									Захиалга хийх
 								</Button>
 							</div>
@@ -633,6 +675,7 @@ const CartItems = (props) => {
             </div>
           </div> */}
 				</div>
+				<BottomFooter />
 			</GlobalLayout>
 		</>
 	);

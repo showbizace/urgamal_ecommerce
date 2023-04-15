@@ -2,24 +2,27 @@ import Image from "next/image";
 import { useEffect, useContext, useState } from "react";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import ProductTypeChip from "../../components/ProductTypeChip/ProductTypeChip";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import Magnifier from "../../components/Magnifier/Magnifier";
 import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/pagination";
 import ProductCardExample from "../../components/ProductCardExample";
-import { LoadingOverlay, Button, Badge, Divider, Loader } from "@mantine/core";
+import {
+	LoadingOverlay,
+	Button,
+	Badge,
+	Divider,
+	Loader,
+	ThemeIcon,
+	Text,
+} from "@mantine/core";
 import { Store } from "@/utils/Store";
 import { getCookie } from "cookies-next";
 import { SuccessNotification } from "../../utils/SuccessNotification";
-import { IconHeart } from "@tabler/icons-react";
+import { IconHeart, IconPhotoOff } from "@tabler/icons-react";
 import BottomFooter from "@/components/Footer";
 import Category from "@/components/category";
 import axios from "axios";
-import { SwiperSlide, Swiper } from "swiper/react";
-import ProductCardSwiper from "@/components/product-card-swiper";
+import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 export async function getServerSideProps({ params }) {
 	const res = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/product/single?productid=${params.id}`
@@ -45,7 +48,6 @@ const ProductDetail = ({ product }) => {
 			payload: { ...product, quantity: 1, purchaseCount: 1 },
 		});
 		const token = getCookie("token");
-		console.log(token, "token");
 		var myHeaders = new Headers();
 		myHeaders.append("Authorization", "Bearer " + token);
 		myHeaders.append("Content-Type", "application/json");
@@ -58,7 +60,10 @@ const ProductDetail = ({ product }) => {
 				businessId: "local_test",
 			}),
 		};
-		await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add/local`, requestOption);
+		const addReq = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/cart/add/local`,
+			requestOption
+		);
 		SuccessNotification({
 			message: "Сагсанд амжилттай орлоо!",
 			title: `${product?.name}`,
@@ -81,7 +86,6 @@ const ProductDetail = ({ product }) => {
 			})
 			.catch((error) => {
 				if (error.response) {
-					console.log();
 				} else {
 				}
 			});
@@ -93,35 +97,39 @@ const ProductDetail = ({ product }) => {
 		<GlobalLayout title={product?.name}>
 			<div className="flex flex-col w-full min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 py-12  items-start ">
 				<div className="flex  w-full gap-20 justify-start">
-					<Category positionSticky={false} parent={parent} main={main} child={child} />
-
 					<div className="flex gap-14  justify-center xl:flex-row lg:flex-row md:flex-row  sm:flex-col xs:flex-col xs2:flex-col">
-						{/* <Magnifier
-              imgSrc={ 
-              }
-              imgWidth={515}
-              imgHeight={515}
-              magnifierRadius={50}
-            /> */}
 						<div className="relative  md:w-[33vw] md:h-[33vw] sm:w-[66vw] sm:h-[66vw] xs:w-[66vw] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md">
-							<Image
-								src={
-									product?.product_image !== null
-										? `${product?.product_image.images[0]}`
-										: "/bundle-1.svg"
-								}
-								loader={() =>
-									product?.product_image !== null
-										? `${product?.product_image.images[0]}`
-										: "/bundle-1.svg"
-								}
-								fill
-								// sizes="(max-width: 768px) 20vw,
-								// (max-width: 1200px) 20vw,
-								// (max-width: 1200px) 20vw,
-								// 20vw"
-								className="object-contain rounded-md"
-							/>
+							{product?.product_image !== null ? (
+								<Image
+									src={`${product?.product_image.images[0]}`}
+									// loader={() =>
+									// 	product?.product_image !== null
+									// 		? `${product?.product_image.images[0]}`
+									// 		: "/bundle-1.svg"
+									// }
+									fill
+									// sizes="(max-width: 768px) 20vw,
+									// (max-width: 1200px) 20vw,
+									// (max-width: 1200px) 20vw,
+									// 20vw"
+									className="object-contain rounded-md"
+								/>
+							) : (
+								<div className="h-full flex flex-col gap-2 justify-center items-center bg-gray-50 rounded-md">
+									<ThemeIcon
+										size="lg"
+										variant="light"
+										color="green"
+										// gradient={{ from: "teal", to: "lime", deg: 105 }}
+									>
+										<IconPhotoOff size="80%" stroke={0.5} />
+									</ThemeIcon>
+
+									<Text size="sm" weight={300}>
+										Зураггүй{" "}
+									</Text>
+								</div>
+							)}
 						</div>
 
 						<div className="flex flex-col justify-between gap-6">
@@ -156,8 +164,14 @@ const ProductDetail = ({ product }) => {
 								</div>
 								<div className="flex gap-2 font-semibold">
 									<span className="text-greenish-grey  ">Төрөл:</span>
-									{product.CategoryName && (
-										<ProductTypeChip name={product.CategoryName} />
+									{product.main_cat_id && (
+										<span className=" ">{product.main_cat_id?.[0].name}, </span>
+									)}
+									{product.parent_cat_id && (
+										<span className=" ">{product.parent_cat_id?.[0].name}, </span>
+									)}
+									{product.child_cat_id && (
+										<span className=" ">{product.child_cat_id?.[0].name}</span>
 									)}
 								</div>
 								{product.instruction ? (
@@ -211,70 +225,14 @@ const ProductDetail = ({ product }) => {
 				</div>
 
 				<hr className="my-10" />
-				<div className="w-full flex flex-col">
-					<div className="flex flex-row w-full justify-between">
-						<p className="ml-2 text-lg font-semibold">Санал болгож буй бүтээгдэхүүнүүд</p>
-						<div className="flex flex-row">
-							<div className="flex justify-center items-center rounded-full bg-white w-7 ">
-								<Image src="/icons/arrow-left.svg" width={10} height={22} />
-							</div>
-							<div className="flex justify-center items-center rounded-full w-7 ml-2 bg-background-sort pl-1 ">
-								<Image src="/icons/arrow-right.svg" width={10} height={22} />
-							</div>
-						</div>
-					</div>
-					<div
-						style={{ width: "100%", gap: "20px", flexWrap: "wrap" }}
-						className="flex flex-row mt-12">
-						<Swiper
-							slidesPerView={5}
-							spaceBetween={30}
-							auto
-							pagination={{
-								clickable: true,
-							}}>
-							<SwiperSlide className="rounded-md">
-								<ProductCardSwiper
-									src={"/bundle-1.svg"}
-									name={"Энерген Экстра"}
-									count={"50ш"}
-									price={"15’000₮"}
-								/>
-							</SwiperSlide>
-							<SwiperSlide className="rounded-md">
-								<ProductCardSwiper
-									src={"/bundle-1.svg"}
-									name={"Энерген Экстра"}
-									count={"50ш"}
-									price={"15’000₮"}
-								/>
-							</SwiperSlide>
-							<SwiperSlide className="rounded-md">
-								<ProductCardSwiper
-									src={"/bundle-1.svg"}
-									name={"Энерген Экстра"}
-									count={"50ш"}
-									price={"15’000₮"}
-								/>
-							</SwiperSlide>
-							<SwiperSlide className="rounded-md">
-								<ProductCardSwiper
-									src={"/bundle-1.svg"}
-									name={"Энерген Экстра"}
-									count={"50ш"}
-									price={"15’000₮"}
-								/>
-							</SwiperSlide>
-							<SwiperSlide className="rounded-md">
-								<ProductCardSwiper
-									src={"/bundle-1.svg"}
-									name={"Энерген Экстра"}
-									count={"50ш"}
-									price={"15’000₮"}
-								/>
-							</SwiperSlide>
-						</Swiper>
-					</div>
+				<div className="w-full flex flex-col ">
+					<ProductListWithCategory
+						key={`recommended-list-${product?.name}`}
+						categoryId={product.parent_cat_id?.[0].id}
+						categoryName={"Санал болгож буй бүтээгдэхүүнүүд"}
+						cols={5}
+						className="mt-12 "
+					/>
 				</div>
 			</div>
 		</GlobalLayout>
