@@ -675,7 +675,6 @@ const CartItems = (props) => {
             </div>
           </div> */}
 				</div>
-				<BottomFooter />
 			</GlobalLayout>
 		</>
 	);
