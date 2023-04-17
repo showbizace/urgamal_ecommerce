@@ -27,23 +27,7 @@ const fetcher = (url) =>
 		.then((res) => {
 			return res.data.data;
 		})
-		.catch((error) => console.log(error));
-export async function getStaticProps() {
-	const requestOption = {
-		method: "GET",
-		headers: { "Content-Type": "application/json" },
-	};
-	const res = await fetch(
-		`${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=0&limit=${PAGE_SIZE}`,
-		requestOption
-	);
-	const data = await res.json();
-	return {
-		props: {
-			data,
-		},
-	};
-}
+		.catch((error) => { });
 
 export default function Home({ data }) {
 	const userConfigs = useContext(UserConfigContext);
@@ -97,19 +81,23 @@ export default function Home({ data }) {
 		fetcher,
 		{ revalidateFirstPage: false }
 	);
+
 	useEffect(() => {
 		fetchData &&
 			!isEmpty &&
 			setProducts(products.concat(...fetchData?.[fetchData.length - 1]));
 	}, [fetchData]);
+
 	const isLoadingMore =
-		isLoading ||
-		(size > 0 && fetchData && typeof fetchData[size - 1] === "undefined");
+		isLoading || (size > 0 && fetchData && typeof fetchData[size - 1] === "undefined");
+
 	const isEmpty = fetchData?.[0]?.length === 0;
+
 	const isReachingEnd =
-		isEmpty ||
-		(fetchData && fetchData[fetchData.length - 1]?.length < PAGE_SIZE);
+		isEmpty || (fetchData && fetchData[fetchData.length - 1]?.length < PAGE_SIZE);
+
 	const isRefreshing = isValidating && fetchData && fetchData.length === size;
+
 	const infiniteScroll = () => {
 		if (
 			window.innerHeight + document.documentElement.scrollTop + 350 >=
@@ -119,6 +107,7 @@ export default function Home({ data }) {
 		)
 			setSize(size + 1);
 	};
+
 	useEffect(() => {
 		window.addEventListener("scroll", infiniteScroll);
 		return () => window.removeEventListener("scroll", infiniteScroll);
@@ -166,11 +155,11 @@ export default function Home({ data }) {
 					preference_cookie={preference_cookie}
 				/>
 			)}
-			<div className="px-10 mb-16">
+			<div className="px-10 mb-16 w-full">
 				{/* <FeatureProduct /> */}
 				{/* <FeatureBundle /> */}
 				<div className="flex flex-col justify-between relative">
-					<div className="flex flex-col  md:w-[70%] lg:w-[100%]">
+					<div className="flex flex-col  md:w-[70%] lg:w-[100%] ">
 						{/* <FeatureProductList /> */}
 						{/* <NewProduct /> */}
 						<div className="flex flex-row bg-white mt-2 rounded-sm">

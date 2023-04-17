@@ -32,14 +32,15 @@ import useSWR from "swr";
 import { useDebouncedValue } from "@mantine/hooks";
 import { CategoryContext } from "@/utils/categoryContext";
 import { UserConfigContext } from "@/utils/userConfigContext";
+import { isMobile } from "react-device-detect";
 
 const fetcher = (url) =>
 	axios
 		.get(url)
 		.then((res) => res.data.data)
-		.catch(() => {});
+		.catch(() => { });
 const cookie = getCookie("token");
-const Navbar = () => {
+const Navbar = (props) => {
 	const router = useRouter();
 	const [searchQuery, setSearchQuery] = useState("");
 	const [debounced] = useDebouncedValue(searchQuery, 250);
@@ -60,19 +61,24 @@ const Navbar = () => {
 
 	const suggestions = data
 		? data.map((e) => {
-				return {
-					value: e.name,
-					id: e.id,
-					image: e.product_image?.images?.[0],
-					description: e.description,
-				};
-		  })
+			return {
+				value: e.name,
+				id: e.id,
+				image: e.product_image?.images?.[0],
+				description: e.description,
+			};
+		})
 		: [];
 
 	useEffect(() => {
 		mutate();
 	}, [debounced]);
 
+	useEffect(() => {
+		if (isMobile === true && catsLoading === false) {
+			props.getValue(categories)
+		}
+	}, [categories])
 	const AutocompleteItem = forwardRef(({ image, value, ...others }, ref) => {
 		return (
 			<div
@@ -173,15 +179,15 @@ const Navbar = () => {
 
 	return (
 		<div
-			className="bg-white  sm:hidden xs:hidden xs2:hidden md:block lg:block block py-2 px-12 "
+			className="bg-white py-2 px-12 max-sm:px-2"
 			style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}>
 			<div className="flex justify-between items-center">
 				<Link href={"/home"}>
 					<div className="flex justify-center items-center ">
-						<Image src="/logo.png" width={36} height={36} />
+						<Image src="/logo.png" width={36} height={36} className="w-7 h-7" />
 					</div>
 				</Link>
-				<div className="flex justify-center items-center gap-3 flex-grow mx-11">
+				<div className="flex justify-center items-center gap-3 flex-grow mx-11 max-xs:mx-2">
 					{catsError && <div>error</div>}
 					{catsLoading && (
 						<div>
@@ -189,7 +195,7 @@ const Navbar = () => {
 						</div>
 					)}
 					{categories && (
-						<Tooltip withArrow label="Танд зөвхөн уг төрлийн бараа, ангиллууд харагдана">
+						<Tooltip withArrow label="Танд зөвхөн уг төрлийн бараа, ангиллууд харагдана" className="max-xs:hidden">
 							<Select
 								// variant="filled"
 								size="md"
@@ -215,11 +221,11 @@ const Navbar = () => {
 									catsError
 										? []
 										: categories?.map((e) => {
-												return {
-													value: e.id?.toString(),
-													label: e.name,
-												};
-										  })
+											return {
+												value: e.id?.toString(),
+												label: e.name,
+											};
+										})
 								}
 								icon={
 									userConfigValue === "1" ? (
@@ -231,16 +237,18 @@ const Navbar = () => {
 							/>
 						</Tooltip>
 					)}
-					<div className="max-w-lg flex-grow">
+
+					<div className="max-w-lg flex-grow " >
 						<Autocomplete
-							size="md"
+							className="w-full"
+							size={"md"}
 							placeholder="Бараа хайх..."
 							itemComponent={AutocompleteItem}
 							data={suggestions ? suggestions : []}
 							limit={10}
 							styles={{
 								root: {
-									paddingLeft: "5px",
+									paddingLeft: isMobile ? "0px" : "5px",
 									paddingRight: 0,
 									borderRadius: 25,
 									flexGrow: 4,
@@ -274,22 +282,22 @@ const Navbar = () => {
 							}
 							rightSection={
 								<button
-									className="m-auto h-full bg-background-sort p-2 px-6 rounded-full "
+									className="m-auto h-full bg-background-sort p-2 px-6 rounded-full max-xs:w-11 max-xs:flex max-xs:items-center max-xs:justify-center max-xs:p-0 max-xs:px-0 "
 									onClick={() => {
 										router.push({
 											pathname: "/products",
 											query: { q: searchQuery },
 										});
 									}}>
-									<IconSearch color="white" size="1.2rem" stroke={2.5} />
+									<IconSearch color="white" size="1.2rem" stroke={2.5} className="max-xs:w-4 max-xs:h-4" />
 								</button>
 							}
 						/>
 					</div>
 				</div>
-				<div className="flex items-center gap-4">
+				<div className="flex items-center gap-4 max-xs:gap-2">
 					<Button compact variant={"white"} onClick={() => linkToCart()}>
-						<Image src="/icons/trolley.svg" width={23} height={23} />
+						<Image src="/icons/trolley.svg" width={23} height={23} className="max-xs:w-6 h-6" />
 						<div className="absolute">
 							<div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
 								<p className="text-sm-5">{quantity}</p>
@@ -317,10 +325,12 @@ const Navbar = () => {
 								route.push("/profile");
 							}
 						}}>
-						<Image src="/user.png" width={40} height={40} />
+
+						<Image src="/user.png" width={40} height={40} className="w-8 h-8" />
 					</Avatar>
 				</div>
 			</div>
+
 		</div>
 	);
 };
