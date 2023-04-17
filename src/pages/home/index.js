@@ -40,7 +40,6 @@ export async function getStaticProps() {
   };
 }
 
-
 export default function Home({ data }) {
   const userConfigs = useContext(UserConfigContext);
   const { preference_cookie, configId } = userConfigs;
@@ -82,52 +81,55 @@ export default function Home({ data }) {
     }
   );
 
-	const {
-		data: fetchData,
-		mutate,
-		size,
-		setSize,
-		isValidating,
-		isLoading,
-		error,
-	} = useSWRInfinite(
-		(index) =>
-			`${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index + 1
-			}&limit=${PAGE_SIZE}`,
-		fetcher,
-		{ revalidateFirstPage: false }
-	);
+  const {
+    data: fetchData,
+    mutate,
+    size,
+    setSize,
+    isValidating,
+    isLoading,
+    error,
+  } = useSWRInfinite(
+    (index) =>
+      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${
+        index + 1
+      }&limit=${PAGE_SIZE}`,
+    fetcher,
+    { revalidateFirstPage: false }
+  );
 
-	useEffect(() => {
-		fetchData &&
-			!isEmpty &&
-			setProducts(products.concat(...fetchData?.[fetchData.length - 1]));
-	}, [fetchData]);
+  useEffect(() => {
+    fetchData &&
+      !isEmpty &&
+      setProducts(products.concat(...fetchData?.[fetchData.length - 1]));
+  }, [fetchData]);
 
-	const isLoadingMore =
-		isLoading || (size > 0 && fetchData && typeof fetchData[size - 1] === "undefined");
+  const isLoadingMore =
+    isLoading ||
+    (size > 0 && fetchData && typeof fetchData[size - 1] === "undefined");
 
-	const isEmpty = fetchData?.[0]?.length === 0;
+  const isEmpty = fetchData?.[0]?.length === 0;
 
-	const isReachingEnd =
-		isEmpty || (fetchData && fetchData[fetchData.length - 1]?.length < PAGE_SIZE);
+  const isReachingEnd =
+    isEmpty ||
+    (fetchData && fetchData[fetchData.length - 1]?.length < PAGE_SIZE);
 
-	const isRefreshing = isValidating && fetchData && fetchData.length === size;
+  const isRefreshing = isValidating && fetchData && fetchData.length === size;
 
-	const infiniteScroll = () => {
-		if (
-			window.innerHeight + document.documentElement.scrollTop + 350 >=
-			document.documentElement.offsetHeight &&
-			!isEmpty &&
-			!isReachingEnd
-		)
-			setSize(size + 1);
-	};
+  const infiniteScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 350 >=
+        document.documentElement.offsetHeight &&
+      !isEmpty &&
+      !isReachingEnd
+    )
+      setSize(size + 1);
+  };
 
-	useEffect(() => {
-		window.addEventListener("scroll", infiniteScroll);
-		return () => window.removeEventListener("scroll", infiniteScroll);
-	}, [fetchData]);
+  useEffect(() => {
+    window.addEventListener("scroll", infiniteScroll);
+    return () => window.removeEventListener("scroll", infiniteScroll);
+  }, [fetchData]);
 
   useEffect(() => {
     //add eventlistener to window
@@ -187,7 +189,7 @@ export default function Home({ data }) {
           <div className="flex flex-col lg:w-[100%]">
             {/* <FeatureProductList /> */}
             {/* <NewProduct /> */}
-            <div className="flex flex-row bg-white mt-2 rounded-sm">
+            <div className="flex flex-col md:flex-row bg-white mt-2 rounded-sm">
               <div className="py-3 ">
                 {categoriesLoading && <div></div>}
                 {categoriesError && <div></div>}
@@ -242,4 +244,3 @@ export default function Home({ data }) {
     </GlobalLayout>
   );
 }
-
