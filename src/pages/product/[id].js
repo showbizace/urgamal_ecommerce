@@ -230,7 +230,6 @@ const ProductDetail = ({ product }) => {
 						key={`recommended-list-${product?.name}`}
 						categoryId={product.parent_cat_id?.[0].id}
 						categoryName={"Санал болгож буй бүтээгдэхүүнүүд"}
-						cols={5}
 						className="mt-12 "
 					/>
 				</div>
