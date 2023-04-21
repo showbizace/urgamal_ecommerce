@@ -8,7 +8,6 @@ export default function ProductGridList({
   isEmpty,
   emptyStateMessage,
   query,
-  cols,
   className,
 }) {
   return isEmpty ? (
@@ -28,14 +27,16 @@ export default function ProductGridList({
     </div>
   ) : (
     <SimpleGrid
-      cols={cols}
+      cols={4}
       spacing={20}
       verticalSpacing={20}
       className={`flex-grow ${className}`}
       breakpoints={[
-        { maxWidth: "62rem", cols: 3, spacing: "md" },
+        { maxWidth: "90em", cols: 4, spacing: "md" },
+        { maxWidth: "74em", cols: 3, spacing: "md" },
+        { maxWidth: "64em", cols: 3, spacing: "md" },
         { maxWidth: "48rem", cols: 2, spacing: "sm" },
-        { maxWidth: "36rem", cols: 1, spacing: "sm" },
+        { maxWidth: "30em", cols: 2, spacing: "xs" },
       ]}
     >
       {children}

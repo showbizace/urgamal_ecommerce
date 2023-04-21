@@ -178,7 +178,7 @@ const CategoryPage = ({ initialData }) => {
 			<div>
 				<div className="px-10 bg-main h-full">
 					<div className="h-full flex flex-row py-12 justify-between gap-10">
-						<div className="min-w-[300px] w-[300px] max-w-[300px] ">
+						<div className="min-w-[300px] w-[300px] max-w-[300px]  2xs:hidden lg:block">
 							<Category
 								parent={parent}
 								child={child}
@@ -230,8 +230,7 @@ const CategoryPage = ({ initialData }) => {
 										: type === "child"
 										? parent.find((e) => e.id === catId)?.name
 										: ""
-								}
-								cols={4}>
+								}>
 								{products.map((e, index) => (
 									<ProductCard
 										key={`product-card-key-${index}-${e.id}`}

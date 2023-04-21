@@ -86,11 +86,15 @@ export default function ProductListWithCategory({
             slidesPerView: 2,
             spaceBetween: 20,
           },
-          640: {
+          768: {
             slidesPerView: 3,
             spaceBetween: 20,
           },
-          768: {
+          1080: {
+            slidesPerView: 4,
+            spaceBetween: 30,
+          },
+          1280: {
             slidesPerView: 5,
             spaceBetween: 30,
           },
