@@ -121,11 +121,14 @@ const CartItems = (props) => {
 		const res = await fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/cart/add/multi`,
 			requestOption
-		);
-		if (res.status === 200) {
-			const data = await res.json();
-			setCookie("addCart", false);
-		}
+		).then(async (res) => {
+			if (res.status === 200) {
+				const data = await res.json();
+				setCookie("addCart", false);
+			}
+		})
+			.catch((err) => console.log(err, "err"));
+
 	};
 
 	useEffect(() => {
@@ -440,13 +443,13 @@ const CartItems = (props) => {
 
 	const ths = (
 		<tr className="table-row">
-			<th className="py-10">
-				<Checkbox value="selectAll" onClick={handleSelectAll} checked={isCheckAll} />
+			<th className="lg:py-10 w-[5%]">
+				<Checkbox value="selectAll" onClick={handleSelectAll} checked={isCheckAll} size="sm" />
 			</th>
-			<th>Бараа</th>
-			<th>Тоо Ширхэг</th>
-			<th>Үнэ</th>
-			<th width={"100px"}>Нийт дүн</th>
+			<th className="w-[40%] text-center">Бараа</th >
+			<th className="w-[15%] text-center">Ширхэг</th>
+			<th className="w-[20%] text-center">Үнэ</th>
+			<th className="w-[20%] text-center" >Дүн</th>
 		</tr>
 	);
 
@@ -463,21 +466,23 @@ const CartItems = (props) => {
 								checked={item.isChecked}
 								id={item.id}
 								onClick={(e) => handleClick(item)}
+								size="sm"
+
 							/>
 						</td>
 						<td>
-							<div className="flex flex-row gap-8">
+							<div className="flex flex-row lg:gap-8">
 								<Magnifier
 									imgSrc={"/bundle-1.svg"}
 									imgWidth={80}
 									imgHeight={80}
 									magnifierRadius={50}
 								/>
-								<div className="flex flex-col justify-around">
-									<span className="font-[500] text-[1.002rem] text-[#212529]">
+								<div className="flex flex-col justify-around ml-2 lg:ml-0">
+									<span className="font-[500] lg:text-[1.002rem] text-[0.55rem] text-[#212529]">
 										{item.name}
 									</span>
-									<span className="font-[500] text-[0.87rem] text-[#2125297a]">
+									<span className="font-[500] lg:text-[0.87rem] text-[0.6rem] text-[#2125297a]">
 										Үлдэгдэл:{" "}
 										<span className="text-[#212529]">
 											{item.remainStock
@@ -490,21 +495,21 @@ const CartItems = (props) => {
 						</td>
 						<td>
 							<div className="inherit">
-								<div className="flex items-center border border-[#21252923] rounded w-fit p-1">
+								<div className="flex items-center border border-[#21252923] rounded lg:p-1">
 									<ActionIcon
 										sx={{
 											":hover": { backgroundColor: "#fff5f5" },
 										}}
-										className="mr-3"
+										className="lg:mr-3 w-4 h-4 p-0 m-0"
 										onClick={() =>
 											item.purchaseCount
 												? minusQuantity(item.purchaseCount, item)
 												: minusQuantity(item.quantity, item)
 										}
 									>
-										<IconMinus size="1.2rem" color="#212529" />
+										<IconMinus size="1.2rem" color="#212529" className="w-2 h-2 lg:w-4 lg:h-4" />
 									</ActionIcon>
-									<span className="font-[500] text-[1rem] text-[#212529]">
+									<span className="font-[500] lg:text-[1rem] text-[0.6rem] text-[#212529]">
 										{item.purchaseCount !== undefined &&
 											item.purchaseCount !== null
 											? item.purchaseCount
@@ -514,25 +519,26 @@ const CartItems = (props) => {
 										sx={{
 											":hover": { backgroundColor: "#ebfbee" },
 										}}
-										className="ml-3"
+
+										className="lg:ml-3"
 										onClick={() =>
 											item.purchaseCount
 												? addQuantity(item.purchaseCount, item)
 												: addQuantity(item.quantity)
 										}
 									>
-										<IconPlus size="1.2rem" color="#212529" />
+										<IconPlus size="1.2rem" color="#212529" className="w-2 h-2 lg:w-4 lg:h-4" />
 									</ActionIcon>
 								</div>
 							</div>
 						</td>
 						<td width={"100px"} style={{ textAlign: "center" }}>
-							<span className="font-[600] text-[1rem] text-[#212529]">
+							<span className="font-[600] lg:text-[1rem] text-[0.6rem] text-[#212529]">
 								{item.price ? item.price : item.price_mnt} ₮
 							</span>
 						</td>
 						<td width={"100px"} style={{ textAlign: "center" }}>
-							<span className="font-[600] text-[1rem] text-[#212529]">
+							<span className="font-[600] lg:text-[1rem] text-[0.6rem] text-[#212529]">
 								{item.totalPrice ? item.totalPrice : item.total} ₮
 							</span>
 						</td>
@@ -575,13 +581,13 @@ const CartItems = (props) => {
 				</div>
 			</Modal>
 			<GlobalLayout>
-				<div className="bg-grey-back w-full px-8 py-4">
-					<div className="flex flex-row gap-10 mt-8 px-32">
-						<div className="flex flex-col w-[70%] gap-8 h-screen">
+				<div className="bg-grey-back w-full lg:px-8 lg:py-4 px-4 py-4">
+					<div className="flex md:flex-row flex-col lg:gap-10 lg:mt-8 gap-4 lg:px-32">
+						<div className="flex flex-col lg:w-[70%] w-[100%] lg:gap-8">
 							<div>
-								<div className=" bg-white rounded-lg px-10 py-6">
+								<div className=" bg-white rounded-lg lg:px-10 lg:py-6 px-3 py-3">
 									<div className="flex flex-row justify-between">
-										<span className="font-[500] text-[1.3rem] text-[#212529]">
+										<span className="font-[500] lg:text-[1.3rem] text-[#212529]">
 											Сагс
 										</span>
 										<div className="font-[400] text-[1rem] text-[#ff6868]"></div>
@@ -591,21 +597,26 @@ const CartItems = (props) => {
 											compact
 											variant="subtle"
 											leftIcon={<IconTrash size="1rem" />}
+											sx={(theme) => ({
+												'@media (max-width: 40em)': {
+													fontSize: theme.fontSizes.xs,
+												},
+											})}
 											color="red"
 											onClick={() => deleteFromCart()}
 										>
 											Устгах
 										</Button>
 									</div>
-									<Suspense fallback={<Loading />}>
-										<div className="mt-6">
-											<Table captionSide="bottom" striped>
-												{/* <caption>Some elements from periodic table</caption> */}
-												<thead>{ths}</thead>
-												<tbody>{rows}</tbody>
-											</Table>
-										</div>
-									</Suspense>
+									{/* <Suspense fallback={<Loading />}> */}
+									<div className="mt-6">
+										<Table captionSide="bottom" striped	>
+											{/* <caption>Some elements from periodic table</caption> */}
+											<thead>{ths}</thead>
+											<tbody>{rows}</tbody>
+										</Table>
+									</div>
+									{/* </Suspense> */}
 								</div>
 							</div>
 							{addressVisible === true && (
@@ -616,30 +627,30 @@ const CartItems = (props) => {
 							)}
 						</div>
 
-						<div className="w-[30%] h-2/5	bg-white rounded-lg px-10 py-8">
-							<div className="flex flex-col gap-5">
-								<span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
+						<div className="lg:w-[30%] h-2/5	bg-white rounded-lg lg:px-10 lg:py-8 px-4 py-4">
+							<div className="flex flex-col lg:gap-5 gap-3">
+								<span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
 									Нийт үнэ
-									<span className="font-[500] text-[1.05rem] text-[#212529]">
+									<span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
 										{totalPrice()}
 									</span>
 								</span>
-								<span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
+								<span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
 									Хөнгөлөлт
-									<span className="font-[500] text-[1.05rem] text-[#212529]">
+									<span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
 										0 ₮
 									</span>
 								</span>
-								<span className="flex justify-between font-[400] text-[1.05rem] text-[#2125297a]">
+								<span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
 									Хүргэлт
-									<span className="font-[500] text-[1.05rem] text-[#212529]">
+									<span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
 										0 ₮
 									</span>
 								</span>
 								<hr className="h-px my-1 border-0 border-t-dashed bg-gray-300" />
-								<span className="flex justify-between mb-1 font-[400] text-[1.1rem] text-[#212529af]">
+								<span className="flex justify-between mb-1 font-[400] lg:text-[1.1rem] text-sm text-[#212529af]">
 									Нийлбэр үнэ{" "}
-									<span className="font-[500] text-[1.1rem] text-[#212529]">
+									<span className="font-[500] lg:text-[1.1rem] text-sm text-[#212529]">
 										{totalPrice()}
 									</span>
 								</span>
@@ -655,6 +666,11 @@ const CartItems = (props) => {
 
 										leftIcon: {
 											marginRight: 15,
+										},
+									})}
+									sx={(theme) => ({
+										'@media (max-width: 40em)': {
+											fontSize: theme.fontSizes.xs,
 										},
 									})}
 									color="yellow"

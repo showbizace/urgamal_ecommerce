@@ -31,6 +31,8 @@ function Magnifier({ imgSrc, imgHeight, imgWidth, magnifierRadius }) {
           objectFit: "contain",
           userSelect: 'none'
         }}
+
+        className="magni-mobile"
         // Set the magnifier state on every move of the mouse over the image.
         onMouseMove={(e) => {
           setIsVisible(true);

@@ -89,11 +89,11 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
 
 	return (
 		<>
-			<div className="bg-white rounded-lg px-10 py-8 h-[530px]">
+			<div className="bg-white rounded-lg lg:px-10 lg:py-8 mt-2 px-3 py-3">
 				{!loading ? (
 					<>
 						<div className="flex flex-row justify-between">
-							<span className="font-[500] text-[1.3rem] text-[#212529]">
+							<span className="font-[500] lg:text-[1.3rem] text-sm text-[#212529]">
 								Хаягийн Мэдээлэл
 							</span>
 							<Button
@@ -107,8 +107,8 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
 								Шинэ хаяг нэмэх
 							</Button>
 						</div>
-						<div className="flex flex-col gap-6 mt-6 w-full h-[88%] overflow-auto">
-							<div className="radio-button px-5 gap-6 w-full">
+						<div className="flex flex-col gap-6 mt-6 w-full  overflow-auto">
+							<div className="radio-button lg:px-5 gap-6 w-full px-2">
 								<Card.Section
 									sx={{ display: "flex", flexDirection: "column", gap: "15px" }}>
 									{shippingData?.map((item, idx) => (
@@ -126,16 +126,28 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
 														setSelectedShippingData(item);
 														setSelect(true);
 													}}>
-													<div className="flex flex-row gap-6 items-center">
-														<Chip value={item.id} defaultChecked={value}></Chip>
+													<div className="flex flex-row lg:gap-6 items-center gap-3">
+														<Chip value={item.id} defaultChecked={value} size="sm" />
 														<div>
-															<Text fz="md">
+															<Text fz="md" sx={(theme) => ({
+																'@media (max-width: 40em)': {
+																	fontSize: theme.fontSizes.sm,
+																},
+															})} >
 																{item.city}-{item.district}-{item.committee}-{item.street}
 																-{item.apartment}-{item.number}
 															</Text>
-															<Text fz="lg" className="flex gap-1 mt-2">
+															<Text fz="lg" className="flex gap-1 mt-2" sx={(theme) => ({
+																'@media (max-width: 40em)': {
+																	fontSize: theme.fontSizes.sm,
+																},
+															})}>
 																Утас:
-																<Text fz="lg" fw={500}>
+																<Text fz="lg" fw={500} sx={(theme) => ({
+																	'@media (max-width: 40em)': {
+																		fontSize: theme.fontSizes.sm,
+																	},
+																})}>
 																	{item.phone}
 																</Text>
 															</Text>
