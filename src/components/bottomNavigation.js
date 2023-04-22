@@ -96,7 +96,7 @@ const BottomNavBar = () => {
           />
         )}
       </Drawer>
-      <div className="block md:hidden  sticky bottom-0 z-50">
+      <div className="block lg:hidden  sticky bottom-0 z-50">
         <div className="relative">
           <div className="w-full bg-white p-4 h-full border-t border-gray-200 ">
             <div className="grid h-full max-w-lg grid-cols-4 mx-auto">

@@ -191,7 +191,7 @@ const CategoryPage = ({ initialData }) => {
       <div>
         <div className="px-4 md:px-10 bg-main h-full">
           <div className="h-full flex flex-row py-6 md:py-12 justify-between gap-10">
-            <div className="min-w-[300px] w-[300px] max-w-[300px]  2xs:hidden lg:block">
+            <div className="min-w-[250px] w-[250px] max-w-[250px] hidden lg:block">
               <Category
                 parent={parent}
                 child={child}
