@@ -5,8 +5,9 @@ import axios from "axios";
 import { showNotification } from "@mantine/notifications";
 import { getCookie } from "cookies-next";
 import { useState } from "react";
+import { openContextModal } from "@mantine/modals";
 
-const Order = ({ data, openPaymentModal, setPaymentData }) => {
+const Order = ({ data }) => {
   const [opened, { toggle }] = useDisclosure(false);
   const userToken = getCookie("token");
   const [loading, setLoading] = useState(false);
@@ -25,14 +26,15 @@ const Order = ({ data, openPaymentModal, setPaymentData }) => {
         axiosReqOption
       )
       .then((res) => {
-        setPaymentData(res.data.data);
-        openPaymentModal();
-        // openContextModal({
-        // 	modal: "payment",
-        // 	title: "Төлбөр төлөлт",
-        // 	paymentData: res.data.data,
-        // 	centered: true,
-        // });
+        openContextModal({
+          modal: "payment",
+          title: "Төлбөр төлөлт",
+          innerProps: {
+            paymentData: res.data.data,
+          },
+          centered: true,
+          size: "lg",
+        });
       })
       .catch((err) => {
         if (err.response) {
