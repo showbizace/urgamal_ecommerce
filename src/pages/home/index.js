@@ -182,14 +182,17 @@ export default function Home({ data }) {
           preference_cookie={preference_cookie}
         />
       )}
-      <div className="px-10 mb-16">
+      <div className="block md:hidden">
+        <Banner />
+      </div>
+      <div className=" px-4 md:px-10  mb-16">
         {/* <FeatureProduct /> */}
         {/* <FeatureBundle /> */}
         <div className="flex flex-col justify-between relative">
           <div className="flex flex-col lg:w-[100%]">
             {/* <FeatureProductList /> */}
             {/* <NewProduct /> */}
-            <div className="flex flex-col md:flex-row bg-white mt-2 rounded-sm">
+            <div className="hidden md:flex flex-col md:flex-row bg-white mt-2 rounded-sm">
               <div className="py-3 ">
                 {categoriesLoading && <div></div>}
                 {categoriesError && <div></div>}
@@ -204,7 +207,7 @@ export default function Home({ data }) {
                   />
                 )}
               </div>
-              <div className="relative rounded w-full">
+              <div className="relative  rounded w-full">
                 <Banner />
               </div>
             </div>

@@ -96,22 +96,18 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
         style={{ width: "100%", height: "400px" }}
       >
         {src ? (
-          <Image
-            src={src}
-            className="product-card-img"
-            width={40}
-            height={40}
-            loader={() => src}
-            alt={src}
-          />
+          <div className="h-48 w-48 relative">
+            <Image
+              src={src}
+              className="product-card-img"
+              fill
+              loader={() => src}
+              alt={src}
+            />
+          </div>
         ) : (
-          <div className="product-card-img flex flex-col gap-2 justify-center items-center bg-gray-50 rounded-md">
-            <ThemeIcon
-              size="lg"
-              variant="light"
-              color="green"
-              // gradient={{ from: "teal", to: "lime", deg: 105 }}
-            >
+          <div className="product-card-img h-48 w-full flex flex-col gap-2 justify-center items-center bg-gray-50 rounded-md">
+            <ThemeIcon size="lg" variant="light" color="green">
               <IconPhotoOff size="80%" stroke={0.5} />
             </ThemeIcon>
 
@@ -143,7 +139,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
             )}
           </div>
           <p className="font-semibold text-base mt-1">{data?.price}₮</p>
-          <div className="flex flex-row gap-4 w-full mt-1 justify-between">
+          <div className="flex flex-col md:flex-row  gap-4 w-full mt-1 justify-between">
             {/* <Button
             variant={"filled"}
             color="red"
