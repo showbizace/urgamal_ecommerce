@@ -32,7 +32,7 @@ export default function ProductGridList({
       verticalSpacing={20}
       className={`flex-grow ${className}`}
       breakpoints={[
-        { maxWidth: "90em", cols: 4, spacing: "md" },
+        { maxWidth: "110em", cols: 4, spacing: "md" },
         { maxWidth: "74em", cols: 3, spacing: "md" },
         { maxWidth: "64em", cols: 3, spacing: "md" },
         { maxWidth: "48rem", cols: 2, spacing: "sm" },

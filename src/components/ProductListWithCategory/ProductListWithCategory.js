@@ -43,6 +43,7 @@ export default function ProductListWithCategory({
         <div className="flex items-center gap-4 ml-2">
           <p
             className="
+            text-md font-medium
 		   md:text-xxl md:font-bold
 		   sm:font-medium sm:text-base
 		   xs:font-medium xs:text-xl"
@@ -52,9 +53,10 @@ export default function ProductListWithCategory({
           {categoryIcon && (
             <div
               className="relative
-			 md:h-12 md:w-12
-			 sm:h-10 sm:w-10
-			 xs:h-8 xs:w-8"
+              h-8 w-8
+              md:h-12 md:w-12
+              sm:h-10 sm:w-10
+              xs:h-8 xs:w-8"
             >
               {categoryIcon}
             </div>
@@ -83,6 +85,10 @@ export default function ProductListWithCategory({
         modules={[Navigation]}
         breakpoints={{
           320: {
+            slidesPerView: 1.5,
+            spaceBetween: 20,
+          },
+          520: {
             slidesPerView: 2,
             spaceBetween: 20,
           },

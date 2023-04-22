@@ -1,11 +1,5 @@
-import Image from "next/image";
-import NavBarLinks from "./nav-bar-links";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect, useContext } from "react";
-import { Store } from "@/utils/Store";
-import { getCookie, setCookie } from "cookies-next";
-import { ErrorNotificatipon } from "../utils/SuccessNotification";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { openContextModal } from "@mantine/modals";
 import {
@@ -13,7 +7,6 @@ import {
   IconHomeEco,
   IconCategory2,
   IconUserCircle,
-  IconReportSearch,
 } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { Drawer, ScrollArea, Text } from "@mantine/core";
@@ -36,6 +29,7 @@ const BottomNavBar = () => {
     categoryDrawerOpened,
     { open: openCategoryDrawer, close: closeCategoryDrawer },
   ] = useDisclosure(false);
+
   const linkToCart = () => {
     router.push({
       pathname: "/cart/cartItem",
@@ -102,7 +96,7 @@ const BottomNavBar = () => {
           />
         )}
       </Drawer>
-      <div className="block md:hidden  sticky bottom-0 z-50">
+      <div className="block lg:hidden  sticky bottom-0 z-50">
         <div className="relative">
           <div className="w-full bg-white p-4 h-full border-t border-gray-200 ">
             <div className="grid h-full max-w-lg grid-cols-4 mx-auto">

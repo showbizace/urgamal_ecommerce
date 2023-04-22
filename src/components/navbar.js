@@ -198,7 +198,7 @@ const Navbar = (props) => {
             <Image src="/logo.png" width={36} height={36} className="w-7 h-7" />
           </div>
         </Link>
-        <div className="flex justify-end md:justify-center items-center gap-8 md:gap-3 flex-grow mx-6 md:mx-11 max-xs:mx-2">
+        <div className="flex justify-end md:justify-center items-center gap-8 md:gap-3 flex-grow ml-6 md:mx-11 ">
           {catsError && <div>error</div>}
           {catsLoading && (
             <div>
@@ -317,8 +317,7 @@ const Navbar = (props) => {
           </div>
           <div className="block md:hidden ">
             <button
-              className="w-full m-auto h-full bg-background-sort p-3 rounded-full max-xs:w-11 max-xs:flex max-xs:items-center max-xs:justify-center max-xs:p-0 max-xs:px-0 "
-              size={"md"}
+              className="w-full m-auto h-full bg-background-sort p-3 rounded-full max-xs:w-11 max-xs:h-11 max-xs:flex max-xs:items-center max-xs:justify-center max-xs:p-0 max-xs:px-0 "
               onClick={() => {
                 setShowSearch(!showSearch);
               }}
