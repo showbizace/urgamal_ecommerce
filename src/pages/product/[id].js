@@ -95,10 +95,10 @@ const ProductDetail = ({ product }) => {
 	}, []);
 	return (
 		<GlobalLayout title={product?.name}>
-			<div className="flex flex-col w-full min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 py-12  items-start ">
-				<div className="flex  w-full gap-20 justify-start">
-					<div className="flex gap-14  justify-center xl:flex-row lg:flex-row md:flex-row  sm:flex-col xs:flex-col xs2:flex-col">
-						<div className="relative  md:w-[33vw] md:h-[33vw] sm:w-[66vw] sm:h-[66vw] xs:w-[66vw] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md">
+			<div className="flex flex-col w-full min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 lg:py-12  items-start py-4 px-4 ">
+				<div className="flex w-full lg:gap-20 justify-start ">
+					<div className="flex lg:gap-14 gap-4  justify-center xl:flex-row lg:flex-row md:flex-row  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
+						<div className="relative md:w-[33vw] md:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
 							{product?.product_image !== null ? (
 								<Image
 									src={`${product?.product_image.images[0]}`}
@@ -120,7 +120,7 @@ const ProductDetail = ({ product }) => {
 										size="lg"
 										variant="light"
 										color="green"
-										// gradient={{ from: "teal", to: "lime", deg: 105 }}
+									// gradient={{ from: "teal", to: "lime", deg: 105 }}
 									>
 										<IconPhotoOff size="80%" stroke={0.5} />
 									</ThemeIcon>
@@ -132,58 +132,58 @@ const ProductDetail = ({ product }) => {
 							)}
 						</div>
 
-						<div className="flex flex-col justify-between gap-6">
+						<div className="flex flex-col justify-between lg:gap-6">
 							<div className="flex flex-col gap-6">
-								<div className=" text-2xl font-semibold">{product?.name}</div>
+								<div className="lg:text-2xl text-lg font-semibold">{product?.name}</div>
 								<div className="flex font-semibold gap-2">
-									<span className="text-greenish-grey  ">Ширхэгийн үнэ:</span>
-									<span className=" ">
+									<span className="text-greenish-grey text-base">Ширхэгийн үнэ:</span>
+									<span className="text-base">
 										{Intl.NumberFormat("mn-MN").format(product?.price)}₮
 									</span>
 								</div>
 								<div className="flex font-semibold gap-2">
-									<span className="text-greenish-grey  ">Бөөний үнэ:</span>
-									<span className="text-greenish-grey line-through ">
+									<span className="text-greenish-grey text-base  ">Бөөний үнэ:</span>
+									<span className="text-greenish-grey line-through text-base ">
 										{" "}
 										{Intl.NumberFormat("mn-MN").format(product.price)}₮
 									</span>
-									<span className="text-greenish-grey  "> / </span>
-									<span> {Intl.NumberFormat("mn-MN").format(product.promo_price)}₮</span>
+									<span className="text-greenish-grey text-base "> / </span>
+									<span className="text-base"> {Intl.NumberFormat("mn-MN").format(product.promo_price)}₮</span>
 								</div>
 								<div className="flex font-semibold  gap-2 items-center">
-									<span className="text-greenish-grey  ">Үлдэгдэл:</span>
+									<span className="text-greenish-grey text-base  ">Үлдэгдэл:</span>
 									{product.instock > 10 ? (
 										<Badge color="teal">Хангалттай</Badge>
 									) : product.instock == 0 ? (
 										<Badge color="yellow">Үлдэгдэлгүй</Badge>
 									) : (
-										<span className="text-greenish-grey  ">
+										<span className="text-greenish-grey text-base  ">
 											{product.instock} {product.unit}
 										</span>
 									)}
 								</div>
-								<div className="flex gap-2 font-semibold">
-									<span className="text-greenish-grey  ">Төрөл:</span>
+								<div className="flex gap-2 font-semibold text-base flex-row ">
+									<span className="text-greenish-grey text-base ">Төрөл:</span>
 									{product.main_cat_id && (
-										<span className=" ">{product.main_cat_id?.[0].name}, </span>
+										<span className="text-base">{product.main_cat_id?.[0].name}, </span>
 									)}
 									{product.parent_cat_id && (
-										<span className=" ">{product.parent_cat_id?.[0].name}, </span>
+										<span className="text-base">{product.parent_cat_id?.[0].name}, </span>
 									)}
 									{product.child_cat_id && (
-										<span className=" ">{product.child_cat_id?.[0].name}</span>
+										<span className="text-base	">{product.child_cat_id?.[0].name}</span>
 									)}
 								</div>
 								{product.instruction ? (
 									<div className="flex flex-col gap-4">
-										<span className="flex font-semibold text-greenish-grey">
+										<span className="flex font-semibold text-greenish-grey text-base">
 											Хэрэглэх заавар
 										</span>
 										<textarea
 											cols={60}
 											rows={12}
 											readOnly
-											className=" overflow-x-hidden overflow-y-hidden focus: outline-0 py-3 px-3 rounded-md"
+											className=" overflow-x-hidden overflow-y-hidden focus: outline-0 py-3 px-3 rounded-md text-base"
 											value={product.instruction}></textarea>
 									</div>
 								) : (

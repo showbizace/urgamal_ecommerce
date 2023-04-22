@@ -172,12 +172,12 @@ export default function UserAddress({ data, refresh }) {
 			<Text size="xs" c="dimmed">
 				Та хүргэлтийн хаягаа оруулж захиалгаа хялбар хийгээрэй
 			</Text>
-			<div className="mt-12">
-				<div className="flex flex-col items-end gap-3">
+			<div className="lg:mt-12 mt-3">
+				<div className="flex lg:flex-col flex-row items-end gap-3">
 					<Grid w={"100%"} align="center">
 						{data?.map((e) => {
 							return (
-								<Grid.Col id={`user-address-card-${e.id}`} span={3}>
+								<Grid.Col id={`user-address-card-${e.id}`} span={3} >
 									<ShippingAddressCard
 										name={e.name}
 										address={e}
