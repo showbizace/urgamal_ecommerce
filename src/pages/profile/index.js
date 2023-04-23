@@ -136,8 +136,8 @@ const Profile = () => {
   ));
 
   return (
-    <GlobalLayout>
-      <div className="bg-grey-back h-[80vh] flex flex-col sm:flex-row flex-grow items-stretch ">
+    <GlobalLayout footer={false}>
+      <div className="bg-grey-back h-[100vh] flex flex-col sm:flex-row flex-grow items-stretch">
         <div className="flex flex-row sm:flex-col justify-between items-center sm:items-start bg-white w-[94%] sm:w-[250px] mb-0 mt-4 sm:mb-4 sm:mt-4 ml-4 rounded-md px-3 py-2">
           <div className="flex flex-row sm:flex-col grow sm:grow-0 items-center gap-2">
             {items.slice(0, 2)}
@@ -146,19 +146,19 @@ const Profile = () => {
             {sorryForUsingStateForThis ? (
               items[2]
             ) : (
-              <ActionIcon size="lg">
+              <ActionIcon size="lg" onClick={handleLogOut}>
                 <IconLogout color="red" size="1.625rem" stroke={1.5} />
               </ActionIcon>
             )}
           </div>
         </div>
-        <div className="h-[90%] sm:h-full flex flex-grow px-4 py-4">
+        <div className="h-full flex flex-grow px-4 py-4 ">
           {activeTab === 0 && (
             <Tabs
               defaultValue="info"
               variant="outline"
               classNames={{
-                root: "bg-white  h-full w-full rounded-md px-4 py-2",
+                root: "bg-white  h-full w-full rounded-md px-4 py-2 overflow-y-auto",
                 panel: "mt-7 pl-6 flex-grow",
               }}
             >

@@ -31,12 +31,14 @@ import { openContextModal } from "@mantine/modals";
 import BottomFooter from "@/components/Footer";
 import axios from "axios";
 import Image from "next/image";
+import { UserConfigContext } from "@/utils/userConfigContext";
 
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
+  const { auth } = useContext(UserConfigContext);
   const [cartItem, setCartItem] = useState();
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -265,7 +267,7 @@ const CartItems = (props) => {
   };
 
   const makeOrder = async () => {
-    if (userToken) {
+    if (auth) {
       if (select) {
         openLoader();
         const data = `Хот: ${selectedShippingData.city}, Дүүрэг: ${selectedShippingData.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData.street}, Байр: ${selectedShippingData.apartment}, Тоот: ${selectedShippingData.number}, Утас: ${selectedShippingData.phone}`;
@@ -588,7 +590,7 @@ const CartItems = (props) => {
           </Stack>
         </Modal>
 
-        <div className="bg-grey-back w-full lg:px-8 lg:py-4 px-4 py-4">
+        <div className="bg-grey-back h-[100vh] w-full lg:px-8 lg:py-4 px-4 py-4">
           <div className="flex md:flex-row flex-col lg:gap-10 lg:mt-8 gap-4 lg:px-32">
             <div className="flex flex-col lg:w-[70%] w-[100%] lg:gap-8">
               <div>
