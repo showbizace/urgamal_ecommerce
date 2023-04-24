@@ -163,3 +163,22 @@ body {
   width: 450px;
   height: 350px;
 }
+
+@media screen and (max-width: 480px) {
+   .radio-button .mantine-1fbks7c {
+		width: 25px !important;
+		height: 25px !important;
+	}
+	.mantine-1phcupv thead tr th,
+	.mantine-1phcupv tfoot tr th,
+	.mantine-1phcupv tbody tr th{
+		padding : 0.325rem 0.325rem !important;
+	}
+		.mantine-1phcupv tbody tr td {
+				padding: 0.325rem 0.325rem !important;
+		}
+		.magni-mobile{
+			width: 40px !important;
+			height: 40px !important;
+		}
+}

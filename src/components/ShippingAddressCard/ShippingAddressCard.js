@@ -16,7 +16,12 @@ import {
 } from "@tabler/icons-react";
 import React from "react";
 
-export default function ShippingAddressCard({ name, address, onUpdate }) {
+export default function ShippingAddressCard({
+  name,
+  address,
+  onUpdate,
+  onDelete,
+}) {
   return (
     <Card p="xs" radius="md" withBorder>
       <Group position="apart">
