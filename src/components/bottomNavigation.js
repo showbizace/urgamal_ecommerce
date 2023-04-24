@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, useEffect, useContext } from "react";
 import { UserConfigContext } from "@/utils/userConfigContext";
+import Link from "next/link";
 import { openContextModal } from "@mantine/modals";
 import {
   IconShoppingCart,
@@ -110,15 +111,16 @@ const BottomNavBar = () => {
                   Ангилал
                 </span>
               </button>
-              <button
+              <Link
                 type="button"
+                href={"/"}
                 className="inline-flex flex-col gap-2 items-center justify-center font-medium px-5 hover:bg-gray-50 group"
               >
                 <IconHomeEco className="group-hover:text-blue-600 " />
                 <span className="text-lg text-gray-600 group-hover:text-blue-600 ">
                   Нүүр
                 </span>
-              </button>
+              </Link>
               <button
                 onClick={() => linkToCart()}
                 type="button"

@@ -182,7 +182,7 @@ export default function Home({ data }) {
           preference_cookie={preference_cookie}
         />
       )}
-      <div className="block md:hidden">
+      <div className="block lg:hidden">
         <Banner />
       </div>
       <div className=" px-4 md:px-10  mb-16">
@@ -192,7 +192,7 @@ export default function Home({ data }) {
           <div className="flex flex-col lg:w-[100%]">
             {/* <FeatureProductList /> */}
             {/* <NewProduct /> */}
-            <div className="hidden md:flex flex-col md:flex-row bg-white mt-2 rounded-sm">
+            <div className="hidden lg:flex flex-col lg:flex-row bg-white mt-2 rounded-sm">
               <div className="py-3 ">
                 {categoriesLoading && <div></div>}
                 {categoriesError && <div></div>}
