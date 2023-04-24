@@ -631,7 +631,7 @@ const CartItems = (props) => {
           </Stack>
         </Modal>
 
-        <div className="bg-grey-back h-[100vh] w-full lg:px-8 lg:py-4 px-4 py-4">
+        <div className="bg-grey-back h-full  h-[100vh] w-full lg:px-8 lg:py-4 px-4 py-4">
           <div className="flex md:flex-row flex-col lg:gap-10 lg:mt-8 gap-4 lg:px-32">
             <div className="flex flex-col lg:w-[70%] w-[100%] lg:gap-8">
               <div>
