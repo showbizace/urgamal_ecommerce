@@ -34,7 +34,14 @@ const ProductCardExample = ({ src, name, price, count }) => {
       style={{ width: "100%", height: "330px" }}
       onClick={() => {}}
     >
-      <Image src={src} width={10} height={10} className="product-card-img" />
+      <Image
+        loader={() => src}
+        src={src}
+        alt={name}
+        width={10}
+        height={10}
+        className="product-card-img"
+      />
       <div
         className="flex flex-col justify-start items-start"
         style={{ width: "90%" }}

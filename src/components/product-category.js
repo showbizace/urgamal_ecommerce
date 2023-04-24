@@ -5,7 +5,14 @@ const ProductCategory = ({ src, text, width, height }) => {
       className="flex flex-col justify-center items-center py-4 px-2"
       style={{ height: "200px" }}
     >
-      <Image src={src} width={width} height={height} className="category-img" />
+      <Image
+        loader={() => src}
+        src={src}
+        alt={text}
+        width={width}
+        height={height}
+        className="category-img"
+      />
       <p className="mt-4 text-sm font-semibold">{text}</p>
     </div>
   );

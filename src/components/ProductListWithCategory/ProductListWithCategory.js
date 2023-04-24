@@ -119,7 +119,9 @@ export default function ProductListWithCategory({
               <ProductCard
                 key={`product-card-key-${index}-${e.id}`}
                 shouldScale={false}
+                loader={() => e.product_image?.images?.[0]}
                 src={e.product_image?.images?.[0]}
+                alt={e?.name}
                 data={e}
               />
             </SwiperSlide>

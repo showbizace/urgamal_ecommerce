@@ -165,6 +165,7 @@ const CartItems = (props) => {
       const token = getCookie("token");
       const addToCart = getCookie("addCart");
       setUserToken(token);
+
       if (token !== undefined && token !== null && token !== "") {
         setAddressVisible(true);
         if (addToCart === true) {
@@ -179,76 +180,94 @@ const CartItems = (props) => {
     }
   }, []);
 
-  const deleteFromCart = async () => {
-    let newArr = [...cartItem];
-    let removedArr = [];
-    let cartId;
-    newArr.forEach((e) => {
-      if (e.isChecked === true) {
-        const index = newArr.indexOf(e);
-        delete newArr[index];
-        cartId = e.cartid;
-        removedArr.push({ productid: e.productid });
-      }
-    });
-    let temp = [];
-    newArr.forEach((e) => {
-      if (e !== null && e !== undefined && !e.length) {
-        temp.push(e);
-      }
-    });
-
-    setCartItem(temp);
-    dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
-    if (userToken) {
-      if (temp.length === 0) {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer " + userToken);
-        myHeaders.append("Content-Type", "application/json");
-        const requestOption = {
-          method: "GET",
-          headers: myHeaders,
-        };
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/cart/empty`,
-          requestOption
-        );
-        if (res.status === 200) {
-          const data = await res.json();
-          if (data.success === true) {
-            SuccessNotification({
-              message: "Сагсанд дахь бүх бараа амжилттай устлаа!",
-              title: "Сагсны бараа",
-            });
-          }
-        }
-      } else {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer " + userToken);
-        myHeaders.append("Content-Type", "application/json");
-        let data = { cartid: cartId, data: removedArr };
-        const requestOption = {
-          method: "POST",
-          headers: myHeaders,
-          body: JSON.stringify(data),
-        };
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/cart/item/remove`,
-          requestOption
-        );
-        if (res.status === 200) {
-          const data = await res.json();
-          if (data.success === true) {
-            SuccessNotification({
-              message: "Сагсанд дахь бараа амжилттай устлаа!",
-              title: "Сагсны бараа устгах",
-            });
-          }
-        }
-      }
+  useEffect(() => {
+    const token = getCookie("token");
+    setUserToken(token);
+    if (auth) {
+      setAddressVisible(true);
+    } else {
+      setAddressVisible(false);
     }
-    removedArr = [];
-    // localStorage.setItem("")
+  }, [auth]);
+
+  const deleteFromCart = async () => {
+    if (!isCheckAll) {
+      showNotification({
+        message: "Устгах бараа сонгоно уу",
+        color: "red",
+      });
+      return;
+    } else {
+      let newArr = [...cartItem];
+      let removedArr = [];
+      let cartId;
+      newArr.forEach((e) => {
+        if (e.isChecked === true) {
+          const index = newArr.indexOf(e);
+          delete newArr[index];
+          cartId = e.cartid;
+          removedArr.push({ productid: e.productid });
+        }
+      });
+      let temp = [];
+      newArr.forEach((e) => {
+        if (e !== null && e !== undefined && !e.length) {
+          temp.push(e);
+        }
+      });
+
+      setCartItem(temp);
+      dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
+      if (userToken) {
+        if (temp.length === 0) {
+          var myHeaders = new Headers();
+          myHeaders.append("Authorization", "Bearer " + userToken);
+          myHeaders.append("Content-Type", "application/json");
+          const requestOption = {
+            method: "GET",
+            headers: myHeaders,
+          };
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/cart/empty`,
+            requestOption
+          );
+          if (res.status === 200) {
+            const data = await res.json();
+            if (data.success === true) {
+              SuccessNotification({
+                message: "Сагсанд дахь бүх бараа амжилттай устлаа!",
+                title: "Сагсны бараа",
+              });
+            }
+          }
+        } else {
+          var myHeaders = new Headers();
+          myHeaders.append("Authorization", "Bearer " + userToken);
+          myHeaders.append("Content-Type", "application/json");
+          let data = { cartid: cartId, data: removedArr };
+          const requestOption = {
+            method: "POST",
+            headers: myHeaders,
+            body: JSON.stringify(data),
+          };
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/cart/item/remove`,
+            requestOption
+          );
+          if (res.status === 200) {
+            const data = await res.json();
+            if (data.success === true) {
+              SuccessNotification({
+                message: "Сагсанд дахь бараа амжилттай устлаа!",
+                title: "Сагсны бараа устгах",
+              });
+            }
+          }
+        }
+      }
+      removedArr = [];
+      // localStorage.setItem("")
+    }
   };
   const handleClick = (e) => {
     let newArr = [...cartItem];
@@ -367,92 +386,107 @@ const CartItems = (props) => {
   };
 
   const minusQuantity = async (count, product) => {
-    const initialStock = product.instock;
-    count--;
-    if (initialStock >= count && count >= 0) {
-      let clone = { ...product };
-      clone["remainStock"] = initialStock - count;
-      clone["purchaseCount"] = count;
-      clone["totalPrice"] = count * clone["price"];
-      let temp = [...cartItem];
-      temp.forEach((e, index) => {
-        if (e.id === product.id) {
-          temp[index] = clone;
-        }
+    if (product?.instock) {
+      showNotification({
+        message: "Барааны үлдэгдэл хүрэлцэхгүй байна",
+        color: "red",
       });
-      setCartItem(temp);
-      dispatch({
-        type: "CART_REMOVE_QUANTITY",
-        payload: temp,
-      });
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + userToken);
-      myHeaders.append("Content-Type", "application/json");
-      const requestOption = {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify({
-          productid: product.productid,
-          quantity: count,
-          cartid: product.cartid,
-        }),
-      };
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
-        requestOption
-      );
+    }
+    {
+      const initialStock = product.instock;
+      count--;
+      if (initialStock >= count && count >= 0) {
+        let clone = { ...product };
+        clone["remainStock"] = initialStock - count;
+        clone["purchaseCount"] = count;
+        clone["totalPrice"] = count * clone["price"];
+        let temp = [...cartItem];
+        temp.forEach((e, index) => {
+          if (e.id === product.id) {
+            temp[index] = clone;
+          }
+        });
+        setCartItem(temp);
+        dispatch({
+          type: "CART_REMOVE_QUANTITY",
+          payload: temp,
+        });
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + userToken);
+        myHeaders.append("Content-Type", "application/json");
+        const requestOption = {
+          method: "POST",
+          headers: myHeaders,
+          body: JSON.stringify({
+            productid: product.productid,
+            quantity: count,
+            cartid: product.cartid,
+          }),
+        };
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
+          requestOption
+        );
 
-      if (res.status === 200) {
-        const data = await res.json();
-        if (data.success === true) {
+        if (res.status === 200) {
+          const data = await res.json();
+          if (data.success === true) {
+          }
         }
       }
     }
   };
 
   const addQuantity = async (count, product) => {
-    const initialStock = product.instock;
-    count++;
-    if (initialStock >= count) {
-      let clone = { ...product };
-      clone["remainStock"] = initialStock - count;
-      clone["purchaseCount"] = count;
-      clone["totalPrice"] = count * clone["price"];
-      let temp = [...cartItem];
-      temp.forEach((e, index) => {
-        if (e.id === product.id) {
-          temp[index] = clone;
-        }
-      });
-      setCartItem(temp);
-      dispatch({
-        type: "CART_ADD_QUANTITY",
-        payload: temp,
-      });
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + userToken);
-      myHeaders.append("Content-Type", "application/json");
-      const requestOption = {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify({
-          productid: product.productid,
-          quantity: count,
-          cartid: product.cartid,
-        }),
-      };
-      if (userToken) {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
-          requestOption
-        );
-        if (res.status === 200) {
-          const data = await res.json();
-          if (data.success === true) {
-            setButtonPressed(false);
+    if (product?.instock) {
+      const initialStock = product.instock;
+      count++;
+      if (initialStock >= count) {
+        let clone = { ...product };
+        clone["remainStock"] = initialStock - count;
+        clone["purchaseCount"] = count;
+        clone["totalPrice"] = count * clone["price"];
+        let temp = [...cartItem];
+        temp.forEach((e, index) => {
+          if (e.id === product.id) {
+            temp[index] = clone;
+          }
+        });
+        setCartItem(temp);
+        dispatch({
+          type: "CART_ADD_QUANTITY",
+          payload: temp,
+        });
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + userToken);
+        myHeaders.append("Content-Type", "application/json");
+        const requestOption = {
+          method: "POST",
+          headers: myHeaders,
+          body: JSON.stringify({
+            productid: product.productid,
+            quantity: count,
+            cartid: product.cartid,
+          }),
+        };
+        if (userToken) {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
+            requestOption
+          );
+          if (res.status === 200) {
+            const data = await res.json();
+            if (data.success === true) {
+              setButtonPressed(false);
+            }
           }
         }
       }
+    } else {
+      showNotification({
+        message: "Барааны үлдэгдэл хүрэлцэхгүй байна.",
+        color: "red",
+      });
     }
   };
 
@@ -491,11 +525,18 @@ const CartItems = (props) => {
             </td>
             <td>
               <div className="flex flex-row lg:gap-8">
-                <Magnifier
+                {/* <Magnifier
                   imgSrc={"/bundle-1.svg"}
                   imgWidth={80}
                   imgHeight={80}
                   magnifierRadius={50}
+                /> */}
+                <Image
+                  loader={() => item?.picture_url}
+                  src={item?.picture_url}
+                  width={80}
+                  height={80}
+                  alt={item.name}
                 />
                 <div className="flex flex-col justify-around ml-2 lg:ml-0">
                   <span className="font-[500] lg:text-[1.002rem] text-[0.55rem] text-[#212529]">

@@ -3,7 +3,14 @@ import Image from "next/image";
 const ProductCardSwiper = ({ src, name, count, price }) => {
   return (
     <div className="flex flex-col justify-start items-center py-4 px-4">
-      <Image src={src} width={10} height={10} className="product-card-img" />
+      <Image
+        loader={() => src}
+        src={src}
+        alt={name}
+        width={10}
+        height={10}
+        className="product-card-img"
+      />
       <div
         className="flex flex-col justify-start items-start"
         style={{ width: "90%" }}
