@@ -6,8 +6,8 @@ function AllCategory({ type = "default", categories, isLoading }) {
   const perChunk = 10;
   return type === "drawer" ? (
     <div className="h-full">
-      <ul role="list" className="relative flex flex-col gap-2 h-full mt-6">
-        <Accordion variant="filled">
+      <ul role="list" className="relative flex flex-col gap-2 h-full mt-6 ">
+        <Accordion variant="filled" >
           {isLoading &&
             new Array(6)
               .fill(null)
@@ -15,15 +15,15 @@ function AllCategory({ type = "default", categories, isLoading }) {
 
           {categories &&
             categories.map((parent) => (
-              <Accordion.Item value={parent.name + parent.id}>
+              <Accordion.Item value={parent.name + parent.id} >
                 <Accordion.Control>
                   <li
                     key={parent.name + parent.id}
-                    className="group/parent  py-2 flex justify-between items-center "
+                    className="group/parent  py-2 flex justify-between items-center  "
                   >
                     <Link
                       href={`/category/parent/${parent.id}`}
-                      className="text-sm group-hover/parent:underline"
+                      className="text-sm group-hover/parent:underline "
                     >
                       {" "}
                       {parent.name.charAt(0).toUpperCase() +

@@ -40,6 +40,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [sorryForUsingStateForThis, setSorry] = useState(false);
   useEffect(() => {
+    window.dispatchEvent(new Event("storage"));
     function updateSize() {
       setSorry(window.innerWidth > 640);
     }
