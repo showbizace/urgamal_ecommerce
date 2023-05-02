@@ -744,44 +744,6 @@ const CartItems = (props) => {
         </Stack>
       </Modal>
 
-<<<<<<< HEAD
-        <div className="bg-grey-back h-full  h-[100vh] w-full lg:px-8 lg:py-4 px-4 py-4">
-          <div className="flex md:flex-row flex-col lg:gap-10 lg:mt-8 gap-4 lg:px-32">
-            <div className="flex flex-col lg:w-[70%] w-[100%] lg:gap-8">
-              <div>
-                <div className=" bg-white rounded-lg lg:px-10 lg:py-6 px-3 py-3">
-                  <div className="flex flex-row justify-between">
-                    <span className="font-[500] lg:text-[1.3rem] text-[#212529]">
-                      Сагс
-                    </span>
-                    <div className="font-[400] text-[1rem] text-[#ff6868]"></div>
-                    <Button
-                      component="a"
-                      href="#"
-                      compact
-                      variant="subtle"
-                      leftIcon={<IconTrash size="1rem" />}
-                      sx={(theme) => ({
-                        "@media (max-width: 40em)": {
-                          fontSize: theme.fontSizes.xs,
-                        },
-                      })}
-                      color="red"
-                      onClick={() => deleteFromCart()}
-                    >
-                      Устгах
-                    </Button>
-                  </div>
-                  {/* <Suspense fallback={<Loading />}> */}
-                  <div className="mt-6">
-                    <Table captionSide="bottom" striped>
-                      {/* <caption>Some elements from periodic table</caption> */}
-                      <thead>{ths}</thead>
-                      <tbody>{rows}</tbody>
-                    </Table>
-                  </div>
-                  {/* </Suspense> */}
-=======
       <div className="bg-grey-back w-full lg:px-8 lg:py-4 px-4 py-4  h-screen relative">
         <div className="absolute top-9">
           <Button
@@ -838,7 +800,6 @@ const CartItems = (props) => {
                     <thead>{ths}</thead>
                     <tbody>{rows}</tbody>
                   </Table>
->>>>>>> dc63b8075bf3581025e5b00b8b1a129a74716e71
                 </div>
                 {/* </Suspense> */}
               </div>
