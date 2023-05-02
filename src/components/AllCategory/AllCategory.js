@@ -23,7 +23,7 @@ function AllCategory({ type = "default", categories, isLoading }) {
                   >
                     <Link
                       href={`/category/parent/${parent.id}`}
-                      className="text-sm group-hover/parent:underline "
+                      className="text-2xl group-hover/parent:underline "
                     >
                       {" "}
                       {parent.name.charAt(0).toUpperCase() +
