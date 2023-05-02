@@ -8,7 +8,7 @@ import {
   Select,
 } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
-import { IconCirclePlus } from "@tabler/icons-react";
+import { IconCirclePlus, IconTruckOff } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { getCookie } from "cookies-next";
@@ -137,6 +137,10 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
               <Card.Section
                 sx={{ display: "flex", flexDirection: "column", gap: "15px" }}
               >
+
+                {shippingData.length === 0 && <div className="flex flex-col w-full items-center gap-4 mt-6">
+                  <IconTruckOff size='2rem' stroke={1.5} />
+                  <span className="text-grey font-medium"> Хаягийн мэдээлэл оруулаагүй байна</span></div>}
                 {shippingData?.map((item, idx) => (
                   <div key={idx}>
                     <Chip.Group

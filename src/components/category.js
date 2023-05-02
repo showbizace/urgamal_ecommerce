@@ -135,6 +135,7 @@ const Category = ({
       </Grid.Container>
     </div>
   );
+
 };
 
 export default Category;

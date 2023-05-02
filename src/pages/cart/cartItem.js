@@ -483,7 +483,7 @@ const CartItems = (props) => {
     if (product?.instock) {
       const initialStock = product.instock;
       count--;
-      if (initialStock >= count && count >= 0) {
+      if (initialStock >= count && count > 0) {
         let clone = { ...product };
         clone["remainStock"] = initialStock - count;
         clone["purchaseCount"] = count;
@@ -511,14 +511,16 @@ const CartItems = (props) => {
             cartid: product.cartid,
           }),
         };
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
-          requestOption
-        );
+        if (userToken) {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
+            requestOption
+          );
 
-        if (res.status === 200) {
-          const data = await res.json();
-          if (data.success === true) {
+          if (res.status === 200) {
+            const data = await res.json();
+            if (data.success === true) {
+            }
           }
         }
       }
@@ -531,14 +533,13 @@ const CartItems = (props) => {
   };
 
   const addQuantity = async (count, product) => {
-    console.log(count, "count");
-    console.log(product, "product");
     if (product?.instock) {
       const initialStock = product.instock;
       count++;
       if (initialStock >= count) {
         let clone = { ...product };
         clone["remainStock"] = initialStock - count;
+        console.log(clone["remainStock"], "remain")
         clone["purchaseCount"] = count;
         clone["totalPrice"] = count * clone["price"];
         let temp = [...cartItem];
@@ -576,6 +577,11 @@ const CartItems = (props) => {
             }
           }
         }
+      } else {
+        showNotification({
+          message: "Барааны үлдэгдэл хүрэлцэхгүй байна.",
+          color: "red",
+        });
       }
     } else {
       showNotification({
@@ -640,9 +646,18 @@ const CartItems = (props) => {
                   <span className="font-[500] lg:text-[0.87rem] text-[0.6rem] text-[#2125297a]">
                     Үлдэгдэл:{" "}
                     <span className="text-[#212529]">
-                      {item.remainStock
+                      {/* {item.remainStock !== undefined || item.remainStock !== null
                         ? item.remainStock
-                        : item.instock - item.quantity}
+                        : item.instock - item.quantity} */}
+                      {item.instock > 10 ? (
+                        <Badge color="teal" size={"xs"}>Хангалттай</Badge>
+                      ) : item.instock == 0 ? (
+                        <Badge color="yellow" size={"xs"}>Үлдэгдэлгүй</Badge>
+                      ) : (
+                        <span className="text-greenish-grey text-xs  ">
+                          {item.instock} {item.unit}
+                        </span>
+                      )}
                     </span>
                   </span>
                 </div>
@@ -725,7 +740,8 @@ const CartItems = (props) => {
         </Stack>
       </Modal>
 
-      <div className="bg-grey-back  w-full lg:px-8 lg:py-8 px-4 py-4">
+
+      <div className="bg-grey-back w-full lg:px-8 lg:py-4 px-4 py-4  h-screen">
         <div className="flex md:flex-row flex-col lg:gap-10 lg:mt-8 gap-4 lg:px-32">
           <div className="flex relative flex-col lg:w-[70%] w-[100%] lg:gap-8">
             <div className="absolute -top-14">

@@ -31,45 +31,52 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
   };
   const addToCartHandler = async (event, data) => {
     event.stopPropagation();
-    dispatch({
-      type: "CART_ADD_ITEM",
-      payload: { ...data, quantity: 1, purchaseCount: productCount },
-    });
-    setLoading(true);
-    const token = getCookie("token");
-    if (token !== undefined && token !== null && token !== "") {
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + token);
-      myHeaders.append("Content-Type", "application/json");
-      const requestOption = {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify({
-          item_id: data.id,
-          qty: productCount,
-          businessId: "local_test",
-        }),
-      };
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/cart/add/local`,
-        requestOption
-      );
-      if (res.status === 200) {
-        const data = await res.json();
-        if (data.success === true) {
-          SuccessNotification({
-            message: "Сагсанд амжилттай орлоо!",
-            title: "Сагс",
-          });
-          setLoading(false);
+    console.log(data, "data")
+    if (data.instock > 0) {
+      dispatch({
+        type: "CART_ADD_ITEM",
+        payload: { ...data, quantity: 1, purchaseCount: productCount },
+      });
+      setLoading(true);
+      const token = getCookie("token");
+      if (token !== undefined && token !== null && token !== "") {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + token);
+        myHeaders.append("Content-Type", "application/json");
+        const requestOption = {
+          method: "POST",
+          headers: myHeaders,
+          body: JSON.stringify({
+            item_id: data.id,
+            qty: productCount,
+            businessId: "local_test",
+          }),
+        };
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/cart/add/local`,
+          requestOption
+        );
+        if (res.status === 200) {
+          const data = await res.json();
+          if (data.success === true) {
+            SuccessNotification({
+              message: "Сагсанд амжилттай орлоо!",
+              title: "Сагс",
+            });
+            setLoading(false);
+          }
         }
+      } else {
+        SuccessNotification({
+          message: "Сагсанд амжилттай орлоо!",
+          title: "Сагс",
+        });
+        setLoading(false);
       }
     } else {
-      SuccessNotification({
-        message: "Сагсанд амжилттай орлоо!",
-        title: "Сагс",
-      });
-      setLoading(false);
+      showNotification(
+        { message: "Барааны үлдэгдэл хүрэлцэхгүй байна.", color: "red" }
+      )
     }
   };
 
