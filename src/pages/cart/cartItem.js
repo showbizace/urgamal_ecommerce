@@ -12,11 +12,16 @@ import {
   Center,
   Stack,
   Switch,
-  Tooltip
+  Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
-import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
+import {
+  IconMinus,
+  IconPlus,
+  IconTrash,
+  IconArrowLeft,
+} from "@tabler/icons-react";
 import Link from "next/link";
 import { useState, useEffect, useContext, Suspense } from "react";
 import Magnifier from "../../components/Magnifier/Magnifier";
@@ -50,7 +55,7 @@ const CartItems = (props) => {
   const [isChangeQuantity, setIsChangeQuantity] = useState(false);
   const [total, setTotal] = useState();
   const [stock, setStock] = useState();
-  const [isAvRemove, setIsAvRemove] = useState(false)
+  const [isAvRemove, setIsAvRemove] = useState(false);
   const [orderId, setOrderId] = useState();
   const [purchaseQuantity, setPurchaseQuantity] = useState();
   const [isChangeAdd, setIsChangeAdd] = useState(false);
@@ -60,6 +65,11 @@ const CartItems = (props) => {
   const [buttonPressed, setButtonPressed] = useState(false);
   const [loaderOpened, { open: openLoader, close: closeLoader }] =
     useDisclosure(false);
+
+  const handleBack = () => {
+    router.push("/");
+  };
+
   const handleSelectAll = (e) => {
     setIsCheckAll(!isCheckAll);
     let arr = [];
@@ -675,7 +685,7 @@ const CartItems = (props) => {
                   </ActionIcon>
                   <span className="font-[500] lg:text-[1rem] text-[0.6rem] text-[#212529]">
                     {item.purchaseCount !== undefined &&
-                      item.purchaseCount !== null
+                    item.purchaseCount !== null
                       ? item.purchaseCount
                       : item.quantity}
                   </span>
@@ -687,9 +697,8 @@ const CartItems = (props) => {
                     onClick={() => {
                       item.purchaseCount
                         ? addQuantity(item.purchaseCount, item)
-                        : addQuantity(item.quantity, item)
-                    }
-                    }
+                        : addQuantity(item.quantity, item);
+                    }}
                   >
                     <IconPlus
                       size="1.2rem"
@@ -731,9 +740,31 @@ const CartItems = (props) => {
         </Stack>
       </Modal>
 
+
       <div className="bg-grey-back w-full lg:px-8 lg:py-4 px-4 py-4  h-screen">
         <div className="flex md:flex-row flex-col lg:gap-10 lg:mt-8 gap-4 lg:px-32">
-          <div className="flex flex-col lg:w-[70%] w-[100%] lg:gap-8">
+          <div className="flex relative flex-col lg:w-[70%] w-[100%] lg:gap-8">
+            <div className="absolute -top-14">
+              <Button
+                variant="subtle"
+                color=""
+                leftIcon={<IconArrowLeft />}
+                px={0}
+                size="lg"
+                styles={(theme) => ({
+                  root: {
+                    color: theme.fn.darken("#F9BC60", 0.04),
+                    "&:hover": theme.fn.hover({
+                      color: theme.fn.darken("#F9BC60", 0.06),
+                      background: "none",
+                    }),
+                  },
+                })}
+                onClick={handleBack}
+              >
+                Буцах
+              </Button>
+            </div>
             <div>
               <div className=" bg-white rounded-lg lg:px-10 lg:py-6 px-3 py-3">
                 <div className="flex flex-row justify-between">
@@ -775,7 +806,6 @@ const CartItems = (props) => {
                 setSelect={setSelect}
               />
             )}
-
           </div>
 
           <div className="lg:w-[30%] h-2/5	bg-white rounded-lg lg:px-10 lg:py-8 px-4 py-4">
@@ -803,13 +833,20 @@ const CartItems = (props) => {
                   <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
                     Очиж авах
                     <Tooltip label="Очиж авах бол заавал баруун гар талд байгаа товчийг идэвхжүүлнэ үү">
-                      <IconAlertCircle className="h-5 w-5 self-center ml-2 " color="black" />
+                      <IconAlertCircle
+                        className="h-5 w-5 self-center ml-2 "
+                        color="black"
+                      />
                     </Tooltip>
                   </span>
                 </div>
                 <span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
-                  <Switch checked={checked}
-                    onChange={(event) => setChecked(event.currentTarget.checked)} />
+                  <Switch
+                    checked={checked}
+                    onChange={(event) =>
+                      setChecked(event.currentTarget.checked)
+                    }
+                  />
                 </span>
               </div>
               <hr className="h-px my-1 border-0 border-t-dashed bg-gray-300" />
@@ -857,7 +894,6 @@ const CartItems = (props) => {
           </div> */}
       </div>
     </GlobalLayout>
-
   );
 };
 
