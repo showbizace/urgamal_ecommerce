@@ -11,10 +11,17 @@ import {
   Loader,
   Center,
   Stack,
+  Switch,
+  Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
-import { IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
+import {
+  IconMinus,
+  IconPlus,
+  IconTrash,
+  IconArrowLeft,
+} from "@tabler/icons-react";
 import Link from "next/link";
 import { useState, useEffect, useContext, Suspense } from "react";
 import Magnifier from "../../components/Magnifier/Magnifier";
@@ -23,6 +30,7 @@ import { useRouter } from "next/router";
 import { Store } from "@/utils/Store";
 import $ from "jquery";
 import Loading from "../home/loading";
+import { IconAlertCircle } from "@tabler/icons-react";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import { SuccessNotification } from "../../utils/SuccessNotification";
 import { getCookie, setCookie } from "cookies-next";
@@ -47,6 +55,7 @@ const CartItems = (props) => {
   const [isChangeQuantity, setIsChangeQuantity] = useState(false);
   const [total, setTotal] = useState();
   const [stock, setStock] = useState();
+  const [isAvRemove, setIsAvRemove] = useState(false);
   const [orderId, setOrderId] = useState();
   const [purchaseQuantity, setPurchaseQuantity] = useState();
   const [isChangeAdd, setIsChangeAdd] = useState(false);
@@ -56,6 +65,11 @@ const CartItems = (props) => {
   const [buttonPressed, setButtonPressed] = useState(false);
   const [loaderOpened, { open: openLoader, close: closeLoader }] =
     useDisclosure(false);
+
+  const handleBack = () => {
+    router.push("/");
+  };
+
   const handleSelectAll = (e) => {
     setIsCheckAll(!isCheckAll);
     let arr = [];
@@ -191,25 +205,27 @@ const CartItems = (props) => {
   }, [auth]);
 
   const deleteFromCart = async () => {
-    if (!isCheckAll) {
+    let check = true;
+    let newArr = [...cartItem];
+    let removedArr = [];
+    let cartId;
+    newArr.forEach((e) => {
+      if (e.isChecked === true) {
+        const index = newArr.indexOf(e);
+        delete newArr[index];
+        cartId = e.cartid;
+        removedArr.push({ productid: e.productid });
+        check = false;
+      }
+    });
+    let temp = [];
+
+    if (check === true) {
       showNotification({
         message: "Устгах бараа сонгоно уу",
         color: "red",
       });
-      return;
     } else {
-      let newArr = [...cartItem];
-      let removedArr = [];
-      let cartId;
-      newArr.forEach((e) => {
-        if (e.isChecked === true) {
-          const index = newArr.indexOf(e);
-          delete newArr[index];
-          cartId = e.cartid;
-          removedArr.push({ productid: e.productid });
-        }
-      });
-      let temp = [];
       newArr.forEach((e) => {
         if (e !== null && e !== undefined && !e.length) {
           temp.push(e);
@@ -218,6 +234,7 @@ const CartItems = (props) => {
 
       setCartItem(temp);
       dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
+
       if (userToken) {
         if (temp.length === 0) {
           var myHeaders = new Headers();
@@ -367,10 +384,87 @@ const CartItems = (props) => {
         }
         closeLoader();
       } else {
-        showNotification({
-          message: "Хаяг сонгоно уу!",
-          color: "red",
-        });
+        if (checked === false) {
+          showNotification({
+            message: "Хаяг сонгоно уу эсвэл очиж авахыг идэвхжүүлнэ үү",
+            color: "red",
+          });
+        } else {
+          openLoader();
+          const axiosReqOption = {
+            headers: {
+              Authorization: "Bearer " + userToken,
+              "Content-Type": "application/json",
+            },
+          };
+          const requestOption = {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + userToken,
+              "Content-Type": "application/json",
+            },
+          };
+          try {
+            const res = await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/order`,
+              requestOption
+            );
+            if (res.status === 200) {
+              const data = await res.json();
+              if (data.success === true) {
+                // open();
+                setOrderId(data.orderid);
+                let temp = [];
+                const cartItems = cartItem;
+                setCartItem(temp);
+                dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
+                // SuccessNotification({ message: data.message, title: "Захиалга" });
+                axios
+                  .post(
+                    `${process.env.NEXT_PUBLIC_API_URL}/payment`,
+                    { orderid: data.orderid },
+                    axiosReqOption
+                  )
+                  .then((res) => {
+                    openContextModal({
+                      modal: "payment",
+                      title: "Төлбөр төлөлт",
+                      innerProps: {
+                        paymentData: res.data.data,
+                        shouldRedirect: true,
+                      },
+                      centered: true,
+                      size: "lg",
+                    });
+                  })
+                  .catch((err) => {
+                    if (err.response) {
+                      showNotification({
+                        message: err.response.data,
+                        color: "red",
+                      });
+                    } else {
+                      showNotification({
+                        message: "Төлбөрийн мэдээлэл авахад алдаа гарлаа",
+                        color: "red",
+                      });
+                    }
+                  });
+              }
+            } else if (res.status === 500) {
+              showNotification({
+                message: "Сагсанд бараа байхгүй байна!",
+                color: "red",
+              });
+            }
+          } catch (error) {
+            showNotification({
+              message: "Захиалга үүсгэхэд алдаа гарлаа!",
+              color: "red",
+            });
+          }
+          closeLoader();
+        }
       }
     } else {
       openContextModal({
@@ -387,15 +481,9 @@ const CartItems = (props) => {
 
   const minusQuantity = async (count, product) => {
     if (product?.instock) {
-      showNotification({
-        message: "Барааны үлдэгдэл хүрэлцэхгүй байна",
-        color: "red",
-      });
-    }
-    {
       const initialStock = product.instock;
       count--;
-      if (initialStock >= count && count >= 0) {
+      if (initialStock >= count && count > 0) {
         let clone = { ...product };
         clone["remainStock"] = initialStock - count;
         clone["purchaseCount"] = count;
@@ -423,17 +511,24 @@ const CartItems = (props) => {
             cartid: product.cartid,
           }),
         };
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
-          requestOption
-        );
+        if (userToken) {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
+            requestOption
+          );
 
-        if (res.status === 200) {
-          const data = await res.json();
-          if (data.success === true) {
+          if (res.status === 200) {
+            const data = await res.json();
+            if (data.success === true) {
+            }
           }
         }
       }
+    } else {
+      showNotification({
+        message: "Барааны үлдэгдэл хүрэлцэхгүй байна",
+        color: "red",
+      });
     }
   };
 
@@ -444,6 +539,7 @@ const CartItems = (props) => {
       if (initialStock >= count) {
         let clone = { ...product };
         clone["remainStock"] = initialStock - count;
+        console.log(clone["remainStock"], "remain");
         clone["purchaseCount"] = count;
         clone["totalPrice"] = count * clone["price"];
         let temp = [...cartItem];
@@ -481,6 +577,11 @@ const CartItems = (props) => {
             }
           }
         }
+      } else {
+        showNotification({
+          message: "Барааны үлдэгдэл хүрэлцэхгүй байна.",
+          color: "red",
+        });
       }
     } else {
       showNotification({
@@ -545,9 +646,22 @@ const CartItems = (props) => {
                   <span className="font-[500] lg:text-[0.87rem] text-[0.6rem] text-[#2125297a]">
                     Үлдэгдэл:{" "}
                     <span className="text-[#212529]">
-                      {item.remainStock
+                      {/* {item.remainStock !== undefined || item.remainStock !== null
                         ? item.remainStock
-                        : item.instock - item.quantity}
+                        : item.instock - item.quantity} */}
+                      {item.instock > 10 ? (
+                        <Badge color="teal" size={"xs"}>
+                          Хангалттай
+                        </Badge>
+                      ) : item.instock == 0 ? (
+                        <Badge color="yellow" size={"xs"}>
+                          Үлдэгдэлгүй
+                        </Badge>
+                      ) : (
+                        <span className="text-greenish-grey text-xs  ">
+                          {item.instock} {item.unit}
+                        </span>
+                      )}
                     </span>
                   </span>
                 </div>
@@ -584,11 +698,11 @@ const CartItems = (props) => {
                       ":hover": { backgroundColor: "#ebfbee" },
                     }}
                     className="lg:ml-3"
-                    onClick={() =>
+                    onClick={() => {
                       item.purchaseCount
                         ? addQuantity(item.purchaseCount, item)
-                        : addQuantity(item.quantity)
-                    }
+                        : addQuantity(item.quantity, item);
+                    }}
                   >
                     <IconPlus
                       size="1.2rem"
@@ -615,22 +729,22 @@ const CartItems = (props) => {
     });
 
   return (
-    <>
-      <GlobalLayout>
-        <Modal
-          centered
-          opened={loaderOpened}
-          closeOnClickOutside={false}
-          closeOnEscape={false}
-          withCloseButton={false}
-          size="xs"
-        >
-          <Stack align="center" my="lg" spacing="lg">
-            <Text align="center">Уншиж байна...</Text>
-            <Loader size="lg" color="yellow" />
-          </Stack>
-        </Modal>
+    <GlobalLayout>
+      <Modal
+        centered
+        opened={loaderOpened}
+        closeOnClickOutside={false}
+        closeOnEscape={false}
+        withCloseButton={false}
+        size="xs"
+      >
+        <Stack align="center" my="lg" spacing="lg">
+          <Text align="center">Уншиж байна...</Text>
+          <Loader size="lg" color="yellow" />
+        </Stack>
+      </Modal>
 
+<<<<<<< HEAD
         <div className="bg-grey-back h-full  h-[100vh] w-full lg:px-8 lg:py-4 px-4 py-4">
           <div className="flex md:flex-row flex-col lg:gap-10 lg:mt-8 gap-4 lg:px-32">
             <div className="flex flex-col lg:w-[70%] w-[100%] lg:gap-8">
@@ -667,82 +781,162 @@ const CartItems = (props) => {
                     </Table>
                   </div>
                   {/* </Suspense> */}
+=======
+      <div className="bg-grey-back w-full lg:px-8 lg:py-4 px-4 py-4  h-screen relative">
+        <div className="absolute top-9">
+          <Button
+            variant="subtle"
+            color=""
+            leftIcon={<IconArrowLeft />}
+            px={0}
+            size="lg"
+            styles={(theme) => ({
+              root: {
+                color: theme.fn.darken("#F9BC60", 0.04),
+                "&:hover": theme.fn.hover({
+                  color: theme.fn.darken("#F9BC60", 0.06),
+                  background: "none",
+                  textDecoration: "underline",
+                }),
+              },
+            })}
+            onClick={handleBack}
+          >
+            Буцах
+          </Button>
+        </div>
+        <div className="flex md:flex-row flex-col lg:gap-10 lg:mt-8 gap-4 lg:px-32">
+          <div className="flex relative flex-col lg:w-[70%] w-[100%] lg:gap-8">
+            <div>
+              <div className=" bg-white rounded-lg lg:px-10 lg:py-6 px-3 py-3">
+                <div className="flex flex-row justify-between">
+                  <span className="font-[500] lg:text-[1.3rem] text-[#212529]">
+                    Сагс
+                  </span>
+                  <div className="font-[400] text-[1rem] text-[#ff6868]"></div>
+                  <Button
+                    component="a"
+                    href="#"
+                    compact
+                    variant="subtle"
+                    leftIcon={<IconTrash size="1rem" />}
+                    sx={(theme) => ({
+                      "@media (max-width: 40em)": {
+                        fontSize: theme.fontSizes.xs,
+                      },
+                    })}
+                    color="red"
+                    onClick={() => deleteFromCart()}
+                  >
+                    Устгах
+                  </Button>
                 </div>
+                {/* <Suspense fallback={<Loading />}> */}
+                <div className="mt-6 overflow-auto max-h-80">
+                  <Table captionSide="bottom" striped>
+                    {/* <caption>Some elements from periodic table</caption> */}
+                    <thead>{ths}</thead>
+                    <tbody>{rows}</tbody>
+                  </Table>
+>>>>>>> dc63b8075bf3581025e5b00b8b1a129a74716e71
+                </div>
+                {/* </Suspense> */}
               </div>
-              {addressVisible === true && (
-                <Address
-                  setSelectedShippingData={setSelectedShippingData}
-                  setSelect={setSelect}
-                />
-              )}
             </div>
+            {addressVisible === true && (
+              <Address
+                setSelectedShippingData={setSelectedShippingData}
+                setSelect={setSelect}
+              />
+            )}
+          </div>
 
-            <div className="lg:w-[30%] h-2/5	bg-white rounded-lg lg:px-10 lg:py-8 px-4 py-4">
-              <div className="flex flex-col lg:gap-5 gap-3">
-                <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
-                  Нийт үнэ
-                  <span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
-                    {totalPrice()}
-                  </span>
+          <div className="lg:w-[30%] h-2/5	bg-white rounded-lg lg:px-10 lg:py-8 px-4 py-4">
+            <div className="flex flex-col lg:gap-5 gap-3">
+              <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
+                Нийт үнэ
+                <span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
+                  {totalPrice()}
                 </span>
-                <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
-                  Хөнгөлөлт
-                  <span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
-                    0 ₮
-                  </span>
+              </span>
+              <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
+                Хөнгөлөлт
+                <span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
+                  0 ₮
                 </span>
-                <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
-                  Хүргэлт
-                  <span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
-                    0 ₮
-                  </span>
+              </span>
+              <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
+                Хүргэлт
+                <span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
+                  0 ₮
                 </span>
-                <hr className="h-px my-1 border-0 border-t-dashed bg-gray-300" />
-                <span className="flex justify-between mb-1 font-[400] lg:text-[1.1rem] text-sm text-[#212529af]">
-                  Нийлбэр үнэ{" "}
-                  <span className="font-[500] lg:text-[1.1rem] text-sm text-[#212529]">
-                    {totalPrice()}
+              </span>
+              <div className="flex flex-row justify-between items-center">
+                <div className="flex items-center">
+                  <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
+                    Очиж авах
+                    <Tooltip label="Очиж авах бол заавал баруун гар талд байгаа товчийг идэвхжүүлнэ үү">
+                      <IconAlertCircle
+                        className="h-5 w-5 self-center ml-2 "
+                        color="black"
+                      />
+                    </Tooltip>
                   </span>
+                </div>
+                <span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
+                  <Switch
+                    checked={checked}
+                    onChange={(event) =>
+                      setChecked(event.currentTarget.checked)
+                    }
+                  />
                 </span>
-                <Button
-                  styles={(theme) => ({
-                    root: {
-                      backgroundColor: "#f9bc60",
-                      border: 0,
-                      height: 42,
-                      paddingLeft: 20,
-                      paddingRight: 20,
-                    },
-
-                    leftIcon: {
-                      marginRight: 15,
-                    },
-                  })}
-                  sx={(theme) => ({
-                    "@media (max-width: 40em)": {
-                      fontSize: theme.fontSizes.xs,
-                    },
-                  })}
-                  color="yellow"
-                  variant="filled"
-                  radius="md"
-                  size="md"
-                  uppercase
-                  onClick={() => makeOrder()}
-                >
-                  Захиалга хийх
-                </Button>
               </div>
+              <hr className="h-px my-1 border-0 border-t-dashed bg-gray-300" />
+              <span className="flex justify-between mb-1 font-[400] lg:text-[1.1rem] text-sm text-[#212529af]">
+                Нийлбэр үнэ{" "}
+                <span className="font-[500] lg:text-[1.1rem] text-sm text-[#212529]">
+                  {totalPrice()}
+                </span>
+              </span>
+              <Button
+                styles={(theme) => ({
+                  root: {
+                    backgroundColor: "#f9bc60",
+                    border: 0,
+                    height: 42,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                  },
+
+                  leftIcon: {
+                    marginRight: 15,
+                  },
+                })}
+                sx={(theme) => ({
+                  "@media (max-width: 40em)": {
+                    fontSize: theme.fontSizes.xs,
+                  },
+                })}
+                color="yellow"
+                variant="filled"
+                radius="md"
+                size="md"
+                uppercase
+                onClick={() => makeOrder()}
+              >
+                Захиалга хийх
+              </Button>
             </div>
           </div>
-          {/* <div className="mt-20">
+        </div>
+        {/* <div className="mt-20">
             <div>
               <span>Санал Болгох Бүтээгдэхүүн</span>
             </div>
           </div> */}
-        </div>
-      </GlobalLayout>
-    </>
+      </div>
+    </GlobalLayout>
   );
 };
 

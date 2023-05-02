@@ -6,7 +6,7 @@ function AllCategory({ type = "default", categories, isLoading }) {
   const perChunk = 10;
   return type === "drawer" ? (
     <div className="h-full">
-      <ul role="list" className="relative flex flex-col gap-2 h-full mt-6">
+      <ul role="list" className="relative flex flex-col gap-2 h-full mt-6 ">
         <Accordion variant="filled">
           {isLoading &&
             new Array(6)
@@ -19,11 +19,11 @@ function AllCategory({ type = "default", categories, isLoading }) {
                 <Accordion.Control>
                   <li
                     key={parent.name + parent.id}
-                    className="group/parent  py-2 flex justify-between items-center "
+                    className="group/parent  py-2 flex justify-between items-center  "
                   >
                     <Link
                       href={`/category/parent/${parent.id}`}
-                      className="text-sm group-hover/parent:underline"
+                      className="text-2xl group-hover/parent:underline "
                     >
                       {" "}
                       {parent.name.charAt(0).toUpperCase() +
@@ -35,7 +35,7 @@ function AllCategory({ type = "default", categories, isLoading }) {
                   <div className="z-50 bg-white rounded-sm  cursor-default">
                     <ul
                       role="listitem"
-                      className=" gap-2  flex flex-col px-3 py-2 rounded-sm"
+                      className=" gap-2 flex flex-col px-3 py-2 rounded-sm"
                     >
                       {parent.child_categories.map((child, index) => (
                         <div key={`chunk-${index}`}>
@@ -101,7 +101,7 @@ function AllCategory({ type = "default", categories, isLoading }) {
                         {chunk.map((child) => (
                           <li
                             key={child.name + child.id}
-                            className="group/item w-60 hover:bg-gray-100 px-4 py-2 rounded-md cursor-pointer"
+                            className="group/item w-60 hover:bg-gray-100 px-4 py-2 flex justify-between items-center rounded-md cursor-pointer"
                           >
                             <Link
                               href={`/category/child/${child.id} `}

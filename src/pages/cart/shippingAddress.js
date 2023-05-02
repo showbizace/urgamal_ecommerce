@@ -8,7 +8,7 @@ import {
   Select,
 } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
-import { IconCirclePlus } from "@tabler/icons-react";
+import { IconCirclePlus, IconTruckOff } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { getCookie } from "cookies-next";
@@ -24,6 +24,8 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
   const [editingProdData, setEditingProdData] = useState();
   const [cookie, setCookie] = useState();
   const { auth } = useContext(UserConfigContext);
+  const [isAddAddress, setIsAddAddress] = useState(false)
+
   useEffect(() => {
     const cookie = getCookie("token");
     setCookie(cookie);
@@ -35,7 +37,16 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
     setValue(shippingData[1]);
   }, []);
 
+  useEffect(() => {
+    getShippingData(cookie);
+  }, [isAddAddress])
+
+  const handleClick = () => {
+    setIsAddAddress(!isAddAddress)
+  }
+
   const getShippingData = async (cookie = cookie) => {
+    console.log("called")
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${cookie}`);
 
@@ -47,8 +58,8 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
       .then((req) => req.json())
       .then((res) => {
         if (res.success === true) {
-          setLoading(false);
           setShippingData(res.data);
+          setLoading(false);
         }
       });
   };
@@ -102,109 +113,112 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
   };
 
   return (
-    <>
-      <div className="bg-white rounded-lg lg:px-10 lg:py-8 mt-2 px-3 py-3">
-        {!loading ? (
-          <>
-            <div className="flex flex-row justify-between">
-              <span className="font-[500] lg:text-[1.3rem] text-sm text-[#212529]">
-                Хаягийн Мэдээлэл
-              </span>
-              <Button
-                leftIcon={<IconCirclePlus size={20} />}
-                variant="subtle"
-                compact
-                onClick={(e) => {
-                  e.preventDefault();
-                  openProductEditingModal({}, "creation");
-                }}
+    <div className="bg-white rounded-lg lg:px-10 lg:py-8 mt-2 px-3 py-3 overflow-auto max-h-80">
+      {!loading ? (
+        <>
+          <div className="flex flex-row justify-between">
+            <span className="font-[500] lg:text-[1.3rem] text-sm text-[#212529]">
+              Хаягийн Мэдээлэл
+            </span>
+            <Button
+              leftIcon={<IconCirclePlus size={20} />}
+              variant="subtle"
+              compact
+              onClick={(e) => {
+                e.preventDefault();
+                openProductEditingModal({}, "creation");
+              }}
+            >
+              Шинэ хаяг нэмэх
+            </Button>
+          </div>
+          <div className="flex flex-col gap-6 mt-6 w-full  overflow-auto">
+            <div className="radio-button lg:px-5 gap-6 w-full px-2">
+              <Card.Section
+                sx={{ display: "flex", flexDirection: "column", gap: "15px" }}
               >
-                Шинэ хаяг нэмэх
-              </Button>
-            </div>
-            <div className="flex flex-col gap-6 mt-6 w-full  overflow-auto">
-              <div className="radio-button lg:px-5 gap-6 w-full px-2">
-                <Card.Section
-                  sx={{ display: "flex", flexDirection: "column", gap: "15px" }}
-                >
-                  {shippingData?.map((item, idx) => (
-                    <div key={idx}>
-                      <Chip.Group
-                        multiple={false}
-                        value={value}
-                        onChange={() => setValue(item.id)}
+
+                {shippingData.length === 0 && <div className="flex flex-col w-full items-center gap-4 mt-6">
+                  <IconTruckOff size='2rem' stroke={1.5} />
+                  <span className="text-grey font-medium"> Хаягийн мэдээлэл оруулаагүй байна</span></div>}
+                {shippingData?.map((item, idx) => (
+                  <div key={idx}>
+                    <Chip.Group
+                      multiple={false}
+                      value={value}
+                      onChange={() => setValue(item.id)}
+                    >
+                      <Card
+                        shadow="sm"
+                        sx={{ width: "100%", backgroundColor: "#5475ab0d" }}
+                        className="cursor-pointer"
+                        component="label"
+                        onClick={() => {
+                          setSelectedShippingData(item);
+                          setSelect(true);
+                        }}
                       >
-                        <Card
-                          shadow="sm"
-                          sx={{ width: "100%", backgroundColor: "#5475ab0d" }}
-                          className="cursor-pointer"
-                          component="label"
-                          onClick={() => {
-                            setSelectedShippingData(item);
-                            setSelect(true);
-                          }}
-                        >
-                          <div className="flex flex-row lg:gap-6 items-center gap-3">
-                            <Chip
-                              value={item.id}
-                              defaultChecked={value}
-                              size="sm"
-                            />
-                            <div>
-                              <Text
-                                fz="md"
-                                sx={(theme) => ({
-                                  "@media (max-width: 40em)": {
-                                    fontSize: theme.fontSizes.sm,
-                                  },
-                                })}
-                              >
-                                {item.city}-{item.district}-{item.committee}-
-                                {item.street}-{item.apartment}-{item.number}
-                              </Text>
+                        <div className="flex flex-row lg:gap-6 items-center gap-3">
+                          <Chip
+                            value={item.id}
+                            defaultChecked={value}
+                            size="sm"
+                          />
+                          <div>
+                            <Text
+                              fz="md"
+                              sx={(theme) => ({
+                                "@media (max-width: 40em)": {
+                                  fontSize: theme.fontSizes.sm,
+                                },
+                              })}
+                            >
+                              {item.city}-{item.district}-{item.committee}-
+                              {item.street}-{item.apartment}-{item.number}
+                            </Text>
+                            <Text
+                              fz="lg"
+                              className="flex gap-1 mt-2"
+                              sx={(theme) => ({
+                                "@media (max-width: 40em)": {
+                                  fontSize: theme.fontSizes.sm,
+                                },
+                              })}
+                            >
+                              Утас:
                               <Text
                                 fz="lg"
-                                className="flex gap-1 mt-2"
+                                fw={500}
                                 sx={(theme) => ({
                                   "@media (max-width: 40em)": {
                                     fontSize: theme.fontSizes.sm,
                                   },
                                 })}
                               >
-                                Утас:
-                                <Text
-                                  fz="lg"
-                                  fw={500}
-                                  sx={(theme) => ({
-                                    "@media (max-width: 40em)": {
-                                      fontSize: theme.fontSizes.sm,
-                                    },
-                                  })}
-                                >
-                                  {item.phone}
-                                </Text>
+                                {item.phone}
                               </Text>
-                            </div>
+                            </Text>
                           </div>
-                        </Card>
-                      </Chip.Group>
-                    </div>
-                  ))}
-                </Card.Section>
-              </div>
+                        </div>
+                      </Card>
+                    </Chip.Group>
+                  </div>
+                ))}
+              </Card.Section>
             </div>
-          </>
-        ) : (
-          <Skeleton sx={{ height: "100%" }} visible={loading} />
-        )}
-        <ProductModal
-          initialData={editingProdData}
-          isOpen={opened}
-          close={close}
-          onSubmit={SubmitCreateShippingData}
-        />
-      </div>
-    </>
+          </div>
+        </>
+      ) : (
+        <Skeleton sx={{ height: "100%" }} visible={loading} />
+      )}
+      <ProductModal
+        initialData={editingProdData}
+        isOpen={opened}
+        close={close}
+        onSubmit={SubmitCreateShippingData}
+        handleClick={handleClick}
+      />
+    </div>
   );
 };
 

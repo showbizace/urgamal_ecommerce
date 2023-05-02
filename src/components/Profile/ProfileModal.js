@@ -13,7 +13,7 @@ import {
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 
-function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
+function ProductModal({ initialData, isOpen, close, onSubmit, loading, handleClick }) {
   const form = useForm({
     initialValues: {
       name: initialData?.name,
@@ -69,6 +69,7 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading }) {
         onSubmit={form.onSubmit(async (values, e) => {
           const a = await onSubmit(values);
           form.setValues(initialData);
+          handleClick();
           close();
         })}
       >

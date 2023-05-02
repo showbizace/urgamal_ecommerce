@@ -23,6 +23,7 @@ import BottomFooter from "@/components/Footer";
 import Category from "@/components/category";
 import axios from "axios";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
+import AllCategory from "@/components/AllCategory/AllCategory";
 export async function getServerSideProps({ params }) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/product/single?productid=${params.id}`
@@ -106,8 +107,11 @@ const ProductDetail = ({ product }) => {
     <GlobalLayout title={product?.name}>
       <div className="flex flex-col w-full min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 lg:py-12  items-start py-4 px-4 ">
         <div className="flex w-full lg:gap-20 justify-start ">
-          <div className="flex lg:gap-14 gap-4  justify-center xl:flex-row lg:flex-row md:flex-row  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
-            <div className="relative w-full h-[50vh] md:w-[33vw] md:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
+          <div className="hidden lg:block">
+            <Category parent={parent} child={child} padding={20} />
+          </div>
+          <div className="flex lg:gap-14 gap-4  justify-center xl:flex-row lg:flex-row md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
+            <div className="relative h-[50vh] lg:w-[33vw] lg:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
               {product?.product_image !== null ? (
                 <Image
                   src={`${product.product_image.images[0]}`}
@@ -184,21 +188,23 @@ const ProductDetail = ({ product }) => {
                 </div>
                 <div className="flex gap-2 font-semibold text-base flex-row ">
                   <span className="text-greenish-grey text-base ">Төрөл:</span>
-                  {product.main_cat_id && (
-                    <span className="text-base">
-                      {product.main_cat_id?.[0].name},{" "}
-                    </span>
-                  )}
-                  {product.parent_cat_id && (
-                    <span className="text-base">
-                      {product.parent_cat_id?.[0].name},{" "}
-                    </span>
-                  )}
-                  {product.child_cat_id && (
-                    <span className="text-base	">
-                      {product.child_cat_id?.[0].name}
-                    </span>
-                  )}
+                  <div className="flex flex-row gap-3 lg:flex-col">
+                    {product.main_cat_id && (
+                      <span className="text-base">
+                        {product.main_cat_id?.[0].name},{" "}
+                      </span>
+                    )}
+                    {product.parent_cat_id && (
+                      <span className="text-base">
+                        {product.parent_cat_id?.[0].name},{" "}
+                      </span>
+                    )}
+                    {product.child_cat_id && (
+                      <span className="text-base	">
+                        {product.child_cat_id?.[0].name}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 {product.instruction ? (
                   <div className="flex flex-col gap-4">

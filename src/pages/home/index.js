@@ -91,8 +91,7 @@ export default function Home({ data }) {
     error,
   } = useSWRInfinite(
     (index) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${
-        index + 1
+      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index + 1
       }&limit=${PAGE_SIZE}`,
     fetcher,
     { revalidateFirstPage: false }
@@ -119,7 +118,7 @@ export default function Home({ data }) {
   const infiniteScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 350 >=
-        document.documentElement.offsetHeight &&
+      document.documentElement.offsetHeight &&
       !isEmpty &&
       !isReachingEnd
     )
@@ -193,7 +192,7 @@ export default function Home({ data }) {
             {/* <FeatureProductList /> */}
             {/* <NewProduct /> */}
             <div className="hidden lg:flex flex-col lg:flex-row bg-white mt-2 rounded-sm">
-              <div className="py-3 ">
+              <div className="py-3  text-xxl">
                 {categoriesLoading && <div></div>}
                 {categoriesError && <div></div>}
                 {configId && categories && (
