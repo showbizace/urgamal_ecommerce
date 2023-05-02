@@ -147,9 +147,9 @@ const CategoryPage = ({ initialData }) => {
     var content = document.getElementById("content");
     var sticky = navbar.offsetTop;
     if (window.pageYOffset >= sticky) {
-      navbar.classList.add("fixed", "top-2");
+      navbar.classList.add("fixed", "top-16");
     } else {
-      navbar.classList.remove("fixed", "top-2");
+      navbar.classList.remove("fixed", "top-16");
     }
   }
   useEffect(() => {
