@@ -19,7 +19,7 @@ const Banner = () => {
           loop
           align="start"
           slidesToScroll={1}
-          draggable={false}
+          draggable={true}
           styles={{
             control: {
               "&[data-inactive]": {
@@ -32,22 +32,21 @@ const Banner = () => {
           <Carousel.Slide>
             <div className="relative w-full h-full">
               <Image
+                src="/banner.png"
+                fill
+                className="rounded object-fill md:object-contain top-0 max-h-full"
+                draggable={false}
+              />
+            </div>
+          </Carousel.Slide>
+          <Carousel.Slide>
+            <div className="relative w-full h-full">
+              <Image
                 src="/banner2.png"
                 fill
                 className="rounded object-fill md:object-contain top-0 max-h-full"
                 draggable={false}
               />
-              {/* <p
-              className="absolute text-white 
-			  
-		    md:top-[8rem] top-[50%] 
-		    md:left-[4rem] left-[2rem] 
-		    md:text-[2rem] text-xl
-			md:w-[40rem] w-[20rem] font-bold text-center
-			"
-            >
-              Тэжээл, нөхөн сэргээлт, зүлгэнд зориулсан үрийн худалдаа
-            </p> */}
             </div>
           </Carousel.Slide>
         </Carousel>
