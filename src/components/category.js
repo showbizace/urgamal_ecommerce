@@ -30,7 +30,7 @@ const Category = ({
 				}}>
 				<div className="h-full">
 					<div className="flex flex-row justify-between w-full">
-						<p className="text-lg font-medium">Ангиллууд</p>
+						<p className="text-lg font-medium">Бүх ангилал</p>
 					</div>
 					<Grid
 						style={{ width: "100%", height: "100%", marginTop: 20, overflowY: "auto" }}
@@ -64,15 +64,16 @@ const Category = ({
 												tabIndex={2}
 												arrowIcon={[<IconChevronRight color="#fcbc60" />]}
 												title={[
-													<a
-														href={`/category/parent/${el.id}`}
-														className="hover:text-[#fd7e14]"
-														onClick={(e) => {
-															e.preventDefault();
-															router.push(`/category/parent/${el.id}`);
-														}}>
+													<span
+														// href={`/category/parent/${el.id}`}
+														className="hover:underline font-semibold"
+													// onClick={(e) => {
+													// 	e.preventDefault();
+													// 	router.push(`/category/parent/${el.id}`);
+													// }}
+													>
 														{el.name}
-													</a>,
+													</span>,
 												]}
 												expanded={() => {
 													if (selectedCategoryType && selectedCategoryType === "parent") {
