@@ -328,6 +328,7 @@ const CartItems = (props) => {
             `${process.env.NEXT_PUBLIC_API_URL}/order`,
             requestOption
           );
+
           if (res.status === 200) {
             const data = await res.json();
             if (data.success === true) {
@@ -354,6 +355,8 @@ const CartItems = (props) => {
                     },
                     centered: true,
                     size: "lg",
+                    closeOnClickOutside: false,
+                    withCloseButton: false,
                   });
                 })
                 .catch((err) => {
@@ -435,6 +438,8 @@ const CartItems = (props) => {
                       },
                       centered: true,
                       size: "lg",
+                      closeOnClickOutside: false,
+                      withCloseButton: false,
                     });
                   })
                   .catch((err) => {
@@ -613,6 +618,7 @@ const CartItems = (props) => {
     cartItem !== undefined &&
     cartItem.map((item, idx) => {
       if (item !== undefined) {
+        console.log(item);
         return (
           <tr key={idx}>
             <td>
@@ -633,8 +639,8 @@ const CartItems = (props) => {
                   magnifierRadius={50}
                 /> */}
                 <Image
-                  loader={() => item?.picture_url}
-                  src={item?.picture_url}
+                  loader={() => item?.pictureurl}
+                  src={item?.pictureurl}
                   width={80}
                   height={80}
                   alt={item.name}
