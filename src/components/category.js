@@ -18,7 +18,7 @@ const Category = ({
     <div
       id="category-menu"
       className={
-        "rounded-md bg-white overflow-y-auto max-h-screen xl:block lg:block md:block sm:hidden xs2:hidden xs:hidden w-full max-w-[300px] z-10"
+        "rounded-md bg-white overflow-y-auto max-h-screen xl:block lg:block md:block sm:hidden xs2:hidden xs:hidden min-w-[250px] w-[250px] max-w-[250px] z-10"
       }
     >
       <Grid.Container
@@ -32,7 +32,7 @@ const Category = ({
       >
         <div className="h-full">
           <div className="flex flex-row justify-between w-full">
-            <p className="text-lg font-medium">Ангиллууд</p>
+            <p className="text-lg font-medium">Бүх ангилал</p>
           </div>
           <Grid
             style={{
@@ -74,16 +74,9 @@ const Category = ({
                         tabIndex={2}
                         arrowIcon={[<IconChevronRight color="#fcbc60" />]}
                         title={[
-                          <a
-                            href={`/category/parent/${el.id}`}
-                            className="hover:text-[#fd7e14]"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              router.push(`/category/parent/${el.id}`);
-                            }}
-                          >
+                          <p className="hover:text-[#fd7e14] font-semibold">
                             {el.name}
-                          </a>,
+                          </p>,
                         ]}
                         expanded={() => {
                           if (
@@ -135,7 +128,6 @@ const Category = ({
       </Grid.Container>
     </div>
   );
-
 };
 
 export default Category;

@@ -7,7 +7,7 @@ function AllCategory({ type = "default", categories, isLoading }) {
   return type === "drawer" ? (
     <div className="h-full">
       <ul role="list" className="relative flex flex-col gap-2 h-full mt-6 ">
-        <Accordion variant="filled" >
+        <Accordion variant="filled">
           {isLoading &&
             new Array(6)
               .fill(null)
@@ -15,7 +15,7 @@ function AllCategory({ type = "default", categories, isLoading }) {
 
           {categories &&
             categories.map((parent) => (
-              <Accordion.Item value={parent.name + parent.id} >
+              <Accordion.Item value={parent.name + parent.id}>
                 <Accordion.Control>
                   <li
                     key={parent.name + parent.id}
@@ -35,7 +35,7 @@ function AllCategory({ type = "default", categories, isLoading }) {
                   <div className="z-50 bg-white rounded-sm  cursor-default">
                     <ul
                       role="listitem"
-                      className=" gap-2  flex flex-col px-3 py-2 rounded-sm"
+                      className=" gap-2 flex flex-col px-3 py-2 rounded-sm"
                     >
                       {parent.child_categories.map((child, index) => (
                         <div key={`chunk-${index}`}>
@@ -101,7 +101,7 @@ function AllCategory({ type = "default", categories, isLoading }) {
                         {chunk.map((child) => (
                           <li
                             key={child.name + child.id}
-                            className="group/item w-60 hover:bg-gray-100 px-4 py-2 rounded-md cursor-pointer"
+                            className="group/item w-60 hover:bg-gray-100 px-4 py-2 flex justify-between items-center rounded-md cursor-pointer"
                           >
                             <Link
                               href={`/category/child/${child.id} `}

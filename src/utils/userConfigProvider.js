@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { UserConfigContext } from "./userConfigContext";
-import { getCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
+import jwtDecode from "jwt-decode";
 
 const userToken = getCookie("token");
 const userConfigs = getCookie("preference_config");
@@ -34,7 +35,14 @@ export const UserConfigProvider = ({ children }) => {
       setConfigId(userConfigs);
     }
     if (userToken) {
-      setAuth(true);
+      if (jwtDecode(userToken).exp < Date.now() / 1000) {
+        setAuth(false)
+        deleteCookie('token')
+        deleteCookie('preference_config')
+        deleteCookie("number")
+      } else {
+        setAuth(true)
+      }
     }
   }, []);
 

@@ -750,30 +750,31 @@ const CartItems = (props) => {
         </Stack>
       </Modal>
 
-      <div className="bg-grey-back w-full lg:px-8 lg:py-4 px-4 py-4  h-screen">
+      <div className="bg-grey-back w-full lg:px-8 lg:py-4 px-4 py-4  h-screen relative">
+        <div className="absolute top-9">
+          <Button
+            variant="subtle"
+            color=""
+            leftIcon={<IconArrowLeft />}
+            px={0}
+            size="lg"
+            styles={(theme) => ({
+              root: {
+                color: theme.fn.darken("#F9BC60", 0.04),
+                "&:hover": theme.fn.hover({
+                  color: theme.fn.darken("#F9BC60", 0.06),
+                  background: "none",
+                  textDecoration: "underline",
+                }),
+              },
+            })}
+            onClick={handleBack}
+          >
+            Буцах
+          </Button>
+        </div>
         <div className="flex md:flex-row flex-col lg:gap-10 lg:mt-8 gap-4 lg:px-32">
           <div className="flex relative flex-col lg:w-[70%] w-[100%] lg:gap-8">
-            <div className="absolute -top-14">
-              <Button
-                variant="subtle"
-                color=""
-                leftIcon={<IconArrowLeft />}
-                px={0}
-                size="lg"
-                styles={(theme) => ({
-                  root: {
-                    color: theme.fn.darken("#F9BC60", 0.04),
-                    "&:hover": theme.fn.hover({
-                      color: theme.fn.darken("#F9BC60", 0.06),
-                      background: "none",
-                    }),
-                  },
-                })}
-                onClick={handleBack}
-              >
-                Буцах
-              </Button>
-            </div>
             <div>
               <div className=" bg-white rounded-lg lg:px-10 lg:py-6 px-3 py-3">
                 <div className="flex flex-row justify-between">

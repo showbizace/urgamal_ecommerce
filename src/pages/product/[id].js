@@ -111,7 +111,7 @@ const ProductDetail = ({ product }) => {
             <Category parent={parent} child={child} padding={20} />
           </div>
           <div className="flex lg:gap-14 gap-4  justify-center xl:flex-row lg:flex-row md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
-            <div className="relative w-full h-[50vh] lg:w-[33vw] lg:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
+            <div className="relative h-[50vh] lg:w-[33vw] lg:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
               {product?.product_image !== null ? (
                 <Image
                   src={`${product.product_image.images[0]}`}

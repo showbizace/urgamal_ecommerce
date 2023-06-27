@@ -96,7 +96,6 @@ const Order = ({ data }) => {
       </div>
       <Collapse in={opened}>
         <CollapseItem orderItems={data.order_items} total={data.total} />
-        {console.log(data, "data")}
         <div className="w-full py-2 flex flex-row justify-end items-center pr-9">
           <p className="text-grey">Нийт үнийн дүн :</p>
           <p className="ml-1 font-semibold">{data.total}₮</p>
