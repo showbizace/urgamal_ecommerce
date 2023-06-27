@@ -328,6 +328,7 @@ const CartItems = (props) => {
             `${process.env.NEXT_PUBLIC_API_URL}/order`,
             requestOption
           );
+
           if (res.status === 200) {
             const data = await res.json();
             if (data.success === true) {
@@ -354,6 +355,8 @@ const CartItems = (props) => {
                     },
                     centered: true,
                     size: "lg",
+                    closeOnClickOutside: false,
+                    withCloseButton: false,
                   });
                 })
                 .catch((err) => {
@@ -435,6 +438,8 @@ const CartItems = (props) => {
                       },
                       centered: true,
                       size: "lg",
+                      closeOnClickOutside: false,
+                      withCloseButton: false,
                     });
                   })
                   .catch((err) => {
@@ -539,7 +544,7 @@ const CartItems = (props) => {
       if (initialStock >= count) {
         let clone = { ...product };
         clone["remainStock"] = initialStock - count;
-        console.log(clone["remainStock"], "remain")
+        console.log(clone["remainStock"], "remain");
         clone["purchaseCount"] = count;
         clone["totalPrice"] = count * clone["price"];
         let temp = [...cartItem];
@@ -613,6 +618,7 @@ const CartItems = (props) => {
     cartItem !== undefined &&
     cartItem.map((item, idx) => {
       if (item !== undefined) {
+        console.log(item);
         return (
           <tr key={idx}>
             <td>
@@ -633,8 +639,8 @@ const CartItems = (props) => {
                   magnifierRadius={50}
                 /> */}
                 <Image
-                  loader={() => item?.picture_url}
-                  src={item?.picture_url}
+                  loader={() => item?.pictureurl}
+                  src={item?.pictureurl}
                   width={80}
                   height={80}
                   alt={item.name}
@@ -650,9 +656,13 @@ const CartItems = (props) => {
                         ? item.remainStock
                         : item.instock - item.quantity} */}
                       {item.instock > 10 ? (
-                        <Badge color="teal" size={"xs"}>Хангалттай</Badge>
+                        <Badge color="teal" size={"xs"}>
+                          Хангалттай
+                        </Badge>
                       ) : item.instock == 0 ? (
-                        <Badge color="yellow" size={"xs"}>Үлдэгдэлгүй</Badge>
+                        <Badge color="yellow" size={"xs"}>
+                          Үлдэгдэлгүй
+                        </Badge>
                       ) : (
                         <span className="text-greenish-grey text-xs  ">
                           {item.instock} {item.unit}
@@ -739,7 +749,6 @@ const CartItems = (props) => {
           <Loader size="lg" color="yellow" />
         </Stack>
       </Modal>
-
 
       <div className="bg-grey-back w-full lg:px-8 lg:py-4 px-4 py-4  h-screen">
         <div className="flex md:flex-row flex-col lg:gap-10 lg:mt-8 gap-4 lg:px-32">
