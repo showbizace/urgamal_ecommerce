@@ -48,7 +48,7 @@ export default function Home({ data }) {
 
   const [positionSticky, setPositionSticky] = useState(false);
   const [products, setProducts] = useState([]);
-
+  const [address, setAddress] = useState();
   const [main, setMain] = useState([]);
   const [parent, setParent] = useState([]);
   const [child, setChild] = useState([]);
@@ -137,10 +137,20 @@ export default function Home({ data }) {
     window.dispatchEvent(new Event("storage"));
     setProducts(data.data);
     getAllCategory();
+    getAddress();
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
+
+  const getAddress = async () => {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/config/layout`,
+        { headers: { "Content-Type": "application/json" }, })
+      .then((response) => {
+        setAddress(response?.data?.data)
+      })
+  }
 
   const getAllCategory = async () => {
     axios
@@ -172,7 +182,7 @@ export default function Home({ data }) {
   };
 
   return (
-    <GlobalLayout>
+    <GlobalLayout address={address}>
       {!userConfigs.configId && (
         <Preference_modal
           close={close}

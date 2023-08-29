@@ -14,6 +14,7 @@ export default function GlobalLayout({
   children,
   footer = true,
   title = "Таримал Ургамал ХХК",
+  address,
 }) {
   const [type, setType] = useState();
   const userContext = useContext(UserConfigContext);
@@ -67,7 +68,7 @@ export default function GlobalLayout({
         <main className="flex flex-col justify-between bg-main">
           <Navbar getValue={getValue} />
           {children}
-          {footer && <BottomFooter />}
+          {footer && <BottomFooter props={address} />}
           <BottomNavBar />
         </main>
       </div>

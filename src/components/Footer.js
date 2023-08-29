@@ -5,8 +5,17 @@ import {
   IconBrandFacebook,
   IconPhoneCall,
 } from "@tabler/icons-react";
-const BottomFooter = () => {
+import sanitizeHtml from 'sanitize-html';
+
+const BottomFooter = ({ props }) => {
+
   const router = useRouter();
+
+  const htmlFrom = (htmlString) => {
+    const cleanHtmlString = sanitizeHtml(htmlString);
+    // const html = JSON.parse(cleanHtmlString, {});
+    return cleanHtmlString;
+  };
 
   return (
     <>
@@ -67,8 +76,7 @@ const BottomFooter = () => {
                 height={20}
               />
               <p className="text-sm ml-2 max-xs:text-sm-5 ">
-                Хаяг: Улаанбаатар хот, Баянзүрх дүүрэг, 12-р хороолол, 1-р хороо
-                , 20/2 байр, Таримал ургамлын үрийн дэлгүүр
+                {htmlFrom(props?.location)}
               </p>
             </div>
             <div className="flex flex-row items-center mt-2">
@@ -78,7 +86,7 @@ const BottomFooter = () => {
                 width={18}
                 height={18}
               />
-              <p className="text-sm ml-2 max-xs:text-sm-5">Утас: 72720808</p>
+              <p className="text-sm ml-2 max-xs:text-sm-5">{htmlFrom(props?.contact)}</p>
             </div>
             <div className="flex flex-row items-start mt-1">
               <Image
