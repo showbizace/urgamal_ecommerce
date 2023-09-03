@@ -137,20 +137,12 @@ export default function Home({ data }) {
     window.dispatchEvent(new Event("storage"));
     setProducts(data.data);
     getAllCategory();
-    getAddress();
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
-  const getAddress = async () => {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/config/layout`,
-        { headers: { "Content-Type": "application/json" }, })
-      .then((response) => {
-        setAddress(response?.data?.data)
-      })
-  }
+
 
   const getAllCategory = async () => {
     axios
@@ -182,7 +174,7 @@ export default function Home({ data }) {
   };
 
   return (
-    <GlobalLayout address={address}>
+    <GlobalLayout>
       {!userConfigs.configId && (
         <Preference_modal
           close={close}
@@ -224,32 +216,18 @@ export default function Home({ data }) {
               categories &&
               categories
                 ?.find((main) => main.id.toString() == userConfigs.configId)
-                .parent_categories.map((el) => (
-                  <ProductListWithCategory
-                    key={`list-with-category-${el.id}`}
-                    categoryId={el.id}
-                    categoryName={el.name}
-                    categoryIcon={
-                      el.id.toString() === "1" || el.id.toString() === "4" ? (
-                        <Image
-                          src={"/icons/2.svg"}
-                          fill
-                          draggable={false}
-                          style={{ userSelect: "none" }}
-                        />
-                      ) : (
-                        <Image
-                          src={"/icons/5.svg"}
-                          fill
-                          draggable={false}
-                          style={{ userSelect: "none" }}
-                        />
-                      )
-                    }
-                    cols={5}
-                    className="mt-12"
-                  />
-                ))}
+                .parent_categories.map((el) => {
+                  return (
+                    <ProductListWithCategory
+                      key={`list-with-category-${el.id}`}
+                      categoryId={el?.id}
+                      categoryName={el?.name}
+                      categoryIcon={el?.icon}
+                      cols={5}
+                      className="mt-12"
+                    />
+                  )
+                })}
           </div>
         </div>
       </div>

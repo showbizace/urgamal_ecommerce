@@ -6,8 +6,9 @@ import {
   IconPhoneCall,
 } from "@tabler/icons-react";
 import sanitizeHtml from 'sanitize-html';
+import Link from 'next/link';
 
-const BottomFooter = ({ props }) => {
+const BottomFooter = ({ address, links }) => {
 
   const router = useRouter();
 
@@ -17,6 +18,13 @@ const BottomFooter = ({ props }) => {
     return cleanHtmlString;
   };
 
+  const icon = (item) => {
+    if (item?.title !== "email") {
+      return (<Link href={item?.url}>
+        <Image className="hover:text-white max-xs:w-3 max-xs:h-3" width={25} height={25} src={item?.img} /></Link>)
+    }
+  }
+
   return (
     <>
       {/* desktop */}
@@ -24,7 +32,7 @@ const BottomFooter = ({ props }) => {
         <div className="flex flex-row px-16 border-t-1 border-black py-8 bg-green2  justify-between w-full max-xs:px-1 max-xs:py-4 max-xs:gap-2">
           <div className="flex flex-col items-center ">
             <Image
-              src="/logo.png"
+              src={address?.logo}
               width={62}
               height={116}
               className="mx-4 max-xs:w-4 max-xs:h-4"
@@ -33,21 +41,19 @@ const BottomFooter = ({ props }) => {
               “Таримал ургамал” ХХК
             </p>
             <div className="flex flex-row mt-4 gap-8 max-xs:gap-2">
-              <IconPhoneCall
-                width={25}
-                height={25}
-                className="max-xs:w-3 max-xs:h-3 "
-              />
-              <IconBrandInstagram
-                width={25}
-                height={25}
-                className="hover:text-white max-xs:w-3 max-xs:h-3"
-              />
-              <IconBrandFacebook
+              {links?.map((item) => {
+                return icon(item);
+              })}
+              {/* <IconBrandInstagram
                 width={25}
                 height={25}
                 className="hover:text-white max-xs:w-3 max-xs:h-3"
-              />
+              /> */}
+              {/* <IconBrandFacebook
+                width={25}
+                height={25}
+                className="hover:text-white max-xs:w-3 max-xs:h-3"
+              /> */}
             </div>
           </div>
           <div className="flex flex-col">
@@ -75,9 +81,9 @@ const BottomFooter = ({ props }) => {
                 width={20}
                 height={20}
               />
-              <p className="text-sm ml-2 max-xs:text-sm-5 ">
-                {htmlFrom(props?.location)}
-              </p>
+              <div className="text-sm ml-2 max-xs:text-sm-5" dangerouslySetInnerHTML={{ __html: htmlFrom(address?.location) }}>
+
+              </div>
             </div>
             <div className="flex flex-row items-center mt-2">
               <Image
@@ -86,7 +92,8 @@ const BottomFooter = ({ props }) => {
                 width={18}
                 height={18}
               />
-              <p className="text-sm ml-2 max-xs:text-sm-5">{htmlFrom(props?.contact)}</p>
+
+              <div className="text-sm ml-2 max-xs:text-sm-5" dangerouslySetInnerHTML={{ __html: htmlFrom(address?.contact) }} />
             </div>
             <div className="flex flex-row items-start mt-1">
               <Image
@@ -95,17 +102,19 @@ const BottomFooter = ({ props }) => {
                 width={20}
                 height={20}
               />
-              <p className="text-sm ml-2 max-xs:text-sm-5">
-                И-мэйл хаяг: tarimalurgamal2016@gmail.com
-              </p>
+              {links?.map((item) => {
+                if (item?.title === "email") {
+                  return (<Link href={`mailto:${item?.url}`}><p className="text-sm ml-2 max-xs:text-sm-5">{item?.url}</p></Link>)
+                }
+              })}
             </div>
           </div>
         </div>
-      </div>
+      </div >
 
       {/* mobile */}
 
-      <div className="block md:hidden">
+      < div className="block md:hidden" >
         <footer className="bg-green2">
           <div className="mx-auto w-full max-w-screen-xl p-4 py-6">
             <div className="block">
@@ -245,9 +254,10 @@ const BottomFooter = ({ props }) => {
             </div>
           </div>
         </footer>
-      </div>
+      </div >
     </>
-  );
-};
+  )
+}
+
 
 export default BottomFooter;
