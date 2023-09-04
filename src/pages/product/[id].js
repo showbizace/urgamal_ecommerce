@@ -24,7 +24,6 @@ import Category from "@/components/category";
 import axios from "axios";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 import AllCategory from "@/components/AllCategory/AllCategory";
-import ReactImageMagnify from 'react-image-magnify';
 
 export async function getServerSideProps({ params }) {
   const res = await fetch(
