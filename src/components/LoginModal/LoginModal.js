@@ -47,8 +47,12 @@ export default function LoginModal({ context, id }) {
 			if (res.status === 200) {
 				setOtpRequested(true);
 				setSeconds(60);
+				showNotification({
+					message: "Таны утсанд 6 оронтой код амжилттай илгээлээ.!",
+					color: "green"
+				});
 			}
-		} catch {}
+		} catch { }
 		setLoading(false);
 	};
 	const handleLogin = async () => {

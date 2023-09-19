@@ -27,6 +27,7 @@
     "dayjs": "^1.11.7",
     "embla-carousel-react": "^7.0.9",
     "jquery": "^3.6.4",
+    "jwt-decode": "^3.1.2",
     "lodash.debounce": "^4.0.8",
     "next": "13.1.6",
     "postcss": "^8.4.23",
@@ -35,6 +36,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
     "react-responsive-carousel": "^3.2.23",
+    "sanitize-html": "^2.11.0",
     "swiper": "^9.0.5",
     "swr": "^2.1.0",
     "tailwindcss": "^3.3.1"

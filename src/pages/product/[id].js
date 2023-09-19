@@ -10,7 +10,7 @@ import {
   LoadingOverlay,
   Button,
   Badge,
-  Divider,
+  Grid,
   Loader,
   ThemeIcon,
   Text,
@@ -23,6 +23,8 @@ import BottomFooter from "@/components/Footer";
 import Category from "@/components/category";
 import axios from "axios";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
+import AllCategory from "@/components/AllCategory/AllCategory";
+
 export async function getServerSideProps({ params }) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/product/single?productid=${params.id}`
@@ -41,6 +43,7 @@ const ProductDetail = ({ product }) => {
   const [main, setMain] = useState();
   const [parent, setParent] = useState();
   const [child, setChild] = useState();
+  const [renderImage, setRenderImage] = useState('');
   const addToCartHandler = async () => {
     setLoading(true);
     dispatch({
@@ -71,6 +74,9 @@ const ProductDetail = ({ product }) => {
     setLoading(false);
   };
 
+  const clickImage = (item) => {
+    setRenderImage(item);
+  }
   const getAllCategory = async () => {
     axios
       .get(`${process.env.NEXT_PUBLIC_API_URL}/category/all?type=separate`, {
@@ -102,45 +108,140 @@ const ProductDetail = ({ product }) => {
   useEffect(() => {
     getAllCategory();
   }, []);
+
+  function ImageMagnifier({
+    src,
+    magnifierHeight = 200,
+    magnifieWidth = 200,
+    zoomLevel = 1.5
+  }) {
+    const [[x, y], setXY] = useState([0, 0]);
+    const [[imgWidth, imgHeight], setSize] = useState([0, 0]);
+    const [showMagnifier, setShowMagnifier] = useState(false);
+    return (
+      <div className="relative w-full h-full overflow-hidden">
+        <Image
+          src={src}
+          className="w-full h-full"
+          fill
+          onMouseEnter={(e) => {
+            // update image size and turn-on magnifier
+            const elem = e.currentTarget;
+            const { width, height } = elem.getBoundingClientRect();
+            setSize([width, height]);
+            setShowMagnifier(true);
+          }}
+          onMouseMove={(e) => {
+            // update cursor position
+            const elem = e.currentTarget;
+            const { top, left, width, height } = elem.getBoundingClientRect();
+            console.log(width)
+            // calculate cursor position on the image
+            const x = e.pageX - left - window.pageXOffset;
+            const y = e.pageY - top - window.pageYOffset;
+            setXY([x, y]);
+          }}
+          onMouseLeave={() => {
+            // close magnifier
+            setShowMagnifier(false);
+          }}
+          alt={"img"}
+        />
+        <div
+          style={{
+            display: showMagnifier ? "" : "none",
+            position: "absolute",
+
+            // prevent maginier blocks the mousemove event of img
+            pointerEvents: "none",
+            // set size of magnifier
+            height: `${magnifierHeight}px`,
+            width: `${magnifieWidth}px`,
+            // move element center to cursor pos
+            top: `${y - magnifierHeight / 2}px`,
+            left: `${x - magnifieWidth / 2}px`,
+            opacity: "1", // reduce opacity so you can verify position
+            border: "1px solid lightgray",
+            backgroundColor: "white",
+            backgroundImage: `url('${src}')`,
+            backgroundRepeat: "no-repeat",
+
+            //calculate zoomed image size
+            backgroundSize: `${imgWidth * zoomLevel}px ${imgHeight * zoomLevel
+              }px`,
+
+            //calculete position of zoomed image.
+            backgroundPositionX: `${-x * zoomLevel + magnifieWidth / 2}px`,
+            backgroundPositionY: `${-y * zoomLevel + magnifierHeight / 2}px`
+          }}
+        ></div>
+      </div>
+    );
+  }
+
   return (
     <GlobalLayout title={product?.name}>
       <div className="flex flex-col w-full min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 lg:py-12  items-start py-4 px-4 ">
         <div className="flex w-full lg:gap-20 justify-start ">
-          <div className="flex lg:gap-14 gap-4  justify-center xl:flex-row lg:flex-row md:flex-row  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
-            <div className="relative w-full h-[50vh] md:w-[33vw] md:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
-              {product?.product_image !== null ? (
-                <Image
-                  src={`${product.product_image.images[0]}`}
-                  // loader={() =>
-                  // 	product?.product_image !== null
-                  // 		? `${product?.product_image.images[0]}`
-                  // 		: "/bundle-1.svg"
-                  // }
-                  fill
-                  // sizes="(max-width: 768px) 20vw,
-                  // (max-width: 1200px) 20vw,
-                  // (max-width: 1200px) 20vw,
-                  // 20vw"
-                  className="object-contain rounded-md"
-                />
-              ) : (
-                <div className="h-full flex flex-col gap-2 justify-center items-center bg-gray-50 rounded-md">
-                  <ThemeIcon
-                    size="lg"
-                    variant="light"
-                    color="green"
+          <div className="hidden lg:block">
+            <Category parent={parent} child={child} padding={20} />
+          </div>
+          <div className="flex lg:gap-14 gap-4  justify-center xl:flex-row lg:flex-row md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
+            <div className="flex flex-col">
+              <div className="relative h-[50vh] lg:w-[33vw] lg:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
+                {product?.product_image !== null ? (
+                  <ImageMagnifier
+                    src={renderImage === "" ? `${product?.product_image?.images[0]}` : renderImage}
+                    width={400}
+                    fill
+                    className="object-contain rounded-md"
+                  />
+                ) : (
+                  <div className="h-full flex flex-col gap-2 justify-center items-center bg-gray-50 rounded-md">
+                    <ThemeIcon
+                      size="lg"
+                      variant="light"
+                      color="green"
                     // gradient={{ from: "teal", to: "lime", deg: 105 }}
-                  >
-                    <IconPhotoOff size="80%" stroke={0.5} />
-                  </ThemeIcon>
+                    >
+                      <IconPhotoOff size="80%" stroke={0.5} />
+                    </ThemeIcon>
 
-                  <Text size="sm" weight={300}>
-                    Зураггүй{" "}
-                  </Text>
-                </div>
-              )}
+                    <Text size="sm" weight={300}>
+                      Зураггүй{" "}
+                    </Text>
+                  </div>
+                )}
+
+              </div>
+              <div>
+                <Grid gutter={1}>
+                  {product?.product_image?.images?.map((item, index) => {
+                    return (
+                      <Grid.Col span={3}>
+                        <div className={renderImage === item ? "relative w-full h-32 rounded-md border-2 border-button-yellow" : "relative h-32 rounded-md hover:border-2 border-gray-300 w-full"} onClick={() => clickImage(item)}>
+                          <Image src={item} fill
+                            className="object-fill rounded-md p-1" />
+                        </div>
+                      </Grid.Col>
+
+                    )
+                  })}
+                </Grid>
+                {/* <div className="flex flex-row  h-36 mt-2 flex-wrap gap-3">
+                  {product?.product_image?.images?.map((item, index) => {
+                    return (
+                      <div className={renderImage === item ? "relative h-full rounded-md border-2 border-button-yellow" : "relative h-full rounded-md hover:border-2 border-gray-300"} onClick={() => clickImage(item)} style={{
+                        width: `${25}% - ${1}px`
+                      }}>
+                        <Image src={item} fill
+                          className="object-fill rounded-md p-1" />
+                      </div>
+                    )
+                  })}
+                </div> */}
+              </div>
             </div>
-
             <div className="flex flex-col justify-between lg:gap-6">
               <div className="flex flex-col gap-6">
                 <div className="lg:text-2xl text-lg font-semibold">
@@ -184,21 +285,23 @@ const ProductDetail = ({ product }) => {
                 </div>
                 <div className="flex gap-2 font-semibold text-base flex-row ">
                   <span className="text-greenish-grey text-base ">Төрөл:</span>
-                  {product.main_cat_id && (
-                    <span className="text-base">
-                      {product.main_cat_id?.[0].name},{" "}
-                    </span>
-                  )}
-                  {product.parent_cat_id && (
-                    <span className="text-base">
-                      {product.parent_cat_id?.[0].name},{" "}
-                    </span>
-                  )}
-                  {product.child_cat_id && (
-                    <span className="text-base	">
-                      {product.child_cat_id?.[0].name}
-                    </span>
-                  )}
+                  <div className="flex flex-row gap-3 lg:flex-col">
+                    {product.main_cat_id && (
+                      <span className="text-base">
+                        {product.main_cat_id?.[0].name},{" "}
+                      </span>
+                    )}
+                    {product.parent_cat_id && (
+                      <span className="text-base">
+                        {product.parent_cat_id?.[0].name},{" "}
+                      </span>
+                    )}
+                    {product.child_cat_id && (
+                      <span className="text-base	">
+                        {product.child_cat_id?.[0].name}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 {product.instruction ? (
                   <div className="flex flex-col gap-4">
@@ -263,10 +366,11 @@ const ProductDetail = ({ product }) => {
             categoryId={product.parent_cat_id?.[0].id}
             categoryName={"Санал болгож буй бүтээгдэхүүнүүд"}
             className="mt-12 "
+
           />
         </div>
-      </div>
-    </GlobalLayout>
+      </div >
+    </GlobalLayout >
   );
 };
 

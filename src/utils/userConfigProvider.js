@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { UserConfigContext } from "./userConfigContext";
-import { getCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
+import jwtDecode from "jwt-decode";
+import axios from "axios";
 
 const userToken = getCookie("token");
 const userConfigs = getCookie("preference_config");
@@ -11,7 +13,8 @@ export const UserConfigProvider = ({ children }) => {
   //state
   const [auth, setAuth] = useState(false);
   const [configId, setConfigId] = useState(null);
-
+  const [address, setAddress] = useState(null);
+  const [links, setLinks] = useState(null);
   // auth
   const login = () => setAuth(true);
   const logout = () => setAuth(false);
@@ -21,8 +24,26 @@ export const UserConfigProvider = ({ children }) => {
     setConfigId(val);
   };
 
+  const getAddress = async () => {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/config/layout`,
+        { headers: { "Content-Type": "application/json" }, })
+      .then((response) => {
+        setAddress(response?.data?.data)
+      })
+  }
+  const getLinks = async () => {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/config/links`,
+        { headers: { "Content-Type": "application/json" }, })
+      .then((response) => {
+        setLinks(response?.data?.data)
+      })
+  }
   //useEffect
   useEffect(() => {
+    getAddress();
+    getLinks();
     if (!userConfigs) {
       if (router.pathname === "/home") {
         setConfigId(null);
@@ -34,8 +55,16 @@ export const UserConfigProvider = ({ children }) => {
       setConfigId(userConfigs);
     }
     if (userToken) {
-      setAuth(true);
+      if (jwtDecode(userToken).exp < Date.now() / 1000) {
+        setAuth(false)
+        deleteCookie('token')
+        deleteCookie('preference_config')
+        deleteCookie("number")
+      } else {
+        setAuth(true)
+      }
     }
+
   }, []);
 
   return (
@@ -47,6 +76,8 @@ export const UserConfigProvider = ({ children }) => {
         logout,
         configId,
         preference_cookie,
+        address,
+        links
       }}
     >
       {children}

@@ -14,6 +14,7 @@ export default function GlobalLayout({
   children,
   footer = true,
   title = "Таримал Ургамал ХХК",
+  address,
 }) {
   const [type, setType] = useState();
   const userContext = useContext(UserConfigContext);
@@ -47,6 +48,7 @@ export default function GlobalLayout({
           href="https://fonts.gstatic.com"
           crossOrigin=""
         />
+        <link rel="icon" href={userContext?.address?.logo} />
         <link
           href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
           rel="stylesheet"
@@ -67,7 +69,7 @@ export default function GlobalLayout({
         <main className="flex flex-col justify-between bg-main">
           <Navbar getValue={getValue} />
           {children}
-          {footer && <BottomFooter />}
+          {footer && <BottomFooter address={userContext?.address} links={userContext?.links} />}
           <BottomNavBar />
         </main>
       </div>

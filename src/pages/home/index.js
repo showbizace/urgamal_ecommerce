@@ -48,7 +48,7 @@ export default function Home({ data }) {
 
   const [positionSticky, setPositionSticky] = useState(false);
   const [products, setProducts] = useState([]);
-
+  const [address, setAddress] = useState();
   const [main, setMain] = useState([]);
   const [parent, setParent] = useState([]);
   const [child, setChild] = useState([]);
@@ -91,8 +91,7 @@ export default function Home({ data }) {
     error,
   } = useSWRInfinite(
     (index) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${
-        index + 1
+      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index + 1
       }&limit=${PAGE_SIZE}`,
     fetcher,
     { revalidateFirstPage: false }
@@ -119,7 +118,7 @@ export default function Home({ data }) {
   const infiniteScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 350 >=
-        document.documentElement.offsetHeight &&
+      document.documentElement.offsetHeight &&
       !isEmpty &&
       !isReachingEnd
     )
@@ -142,6 +141,8 @@ export default function Home({ data }) {
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
+
+
 
   const getAllCategory = async () => {
     axios
@@ -193,7 +194,7 @@ export default function Home({ data }) {
             {/* <FeatureProductList /> */}
             {/* <NewProduct /> */}
             <div className="hidden lg:flex flex-col lg:flex-row bg-white mt-2 rounded-sm">
-              <div className="py-3 ">
+              <div className="py-3  text-xxl">
                 {categoriesLoading && <div></div>}
                 {categoriesError && <div></div>}
                 {configId && categories && (
@@ -215,32 +216,18 @@ export default function Home({ data }) {
               categories &&
               categories
                 ?.find((main) => main.id.toString() == userConfigs.configId)
-                .parent_categories.map((el) => (
-                  <ProductListWithCategory
-                    key={`list-with-category-${el.id}`}
-                    categoryId={el.id}
-                    categoryName={el.name}
-                    categoryIcon={
-                      el.id.toString() === "1" || el.id.toString() === "4" ? (
-                        <Image
-                          src={"/icons/2.svg"}
-                          fill
-                          draggable={false}
-                          style={{ userSelect: "none" }}
-                        />
-                      ) : (
-                        <Image
-                          src={"/icons/5.svg"}
-                          fill
-                          draggable={false}
-                          style={{ userSelect: "none" }}
-                        />
-                      )
-                    }
-                    cols={5}
-                    className="mt-12"
-                  />
-                ))}
+                .parent_categories.map((el) => {
+                  return (
+                    <ProductListWithCategory
+                      key={`list-with-category-${el.id}`}
+                      categoryId={el?.id}
+                      categoryName={el?.name}
+                      categoryIcon={el?.icon}
+                      cols={5}
+                      className="mt-12"
+                    />
+                  )
+                })}
           </div>
         </div>
       </div>

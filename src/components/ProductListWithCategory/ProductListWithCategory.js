@@ -22,7 +22,7 @@ const fetcher = (url) =>
     .then((res) => {
       return res.data.data;
     })
-    .catch((error) => {});
+    .catch((error) => { });
 export default function ProductListWithCategory({
   categoryName,
   categoryIcon,
@@ -32,8 +32,7 @@ export default function ProductListWithCategory({
 }) {
   const [pageIndex, setPageIndex] = useState(0);
   const { data, isLoading, error } = useSWR(
-    `${
-      process.env.NEXT_PUBLIC_API_URL
+    `${process.env.NEXT_PUBLIC_API_URL
     }/product/local?parent_cat_id=${categoryId}&offset=${0}&limit=${PAGE_SIZE}`,
     fetcher
   );
@@ -58,7 +57,7 @@ export default function ProductListWithCategory({
               sm:h-10 sm:w-10
               xs:h-8 xs:w-8"
             >
-              {categoryIcon}
+              <Image src={categoryIcon} fill />
             </div>
           )}
         </div>

@@ -3,6 +3,7 @@ import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import {
   ActionIcon,
   Button,
+  Divider,
   Group,
   NavLink,
   Stack,
@@ -30,6 +31,7 @@ import {
 import UserBasicInfo from "@/components/UserProfileForms/UserBasicInfo";
 import UserAddress from "@/components/UserProfileForms/UserAddress";
 import { UserConfigContext } from "@/utils/userConfigContext";
+
 const Profile = () => {
   const token = getCookie("token");
   const { logout } = useContext(UserConfigContext);
@@ -118,40 +120,51 @@ const Profile = () => {
     },
     {
       icon: <IconLogout color="red" size="1.3rem" stroke={1.5} />,
-      label: "Системээс гарах",
+      label: <span className="text-red-400">Системээс гарах</span>,
     },
   ];
   const items = data.map((item, index) => (
-    <NavLink
-      key={item.label}
-      active={index === activeTab}
-      label={item.label}
-      description={item.description}
-      rightSection={item.rightSection}
-      icon={item.icon}
-      color="yellow"
-      variant="subtle"
-      onClick={() => (index === 2 ? handleLogOut() : setActiveTab(index))}
-      className="rounded-md"
-    />
+    <>
+      {index === 2 ? <Divider color="gray.2" w="100%" /> : null}
+      <NavLink
+        key={item.label}
+        active={index === activeTab}
+        label={item.label}
+        description={item.description}
+        rightSection={item.rightSection}
+        icon={item.icon}
+        color="yellow"
+        variant="subtle"
+        onClick={() => (index === 2 ? handleLogOut() : setActiveTab(index))}
+        className="rounded-md"
+      />
+    </>
   ));
 
   return (
     <GlobalLayout footer={false}>
       <div className="bg-grey-back h-[100vh] flex flex-col sm:flex-row flex-grow items-stretch">
-        <div className="flex flex-row sm:flex-col justify-between items-center sm:items-start bg-white w-[94%] sm:w-[250px] mb-0 mt-4 sm:mb-4 sm:mt-4 ml-4 rounded-md px-3 py-2">
-          <div className="flex flex-row sm:flex-col grow sm:grow-0 items-center gap-2">
-            {items.slice(0, 2)}
+        <div className="flex flex-row sm:flex-col items-center sm:items-start bg-white w-[94%] sm:w-[250px] mb-0 mt-4 sm:mb-4 sm:mt-4 ml-4 rounded-md px-3 py-2">
+          <div className="w-full flex flex-row sm:flex-col grow sm:grow-0 items-center gap-2">
+            {items}
           </div>
-          <div>
+          {/* <div>
             {sorryForUsingStateForThis ? (
               items[2]
             ) : (
-              <ActionIcon size="lg" onClick={handleLogOut}>
-                <IconLogout color="red" size="1.625rem" stroke={1.5} />
-              </ActionIcon>
+              <span className="text-red-400">
+                <Button
+                  leftIcon={
+                    <IconLogout color="red" size="1.625rem" stroke={1.5} />
+                  }
+                  variant="subtle"
+                  size="xs"
+                >
+                  Системээс гарах
+                </Button>
+              </span>
             )}
-          </div>
+          </div> */}
         </div>
         <div className="h-full flex flex-grow px-4 py-4 ">
           {activeTab === 0 && (

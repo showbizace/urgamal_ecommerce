@@ -38,7 +38,7 @@ const fetcher = (url) =>
   axios
     .get(url)
     .then((res) => res.data.data)
-    .catch(() => {});
+    .catch(() => { });
 const cookie = getCookie("token");
 const Navbar = (props) => {
   const router = useRouter();
@@ -59,21 +59,20 @@ const Navbar = (props) => {
     }
   );
   const { data, error, isLoading, mutate, isValidating } = useSWR(
-    `${
-      process.env.NEXT_PUBLIC_API_URL
+    `${process.env.NEXT_PUBLIC_API_URL
     }/product/local?limit=${10}&query=${debounced}`,
     fetcher
   );
 
   const suggestions = data
     ? data.map((e) => {
-        return {
-          value: e.name,
-          id: e.id,
-          image: e.product_image?.images?.[0],
-          description: e.description,
-        };
-      })
+      return {
+        value: e.name,
+        id: e.id,
+        image: e.product_image?.images?.[0],
+        description: e.description,
+      };
+    })
     : [];
 
   useEffect(() => {
@@ -195,7 +194,7 @@ const Navbar = (props) => {
       <div className="flex justify-between items-center">
         <Link href={"/home"}>
           <div className="flex justify-center items-center ">
-            <Image src="/logo.png" width={36} height={36} className="w-7 h-7" />
+            <Image src={userContext?.address?.logo} width={36} height={36} className="w-7 h-7" />
           </div>
         </Link>
         <div className="flex justify-end md:justify-center items-center gap-8 md:gap-3 flex-grow ml-6 md:mx-11 ">
@@ -236,11 +235,11 @@ const Navbar = (props) => {
                   catsError
                     ? []
                     : categories?.map((e) => {
-                        return {
-                          value: e.id?.toString(),
-                          label: e.name,
-                        };
-                      })
+                      return {
+                        value: e.id?.toString(),
+                        label: e.name,
+                      };
+                    })
                 }
                 icon={
                   userConfigValue === "1" ? (

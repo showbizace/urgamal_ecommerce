@@ -6,6 +6,7 @@ import { showNotification } from "@mantine/notifications";
 import { getCookie } from "cookies-next";
 import { useState } from "react";
 import { openContextModal } from "@mantine/modals";
+import dayjs from "dayjs";
 
 const Order = ({ data }) => {
   const [opened, { toggle }] = useDisclosure(false);
@@ -65,7 +66,12 @@ const Order = ({ data }) => {
           </div>
           <div className="flex flex-row">
             <p className="text-base text-grey">Огноо : </p>
-            <p className="text-base ml-1">{data?.createdAt}</p>
+            <p className="text-base ml-1">
+              {dayjs(data?.createdAt)
+                .add(8, "hours")
+                .format("YYYY-MM-DD HH:mm")}
+              {/* {data?.createdAt} */}
+            </p>
           </div>
         </div>
         <div className="flex flex-row gap-2">
@@ -90,10 +96,9 @@ const Order = ({ data }) => {
       </div>
       <Collapse in={opened}>
         <CollapseItem orderItems={data.order_items} total={data.total} />
-
         <div className="w-full py-2 flex flex-row justify-end items-center pr-9">
           <p className="text-grey">Нийт үнийн дүн :</p>
-          <p className="ml-1">{data.total}₮</p>
+          <p className="ml-1 font-semibold">{data.total}₮</p>
         </div>
       </Collapse>
     </div>

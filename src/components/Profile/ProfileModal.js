@@ -11,9 +11,18 @@ import {
   Textarea,
 } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-function ProductModal({ initialData, isOpen, close, onSubmit, loading, handleClick }) {
+function ProductModal({
+  initialData,
+  isOpen,
+  close,
+  onSubmit,
+  loading,
+  handleClick,
+}) {
+  const route = useRouter();
   const form = useForm({
     initialValues: {
       name: initialData?.name,
@@ -69,8 +78,9 @@ function ProductModal({ initialData, isOpen, close, onSubmit, loading, handleCli
         onSubmit={form.onSubmit(async (values, e) => {
           const a = await onSubmit(values);
           form.setValues(initialData);
-          handleClick();
+          handleClick && handleClick();
           close();
+          route.reload();
         })}
       >
         <Group position="center">
