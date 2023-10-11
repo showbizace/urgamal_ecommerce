@@ -93,7 +93,6 @@ const Location = ({ data }) => {
                 className="object-cover rounded-lg"
               />
             </div>
-            {/* ... Display other location-specific information here ... */}
 
             <div className="relative flex h-full md:h-96 flex-col md:flex-row gap-10 justify-center items-center">
               <GMap lng={location.lng} lat={location.lat} />
@@ -136,7 +135,7 @@ export async function getServerSideProps() {
 
     return {
       props: {
-        data: data || null, // Ensure that `data` is always defined
+        data: data || null,
       },
     };
   } catch (error) {
