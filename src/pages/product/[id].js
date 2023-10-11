@@ -43,7 +43,7 @@ const ProductDetail = ({ product }) => {
   const [main, setMain] = useState();
   const [parent, setParent] = useState();
   const [child, setChild] = useState();
-  const [renderImage, setRenderImage] = useState('');
+  const [renderImage, setRenderImage] = useState("");
   const addToCartHandler = async () => {
     setLoading(true);
     dispatch({
@@ -76,7 +76,7 @@ const ProductDetail = ({ product }) => {
 
   const clickImage = (item) => {
     setRenderImage(item);
-  }
+  };
   const getAllCategory = async () => {
     axios
       .get(`${process.env.NEXT_PUBLIC_API_URL}/category/all?type=separate`, {
@@ -113,7 +113,7 @@ const ProductDetail = ({ product }) => {
     src,
     magnifierHeight = 200,
     magnifieWidth = 200,
-    zoomLevel = 1.5
+    zoomLevel = 1.5,
   }) {
     const [[x, y], setXY] = useState([0, 0]);
     const [[imgWidth, imgHeight], setSize] = useState([0, 0]);
@@ -135,7 +135,7 @@ const ProductDetail = ({ product }) => {
             // update cursor position
             const elem = e.currentTarget;
             const { top, left, width, height } = elem.getBoundingClientRect();
-            console.log(width)
+            console.log(width);
             // calculate cursor position on the image
             const x = e.pageX - left - window.pageXOffset;
             const y = e.pageY - top - window.pageYOffset;
@@ -167,12 +167,13 @@ const ProductDetail = ({ product }) => {
             backgroundRepeat: "no-repeat",
 
             //calculate zoomed image size
-            backgroundSize: `${imgWidth * zoomLevel}px ${imgHeight * zoomLevel
-              }px`,
+            backgroundSize: `${imgWidth * zoomLevel}px ${
+              imgHeight * zoomLevel
+            }px`,
 
             //calculete position of zoomed image.
             backgroundPositionX: `${-x * zoomLevel + magnifieWidth / 2}px`,
-            backgroundPositionY: `${-y * zoomLevel + magnifierHeight / 2}px`
+            backgroundPositionY: `${-y * zoomLevel + magnifierHeight / 2}px`,
           }}
         ></div>
       </div>
@@ -186,12 +187,16 @@ const ProductDetail = ({ product }) => {
           <div className="hidden lg:block">
             <Category parent={parent} child={child} padding={20} />
           </div>
-          <div className="flex lg:gap-14 gap-4  justify-center xl:flex-row lg:flex-row md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
+          <div className="flex lg:gap-14 gap-4 justify-center xl:flex-row lg:flex-col md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
             <div className="flex flex-col">
-              <div className="relative h-[50vh] lg:w-[33vw] lg:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
+              <div className="relative h-[50vh] lg:w-[100%] xl:w-[33vw] lg:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
                 {product?.product_image !== null ? (
                   <ImageMagnifier
-                    src={renderImage === "" ? `${product?.product_image?.images[0]}` : renderImage}
+                    src={
+                      renderImage === ""
+                        ? `${product?.product_image?.images[0]}`
+                        : renderImage
+                    }
                     width={400}
                     fill
                     className="object-contain rounded-md"
@@ -202,7 +207,7 @@ const ProductDetail = ({ product }) => {
                       size="lg"
                       variant="light"
                       color="green"
-                    // gradient={{ from: "teal", to: "lime", deg: 105 }}
+                      // gradient={{ from: "teal", to: "lime", deg: 105 }}
                     >
                       <IconPhotoOff size="80%" stroke={0.5} />
                     </ThemeIcon>
@@ -212,20 +217,28 @@ const ProductDetail = ({ product }) => {
                     </Text>
                   </div>
                 )}
-
               </div>
               <div>
                 <Grid gutter={1}>
                   {product?.product_image?.images?.map((item, index) => {
                     return (
                       <Grid.Col span={3}>
-                        <div className={renderImage === item ? "relative w-full h-32 rounded-md border-2 border-button-yellow" : "relative h-32 rounded-md hover:border-2 border-gray-300 w-full"} onClick={() => clickImage(item)}>
-                          <Image src={item} fill
-                            className="object-fill rounded-md p-1" />
+                        <div
+                          className={
+                            renderImage === item
+                              ? "relative w-full h-32 rounded-md border-2 border-button-yellow"
+                              : "relative h-32 rounded-md hover:border-2 border-gray-300 w-full"
+                          }
+                          onClick={() => clickImage(item)}
+                        >
+                          <Image
+                            src={item}
+                            fill
+                            className="object-fill rounded-md p-1"
+                          />
                         </div>
                       </Grid.Col>
-
-                    )
+                    );
                   })}
                 </Grid>
                 {/* <div className="flex flex-row  h-36 mt-2 flex-wrap gap-3">
@@ -312,7 +325,7 @@ const ProductDetail = ({ product }) => {
                       cols={60}
                       rows={12}
                       readOnly
-                      className=" overflow-x-hidden overflow-y-hidden focus: outline-0 py-3 px-3 rounded-md text-base"
+                      className="w-full overflow-x-hidden overflow-y-hidden focus: outline-0 py-3 px-3 rounded-md text-base"
                       value={product.instruction}
                     ></textarea>
                   </div>
@@ -366,11 +379,10 @@ const ProductDetail = ({ product }) => {
             categoryId={product.parent_cat_id?.[0].id}
             categoryName={"Санал болгож буй бүтээгдэхүүнүүд"}
             className="mt-12 "
-
           />
         </div>
-      </div >
-    </GlobalLayout >
+      </div>
+    </GlobalLayout>
   );
 };
 
