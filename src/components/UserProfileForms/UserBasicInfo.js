@@ -19,7 +19,7 @@ import {
 import { getCookie } from "cookies-next";
 
 export default function UserBasicInfo({ data, refresh }) {
-  const dateValue = data?.birthdate.toString();
+  const dateValue = data?.birthdate?.toString();
   const form = useForm({
     initialValues: {
       givenName: data?.given_name,
