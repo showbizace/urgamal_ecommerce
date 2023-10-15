@@ -41,6 +41,7 @@ const fetcher = (url) =>
     .catch(() => { });
 const cookie = getCookie("token");
 const Navbar = (props) => {
+  const { address } = props;
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [debounced] = useDebouncedValue(searchQuery, 250);
@@ -189,7 +190,7 @@ const Navbar = (props) => {
   return (
     <div
       className="bg-white py-2 px-12 max-sm:px-2 sticky top-0 z-30 "
-      style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}
+      style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)", backgroundColor: address?.header_color ? address?.header_color : null }}
     >
       <div className="flex justify-between items-center">
         <Link href={"/home"}>

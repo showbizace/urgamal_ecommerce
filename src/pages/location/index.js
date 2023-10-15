@@ -10,9 +10,11 @@ import {
 import { SegmentedControl, Center, Box, rem } from "@mantine/core";
 import Image from "next/image";
 import { Loader } from "@googlemaps/js-api-loader";
-
+import sanitizeHtml from 'sanitize-html';
 import GMap from "@/components/Maps";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
+import axios from "axios";
+import { Carousel } from "@mantine/carousel";
 
 let google_api = process.env.NEXT_APP_GOOGLE_API_URL;
 
@@ -20,7 +22,7 @@ const Location = ({ data }) => {
   const [selectedLocation, setSelectedLocation] = useState(0);
   const [loadMap, setLoadMap] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
-
+  console.log(data, "data")
   const location = data[selectedLocation];
 
   useEffect(() => {
@@ -29,18 +31,18 @@ const Location = ({ data }) => {
 
   useEffect(() => {
     const options = {
-      apiKey: google_api || "AIzaSyAr7bE_xuIkoA7dOQplaM7DSd5y2Ij6en8",
+      apiKey: google_api || "AIzaSyBGaM8n83G9fGOfQ2BlC_t73pfdCXLHpDc",
       version: "weekly",
       libraries: ["geometry"],
     };
 
     new Loader(options)
       .load()
-      .then(() => {
+      .then((res) => {
         setLoadMap(true);
       })
       .catch((e) => {
-        console.error(
+        console.log(
           "Sorry, something went wrong: Please try again later. Error:",
           e
         );
@@ -57,6 +59,12 @@ const Location = ({ data }) => {
     }
   };
 
+  const htmlFrom = (htmlString) => {
+    const cleanHtmlString = sanitizeHtml(htmlString);
+    // const html = JSON.parse(cleanHtmlString, {});
+    return cleanHtmlString;
+  };
+
   if (!loadMap) {
     return <>Loading...</>;
   }
@@ -69,11 +77,11 @@ const Location = ({ data }) => {
             <div className="flex justify-center ">
               <div className="overflow-x-auto">
                 <SegmentedControl
-                  data={data.map((location, index) => ({
-                    value: location.name,
+                  data={data?.map((location, index) => ({
+                    value: location?.name,
                     label: (
-                      <Center>
-                        <Box ml={10}>{`Салбар ${index + 1}`}</Box>
+                      <Center key={index}>
+                        <Box key={index}>{`Салбар ${index + 1}`}</Box>
                       </Center>
                     ),
                   }))}
@@ -85,17 +93,26 @@ const Location = ({ data }) => {
                 />
               </div>
             </div>
-            <div className="relative w-full h-80">
-              <Image
-                src={location?.image_url}
-                alt="image"
-                fill
-                className="object-cover rounded-lg"
-              />
-            </div>
 
+            <Carousel withIndicators height={"100%"} style={{ flex: 1 }} slideSize="100%" sx={{ flex: 1 }} loop>
+              {location?.img_url.map((el) => {
+                return (
+                  <Carousel.Slide key={el}>
+                    <div className="relative w-full h-80" key={el}>
+                      <Image
+                        key={el}
+                        src={el}
+                        alt="image"
+                        fill
+                        className="object-cover rounded-lg"
+                      />
+                    </div>
+                  </Carousel.Slide>
+                )
+              })}
+            </Carousel>
             <div className="relative flex h-full md:h-96 flex-col md:flex-row gap-10 justify-center items-center">
-              <GMap lng={location.lng} lat={location.lat} />
+              {loadMap && <GMap lng={location?.longtitute} lat={location?.latitute} />}
               <ul className="h-full w-full md:text-lg list-none text-start">
                 <li className="flex gap-4 gtext-start">
                   <div className="flex items-start gap-4 ">
@@ -107,17 +124,17 @@ const Location = ({ data }) => {
                     />
                     <span className="font-semibold">Хаяг:</span>
                   </div>
-                  <span className="w-11/12">{location?.description}</span>
+                  <span className="w-11/12" dangerouslySetInnerHTML={{ __html: htmlFrom(location?.address) }} />
                 </li>
                 <li className="flex items-center gap-4 mt-5">
                   <IconPhoneCall width={25} height={25} color={"#f9bc60"} />{" "}
                   <span className="font-semibold">Утас :</span>{" "}
-                  {location?.phone_number}
+                  <span dangerouslySetInnerHTML={{ __html: htmlFrom(location?.phone) }} />
                 </li>
                 <li className="flex items-center gap-4 mt-5">
                   <IconClock width={25} height={25} color={"#f9bc60"} />{" "}
                   <span className="font-semibold">Цагийн хуваарь :</span>{" "}
-                  {location?.work_time}
+                  <span dangerouslySetInnerHTML={{ __html: htmlFrom(location?.time_table) }} />
                 </li>
               </ul>
             </div>
@@ -130,8 +147,9 @@ const Location = ({ data }) => {
 
 export async function getServerSideProps() {
   try {
-    const response = await fetch(`http://localhost:3000/api/location`);
-    const data = await response.json();
+
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/config/branch`);
+    const data = await response?.data?.data;
 
     return {
       props: {
