@@ -4,50 +4,28 @@ import React from "react";
 import {
   IconLocation,
   IconPhoneCall,
-  IconEye,
   IconClock,
 } from "@tabler/icons-react";
 import { SegmentedControl, Center, Box, rem } from "@mantine/core";
 import Image from "next/image";
-import { Loader } from "@googlemaps/js-api-loader";
 import sanitizeHtml from 'sanitize-html';
-import GMap from "@/components/Maps";
+import Map from "@/components/Map";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import axios from "axios";
 import { Carousel } from "@mantine/carousel";
 
-let google_api = process.env.NEXT_APP_GOOGLE_API_URL;
+
 
 const Location = ({ data }) => {
   const [selectedLocation, setSelectedLocation] = useState(0);
-  const [loadMap, setLoadMap] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
-  console.log(data, "data")
+  const [loadingMap, setLoadingMap] = useState(false);
   const location = data[selectedLocation];
+  const [loc, setLoc] = useState([])
 
   useEffect(() => {
     window.dispatchEvent(new Event("storage"));
   }, [selectedLocation]);
-
-  useEffect(() => {
-    const options = {
-      apiKey: google_api || "AIzaSyBGaM8n83G9fGOfQ2BlC_t73pfdCXLHpDc",
-      version: "weekly",
-      libraries: ["geometry"],
-    };
-
-    new Loader(options)
-      .load()
-      .then((res) => {
-        setLoadMap(true);
-      })
-      .catch((e) => {
-        console.log(
-          "Sorry, something went wrong: Please try again later. Error:",
-          e
-        );
-      });
-  }, []);
 
   const handleLocationChange = (value) => {
     setLoadingData(true);
@@ -59,15 +37,18 @@ const Location = ({ data }) => {
     }
   };
 
+  useEffect(() => {
+    console.log(location, "location")
+    setLoadingMap(true);
+    setLoc([location?.latitute, location?.longtitute])
+    setLoadingMap(false)
+  }, [location])
+
+
   const htmlFrom = (htmlString) => {
     const cleanHtmlString = sanitizeHtml(htmlString);
-    // const html = JSON.parse(cleanHtmlString, {});
     return cleanHtmlString;
   };
-
-  if (!loadMap) {
-    return <>Loading...</>;
-  }
 
   return (
     <GlobalLayout>
@@ -81,7 +62,7 @@ const Location = ({ data }) => {
                     value: location?.name,
                     label: (
                       <Center key={index}>
-                        <Box key={index}>{`Салбар ${index + 1}`}</Box>
+                        <Box key={index}>{`${location?.name}`}</Box>
                       </Center>
                     ),
                   }))}
@@ -112,7 +93,26 @@ const Location = ({ data }) => {
               })}
             </Carousel>
             <div className="relative flex h-full md:h-96 flex-col md:flex-row gap-10 justify-center items-center">
-              {loadMap && <GMap lng={location?.longtitute} lat={location?.latitute} />}
+              <div
+                className="w-full h-80 md:h-full rounded-lg border shadow-lg"
+              >
+                {!loadingMap && <Map center={loc} zoom={14} key={location?.name}>
+                  {({ TileLayer, Marker, Popup }) => (
+                    <>
+                      <TileLayer key={location?.name}
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                      />
+
+                      <Marker position={loc} key={location?.name}>
+                        <Popup key={location?.name}>
+                          {location?.name}
+                        </Popup>
+                      </Marker>
+                    </>
+                  )}
+                </Map>}
+              </div>
               <ul className="h-full w-full md:text-lg list-none text-start">
                 <li className="flex gap-4 gtext-start">
                   <div className="flex items-start gap-4 ">
