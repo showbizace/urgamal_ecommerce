@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-page-custom-font */
 import Head from "next/head";
 import React, { Children, useContext, useEffect, useState } from "react";
 import Navbar from "../navbar";
@@ -59,10 +60,6 @@ export default function GlobalLayout({
           href="https://kit.fontawesome.com/af91f056ad.css"
           crossorigin="anonymous"
         />
-        <script
-          src="https://kit.fontawesome.com/af91f056ad.js"
-          crossorigin="anonymous"
-        ></script>
       </Head>
       <div className="shadow bg-white">
         {/* <Search /> */}

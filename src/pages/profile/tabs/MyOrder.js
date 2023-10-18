@@ -19,8 +19,7 @@ const MyOrder = () => {
     error,
     isLoading,
   } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/user/order?status=${
-      tabs === "all" ? "" : tabs
+    `${process.env.NEXT_PUBLIC_API_URL}/user/order?status=${tabs === "all" ? "" : tabs
     }`,
     fetcher
   );
@@ -74,8 +73,8 @@ const MyOrder = () => {
               </div>
             </div>
           ) : (
-            orders?.map((e) => {
-              return <Order data={e} />;
+            orders?.map((e, index) => {
+              return <Order data={e} key={index} />;
             })
           )}
         </Tabs.Panel>

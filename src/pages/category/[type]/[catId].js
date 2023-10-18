@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -93,6 +94,7 @@ const CategoryPage = ({ initialData }) => {
     () => getCurrentCategoryPath(parent, child),
     [parent, child, router.asPath]
   );
+
   const { data, mutate, size, setSize, isValidating, isLoading, error } =
     useSWRInfinite(
       (index) => {
@@ -232,6 +234,7 @@ const CategoryPage = ({ initialData }) => {
                     height={13}
                     src={"/icons/arrow-down-outline.svg"}
                     className="ml-2 mt-1"
+                    alt="arrow-down"
                   />
                 </div>
               </div>

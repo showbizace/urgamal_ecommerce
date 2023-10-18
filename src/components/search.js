@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Image from "next/image";
 import { forwardRef, useEffect, useState } from "react";
 import { Autocomplete, Group, Avatar, Text, rem } from "@mantine/core";
@@ -39,6 +40,7 @@ const Search = () => {
     mutate();
   }, [debounced]);
 
+  // eslint-disable-next-line react/display-name
   const AutocompleteItem = forwardRef(({ image, value, ...others }, ref) => {
     return (
       <div
@@ -151,7 +153,7 @@ const Search = () => {
           </div>
         </div> */}
         <div className="flex flex-row items-center">
-          <Image src="/icons/phone.svg" width={25} height={25} />
+          <Image src="/icons/phone.svg" width={25} height={25} alt="phone" />
           <p className="ml-2 text-sm text-green">72720808 </p>
           <p
             className="text-sm font-light ml-1 text-[#696A6C] hover:text-black hover:font-semibold "

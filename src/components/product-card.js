@@ -169,7 +169,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
                   minusCount(event, data.instock);
                 }}
               >
-                <Image src="/icons/minus.svg" width={13} height={6} />
+                <Image src="/icons/minus.svg" width={13} height={6} alt="minus" />
               </Button>
               <p className="text-center text-sm ml-2 mr-2 font-semibold">
                 {productCount}
@@ -182,7 +182,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
                   addCount(event, data.instock);
                 }}
               >
-                <Image src="/icons/add.svg" width={13} height={6} />
+                <Image src="/icons/add.svg" width={13} height={6} alt="add" />
               </Button>
             </div>
             <Button

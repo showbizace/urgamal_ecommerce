@@ -27,6 +27,7 @@ const Bundle = ({ src, name, count, price, productIndex }) => {
       >
         <p className="text-base">Дэлгэрэнгүй</p>
         <Image
+          alt="arrow-left"
           src={"/icons/arrow-left-2.svg"}
           width={16}
           height={11}

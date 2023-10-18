@@ -167,9 +167,8 @@ const ProductDetail = ({ product }) => {
             backgroundRepeat: "no-repeat",
 
             //calculate zoomed image size
-            backgroundSize: `${imgWidth * zoomLevel}px ${
-              imgHeight * zoomLevel
-            }px`,
+            backgroundSize: `${imgWidth * zoomLevel}px ${imgHeight * zoomLevel
+              }px`,
 
             //calculete position of zoomed image.
             backgroundPositionX: `${-x * zoomLevel + magnifieWidth / 2}px`,
@@ -207,7 +206,7 @@ const ProductDetail = ({ product }) => {
                       size="lg"
                       variant="light"
                       color="green"
-                      // gradient={{ from: "teal", to: "lime", deg: 105 }}
+                    // gradient={{ from: "teal", to: "lime", deg: 105 }}
                     >
                       <IconPhotoOff size="80%" stroke={0.5} />
                     </ThemeIcon>
@@ -222,7 +221,7 @@ const ProductDetail = ({ product }) => {
                 <Grid gutter={1}>
                   {product?.product_image?.images?.map((item, index) => {
                     return (
-                      <Grid.Col span={3}>
+                      <Grid.Col span={3} key={index}>
                         <div
                           className={
                             renderImage === item
@@ -232,6 +231,7 @@ const ProductDetail = ({ product }) => {
                           onClick={() => clickImage(item)}
                         >
                           <Image
+                            alt="item"
                             src={item}
                             fill
                             className="object-fill rounded-md p-1"

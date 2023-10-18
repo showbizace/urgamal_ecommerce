@@ -18,7 +18,7 @@ const BottomFooter = ({ address, links }) => {
   const icon = (item) => {
     if (item?.title !== "email") {
       return (<Link href={item?.url}>
-        <Image className="hover:text-white max-xs:w-3 max-xs:h-3" width={25} height={25} src={item?.img} /></Link>)
+        <Image className="hover:text-white max-xs:w-3 max-xs:h-3" width={25} height={25} src={item?.img} alt="email" /></Link>)
     }
   }
 
@@ -29,6 +29,7 @@ const BottomFooter = ({ address, links }) => {
         <div className="flex flex-row px-16 border-t-1 border-black py-8 bg-green2  justify-between w-full max-xs:px-1 max-xs:py-4 max-xs:gap-2" style={{ backgroundColor: address?.footer_color ? address?.footer_color : null }}>
           <div className="flex flex-col items-center ">
             <Image
+              alt={address?.logo}
               src={address?.logo}
               width={62}
               height={116}
@@ -73,6 +74,7 @@ const BottomFooter = ({ address, links }) => {
               onClick={() => router.push("/location")}
             >
               <Image
+                alt="location"
                 className="m-1 max-xs:w-3 max-xs:h-3"
                 src={"/icons/location.svg"}
                 width={20}
@@ -84,6 +86,7 @@ const BottomFooter = ({ address, links }) => {
             </div>
             <div className="flex flex-row items-center mt-2">
               <Image
+                alt="call"
                 className="m-1 max-xs:w-3 max-xs:h-3"
                 src={"/icons/call.svg"}
                 width={18}
@@ -94,6 +97,7 @@ const BottomFooter = ({ address, links }) => {
             </div>
             <div className="flex flex-row items-start mt-1">
               <Image
+                alt="time"
                 className="m-1 max-xs:w-3 max-xs:h-3"
                 src={"/icons/time.svg"}
                 width={18}
@@ -103,14 +107,15 @@ const BottomFooter = ({ address, links }) => {
             </div>
             <div className="flex flex-row items-start mt-1">
               <Image
+                alt="mail"
                 className="m-1 max-xs:w-3 max-xs:h-3  "
                 src={"/icons/mail.svg"}
                 width={20}
                 height={20}
               />
-              {links?.map((item) => {
+              {links?.map((item, index) => {
                 if (item?.title === "email") {
-                  return (<Link href={`mailto:${item?.url}`}><p className="text-sm ml-2 max-xs:text-sm-5">{item?.url}</p></Link>)
+                  return (<Link href={`mailto:${item?.url}`} key={index}><p className="text-sm ml-2 max-xs:text-sm-5">{item?.url}</p></Link>)
                 }
               })}
             </div>

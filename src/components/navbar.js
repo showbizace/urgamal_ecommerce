@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Image from "next/image";
 import NavBarLinks from "../components/nav-bar-links";
 import Link from "next/link";
@@ -85,6 +86,7 @@ const Navbar = (props) => {
       props.getValue(categories);
     }
   }, [categories]);
+  // eslint-disable-next-line react/display-name
   const AutocompleteItem = forwardRef(({ image, value, ...others }, ref) => {
     return (
       <div
@@ -195,7 +197,7 @@ const Navbar = (props) => {
       <div className="flex justify-between items-center">
         <Link href={"/home"}>
           <div className="flex justify-center items-center ">
-            <Image src={userContext?.address?.logo} width={36} height={36} className="w-7 h-7" />
+            <Image src={userContext?.address?.logo} width={36} height={36} className="w-7 h-7" alt={userContext?.address?.logo} />
           </div>
         </Link>
         <div className="flex justify-end md:justify-center items-center gap-8 md:gap-3 flex-grow ml-6 md:mx-11 ">
@@ -335,6 +337,7 @@ const Navbar = (props) => {
           <div className="hidden md:block">
             <Button compact variant={"white"} onClick={() => linkToCart()}>
               <Image
+                alt="trolley"
                 src="/icons/trolley.svg"
                 width={23}
                 height={23}
@@ -371,6 +374,7 @@ const Navbar = (props) => {
               }}
             >
               <Image
+                alt="user"
                 src="/user.png"
                 width={40}
                 height={40}

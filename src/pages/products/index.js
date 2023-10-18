@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import BottomFooter from "@/components/Footer";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import MySkeleton from "@/components/MySkeleton";
@@ -17,7 +18,7 @@ const fetcher = (url) =>
     .then((res) => {
       return res.data.data;
     })
-    .catch((error) => {});
+    .catch((error) => { });
 const PAGE_SIZE = 25;
 
 export async function getServerSideProps({ query }) {
@@ -45,8 +46,7 @@ export default function SearchResult({ initialData }) {
   const { data, mutate, size, setSize, isValidating, isLoading, error } =
     useSWRInfinite(
       (index) =>
-        `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${
-          index + 1
+        `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index + 1
         }&limit=${PAGE_SIZE}&query=${q}`,
       fetcher,
       { revalidateFirstPage: false }
@@ -66,7 +66,7 @@ export default function SearchResult({ initialData }) {
   const infiniteScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 350 >=
-        document.documentElement.offsetHeight &&
+      document.documentElement.offsetHeight &&
       !isEmpty &&
       !isReachingEnd
     )
@@ -76,9 +76,11 @@ export default function SearchResult({ initialData }) {
     window.addEventListener("scroll", infiniteScroll);
     return () => window.removeEventListener("scroll", infiniteScroll);
   }, [data]);
+
   useEffect(() => {
     data && !isEmpty && setProducts(products.concat(...data[data.length - 1]));
   }, [data]);
+
   useEffect(() => {
     window.dispatchEvent(new Event("storage"));
     setProducts(initialData);

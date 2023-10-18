@@ -72,12 +72,12 @@ const Login = () => {
 	return (
 		<div className="w-full h-full flex flex-row absolute">
 			<div style={{ width: "65%", height: "100%", position: "relative" }}>
-				<Image fill src={"/plant.jpg"} />
+				<Image fill src={"/plant.jpg"} alt="plant" />
 			</div>
 			<div
 				className="flex flex-col relative items-center justify-center  "
 				style={{ width: "35rem" }}>
-				<Image src="/logo.png" width={100} height={100} />
+				<Image src="/logo.png" width={100} height={100} alt="logo" />
 				<p className="text-xl font-bold mt-4">Нэвтрэх</p>
 				<div style={{ width: "60%" }} className="mt-5">
 					<form onSubmit={form.onSubmit((values) => fetchData(values))}>
@@ -129,8 +129,8 @@ const Login = () => {
 				</div>
 				<p className="mt-4">Эсвэл</p>
 				<div className="flex flex-row justify-center mt-4">
-					<Image src="/icons/facebook2.svg" width={30} height={30} className="mr-10" />
-					<Image src="/icons/gmail.svg" width={30} height={30} />
+					<Image src="/icons/facebook2.svg" width={30} height={30} className="mr-10" alt="facebook" />
+					<Image src="/icons/gmail.svg" width={30} height={30} alt="gmail" />
 				</div>
 			</div>
 		</div>

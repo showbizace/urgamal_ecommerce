@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { SimpleGrid, Stack, Text } from "@mantine/core";
 import MySkeleton from "../MySkeleton";
 import { IconSearch } from "@tabler/icons-react";

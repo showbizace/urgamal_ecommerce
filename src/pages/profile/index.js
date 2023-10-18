@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Image from "next/image";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import {
@@ -49,6 +50,7 @@ const Profile = () => {
     window.addEventListener("resize", updateSize);
     return () => window.removeEventListener("resize", updateSize);
   }, []);
+
   useEffect(() => {
     const { cr } = router.query;
     if (cr && cr === "order") {
