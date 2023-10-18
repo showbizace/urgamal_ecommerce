@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
