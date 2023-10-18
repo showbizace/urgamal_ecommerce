@@ -44,6 +44,8 @@
     "tailwindcss": "^3.3.1"
   },
   "devDependencies": {
-    "babel-plugin-inline-react-svg": "^2.0.2"
+    "babel-plugin-inline-react-svg": "^2.0.2",
+    "eslint": "8.51.0",
+    "eslint-config-next": "13.5.5"
   }
 }

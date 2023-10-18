@@ -29,7 +29,6 @@ import Address from "./shippingAddress";
 import { useRouter } from "next/router";
 import { Store } from "@/utils/Store";
 import $ from "jquery";
-import Loading from "../home/loading";
 import { IconAlertCircle } from "@tabler/icons-react";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import { SuccessNotification } from "../../utils/SuccessNotification";
@@ -695,7 +694,7 @@ const CartItems = (props) => {
                   </ActionIcon>
                   <span className="font-[500] lg:text-[1rem] text-[0.6rem] text-[#212529]">
                     {item.purchaseCount !== undefined &&
-                    item.purchaseCount !== null
+                      item.purchaseCount !== null
                       ? item.purchaseCount
                       : item.quantity}
                   </span>
