@@ -1,38 +1,24 @@
 import Image from "next/image";
 import { useEffect, useContext, useState } from "react";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
-import ProductTypeChip from "../../components/ProductTypeChip/ProductTypeChip";
-import Magnifier from "../../components/Magnifier/Magnifier";
-import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import ProductCardExample from "../../components/ProductCardExample";
-import {
-  LoadingOverlay,
-  Button,
-  Badge,
-  Grid,
-  Loader,
-  ThemeIcon,
-  Text,
-} from "@mantine/core";
+import { Button, Badge, Grid, Loader, ThemeIcon, Text } from "@mantine/core";
 import { Store } from "@/utils/Store";
 import { getCookie } from "cookies-next";
 import { SuccessNotification } from "../../utils/SuccessNotification";
 import { IconHeart, IconPhotoOff } from "@tabler/icons-react";
-import BottomFooter from "@/components/Footer";
 import Category from "@/components/category";
 import axios from "axios";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
-import AllCategory from "@/components/AllCategory/AllCategory";
 
 export async function getServerSideProps({ params }) {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/product/single?productid=${params.id}`
+    `${process.env.NEXT_PUBLIC_API_URL}/product/id/${params.id}`
   );
   const data = await res.json();
   return {
     props: {
-      product: data.data,
+      product: data.product,
     },
   };
 }
@@ -58,18 +44,16 @@ const ProductDetail = ({ product }) => {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify({
-        item_id: product.id,
-        qty: 1,
-        businessId: "local_test",
+        product_id: product.Id,
+        quantity: 1,
       }),
     };
-    const addReq = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart/add/local`,
-      requestOption
-    );
+
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add`, requestOption);
+
     SuccessNotification({
       message: "Сагсанд амжилттай орлоо!",
-      title: `${product?.name}`,
+      title: `${product?.Name}`,
     });
     setLoading(false);
   };
@@ -120,7 +104,7 @@ const ProductDetail = ({ product }) => {
     const [showMagnifier, setShowMagnifier] = useState(false);
     return (
       <div className="relative w-full h-full overflow-hidden">
-        <Image
+        {/* <Image
           src={src}
           className="w-full h-full"
           fill
@@ -146,7 +130,7 @@ const ProductDetail = ({ product }) => {
             setShowMagnifier(false);
           }}
           alt={"img"}
-        />
+        /> */}
         <div
           style={{
             display: showMagnifier ? "" : "none",
@@ -167,8 +151,9 @@ const ProductDetail = ({ product }) => {
             backgroundRepeat: "no-repeat",
 
             //calculate zoomed image size
-            backgroundSize: `${imgWidth * zoomLevel}px ${imgHeight * zoomLevel
-              }px`,
+            backgroundSize: `${imgWidth * zoomLevel}px ${
+              imgHeight * zoomLevel
+            }px`,
 
             //calculete position of zoomed image.
             backgroundPositionX: `${-x * zoomLevel + magnifieWidth / 2}px`,
@@ -206,7 +191,7 @@ const ProductDetail = ({ product }) => {
                       size="lg"
                       variant="light"
                       color="green"
-                    // gradient={{ from: "teal", to: "lime", deg: 105 }}
+                      // gradient={{ from: "teal", to: "lime", deg: 105 }}
                     >
                       <IconPhotoOff size="80%" stroke={0.5} />
                     </ThemeIcon>
@@ -230,12 +215,12 @@ const ProductDetail = ({ product }) => {
                           }
                           onClick={() => clickImage(item)}
                         >
-                          <Image
+                          {/* <Image
                             alt="item"
                             src={item}
                             fill
                             className="object-fill rounded-md p-1"
-                          />
+                          /> */}
                         </div>
                       </Grid.Col>
                     );
@@ -258,7 +243,7 @@ const ProductDetail = ({ product }) => {
             <div className="flex flex-col justify-between lg:gap-6">
               <div className="flex flex-col gap-6">
                 <div className="lg:text-2xl text-lg font-semibold">
-                  {product?.name}
+                  {product?.Name}
                 </div>
                 <div className="flex font-semibold gap-2">
                   <span className="text-greenish-grey text-base">

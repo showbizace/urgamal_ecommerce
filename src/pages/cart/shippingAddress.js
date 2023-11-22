@@ -25,7 +25,7 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
   const [editingProdData, setEditingProdData] = useState();
   const [cookie, setCookie] = useState();
   const { auth } = useContext(UserConfigContext);
-  const [isAddAddress, setIsAddAddress] = useState(false)
+  const [isAddAddress, setIsAddAddress] = useState(false);
 
   useEffect(() => {
     const cookie = getCookie("token");
@@ -40,14 +40,14 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
 
   useEffect(() => {
     getShippingData(cookie);
-  }, [isAddAddress])
+  }, [isAddAddress]);
 
   const handleClick = () => {
-    setIsAddAddress(!isAddAddress)
-  }
+    setIsAddAddress(!isAddAddress);
+  };
 
   const getShippingData = async (cookie = cookie) => {
-    console.log("called")
+    console.log("called");
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${cookie}`);
 
@@ -65,7 +65,7 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
       });
   };
 
-  const openProductEditingModal = (productata) => {
+  const openProductEditingModal = () => {
     setEditingProdData({ create: true });
     open();
   };
@@ -76,6 +76,7 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
     myHeaders.append("Content-Type", "application/json");
 
     const initialData = {
+      name: values.name,
       city: values.city,
       province: values.province,
       district: values.district,
@@ -86,8 +87,10 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
       number: values.number,
       phone: values.phone,
       type: values.type === undefined ? false : values.type,
+      note: values.note,
     };
 
+    console.log(initialData, "initialData");
     const requestOption = {
       method: "POST",
       headers: myHeaders,
@@ -138,10 +141,15 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
               <Card.Section
                 sx={{ display: "flex", flexDirection: "column", gap: "15px" }}
               >
-
-                {shippingData.length === 0 && <div className="flex flex-col w-full items-center gap-4 mt-6">
-                  <IconTruckOff size='2rem' stroke={1.5} />
-                  <span className="text-grey font-medium"> Хаягийн мэдээлэл оруулаагүй байна</span></div>}
+                {shippingData?.length === 0 && (
+                  <div className="flex flex-col w-full items-center gap-4 mt-6">
+                    <IconTruckOff size="2rem" stroke={1.5} />
+                    <span className="text-grey font-medium">
+                      {" "}
+                      Хаягийн мэдээлэл оруулаагүй байна
+                    </span>
+                  </div>
+                )}
                 {shippingData?.map((item, idx) => (
                   <div key={idx}>
                     <Chip.Group
@@ -212,6 +220,7 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
       ) : (
         <Skeleton sx={{ height: "100%" }} visible={loading} />
       )}
+      {console.log(editingProdData, "editing")}
       <ProductModal
         initialData={editingProdData}
         isOpen={opened}

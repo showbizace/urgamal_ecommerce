@@ -18,7 +18,7 @@ const fetcher = (url) =>
     .then((res) => {
       return res.data.data;
     })
-    .catch((error) => { });
+    .catch((error) => {});
 const PAGE_SIZE = 25;
 
 export async function getServerSideProps({ query }) {
@@ -28,13 +28,13 @@ export async function getServerSideProps({ query }) {
     headers: { "Content-Type": "application/json" },
   };
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=0&limit=${PAGE_SIZE}&query=${q}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/product`,
     requestOption
   );
-  const data = await res.json();
+  const data = await res?.json();
   return {
     props: {
-      initialData: data.data,
+      initialData: data?.result,
     },
   };
 }
@@ -46,7 +46,8 @@ export default function SearchResult({ initialData }) {
   const { data, mutate, size, setSize, isValidating, isLoading, error } =
     useSWRInfinite(
       (index) =>
-        `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index + 1
+        `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${
+          index + 1
         }&limit=${PAGE_SIZE}&query=${q}`,
       fetcher,
       { revalidateFirstPage: false }
@@ -66,7 +67,7 @@ export default function SearchResult({ initialData }) {
   const infiniteScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 350 >=
-      document.documentElement.offsetHeight &&
+        document.documentElement.offsetHeight &&
       !isEmpty &&
       !isReachingEnd
     )
@@ -77,9 +78,9 @@ export default function SearchResult({ initialData }) {
     return () => window.removeEventListener("scroll", infiniteScroll);
   }, [data]);
 
-  useEffect(() => {
-    data && !isEmpty && setProducts(products.concat(...data[data.length - 1]));
-  }, [data]);
+  // useEffect(() => {
+  //   data && !isEmpty && setProducts(products.concat(...data[data.length - 1]));
+  // }, [data]);
 
   useEffect(() => {
     window.dispatchEvent(new Event("storage"));
@@ -146,13 +147,15 @@ export default function SearchResult({ initialData }) {
           emptyStateMessage="хайлтад тохирох бараа олдсонгүй"
           query={q}
         >
-          {products.map((e, index) => (
-            <ProductCard
-              key={`product-card-key-${index}-${e.id}`}
-              src={e.product_image?.images?.[0]}
-              data={e}
-            />
-          ))}
+          {products.map((e, index) => {
+            return (
+              <ProductCard
+                key={`product-card-key-${index}-${e.id}`}
+                src={e.product_image?.images?.[0]}
+                data={e}
+              />
+            );
+          })}
         </ProductGridList>
       </div>
     </GlobalLayout>

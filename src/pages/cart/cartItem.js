@@ -4,12 +4,9 @@ import {
   Table,
   ActionIcon,
   Modal,
-  Group,
   Text,
   Badge,
-  Tabs,
   Loader,
-  Center,
   Stack,
   Switch,
   Tooltip,
@@ -22,42 +19,28 @@ import {
   IconTrash,
   IconArrowLeft,
 } from "@tabler/icons-react";
-import Link from "next/link";
-import { useState, useEffect, useContext, Suspense } from "react";
-import Magnifier from "../../components/Magnifier/Magnifier";
+import { useState, useEffect, useContext } from "react";
 import Address from "./shippingAddress";
 import { useRouter } from "next/router";
 import { Store } from "@/utils/Store";
-import $ from "jquery";
 import { IconAlertCircle } from "@tabler/icons-react";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import { SuccessNotification } from "../../utils/SuccessNotification";
 import { getCookie, setCookie } from "cookies-next";
-import debounce from "lodash.debounce";
 import { openContextModal } from "@mantine/modals";
-import BottomFooter from "@/components/Footer";
 import axios from "axios";
 import Image from "next/image";
 import { UserConfigContext } from "@/utils/userConfigContext";
 
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
-  const [isCheck, setIsCheck] = useState([]);
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
   const { auth } = useContext(UserConfigContext);
   const [cartItem, setCartItem] = useState();
   const [checked, setChecked] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [invoiceId, setInvoiceId] = useState(null);
   const [addressVisible, setAddressVisible] = useState(false);
-  const [isChangeQuantity, setIsChangeQuantity] = useState(false);
-  const [total, setTotal] = useState();
-  const [stock, setStock] = useState();
-  const [isAvRemove, setIsAvRemove] = useState(false);
   const [orderId, setOrderId] = useState();
-  const [purchaseQuantity, setPurchaseQuantity] = useState();
-  const [isChangeAdd, setIsChangeAdd] = useState(false);
   const [userToken, setUserToken] = useState("");
   const [selectedShippingData, setSelectedShippingData] = useState({});
   const [select, setSelect] = useState(false);
@@ -195,6 +178,7 @@ const CartItems = (props) => {
 
   useEffect(() => {
     const token = getCookie("token");
+    console.log(token, "token");
     setUserToken(token);
     if (auth) {
       setAddressVisible(true);
@@ -305,7 +289,7 @@ const CartItems = (props) => {
     if (auth) {
       if (select) {
         openLoader();
-        const data = `Хот: ${selectedShippingData.city}, Дүүрэг: ${selectedShippingData.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData.street}, Байр: ${selectedShippingData.apartment}, Тоот: ${selectedShippingData.number}, Утас: ${selectedShippingData.phone}`;
+        const data = `Хот: ${selectedShippingData?.city}, Дүүрэг: ${selectedShippingData?.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData?.street}, Байр: ${selectedShippingData?.apartment}, Тоот: ${selectedShippingData?.number}, Утас: ${selectedShippingData?.phone}`;
         const axiosReqOption = {
           headers: {
             Authorization: "Bearer " + userToken,
@@ -637,13 +621,13 @@ const CartItems = (props) => {
                   imgHeight={80}
                   magnifierRadius={50}
                 /> */}
-                <Image
+                {/* <Image
                   loader={() => item?.pictureurl}
                   src={item?.pictureurl}
                   width={80}
                   height={80}
                   alt={item.name}
-                />
+                /> */}
                 <div className="flex flex-col justify-around ml-2 lg:ml-0">
                   <span className="font-[500] lg:text-[1.002rem] text-[0.55rem] text-[#212529]">
                     {item.name}
@@ -694,7 +678,7 @@ const CartItems = (props) => {
                   </ActionIcon>
                   <span className="font-[500] lg:text-[1rem] text-[0.6rem] text-[#212529]">
                     {item.purchaseCount !== undefined &&
-                      item.purchaseCount !== null
+                    item.purchaseCount !== null
                       ? item.purchaseCount
                       : item.quantity}
                   </span>

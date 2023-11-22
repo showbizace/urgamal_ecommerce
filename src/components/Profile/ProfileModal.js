@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 function ProductModal({
   initialData,
@@ -77,11 +77,12 @@ function ProductModal({
       <LoadingOverlay visible={loading} overlayBlur={2} />
       <form
         onSubmit={form.onSubmit(async (values, e) => {
-          const a = await onSubmit(values);
+          console.log(values, "inital on form");
+          await onSubmit(values);
           form.setValues(initialData);
-          handleClick && handleClick();
-          close();
-          route.reload();
+          // handleClick && handleClick();
+          // close();
+          // route.reload();
         })}
       >
         <Group position="center">

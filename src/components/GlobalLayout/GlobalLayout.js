@@ -15,7 +15,6 @@ export default function GlobalLayout({
   children,
   footer = true,
   title = "Таримал Ургамал ХХК",
-  address,
 }) {
   const [type, setType] = useState();
   const userContext = useContext(UserConfigContext);
@@ -63,15 +62,25 @@ export default function GlobalLayout({
       </Head>
       <div className="shadow bg-white">
         {/* <Search /> */}
-        <main className="flex flex-col justify-between bg-main"
-          style={{ backgroundColor: userContext?.address?.background_color ? userContext?.address?.background_color : null }}
+        <main
+          className="flex flex-col justify-between bg-main"
+          style={{
+            backgroundColor: userContext?.address?.background_color
+              ? userContext?.address?.background_color
+              : null,
+          }}
         >
           <Navbar getValue={getValue} address={userContext?.address} />
           {children}
-          {footer && <BottomFooter address={userContext?.address} links={userContext?.links} />}
+          {footer && (
+            <BottomFooter
+              address={userContext?.address}
+              links={userContext?.links}
+            />
+          )}
           <BottomNavBar />
         </main>
       </div>
-    </div >
+    </div>
   );
 }

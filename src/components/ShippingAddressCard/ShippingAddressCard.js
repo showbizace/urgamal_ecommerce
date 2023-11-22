@@ -1,19 +1,5 @@
-import {
-  ActionIcon,
-  Button,
-  Card,
-  Collapse,
-  Group,
-  Paper,
-  Text,
-  Transition,
-} from "@mantine/core";
-import {
-  IconChevronDown,
-  IconChevronUp,
-  IconEdit,
-  IconTrash,
-} from "@tabler/icons-react";
+import { ActionIcon, Card, Group, Text } from "@mantine/core";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
 import React from "react";
 
 export default function ShippingAddressCard({
