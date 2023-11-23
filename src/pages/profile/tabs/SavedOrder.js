@@ -25,11 +25,11 @@ const SavedOrder = () => {
                         price={"15’000₮"} />
                     <div className='mt-4 flex flex-row justify-between items-center'>
                         <div className='flex flex-row items-center'>
-                            <Image src={"/icons/trolley.svg"} width={25} height={25} />
+                            <Image src={"/icons/trolley.svg"} width={25} height={25} alt='trolley' />
                             <p className='text-xs ml-2'>Бүгдийг сагслах</p>
                         </div>
                         <div className='flex flex-row items-center'>
-                            <Image src={"/icons/ph_trash.svg"} width={25} height={25} />
+                            <Image src={"/icons/ph_trash.svg"} width={25} height={25} alt='trash' />
                             <p className='text-xs ml-1 text-red-500'>Бүгдийг устгах</p>
                         </div>
                     </div>

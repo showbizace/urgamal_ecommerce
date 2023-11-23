@@ -62,9 +62,10 @@ const Category = ({
                     (e) =>
                       e.main_cat_id.toString() === userConfigs.preferenceConfig
                   )
-                  .map((el) => {
+                  .map((el, index) => {
                     return (
                       <Collapse
+                        key={index}
                         id="2"
                         css={{
                           paddingLeft: "$5",
@@ -72,9 +73,9 @@ const Category = ({
                           borderRadius: "$lg",
                         }}
                         tabIndex={2}
-                        arrowIcon={[<IconChevronRight color="#fcbc60" />]}
+                        arrowIcon={[<IconChevronRight color="#fcbc60" key={index} />]}
                         title={[
-                          <p className="hover:text-[#fd7e14] font-semibold">
+                          <p className="hover:text-[#fd7e14] font-semibold" key={index}>
                             {el.name}
                           </p>,
                         ]}
@@ -102,10 +103,11 @@ const Category = ({
                       >
                         <div className="overflow-auto scrollbar-hide">
                           {child !== undefined &&
-                            child.map((item) => {
+                            child.map((item, index) => {
                               if (el.id === item.parent_id) {
                                 return (
                                   <Text
+                                    key={index}
                                     className="w-full p-4 cursor-pointer hover:font-medium hover:underline"
                                     onClick={() => {
                                       router.push({

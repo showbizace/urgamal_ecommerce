@@ -31,7 +31,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
   };
   const addToCartHandler = async (event, data) => {
     event.stopPropagation();
-    console.log(data, "data")
+    console.log(data, "data");
     if (data.instock > 0) {
       dispatch({
         type: "CART_ADD_ITEM",
@@ -74,24 +74,26 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
         setLoading(false);
       }
     } else {
-      showNotification(
-        { message: "Барааны үлдэгдэл хүрэлцэхгүй байна.", color: "red" }
-      )
+      showNotification({
+        message: "Барааны үлдэгдэл хүрэлцэхгүй байна.",
+        color: "red",
+      });
     }
   };
 
-  const clickProduct = (data) => (e) => {
+  const clickProduct = (e) => {
     e.preventDefault();
     router.push({
       shallow: true,
       pathname: "/product/[id]",
-      query: { id: data.id, data: data },
+      query: { id: data.Id, data: data },
     });
   };
+
   return (
     <div
       key={key ? key : null}
-      onClick={clickProduct(data)}
+      onClick={(e) => clickProduct(e)}
       className={
         shouldScale
           ? "transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 hover:cursor-pointer"
@@ -169,7 +171,12 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
                   minusCount(event, data.instock);
                 }}
               >
-                <Image src="/icons/minus.svg" width={13} height={6} />
+                <Image
+                  src="/icons/minus.svg"
+                  width={13}
+                  height={6}
+                  alt="minus"
+                />
               </Button>
               <p className="text-center text-sm ml-2 mr-2 font-semibold">
                 {productCount}
@@ -182,7 +189,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
                   addCount(event, data.instock);
                 }}
               >
-                <Image src="/icons/add.svg" width={13} height={6} />
+                <Image src="/icons/add.svg" width={13} height={6} alt="add" />
               </Button>
             </div>
             <Button

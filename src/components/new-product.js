@@ -14,10 +14,10 @@ const NewProduct = () => {
         <p className="text-lg font-semibold">Шинэ бүтээгдэхүүн</p>
         <div className="flex flex-row">
           <div className="flex justify-center items-center rounded-full bg-white w-7 ">
-            <Image src="/icons/arrow-left.svg" width={10} height={22} />
+            <Image src="/icons/arrow-left.svg" width={10} height={22} alt="arrow-left" />
           </div>
           <div className="flex justify-center items-center rounded-full w-7 ml-2 bg-background-sort pl-1 ">
-            <Image src="/icons/arrow-right.svg" width={10} height={22} />
+            <Image src="/icons/arrow-right.svg" width={10} height={22} alt="arrow-right" />
           </div>
         </div>
       </div>

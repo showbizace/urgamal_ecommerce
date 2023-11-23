@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
@@ -29,7 +30,7 @@ export async function getStaticProps() {
     headers: { "Content-Type": "application/json" },
   };
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=0&limit=${PAGE_SIZE}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/product?offset=0&limit=${PAGE_SIZE}`,
     requestOption
   );
   const data = await res.json();
@@ -91,7 +92,8 @@ export default function Home({ data }) {
     error,
   } = useSWRInfinite(
     (index) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index + 1
+      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${
+        index + 1
       }&limit=${PAGE_SIZE}`,
     fetcher,
     { revalidateFirstPage: false }
@@ -100,7 +102,7 @@ export default function Home({ data }) {
   useEffect(() => {
     fetchData &&
       !isEmpty &&
-      setProducts(products.concat(...fetchData?.[fetchData.length - 1]));
+      setProducts(products?.concat(...fetchData?.[fetchData.length - 1]));
   }, [fetchData]);
 
   const isLoadingMore =
@@ -118,7 +120,7 @@ export default function Home({ data }) {
   const infiniteScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 350 >=
-      document.documentElement.offsetHeight &&
+        document.documentElement.offsetHeight &&
       !isEmpty &&
       !isReachingEnd
     )
@@ -141,8 +143,6 @@ export default function Home({ data }) {
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
-
-
 
   const getAllCategory = async () => {
     axios
@@ -226,7 +226,7 @@ export default function Home({ data }) {
                       cols={5}
                       className="mt-12"
                     />
-                  )
+                  );
                 })}
           </div>
         </div>

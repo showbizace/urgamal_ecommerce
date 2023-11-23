@@ -57,7 +57,7 @@ export default function ProductListWithCategory({
               sm:h-10 sm:w-10
               xs:h-8 xs:w-8"
             >
-              <Image src={categoryIcon} fill />
+              <Image src={categoryIcon} fill alt={categoryIcon} />
             </div>
           )}
         </div>
@@ -114,7 +114,7 @@ export default function ProductListWithCategory({
             ))}
         {data &&
           data.map((e, index) => (
-            <SwiperSlide className="rounded-md">
+            <SwiperSlide className="rounded-md" key={index}>
               <ProductCard
                 key={`product-card-key-${index}-${e.id}`}
                 shouldScale={false}
