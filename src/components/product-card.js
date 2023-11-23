@@ -31,7 +31,6 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
   };
   const addToCartHandler = async (event, data) => {
     event.stopPropagation();
-    console.log(data, "data");
     if (data.instock > 0) {
       dispatch({
         type: "CART_ADD_ITEM",

@@ -6,27 +6,28 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function PaymentModal({ context, id, innerProps }) {
+  console.log(innerProps, "innerProps");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const callInquiry = (invoiceId) => {
-    setLoading(true);
-    const userToken = getCookie("token");
-    const axiosReqOption = {
-      headers: {
-        Authorization: "Bearer " + userToken,
-        "Content-Type": "application/json",
-      },
-    };
-    axios
-      .post(
-        `${process.env.NEXT_PUBLIC_API_URL}/payment/inquire`,
-        { invoice_id: invoiceId },
-        axiosReqOption
-      )
-      .then((_) => { })
-      .catch((_) => { });
-    setLoading(false);
-  };
+  // const callInquiry = (invoiceId) => {
+  //   setLoading(true);
+  //   const userToken = getCookie("token");
+  //   const axiosReqOption = {
+  //     headers: {
+  //       Authorization: "Bearer " + userToken,
+  //       "Content-Type": "application/json",
+  //     },
+  //   };
+  //   axios
+  //     .post(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/payment/inquire`,
+  //       { invoice_id: invoiceId },
+  //       axiosReqOption
+  //     )
+  //     .then((_) => {})
+  //     .catch((_) => {});
+  //   setLoading(false);
+  // };
   return (
     <div className="flex flex-col mt-2 gap-4 items-center">
       <Tabs defaultValue="qpay" classNames={{ panel: "mt-6" }} color="yellow">
@@ -88,7 +89,7 @@ export default function PaymentModal({ context, id, innerProps }) {
         fullWidth
         loading={loading}
         onClick={() => {
-          callInquiry(innerProps.paymentData?.invoice_id);
+          // callInquiry(innerProps.paymentData?.invoice_id);
           context.closeModal(id);
           if (innerProps.shouldRedirect) {
             router.push({

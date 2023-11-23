@@ -100,6 +100,7 @@ const CartItems = (props) => {
     );
     if (res.status === 200) {
       const data = await res.json();
+      console.log(data, "data sags");
       if (data.success === true) {
         if (data.result.length > 0) setCartItem(data.result[0].cart_items);
       }
@@ -323,9 +324,8 @@ const CartItems = (props) => {
               dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
               // SuccessNotification({ message: data.message, title: "Захиалга" });
               axios
-                .post(
-                  `${process.env.NEXT_PUBLIC_API_URL}/payment`,
-                  { orderid: data.orderid },
+                .get(
+                  `${process.env.NEXT_PUBLIC_API_URL}/order/payment/${data.orderid}`,
                   axiosReqOption
                 )
                 .then((res) => {
@@ -333,7 +333,7 @@ const CartItems = (props) => {
                     modal: "payment",
                     title: "Төлбөр төлөлт",
                     innerProps: {
-                      paymentData: res.data.data,
+                      paymentData: res.data?.invoice,
                       shouldRedirect: true,
                     },
                     centered: true,

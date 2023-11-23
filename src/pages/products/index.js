@@ -22,7 +22,6 @@ const fetcher = (url) =>
 const PAGE_SIZE = 25;
 
 export async function getServerSideProps({ query }) {
-  const { q } = query;
   const requestOption = {
     method: "GET",
     headers: { "Content-Type": "application/json" },
@@ -43,6 +42,7 @@ export default function SearchResult({ initialData }) {
   const router = useRouter();
   const { q } = router.query;
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { data, mutate, size, setSize, isValidating, isLoading, error } =
     useSWRInfinite(
       (index) =>
@@ -86,30 +86,28 @@ export default function SearchResult({ initialData }) {
     window.dispatchEvent(new Event("storage"));
     setProducts(initialData);
     getAllCategory();
-    // getProduct();
   }, []);
 
   const getAllCategory = async () => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/category/all?type=separate`, {
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
-        localStorage.setItem(
-          "main",
-          JSON.stringify(response.data.data.mainCats)
-        );
-        localStorage.setItem(
-          "parent",
-          JSON.stringify(response.data.data.parentCats)
-        );
-        localStorage.setItem(
-          "child",
-          JSON.stringify(response.data.data.childCats)
-        );
-        setMain(response.data.data.mainCats);
-        setParent(response.data.data.parentCats);
-        setChild(response.data.data.childCats);
+        setMain(response.data?.result);
+        setLoading(false);
+        // setParent(response.data.data.parentCats);
+        // setChild(response.data.data.childCats);
+        // localStorage.setItem("main", JSON.stringify(response.data.result));
+        // localStorage.setItem("parent", JSON.stringify(response.data.result));
+        // localStorage.setItem(
+        //   "parent",
+        //   JSON.stringify(response.data.data.parentCats)
+        // );
+        // localStorage.setItem(
+        //   "child",
+        //   JSON.stringify(response.data.data.childCats)
+        // );
       })
       .catch((error) => {
         if (error.response) {
@@ -118,11 +116,20 @@ export default function SearchResult({ initialData }) {
       });
   };
 
+  useEffect(() => {
+    console.log(main, "main");
+  }, [main]);
+
   return (
     <GlobalLayout>
       <div className="flex w-full min-h-screen px-10 py-12 gap-6">
         <div className="min-w-[250px] w-[250px] max-w-[250px] hidden lg:block">
-          <Category parent={parent} child={child} padding="1rem" />
+          <Category
+            parent={main}
+            child={child}
+            padding="1rem"
+            loading={loading}
+          />
         </div>
         {/* <div 
           ref={parentRef}
