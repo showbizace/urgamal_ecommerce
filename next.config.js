@@ -1,10 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  env: {
-    NEXT_APP_GOOGLE_API_URL: process.env.NEXT_APP_GOOGLE_API_URL,
-  },
   images: {
-    domains: ["source.unsplash.com"],
+    domains: ["source.unsplash.com", "m.media-amazon.com"],
     remotePatterns: [
       {
         protocol: "https",

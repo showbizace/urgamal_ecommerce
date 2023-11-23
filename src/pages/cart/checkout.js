@@ -17,8 +17,6 @@ const Checkout = () => {
               Төлбөр
             </Link>
           </div>
-          <div className="w-3/5	">asd</div>
-          <div className="w-3/5	">asd</div>
         </div>
       </GlobalLayout>
     </>

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-page-custom-font */
 import Head from "next/head";
 import React, { Children, useContext, useEffect, useState } from "react";
 import Navbar from "../navbar";
@@ -14,7 +15,6 @@ export default function GlobalLayout({
   children,
   footer = true,
   title = "Таримал Ургамал ХХК",
-  address,
 }) {
   const [type, setType] = useState();
   const userContext = useContext(UserConfigContext);
@@ -59,15 +59,18 @@ export default function GlobalLayout({
           href="https://kit.fontawesome.com/af91f056ad.css"
           crossorigin="anonymous"
         />
-        <script
-          src="https://kit.fontawesome.com/af91f056ad.js"
-          crossorigin="anonymous"
-        ></script>
       </Head>
       <div className="shadow bg-white">
         {/* <Search /> */}
-        <main className="flex flex-col justify-between bg-main">
-          <Navbar getValue={getValue} />
+        <main
+          className="flex flex-col justify-between bg-main"
+          style={{
+            backgroundColor: userContext?.address?.background_color
+              ? userContext?.address?.background_color
+              : null,
+          }}
+        >
+          <Navbar getValue={getValue} address={userContext?.address} />
           {children}
           {footer && (
             <BottomFooter

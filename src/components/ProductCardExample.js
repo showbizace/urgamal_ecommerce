@@ -32,7 +32,7 @@ const ProductCardExample = ({ src, name, price, count }) => {
     <div
       className="flex flex-col justify-start items-center py-4 px-4 bg-white rounded-md"
       style={{ width: "100%", height: "330px" }}
-      onClick={() => {}}
+      onClick={() => { }}
     >
       <Image
         loader={() => src}
@@ -61,7 +61,7 @@ const ProductCardExample = ({ src, name, price, count }) => {
             style={{ padding: "10px" }}
             className="flex justify-center items-center bg-tertiary rounded-md "
           >
-            <Image width={18} height={8} src="/icons/hearth2.svg" />
+            <Image width={18} height={8} src="/icons/hearth2.svg" alt="hearth2" />
           </Button>
           <div className="flex flex-row items-center">
             <Button
@@ -73,7 +73,7 @@ const ProductCardExample = ({ src, name, price, count }) => {
                 minusCount(data.instock);
               }}
             >
-              <Image src="/icons/minus.svg" width={13} height={6} />
+              <Image src="/icons/minus.svg" width={13} height={6} alt="minus" />
             </Button>
             <p className="text-center text-sm ml-2 mr-2 font-semibold">
               {productCount}
@@ -86,7 +86,7 @@ const ProductCardExample = ({ src, name, price, count }) => {
                 addCount(data.instock);
               }}
             >
-              <Image src="/icons/add.svg" width={13} height={6} />
+              <Image src="/icons/add.svg" width={13} height={6} alt="add" />
             </Button>
           </div>
         </div>
@@ -99,6 +99,7 @@ const ProductCardExample = ({ src, name, price, count }) => {
         >
           <p className="text-sm text-white font-semibold ">Сагслах</p>
           <Image
+            alt="trolley"
             className="ml-2"
             width={18}
             height={18}

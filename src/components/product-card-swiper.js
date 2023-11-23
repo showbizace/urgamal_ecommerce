@@ -23,21 +23,21 @@ const ProductCardSwiper = ({ src, name, count, price }) => {
         <p className="font-semibold text-base mt-2">{price}</p>
         <div className="flex flex-row w-full mt-1 justify-between">
           <div className="flex justify-center items-center bg-tertiary rounded-md px-1.5 py-1 ">
-            <Image width={18} height={8} src="/icons/hearth2.svg" />
+            <Image width={18} height={8} src="/icons/hearth2.svg" alt="hearth2" />
           </div>
           <div className="flex flex-row">
             <div
               className="flex justify-center items-center border p-2 rounded-md"
               style={{ border: "1px solid #f9bc60" }}
             >
-              <Image src="/icons/minus.svg" width={15} height={6} />
+              <Image src="/icons/minus.svg" width={15} height={6} alt="minus" />
             </div>
             <p className="text-center ml-2 mr-2">5</p>
             <div
               className="flex justify-center items-center p-2 rounded-md"
               style={{ border: "1px solid #f9bc60" }}
             >
-              <Image src="/icons/add.svg" width={15} height={6} />
+              <Image src="/icons/add.svg" width={15} height={6} alt="add" />
             </div>
           </div>
         </div>
