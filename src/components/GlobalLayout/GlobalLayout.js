@@ -69,7 +69,12 @@ export default function GlobalLayout({
         <main className="flex flex-col justify-between bg-main">
           <Navbar getValue={getValue} />
           {children}
-          {footer && <BottomFooter address={userContext?.address} links={userContext?.links} />}
+          {footer && (
+            <BottomFooter
+              address={userContext?.address}
+              links={userContext?.links}
+            />
+          )}
           <BottomNavBar />
         </main>
       </div>
