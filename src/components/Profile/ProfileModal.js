@@ -77,7 +77,6 @@ function ProductModal({
       <LoadingOverlay visible={loading} overlayBlur={2} />
       <form
         onSubmit={form.onSubmit(async (values, e) => {
-          console.log(values, "inital on form");
           await onSubmit(values);
           form.setValues(initialData);
           // handleClick && handleClick();
