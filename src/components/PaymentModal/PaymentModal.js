@@ -23,8 +23,8 @@ export default function PaymentModal({ context, id, innerProps }) {
         { invoice_id: invoiceId },
         axiosReqOption
       )
-      .then((_) => {})
-      .catch((_) => {});
+      .then((_) => { })
+      .catch((_) => { });
     setLoading(false);
   };
   return (
@@ -55,9 +55,9 @@ export default function PaymentModal({ context, id, innerProps }) {
               боломжтой
             </Text>
             <div className="flex flex-wrap gap-4 justify-center">
-              {innerProps.paymentData?.urls.map((e) => {
+              {innerProps.paymentData?.urls.map((e, index) => {
                 return (
-                  <Card component="a" href={e.link} radius="lg">
+                  <Card component="a" href={e.link} radius="lg" key={index}>
                     <div
                       key={e.name}
                       className="flex flex-col gap-2 w-14 max-w-14 justify-center items-center"

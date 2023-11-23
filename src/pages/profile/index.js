@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Image from "next/image";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import {
@@ -10,15 +11,8 @@ import {
   Tabs,
   TextInput,
 } from "@mantine/core";
-import ProfileTabs from "../../components/ProfileTab";
 import { useContext, useEffect, useState } from "react";
-import $ from "jquery";
-import ProfileInfo from "./tabs/ProfileInfo";
-import EmailPhone from "./tabs/EmailPhone";
-import UserLocation from "./tabs/UserLocation";
-import SavedOrder from "./tabs/SavedOrder";
 import MyOrder from "./tabs/MyOrder";
-import PurchaseHistory from "./tabs/PurchaseHistory";
 import { getCookie, removeCookies } from "cookies-next";
 import { useRouter } from "next/router";
 import {
@@ -49,6 +43,7 @@ const Profile = () => {
     window.addEventListener("resize", updateSize);
     return () => window.removeEventListener("resize", updateSize);
   }, []);
+
   useEffect(() => {
     const { cr } = router.query;
     if (cr && cr === "order") {

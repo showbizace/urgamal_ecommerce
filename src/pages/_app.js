@@ -8,8 +8,11 @@ import LoginModal from "@/components/LoginModal/LoginModal";
 import { UserConfigProvider } from "@/utils/userConfigProvider";
 import CategoryContextProvider from "@/utils/categoryContext";
 import PaymentModal from "@/components/PaymentModal/PaymentModal";
+import { useMantineTheme } from '@mantine/core';
 
 export default function App({ Component, pageProps }) {
+  const theme = useMantineTheme();
+
   return (
     <MantineProvider
       withCSSVariables
@@ -29,7 +32,9 @@ export default function App({ Component, pageProps }) {
         <ModalsProvider modals={{ login: LoginModal, payment: PaymentModal }}>
           <CategoryContextProvider>
             <StoreProvider>
-              <Component {...pageProps} />
+              <div style={{ background: theme.colors.blue[5] }}>
+                <Component {...pageProps} />
+              </div>
             </StoreProvider>
           </CategoryContextProvider>
         </ModalsProvider>

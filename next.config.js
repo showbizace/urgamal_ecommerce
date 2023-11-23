@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  env: {
-    NEXT_PUBLIC_API_KEY: "dasdasdasd",
-  },
   images: {
+    domains: ["source.unsplash.com", "m.media-amazon.com"],
     remotePatterns: [
       {
         protocol: "https",

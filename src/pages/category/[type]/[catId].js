@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -17,7 +18,7 @@ const fetcher = (url) =>
     .then((res) => {
       return res.data.data;
     })
-    .catch((error) => {});
+    .catch((error) => { });
 const PAGE_SIZE = 10;
 
 export async function getServerSideProps({ query }) {
@@ -28,10 +29,8 @@ export async function getServerSideProps({ query }) {
   };
   try {
     const res = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_API_URL
-      }/product/local?offset=0&limit=${PAGE_SIZE}&${type}_cat_id=${
-        catId !== "undefined" ? catId : 0
+      `${process.env.NEXT_PUBLIC_API_URL
+      }/product/local?offset=0&limit=${PAGE_SIZE}&${type}_cat_id=${catId !== "undefined" ? catId : 0
       }`,
       requestOption
     );
@@ -95,6 +94,7 @@ const CategoryPage = ({ initialData }) => {
     () => getCurrentCategoryPath(parent, child),
     [parent, child, router.asPath]
   );
+
   const { data, mutate, size, setSize, isValidating, isLoading, error } =
     useSWRInfinite(
       (index) => {
@@ -132,7 +132,7 @@ const CategoryPage = ({ initialData }) => {
   const infiniteScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 350 >=
-        document.documentElement.offsetHeight &&
+      document.documentElement.offsetHeight &&
       !isEmpty &&
       !isReachingEnd
     )
@@ -189,7 +189,7 @@ const CategoryPage = ({ initialData }) => {
   return (
     <GlobalLayout>
       <div>
-        <div className="px-4 md:px-10 bg-main h-full">
+        <div className="px-4 md:px-10 h-full">
           <div className="h-full flex flex-row py-6 md:py-12 justify-between gap-10">
             <div className="min-w-[250px] w-[250px] max-w-[250px] hidden lg:block">
               <Category
@@ -234,6 +234,7 @@ const CategoryPage = ({ initialData }) => {
                     height={13}
                     src={"/icons/arrow-down-outline.svg"}
                     className="ml-2 mt-1"
+                    alt="arrow-down"
                   />
                 </div>
               </div>
@@ -245,8 +246,8 @@ const CategoryPage = ({ initialData }) => {
                   type === "parent"
                     ? parent.find((e) => e.id === catId)?.name
                     : type === "child"
-                    ? parent.find((e) => e.id === catId)?.name
-                    : ""
+                      ? parent.find((e) => e.id === catId)?.name
+                      : ""
                 }
               >
                 {products.map((e, index) => (

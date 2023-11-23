@@ -8,9 +8,8 @@ const CollapseItem = ({ data, total, orderItems }) => {
     >
       <div className="flex flex-col p-4">
         <div className="flex flex-col">
-          {console.log(orderItems, "orderITems")}
-          {orderItems.map((e) => (
-            <div className="flex flex-row mb-2 h-[90px]">
+          {orderItems.map((e, index) => (
+            <div className="flex flex-row mb-2 h-[90px]" key={index}>
               <Image
                 alt={e.product?.name}
                 loader={() => e.product?.image}

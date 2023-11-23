@@ -32,6 +32,7 @@ const Banner = () => {
           <Carousel.Slide>
             <div className="relative w-full h-full">
               <Image
+                alt="banner"
                 src="/banner.png"
                 fill
                 className="rounded object-fill md:object-contain top-0 max-h-full"
@@ -42,6 +43,7 @@ const Banner = () => {
           <Carousel.Slide>
             <div className="relative w-full h-full">
               <Image
+                alt="banner2"
                 src="/banner2.png"
                 fill
                 className="rounded object-fill md:object-contain top-0 max-h-full"

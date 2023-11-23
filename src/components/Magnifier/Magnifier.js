@@ -16,6 +16,7 @@ function Magnifier({ imgSrc, imgHeight, imgWidth, magnifierRadius }) {
   return (
     <div style={{ position: "relative" }}>
       <Image
+        alt={imgSrc}
         src={imgSrc}
         // Set the intrinsic width of the element (optional).
         width={imgWidth}
