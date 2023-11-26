@@ -18,7 +18,7 @@ export async function getServerSideProps({ params }) {
   const data = await res.json();
   return {
     props: {
-      product: data.product,
+      product: data,
     },
   };
 }
@@ -26,6 +26,7 @@ export async function getServerSideProps({ params }) {
 const ProductDetail = ({ product }) => {
   const { state, dispatch } = useContext(Store);
   const [loading, setLoading] = useState(false);
+  const [categoryLoading, setCategoryLoading] = useState(true);
   const [main, setMain] = useState();
   const [parent, setParent] = useState();
   const [child, setChild] = useState();
@@ -44,7 +45,7 @@ const ProductDetail = ({ product }) => {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify({
-        product_id: product.Id,
+        product_id: product.product.Id,
         quantity: 1,
       }),
     };
@@ -53,7 +54,7 @@ const ProductDetail = ({ product }) => {
 
     SuccessNotification({
       message: "Сагсанд амжилттай орлоо!",
-      title: `${product?.Name}`,
+      title: `${product?.product?.Name}`,
     });
     setLoading(false);
   };
@@ -63,25 +64,27 @@ const ProductDetail = ({ product }) => {
   };
   const getAllCategory = async () => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/category/all?type=separate`, {
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
-        localStorage.setItem(
-          "main",
-          JSON.stringify(response.data.data.mainCats)
-        );
-        localStorage.setItem(
-          "parent",
-          JSON.stringify(response.data.data.parentCats)
-        );
-        localStorage.setItem(
-          "child",
-          JSON.stringify(response.data.data.childCats)
-        );
-        setMain(response.data.data.mainCats);
-        setParent(response.data.data.parentCats);
-        setChild(response.data.data.childCats);
+        setMain(response.data?.result);
+        setCategoryLoading(false);
+        // localStorage.setItem(
+        //   "main",
+        //   JSON.stringify(response.data.data.mainCats)
+        // );
+        // localStorage.setItem(
+        //   "parent",
+        //   JSON.stringify(response.data.data.parentCats)
+        // );
+        // localStorage.setItem(
+        //   "child",
+        //   JSON.stringify(response.data.data.childCats)
+        // );
+        // setMain(response.data.data.mainCats);
+        // setParent(response.data.data.parentCats);
+        // setChild(response.data.data.childCats);
       })
       .catch((error) => {
         if (error.response) {
@@ -169,7 +172,12 @@ const ProductDetail = ({ product }) => {
       <div className="flex flex-col w-full min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 lg:py-12  items-start py-4 px-4 ">
         <div className="flex w-full lg:gap-20 justify-start ">
           <div className="hidden lg:block">
-            <Category parent={parent} child={child} padding={20} />
+            <Category
+              parent={main}
+              child={child}
+              padding={"1rem"}
+              loading={categoryLoading}
+            />
           </div>
           <div className="flex lg:gap-14 gap-4 justify-center xl:flex-row lg:flex-col md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
             <div className="flex flex-col">
@@ -243,14 +251,17 @@ const ProductDetail = ({ product }) => {
             <div className="flex flex-col justify-between lg:gap-6">
               <div className="flex flex-col gap-6">
                 <div className="lg:text-2xl text-lg font-semibold">
-                  {product?.Name}
+                  {product?.product?.Name}
                 </div>
                 <div className="flex font-semibold gap-2">
                   <span className="text-greenish-grey text-base">
                     Ширхэгийн үнэ:
                   </span>
                   <span className="text-base">
-                    {Intl.NumberFormat("mn-MN").format(product?.price)}₮
+                    {Intl.NumberFormat("mn-MN").format(
+                      product?.prices[0]?.ListPrice
+                    )}
+                    ₮
                   </span>
                 </div>
                 <div className="flex font-semibold gap-2">
@@ -259,25 +270,31 @@ const ProductDetail = ({ product }) => {
                   </span>
                   <span className="text-greenish-grey line-through text-base ">
                     {" "}
-                    {Intl.NumberFormat("mn-MN").format(product.price)}₮
+                    {Intl.NumberFormat("mn-MN").format(
+                      product.prices[0]?.ListPrice
+                    )}
+                    ₮
                   </span>
                   <span className="text-greenish-grey text-base "> / </span>
                   <span className="text-base">
                     {" "}
-                    {Intl.NumberFormat("mn-MN").format(product.promo_price)}₮
+                    {Intl.NumberFormat("mn-MN").format(
+                      product.prices[0]?.WholePrice
+                    )}
+                    ₮
                   </span>
                 </div>
                 <div className="flex font-semibold  gap-2 items-center">
                   <span className="text-greenish-grey text-base  ">
                     Үлдэгдэл:
                   </span>
-                  {product.instock > 10 ? (
+                  {product?.balances[0]?.Qty > 10 ? (
                     <Badge color="teal">Хангалттай</Badge>
-                  ) : product.instock == 0 ? (
+                  ) : product?.balances[0]?.Qty == 0 ? (
                     <Badge color="yellow">Үлдэгдэлгүй</Badge>
                   ) : (
                     <span className="text-greenish-grey text-base  ">
-                      {product.instock} {product.unit}
+                      {product?.balances[0]?.Qty} {product.unit}
                     </span>
                   )}
                 </div>
@@ -299,6 +316,11 @@ const ProductDetail = ({ product }) => {
                         {product.child_cat_id?.[0].name}
                       </span>
                     )}
+                    <span className="text-base	">
+                      {product.product?.CategoryName +
+                        " " +
+                        product.product?.GroupName}
+                    </span>
                   </div>
                 </div>
                 {product.instruction ? (

@@ -198,14 +198,13 @@ const CartItems = (props) => {
         const index = newArr.indexOf(e);
         delete newArr[index];
         cartId = e.cartid;
-        removedArr.push({ productid: e.productid });
+        removedArr.push(e.id);
         check = false;
       }
     });
     let temp = [];
-
     if (check === true) {
-      showNotification({
+      return showNotification({
         message: "Устгах бараа сонгоно уу",
         color: "red",
       });
@@ -225,11 +224,14 @@ const CartItems = (props) => {
           myHeaders.append("Authorization", "Bearer " + userToken);
           myHeaders.append("Content-Type", "application/json");
           const requestOption = {
-            method: "GET",
+            method: "DELETE",
             headers: myHeaders,
+            body: JSON.stringify({
+              cart_id: cartId,
+            }),
           };
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/cart/empty`,
+            `${process.env.NEXT_PUBLIC_API_URL}/cart/whole`,
             requestOption
           );
           if (res.status === 200) {
@@ -245,14 +247,14 @@ const CartItems = (props) => {
           var myHeaders = new Headers();
           myHeaders.append("Authorization", "Bearer " + userToken);
           myHeaders.append("Content-Type", "application/json");
-          let data = { cartid: cartId, data: removedArr };
+          let data = { cart_id: cartId, cart_item_id: removedArr };
           const requestOption = {
-            method: "POST",
+            method: "DELETE",
             headers: myHeaders,
             body: JSON.stringify(data),
           };
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/cart/item/remove`,
+            `${process.env.NEXT_PUBLIC_API_URL}/cart`,
             requestOption
           );
           if (res.status === 200) {
@@ -491,17 +493,17 @@ const CartItems = (props) => {
         myHeaders.append("Authorization", "Bearer " + userToken);
         myHeaders.append("Content-Type", "application/json");
         const requestOption = {
-          method: "POST",
+          method: "PUT",
           headers: myHeaders,
           body: JSON.stringify({
-            productid: product.productid,
+            cart_item_id: product.id,
             quantity: count,
-            cartid: product.cartid,
+            cart_id: product.cartid,
           }),
         };
         if (userToken) {
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
+            `${process.env.NEXT_PUBLIC_API_URL}/cart`,
             requestOption
           );
 
@@ -545,17 +547,17 @@ const CartItems = (props) => {
         myHeaders.append("Authorization", "Bearer " + userToken);
         myHeaders.append("Content-Type", "application/json");
         const requestOption = {
-          method: "POST",
+          method: "PUT",
           headers: myHeaders,
           body: JSON.stringify({
-            productid: product.productid,
+            cart_item_id: product.id,
             quantity: count,
-            cartid: product.cartid,
+            cart_id: product.cartid,
           }),
         };
         if (userToken) {
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
+            `${process.env.NEXT_PUBLIC_API_URL}/cart`,
             requestOption
           );
           if (res.status === 200) {

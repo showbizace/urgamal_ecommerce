@@ -1,12 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import BottomFooter from "@/components/Footer";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
-import MySkeleton from "@/components/MySkeleton";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
 import Category from "@/components/category";
 import ProductCard from "@/components/product-card";
-import { Grid, Group, SimpleGrid, Stack, Text } from "@mantine/core";
-import { IconSearch, IconSearchOff } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { Suspense, useEffect, useRef, useState } from "react";
