@@ -13,14 +13,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Drawer, ScrollArea, Text } from "@mantine/core";
 import useSWR from "swr";
 import AllCategory from "./AllCategory/AllCategory";
-
-const fetcher = (url) =>
-  axios
-    .get(url, { headers: { "Content-Type": "application/json" } })
-    .then((res) => {
-      return res.data.data;
-    })
-    .catch((error) => console.log(error));
+import { fetcher } from "@/utils/fetch";
 
 const BottomNavBar = () => {
   const router = useRouter();

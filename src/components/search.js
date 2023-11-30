@@ -7,12 +7,7 @@ import axios from "axios";
 import useSWR from "swr";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconCategory, IconPackage, IconSearch } from "@tabler/icons-react";
-
-const fetcher = (url) =>
-  axios
-    .get(url)
-    .then((res) => res.data.data)
-    .catch(() => {});
+import { fetcher } from "@/utils/fetch";
 
 const Search = () => {
   const router = useRouter();

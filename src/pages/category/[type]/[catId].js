@@ -130,9 +130,15 @@ const CategoryPage = ({ initialData }) => {
     setLoading(true);
     window.dispatchEvent(new Event("storage"));
     setProducts(initialData);
-    getAllCategory();
+    fetchCategory();
     setLoading(false);
   }, []);
+
+  const fetchCategory = async () => {
+    const data = await getCategory();
+    setMain(data);
+    setLoading(false);
+  };
 
   const infiniteScroll = () => {
     if (

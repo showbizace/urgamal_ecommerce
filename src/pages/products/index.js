@@ -3,32 +3,16 @@ import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
 import Category from "@/components/category";
 import ProductCard from "@/components/product-card";
-import axios from "axios";
+import { fetchMethod, fetcher, getCategory } from "@/utils/fetch";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 // import { Virtuoso, VirtuosoGrid } from "react-virtuoso";
 import useSWRInfinite from "swr/infinite";
-const fetcher = (url) =>
-  axios
-    .get(url, { headers: { "Content-Type": "application/json" } })
-    .then((res) => {
-      return res.data.data;
-    })
-    .catch((error) => {});
 
 const PAGE_SIZE = 15;
 
 export async function getServerSideProps() {
-  const requestOption = {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  };
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/product`,
-    requestOption
-  );
-
-  const data = await res.json();
+  const data = await fetchMethod("GET", "product");
   return {
     props: {
       initialData: data?.data?.result,
@@ -81,33 +65,13 @@ export default function SearchResult({ initialData }) {
   useEffect(() => {
     window.dispatchEvent(new Event("storage"));
     setProducts(initialData);
-    getAllCategory();
+    fetchCategory();
   }, []);
 
-  const getAllCategory = async () => {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, {
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((response) => {
-        setMain(response.data?.result);
-        setLoading(false);
-        // setParent(response.data.data.parentCats);
-        // setChild(response.data.data.childCats);
-        // localStorage.setItem("main", JSON.stringify(response.data.result));
-        // localStorage.setItem("parent", JSON.stringify(response.data.result));
-        // localStorage.setItem(
-        //   "parent",
-        //   JSON.stringify(response.data.data.parentCats)
-        // );
-        // localStorage.setItem(
-        //   "child",
-        //   JSON.stringify(response.data.data.childCats)
-        // );
-      })
-      .catch((error) => {
-        console.log(error, "error ");
-      });
+  const fetchCategory = async () => {
+    const data = await getCategory();
+    setMain(data);
+    setLoading(false);
   };
 
   return (

@@ -1,12 +1,7 @@
 const { createContext, useState } = require("react");
 import axios from "axios";
 import useSWR from "swr";
-
-const fetcher = (url) =>
-  axios
-    .get(url)
-    .then((res) => res.data.data)
-    .catch((error) => {});
+import { fetcher } from "./fetch";
 
 export const CategoryContext = createContext();
 

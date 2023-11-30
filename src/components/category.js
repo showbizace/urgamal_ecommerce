@@ -61,7 +61,7 @@ const Category = ({
                 }}
               >
                 {parent &&
-                  parent.map((el, index) => {
+                  parent?.map((el, index) => {
                     return (
                       <Collapse
                         key={index}

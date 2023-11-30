@@ -34,12 +34,8 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { CategoryContext } from "@/utils/categoryContext";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { isMobile } from "react-device-detect";
+import { fetcher } from "@/utils/fetch";
 
-const fetcher = (url) =>
-  axios
-    .get(url)
-    .then((res) => res.data.data)
-    .catch(() => {});
 const cookie = getCookie("token");
 const Navbar = (props) => {
   const { address } = props;
@@ -108,7 +104,7 @@ const Navbar = (props) => {
     );
   });
   const [cartItem, setCartItem] = useState([]);
-  const [quantity, setQuantity] = useState(0);
+  const [unitProduct, setUnitProduct] = useState(0);
   const [showSearch, setShowSearch] = useState(false);
   const [cartData, setCartData] = useState("");
   const route = useRouter();
@@ -128,7 +124,7 @@ const Navbar = (props) => {
       let total = 0;
       localStorageCart.cart.cartItems.forEach((e) => {
         if (e !== null) {
-          sum = sum + e.quantity;
+          sum = sum + e.unitProduct;
           if (e.totalPrice !== undefined && e.totalPrice !== null) {
             total = total + parseInt(e.totalPrice);
           } else {
@@ -136,7 +132,7 @@ const Navbar = (props) => {
           }
         }
       });
-      setQuantity(sum);
+      setUnitProduct(sum);
       setTotal(total);
     }
   };
@@ -351,7 +347,7 @@ const Navbar = (props) => {
               />
               <div className="absolute">
                 <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
-                  <p className="text-sm-5">{quantity}</p>
+                  <p className="text-sm-5">{unitProduct}</p>
                 </div>
               </div>
             </Button>

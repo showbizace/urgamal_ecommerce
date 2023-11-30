@@ -35,7 +35,7 @@ import { UserConfigContext } from "@/utils/userConfigContext";
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
   const router = useRouter();
-  const { state, dispatch } = useContext(Store);
+  const { _, dispatch } = useContext(Store);
   const { auth } = useContext(UserConfigContext);
   const [cartItem, setCartItem] = useState();
   const [checked, setChecked] = useState(false);
@@ -52,44 +52,36 @@ const CartItems = (props) => {
     router.push("/");
   };
 
-  const handleSelectAll = (e) => {
+  const handleSelectAll = () => {
     setIsCheckAll(!isCheckAll);
-    let arr = [];
-    if (isCheckAll === true) {
-      cartItem.forEach((e) => {
-        let clone = { ...e };
-        clone["isChecked"] = false;
-        arr.push(clone);
-      });
-      setCartItem(arr);
-    } else {
-      cartItem.forEach((e) => {
-        let clone = { ...e };
-        clone["isChecked"] = true;
-        arr.push(clone);
-      });
-      setCartItem(arr);
-    }
+    const newData = cartItem.map((item) => {
+      if (isCheckAll) {
+        item.isChecked = false;
+        return item;
+      } else {
+        item.isChecked = true;
+        return item;
+      }
+    });
+    setCartItem(newData);
   };
 
   const totalPrice = () => {
     let sum = 0;
-    if (cartItem !== undefined) {
+    if (cartItem) {
       cartItem.map((item) => {
         if (item.totalPrice) sum = sum + parseInt(item.totalPrice);
-        else {
-          sum = sum + parseInt(item.total);
-        }
+        else sum = sum + parseInt(item.total);
       });
     }
     return <span>{sum}₮</span>;
   };
 
   const getUserCartItem = async (token) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    myHeaders.append("Content-Type", "application/json");
-    const temp = [];
+    const myHeaders = {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    };
     const requestOption = {
       method: "GET",
       headers: myHeaders,
@@ -100,11 +92,13 @@ const CartItems = (props) => {
     );
     if (res.status === 200) {
       const data = await res.json();
+      console.log(data, "data");
       if (data.success === true) {
-        if (data.result.length > 0) setCartItem(data.result[0].cart_items);
+        if (data.result.length > 0) setCartItem(data.result[0]);
       }
     }
   };
+
   const addToCartMultiple = async (arr, token) => {
     var myHeaders = new Headers();
 
@@ -129,7 +123,6 @@ const CartItems = (props) => {
       .then(async (res) => {
         if (res.status === 200) {
           const data = await res.json();
-          setCookie("addCart", false);
         }
       })
       .catch((err) => console.log(err, "err"));
@@ -159,12 +152,11 @@ const CartItems = (props) => {
         setCartItem(arr);
       }
       const token = getCookie("token");
-      const addToCart = getCookie("addCart");
       setUserToken(token);
 
       if (token !== undefined && token !== null && token !== "") {
         setAddressVisible(true);
-        if (addToCart === true) {
+        if (data?.length > 0) {
           addToCartMultiple(arr, token);
           getUserCartItem(token);
         } else {
@@ -596,8 +588,7 @@ const CartItems = (props) => {
   );
 
   const rows =
-    cartItem !== null &&
-    cartItem !== undefined &&
+    cartItem &&
     cartItem.map((item, idx) => {
       if (item !== undefined) {
         return (
@@ -878,11 +869,6 @@ const CartItems = (props) => {
             </div>
           </div>
         </div>
-        {/* <div className="mt-20">
-            <div>
-              <span>Санал Болгох Бүтээгдэхүүн</span>
-            </div>
-          </div> */}
       </div>
     </GlobalLayout>
   );

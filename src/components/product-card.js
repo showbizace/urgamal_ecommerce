@@ -1,71 +1,59 @@
 import Image from "next/image";
-
 import { Text, Button, LoadingOverlay, Badge, ThemeIcon } from "@mantine/core";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Store } from "../utils/Store";
 import { getCookie } from "cookies-next";
-import { notifications, showNotification } from "@mantine/notifications";
-import { IconCheck, IconPhotoOff } from "@tabler/icons-react";
+import { showNotification } from "@mantine/notifications";
+import { IconPhotoOff } from "@tabler/icons-react";
 import { SuccessNotification } from "../utils/SuccessNotification";
 import { useRouter } from "next/router";
+import { fetchMethod } from "@/utils/fetch";
+
 const ProductCard = ({ key, src, data, shouldScale = true }) => {
   const [productCount, setProductCount] = useState(1);
   const { state, dispatch } = useContext(Store);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const addCount = (event, count) => {
+  const addCount = (event) => {
     event.stopPropagation();
-    if (count - productCount > 0) {
-      setProductCount(productCount + 1);
-    } else {
-    }
+    if (data?.Balance - productCount > 0) setProductCount(productCount + 1);
+    else
+      showNotification({
+        message: "Барааны үлдэгдэл хүрэлцэхгүй байна.",
+        color: "red",
+      });
   };
 
   const minusCount = (event) => {
     event.stopPropagation();
-    if (productCount > 1) {
-      setProductCount(productCount - 1);
-    } else {
-    }
+    if (productCount > 1) setProductCount(productCount - 1);
   };
-  const addToCartHandler = async (event, data) => {
+
+  const addToCartHandler = async (event) => {
     event.stopPropagation();
-    if (data.Balance > 0) {
-      dispatch({
-        type: "CART_ADD_ITEM",
-        payload: { ...data, quantity: 1, purchaseCount: productCount },
-      });
+    const token = getCookie("token");
+    if (productCount <= data.Balance) {
       setLoading(true);
-      const token = getCookie("token");
-      if (token !== undefined && token !== null && token !== "") {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer " + token);
-        myHeaders.append("Content-Type", "application/json");
-        const requestOption = {
-          method: "POST",
-          headers: myHeaders,
-          body: JSON.stringify({
-            item_id: data.id,
-            qty: productCount,
-            businessId: "local_test",
-          }),
+      if (token) {
+        const body = {
+          product_id: data.Id,
+          quantity: productCount,
         };
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/cart/add/local`,
-          requestOption
-        );
-        if (res.status === 200) {
-          const data = await res.json();
-          if (data.success === true) {
-            SuccessNotification({
-              message: "Сагсанд амжилттай орлоо!",
-              title: "Сагс",
-            });
-            setLoading(false);
-          }
+        const fetchData = await fetchMethod("POST", "cart/add", token, body);
+        if (fetchData?.success) {
+          setLoading(true);
+          SuccessNotification({
+            message: "Сагсанд амжилттай орлоо!",
+            title: "Сагс",
+          });
+          setLoading(false);
         }
       } else {
+        dispatch({
+          type: "CART_ADD_ITEM",
+          payload: { ...data, unitProduct: 1, purchaseCount: productCount },
+        });
         SuccessNotification({
           message: "Сагсанд амжилттай орлоо!",
           title: "Сагс",
@@ -163,9 +151,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
                   className="flex justify-center items-center border rounded-md"
                   color={"#f9bc60"}
                   style={{ border: "1px solid #f9bc60", padding: "10px" }}
-                  onClick={(event) => {
-                    minusCount(event, data.Balance);
-                  }}
+                  onClick={(event) => minusCount(event)}
                 >
                   <Image
                     src="/icons/minus.svg"
@@ -181,9 +167,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
                   variant={"outline"}
                   className="flex justify-center items-center rounded-md"
                   style={{ border: "1px solid #f9bc60", padding: "10px" }}
-                  onClick={(event) => {
-                    addCount(event, data.Balance);
-                  }}
+                  onClick={(event) => addCount(event)}
                 >
                   <Image src="/icons/add.svg" width={13} height={6} alt="add" />
                 </Button>
@@ -192,7 +176,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
                 variant={"filled"}
                 className="bg-button-yellow rounded-md  hover:cursor-pointer"
                 color={"orange"}
-                onClick={(event) => addToCartHandler(event, data)}
+                onClick={(event) => addToCartHandler(event)}
               >
                 {loading === true ? (
                   <LoadingOverlay

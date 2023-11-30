@@ -1,4 +1,4 @@
-import Image from "next/image";
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useContext, useState } from "react";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import { AiOutlineShoppingCart } from "react-icons/ai";
@@ -8,14 +8,11 @@ import { getCookie } from "cookies-next";
 import { SuccessNotification } from "../../utils/SuccessNotification";
 import { IconHeart, IconPhotoOff } from "@tabler/icons-react";
 import Category from "@/components/category";
-import axios from "axios";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
+import { fetchMethod, getCategory } from "@/utils/fetch";
 
 export async function getServerSideProps({ params }) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/product/id/${params.id}`
-  );
-  const data = await res.json();
+  const data = await fetchMethod("GET", `product/id/${params.id}`);
   return {
     props: {
       product: data,
@@ -24,7 +21,7 @@ export async function getServerSideProps({ params }) {
 }
 
 const ProductDetail = ({ product }) => {
-  const { state, dispatch } = useContext(Store);
+  const { _, dispatch } = useContext(Store);
   const [loading, setLoading] = useState(false);
   const [categoryLoading, setCategoryLoading] = useState(true);
   const [main, setMain] = useState();
@@ -34,75 +31,86 @@ const ProductDetail = ({ product }) => {
 
   const addToCartHandler = async () => {
     setLoading(true);
-    const newData = {
-      ...product?.product,
-      Balance: product?.balances[0]?.Qty,
-      ListPrice: product?.prices[0]?.ListPrice,
-    };
-    dispatch({
-      type: "CART_ADD_ITEM",
-      payload: { ...newData, quantity: 1, purchaseCount: 1 },
-    });
     const token = getCookie("token");
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    myHeaders.append("Content-Type", "application/json");
-    const requestOption = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify({
+    if (token) {
+      const body = {
         product_id: product.product.Id,
         quantity: 1,
-      }),
-    };
-
-    if (token) {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add`, requestOption);
+      };
+      const fetchData = await fetchMethod("POST", "cart/add", token, body);
+      if (fetchData?.success) {
+        setLoading(true);
+        SuccessNotification({
+          message: "Сагсанд амжилттай орлоо!",
+          title: "Сагс",
+        });
+        setLoading(false);
+      }
+    } else {
+      const newData = {
+        ...product?.product,
+        Balance: product?.balances[0]?.Qty,
+        ListPrice: product?.prices[0]?.ListPrice,
+      };
+      dispatch({
+        type: "CART_ADD_ITEM",
+        payload: { ...newData, unitProduct: 1, purchaseCount: 1 },
+      });
+      SuccessNotification({
+        message: "Сагсанд амжилттай орлоо!",
+        title: "Сагс",
+      });
+      setLoading(false);
     }
-
-    SuccessNotification({
-      message: "Сагсанд амжилттай орлоо!",
-      title: `${product?.product?.Name}`,
-    });
-    setLoading(false);
   };
+  // const addToCartHandler = async () => {
+  //   setLoading(true);
+  //   const newData = {
+  //     ...product?.product,
+  //     Balance: product?.balances[0]?.Qty,
+  //     ListPrice: product?.prices[0]?.ListPrice,
+  //   };
+  //   dispatch({
+  //     type: "CART_ADD_ITEM",
+  //     payload: { ...newData, unitProduct: 1, purchaseCount: 1 },
+  //   });
+  //   const token = getCookie("token");
+  //   var myHeaders = new Headers();
+  //   myHeaders.append("Authorization", "Bearer " + token);
+  //   myHeaders.append("Content-Type", "application/json");
+  //   const requestOption = {
+  //     method: "POST",
+  //     headers: myHeaders,
+  //     body: JSON.stringify({
+  //       product_id: product.product.Id,
+  //       quantity: 1,
+  //     }),
+  //   };
+
+  //   if (token) {
+  //     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add`, requestOption);
+  //   }
+
+  //   SuccessNotification({
+  //     message: "Сагсанд амжилттай орлоо!",
+  //     title: `${product?.product?.Name}`,
+  //   });
+  //   setLoading(false);
+  // };
 
   const clickImage = (item) => {
     setRenderImage(item);
   };
-  const getAllCategory = async () => {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, {
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((response) => {
-        setMain(response.data?.result);
-        setCategoryLoading(false);
-        // localStorage.setItem(
-        //   "main",
-        //   JSON.stringify(response.data.data.mainCats)
-        // );
-        // localStorage.setItem(
-        //   "parent",
-        //   JSON.stringify(response.data.data.parentCats)
-        // );
-        // localStorage.setItem(
-        //   "child",
-        //   JSON.stringify(response.data.data.childCats)
-        // );
-        // setMain(response.data.data.mainCats);
-        // setParent(response.data.data.parentCats);
-        // setChild(response.data.data.childCats);
-      })
-      .catch((error) => {
-        if (error.response) {
-        } else {
-        }
-      });
-  };
+
   useEffect(() => {
-    getAllCategory();
+    fetchCategory();
   }, []);
+
+  const fetchCategory = async () => {
+    const data = await getCategory();
+    setMain(data);
+    setCategoryLoading(false);
+  };
 
   function ImageMagnifier({
     src,
@@ -115,33 +123,6 @@ const ProductDetail = ({ product }) => {
     const [showMagnifier, setShowMagnifier] = useState(false);
     return (
       <div className="relative w-full h-full overflow-hidden">
-        {/* <Image
-          src={src}
-          className="w-full h-full"
-          fill
-          onMouseEnter={(e) => {
-            // update image size and turn-on magnifier
-            const elem = e.currentTarget;
-            const { width, height } = elem.getBoundingClientRect();
-            setSize([width, height]);
-            setShowMagnifier(true);
-          }}
-          onMouseMove={(e) => {
-            // update cursor position
-            const elem = e.currentTarget;
-            const { top, left, width, height } = elem.getBoundingClientRect();
-            console.log(width);
-            // calculate cursor position on the image
-            const x = e.pageX - left - window.pageXOffset;
-            const y = e.pageY - top - window.pageYOffset;
-            setXY([x, y]);
-          }}
-          onMouseLeave={() => {
-            // close magnifier
-            setShowMagnifier(false);
-          }}
-          alt={"img"}
-        /> */}
         <div
           style={{
             display: showMagnifier ? "" : "none",
@@ -279,7 +260,7 @@ const ProductDetail = ({ product }) => {
                   <span className="text-greenish-grey line-through text-base ">
                     {" "}
                     {Intl.NumberFormat("mn-MN").format(
-                      product.prices[0]?.ListPrice
+                      product?.prices[0]?.ListPrice
                     )}
                     ₮
                   </span>
@@ -287,7 +268,7 @@ const ProductDetail = ({ product }) => {
                   <span className="text-base">
                     {" "}
                     {Intl.NumberFormat("mn-MN").format(
-                      product.prices[0]?.WholePrice
+                      product?.prices[0]?.WholePrice
                     )}
                     ₮
                   </span>
@@ -302,28 +283,13 @@ const ProductDetail = ({ product }) => {
                     <Badge color="yellow">Үлдэгдэлгүй</Badge>
                   ) : (
                     <span className="text-greenish-grey text-base  ">
-                      {product?.balances[0]?.Qty} {product.unit}
+                      {product?.balances[0]?.Qty}
                     </span>
                   )}
                 </div>
                 <div className="flex gap-2 font-semibold text-base flex-row ">
                   <span className="text-greenish-grey text-base ">Төрөл:</span>
                   <div className="flex flex-row gap-3 lg:flex-col">
-                    {product.main_cat_id && (
-                      <span className="text-base">
-                        {product.main_cat_id?.[0].name},{" "}
-                      </span>
-                    )}
-                    {product.parent_cat_id && (
-                      <span className="text-base">
-                        {product.parent_cat_id?.[0].name},{" "}
-                      </span>
-                    )}
-                    {product.child_cat_id && (
-                      <span className="text-base	">
-                        {product.child_cat_id?.[0].name}
-                      </span>
-                    )}
                     <span className="text-base	">
                       {product.product?.CategoryName +
                         " " +
@@ -331,7 +297,7 @@ const ProductDetail = ({ product }) => {
                     </span>
                   </div>
                 </div>
-                {product.instruction ? (
+                {product?.instruction && (
                   <div className="flex flex-col gap-4">
                     <span className="flex font-semibold text-greenish-grey text-base">
                       Хэрэглэх заавар
@@ -344,8 +310,6 @@ const ProductDetail = ({ product }) => {
                       value={product.instruction}
                     ></textarea>
                   </div>
-                ) : (
-                  <div></div>
                 )}
               </div>
 
@@ -391,7 +355,7 @@ const ProductDetail = ({ product }) => {
         <div className="w-full flex flex-col ">
           <ProductListWithCategory
             key={`recommended-list-${product?.name}`}
-            categoryId={product.parent_cat_id?.[0].id}
+            categoryId={product?.parent_cat_id?.[0]?.id}
             categoryName={"Санал болгож буй бүтээгдэхүүнүүд"}
             className="mt-12 "
           />
