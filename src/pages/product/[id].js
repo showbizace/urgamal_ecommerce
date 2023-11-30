@@ -31,11 +31,17 @@ const ProductDetail = ({ product }) => {
   const [parent, setParent] = useState();
   const [child, setChild] = useState();
   const [renderImage, setRenderImage] = useState("");
+
   const addToCartHandler = async () => {
     setLoading(true);
+    const newData = {
+      ...product?.product,
+      Balance: product?.balances[0]?.Qty,
+      ListPrice: product?.prices[0]?.ListPrice,
+    };
     dispatch({
       type: "CART_ADD_ITEM",
-      payload: { ...product, quantity: 1, purchaseCount: 1 },
+      payload: { ...newData, quantity: 1, purchaseCount: 1 },
     });
     const token = getCookie("token");
     var myHeaders = new Headers();
@@ -50,7 +56,9 @@ const ProductDetail = ({ product }) => {
       }),
     };
 
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add`, requestOption);
+    if (token) {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add`, requestOption);
+    }
 
     SuccessNotification({
       message: "Сагсанд амжилттай орлоо!",

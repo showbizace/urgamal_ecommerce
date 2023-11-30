@@ -12,7 +12,7 @@ const fetcher = (url) =>
   axios
     .get(url)
     .then((res) => res.data.data)
-    .catch(() => { });
+    .catch(() => {});
 
 const Search = () => {
   const router = useRouter();
@@ -21,19 +21,20 @@ const Search = () => {
   // const [data, setData] = useState()
 
   const { data, error, isLoading, mutate, isValidating } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL
+    `${
+      process.env.NEXT_PUBLIC_API_URL
     }/product/local?limit=${10}&query=${debounced}`,
     fetcher
   );
   const suggestions = data
     ? data.map((e) => {
-      return {
-        value: e.name,
-        id: e.id,
-        image: e.product_image?.images?.[0],
-        description: e.description,
-      };
-    })
+        return {
+          value: e.name,
+          id: e.id,
+          image: e.product_image?.images?.[0],
+          description: e.description,
+        };
+      })
     : [];
 
   useEffect(() => {
@@ -100,7 +101,7 @@ const Search = () => {
             },
             dropdown: {
               maxHeight: "350px",
-              overflow: "auto"
+              overflow: "auto",
             },
             input: {
               border: "none",
@@ -123,11 +124,11 @@ const Search = () => {
               query: { id },
             })
           }
-        // filter={(value, item) =>
-        //   item.value.toLowerCase().includes(value.toLowerCase().trim()) ||
-        //   item.description.toLowerCase().includes(value.toLowerCase().trim())
-        // }
-        // onFocus={mutate}
+          // filter={(value, item) =>
+          //   item.value.toLowerCase().includes(value.toLowerCase().trim()) ||
+          //   item.description.toLowerCase().includes(value.toLowerCase().trim())
+          // }
+          // onFocus={mutate}
         />
         <button
           className="flex justify-center items-center bg-background-sort p-2 rounded-md mr-1"

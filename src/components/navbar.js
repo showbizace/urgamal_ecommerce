@@ -39,7 +39,7 @@ const fetcher = (url) =>
   axios
     .get(url)
     .then((res) => res.data.data)
-    .catch(() => { });
+    .catch(() => {});
 const cookie = getCookie("token");
 const Navbar = (props) => {
   const { address } = props;
@@ -53,28 +53,25 @@ const Navbar = (props) => {
     error: catsError,
     isLoading: catsLoading,
     catsIsValidating,
-  } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/category/all?type=nest`,
-    fetcher,
-    {
-      refreshInterval: 0,
-    }
-  );
+  } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
+    refreshInterval: 0,
+  });
   const { data, error, isLoading, mutate, isValidating } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL
+    `${
+      process.env.NEXT_PUBLIC_API_URL
     }/product/local?limit=${10}&query=${debounced}`,
     fetcher
   );
 
   const suggestions = data
     ? data.map((e) => {
-      return {
-        value: e.name,
-        id: e.id,
-        image: e.product_image?.images?.[0],
-        description: e.description,
-      };
-    })
+        return {
+          value: e.name,
+          id: e.id,
+          image: e.product_image?.images?.[0],
+          description: e.description,
+        };
+      })
     : [];
 
   useEffect(() => {
@@ -192,12 +189,21 @@ const Navbar = (props) => {
   return (
     <div
       className="bg-white py-2 px-12 max-sm:px-2 sticky top-0 z-30 "
-      style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)", backgroundColor: address?.header_color ? address?.header_color : null }}
+      style={{
+        borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
+        backgroundColor: address?.header_color ? address?.header_color : null,
+      }}
     >
       <div className="flex justify-between items-center">
         <Link href={"/home"}>
           <div className="flex justify-center items-center ">
-            <Image src={userContext?.address?.logo} width={36} height={36} className="w-7 h-7" alt={userContext?.address?.logo} />
+            <Image
+              src={userContext?.address?.logo}
+              width={36}
+              height={36}
+              className="w-7 h-7"
+              alt={userContext?.address?.logo}
+            />
           </div>
         </Link>
         <div className="flex justify-end md:justify-center items-center gap-8 md:gap-3 flex-grow ml-6 md:mx-11 ">
@@ -238,11 +244,11 @@ const Navbar = (props) => {
                   catsError
                     ? []
                     : categories?.map((e) => {
-                      return {
-                        value: e.id?.toString(),
-                        label: e.name,
-                      };
-                    })
+                        return {
+                          value: e.id?.toString(),
+                          label: e.name,
+                        };
+                      })
                 }
                 icon={
                   userConfigValue === "1" ? (

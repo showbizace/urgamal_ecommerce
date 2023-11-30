@@ -68,13 +68,10 @@ const BottomNavBar = () => {
     data: categories,
     error: categoriesError,
     isLoading: categoriesLoading,
-  } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/category/all?type=nest`,
-    fetcher,
-    {
-      refreshInterval: 0,
-    }
-  );
+  } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
+    refreshInterval: 0,
+  });
+
   return (
     <>
       <Drawer

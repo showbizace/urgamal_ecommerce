@@ -74,13 +74,9 @@ export default function Home({ data }) {
     data: categories,
     error: categoriesError,
     isLoading: categoriesLoading,
-  } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/category/all?type=nest`,
-    fetcher,
-    {
-      refreshInterval: 0,
-    }
-  );
+  } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
+    refreshInterval: 0,
+  });
 
   const {
     data: fetchData,
@@ -99,11 +95,11 @@ export default function Home({ data }) {
     { revalidateFirstPage: false }
   );
 
-  useEffect(() => {
-    fetchData &&
-      !isEmpty &&
-      setProducts(products?.concat(...fetchData?.[fetchData.length - 1]));
-  }, [fetchData]);
+  // useEffect(() => {
+  //   fetchData &&
+  //     !isEmpty &&
+  //     setProducts(products?.concat(...fetchData?.[fetchData.length - 1]));
+  // }, [fetchData]);
 
   const isLoadingMore =
     isLoading ||
@@ -146,7 +142,7 @@ export default function Home({ data }) {
 
   const getAllCategory = async () => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/category/all?type=separate`, {
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
