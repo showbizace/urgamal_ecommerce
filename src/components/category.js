@@ -33,6 +33,7 @@ const Category = ({
             padding: padding ? padding : "0px",
             height: "100%",
           }}
+          key={"grid-container"}
         >
           <div className="h-full">
             <div className="flex flex-row justify-between w-full">
@@ -64,8 +65,8 @@ const Category = ({
                   parent?.map((el, index) => {
                     return (
                       <Collapse
-                        key={index}
-                        id="2"
+                        key={el?.Id}
+                        id={el?.Id}
                         css={{
                           paddingLeft: "$5",
                           paddingRight: "$5",

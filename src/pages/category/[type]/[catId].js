@@ -10,6 +10,7 @@ import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import ProductCard from "@/components/product-card";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
 import { Breadcrumbs } from "@mantine/core";
+import { fetchMethod, getCategory } from "@/utils/fetch";
 
 const fetcher = (url) =>
   axios
@@ -21,36 +22,48 @@ const fetcher = (url) =>
 const PAGE_SIZE = 10;
 
 export async function getServerSideProps({ query }) {
-  const { type, catId } = query;
-  const requestOption = {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
+  const { catId } = query;
+  const data = await fetchMethod(
+    "GET",
+    `product?offset=1&limit=${PAGE_SIZE}&categoryId=${
+      catId !== "undefined" ? catId : 0
+    }`
+  );
+  return {
+    props: {
+      initialData: data.data.result,
+    },
   };
-  try {
-    const res = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_API_URL
-      }/product?offset=1&limit=${PAGE_SIZE}&categoryId=${
-        catId !== "undefined" ? catId : 0
-      }`,
-      requestOption
-    );
-    const data = await res.json();
-    return {
-      props: {
-        initialData: data.data.result,
-      },
-    };
-  } catch {
-    return {
-      props: {
-        initialData: [],
-      },
-    };
-  }
+  // const requestOption = {
+  //   method: "GET",
+  //   headers: { "Content-Type": "application/json" },
+  // };
+  // try {
+  //   const res = await fetch(
+  //     `${
+  //       process.env.NEXT_PUBLIC_API_URL
+  //     }/product?offset=1&limit=${PAGE_SIZE}&categoryId=${
+  //       catId !== "undefined" ? catId : 0
+  //     }`,
+  //     requestOption
+  //   );
+  //   const data = await res.json();
+  //   return {
+  //     props: {
+  //       initialData: data.data.result,
+  //     },
+  //   };
+  // } catch {
+  //   return {
+  //     props: {
+  //       initialData: [],
+  //     },
+  //   };
+  // }
 }
 
 const CategoryPage = ({ initialData }) => {
+  console.log(initialData, "dsadasdas");
   const router = useRouter();
   const { type, catId } = router.query;
   const [parent, setParent] = useState([]);
@@ -201,6 +214,7 @@ const CategoryPage = ({ initialData }) => {
         }
       });
   };
+
   return (
     <GlobalLayout>
       <div>
