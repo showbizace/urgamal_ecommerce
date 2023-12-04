@@ -6,6 +6,7 @@ import useSWR from "swr";
 import axios from "axios";
 import { IconPackageOff } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
+import { fetcher } from "@/utils/fetch";
 
 const MyOrder = () => {
   const [tabs, setTabs] = useState("all");
@@ -13,13 +14,14 @@ const MyOrder = () => {
   const config = {
     headers: { Authorization: `Bearer ${accessToken}` },
   };
-  const fetcher = (url) => axios.get(url, config).then((res) => res.data.data);
+
   const {
     data: orders,
     error,
     isLoading,
   } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/user/order?status=${tabs === "all" ? "" : tabs
+    `${process.env.NEXT_PUBLIC_API_URL}/user/order?status=${
+      tabs === "all" ? "" : tabs
     }`,
     fetcher
   );

@@ -15,14 +15,10 @@ import { useRef, useState } from "react";
 import useSWR from "swr";
 import axios from "axios";
 import Link from "next/link";
+import { fetcher } from "@/utils/fetch";
+
 const PAGE_SIZE = 15;
-const fetcher = (url) =>
-  axios
-    .get(url, { headers: { "Content-Type": "application/json" } })
-    .then((res) => {
-      return res.data.data;
-    })
-    .catch((error) => { });
+
 export default function ProductListWithCategory({
   categoryName,
   categoryIcon,
@@ -32,7 +28,8 @@ export default function ProductListWithCategory({
 }) {
   const [pageIndex, setPageIndex] = useState(0);
   const { data, isLoading, error } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL
+    `${
+      process.env.NEXT_PUBLIC_API_URL
     }/product/local?parent_cat_id=${categoryId}&offset=${0}&limit=${PAGE_SIZE}`,
     fetcher
   );

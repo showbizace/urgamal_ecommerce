@@ -1,9 +1,6 @@
 import { Collapse, Text, Grid } from "@nextui-org/react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { IconChevronRight } from "@tabler/icons-react";
-import { useContext } from "react";
-import { UserConfigContext } from "@/utils/userConfigContext";
 import MySkeleton from "./MySkeleton";
 
 const Category = ({
@@ -15,8 +12,7 @@ const Category = ({
   loading,
 }) => {
   const router = useRouter();
-  const userConfigs = useContext(UserConfigContext);
-  console.log(loading, "loading");
+
   return (
     <div
       id="category-menu"
@@ -37,6 +33,7 @@ const Category = ({
             padding: padding ? padding : "0px",
             height: "100%",
           }}
+          key={"grid-container"}
         >
           <div className="h-full">
             <div className="flex flex-row justify-between w-full">
@@ -65,11 +62,11 @@ const Category = ({
                 }}
               >
                 {parent &&
-                  parent.map((el, index) => {
+                  parent?.map((el, index) => {
                     return (
                       <Collapse
-                        key={index}
-                        id="2"
+                        key={el?.Id}
+                        id={el?.Id}
                         css={{
                           paddingLeft: "$5",
                           paddingRight: "$5",
@@ -87,6 +84,12 @@ const Category = ({
                             {el.Name}
                           </p>,
                         ]}
+                        onClick={() => {
+                          console.log(el, "el");
+                          router.push({
+                            pathname: `/category/parent/${el.Id}`,
+                          });
+                        }}
                         expanded={() => {
                           if (
                             selectedCategoryType &&
@@ -109,7 +112,7 @@ const Category = ({
                           }
                         }}
                       >
-                        <div className="overflow-auto scrollbar-hide">
+                        {/* <div className="overflow-auto scrollbar-hide">
                           {child !== undefined &&
                             child.map((item, index) => {
                               if (el.id === item.parent_id) {
@@ -128,7 +131,7 @@ const Category = ({
                                 );
                               }
                             })}
-                        </div>
+                        </div> */}
                       </Collapse>
                     );
                   })}

@@ -14,33 +14,21 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { forwardRef, useContext, useEffect, useState } from "react";
-import { Store } from "@/utils/Store";
 import { getCookie, setCookie } from "cookies-next";
-import { ErrorNotificatipon } from "../utils/SuccessNotification";
 import { openContextModal } from "@mantine/modals";
 import {
-  IconArrowsExchange,
-  IconArrowsExchange2,
   IconHomeEco,
   IconPackage,
   IconReportSearch,
   IconSearch,
-  IconStatusChange,
 } from "@tabler/icons-react";
 
-import axios from "axios";
 import useSWR from "swr";
 import { useDebouncedValue } from "@mantine/hooks";
-import { CategoryContext } from "@/utils/categoryContext";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { isMobile } from "react-device-detect";
+import { fetcher } from "@/utils/fetch";
 
-const fetcher = (url) =>
-  axios
-    .get(url)
-    .then((res) => res.data.data)
-    .catch(() => { });
-const cookie = getCookie("token");
 const Navbar = (props) => {
   const { address } = props;
   const router = useRouter();
@@ -52,29 +40,25 @@ const Navbar = (props) => {
     data: categories,
     error: catsError,
     isLoading: catsLoading,
-    catsIsValidating,
-  } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/category/all?type=nest`,
-    fetcher,
-    {
-      refreshInterval: 0,
-    }
-  );
+  } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
+    refreshInterval: 0,
+  });
   const { data, error, isLoading, mutate, isValidating } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL
+    `${
+      process.env.NEXT_PUBLIC_API_URL
     }/product/local?limit=${10}&query=${debounced}`,
     fetcher
   );
 
   const suggestions = data
     ? data.map((e) => {
-      return {
-        value: e.name,
-        id: e.id,
-        image: e.product_image?.images?.[0],
-        description: e.description,
-      };
-    })
+        return {
+          value: e.name,
+          id: e.id,
+          image: e.product_image?.images?.[0],
+          description: e.description,
+        };
+      })
     : [];
 
   useEffect(() => {
@@ -110,13 +94,11 @@ const Navbar = (props) => {
       </div>
     );
   });
-  const [cartItem, setCartItem] = useState([]);
-  const [quantity, setQuantity] = useState(0);
+
   const [showSearch, setShowSearch] = useState(false);
-  const [cartData, setCartData] = useState("");
+  const [cartData, setCartData] = useState();
   const route = useRouter();
   const [number, setNumber] = useState("");
-  const [total, setTotal] = useState(0);
   const linkToCart = () => {
     router.push({
       pathname: "/cart/cartItem",
@@ -125,53 +107,21 @@ const Navbar = (props) => {
 
   const handleChangeStorage = () => {
     let localStorageCart = JSON.parse(localStorage.getItem("cartItems"));
-    if (localStorageCart !== null) {
-      setCartItem(localStorageCart?.cart?.cartItems);
-      let sum = 0;
-      let total = 0;
-      localStorageCart.cart.cartItems.forEach((e) => {
-        if (e !== null) {
-          sum = sum + e.quantity;
-          if (e.totalPrice !== undefined && e.totalPrice !== null) {
-            total = total + parseInt(e.totalPrice);
-          } else {
-            total = total + parseInt(e.total);
-          }
-        }
-      });
-      setQuantity(sum);
-      setTotal(total);
+    if (localStorageCart) {
+      setCartData(localStorageCart?.cart?.cartItems);
     }
   };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // client-side operation such as local storage.
       window.addEventListener("storage", handleChangeStorage);
     }
     const number = getCookie("number");
-    if (number !== undefined && number !== null && number !== "") {
+    if (number) {
       setNumber(number);
     }
-    getCartTotal();
   }, []);
 
-  const getCartTotal = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${cookie}`);
-
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-    };
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart`, requestOptions)
-      .then((req) => req.json())
-      .then((res) => {
-        if (res.success === true) {
-          setCartData(res.result);
-        }
-      });
-  };
   const [userConfigValue, setUserConfigValue] = useState(
     userContext.preferenceConfig
   );
@@ -192,12 +142,21 @@ const Navbar = (props) => {
   return (
     <div
       className="bg-white py-2 px-12 max-sm:px-2 sticky top-0 z-30 "
-      style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)", backgroundColor: address?.header_color ? address?.header_color : null }}
+      style={{
+        borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
+        backgroundColor: address?.header_color ? address?.header_color : null,
+      }}
     >
       <div className="flex justify-between items-center">
         <Link href={"/home"}>
           <div className="flex justify-center items-center ">
-            <Image src={userContext?.address?.logo} width={36} height={36} className="w-7 h-7" alt={userContext?.address?.logo} />
+            <Image
+              src={userContext?.address?.logo}
+              width={36}
+              height={36}
+              className="w-7 h-7"
+              alt={userContext?.address?.logo}
+            />
           </div>
         </Link>
         <div className="flex justify-end md:justify-center items-center gap-8 md:gap-3 flex-grow ml-6 md:mx-11 ">
@@ -238,11 +197,11 @@ const Navbar = (props) => {
                   catsError
                     ? []
                     : categories?.map((e) => {
-                      return {
-                        value: e.id?.toString(),
-                        label: e.name,
-                      };
-                    })
+                        return {
+                          value: e.id?.toString(),
+                          label: e.name,
+                        };
+                      })
                 }
                 icon={
                   userConfigValue === "1" ? (
@@ -345,7 +304,7 @@ const Navbar = (props) => {
               />
               <div className="absolute">
                 <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
-                  <p className="text-sm-5">{quantity}</p>
+                  <p className="text-sm-5">{cartData?.length}</p>
                 </div>
               </div>
             </Button>

@@ -13,14 +13,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Drawer, ScrollArea, Text } from "@mantine/core";
 import useSWR from "swr";
 import AllCategory from "./AllCategory/AllCategory";
-
-const fetcher = (url) =>
-  axios
-    .get(url, { headers: { "Content-Type": "application/json" } })
-    .then((res) => {
-      return res.data.data;
-    })
-    .catch((error) => console.log(error));
+import { fetcher } from "@/utils/fetch";
 
 const BottomNavBar = () => {
   const router = useRouter();
@@ -68,13 +61,10 @@ const BottomNavBar = () => {
     data: categories,
     error: categoriesError,
     isLoading: categoriesLoading,
-  } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/category/all?type=nest`,
-    fetcher,
-    {
-      refreshInterval: 0,
-    }
-  );
+  } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
+    refreshInterval: 0,
+  });
+
   return (
     <>
       <Drawer

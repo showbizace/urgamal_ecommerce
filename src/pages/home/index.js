@@ -14,15 +14,8 @@ import { UserConfigContext } from "@/utils/userConfigContext";
 import Image from "next/image";
 import { useDisclosure } from "@mantine/hooks";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
+import { fetcher, getCategory } from "@/utils/fetch";
 const PAGE_SIZE = 20;
-
-const fetcher = (url) =>
-  axios
-    .get(url, { headers: { "Content-Type": "application/json" } })
-    .then((res) => {
-      return res.data.data;
-    })
-    .catch((error) => console.log(error));
 
 export async function getStaticProps() {
   const requestOption = {
@@ -74,13 +67,9 @@ export default function Home({ data }) {
     data: categories,
     error: categoriesError,
     isLoading: categoriesLoading,
-  } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/category/all?type=nest`,
-    fetcher,
-    {
-      refreshInterval: 0,
-    }
-  );
+  } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
+    refreshInterval: 0,
+  });
 
   const {
     data: fetchData,
@@ -99,11 +88,11 @@ export default function Home({ data }) {
     { revalidateFirstPage: false }
   );
 
-  useEffect(() => {
-    fetchData &&
-      !isEmpty &&
-      setProducts(products?.concat(...fetchData?.[fetchData.length - 1]));
-  }, [fetchData]);
+  // useEffect(() => {
+  //   fetchData &&
+  //     !isEmpty &&
+  //     setProducts(products?.concat(...fetchData?.[fetchData.length - 1]));
+  // }, [fetchData]);
 
   const isLoadingMore =
     isLoading ||
@@ -138,39 +127,15 @@ export default function Home({ data }) {
     // remove event on unmount to prevent a memory leak with the cleanup
     window.dispatchEvent(new Event("storage"));
     setProducts(data.data);
-    getAllCategory();
+    fetchCategory();
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
-  const getAllCategory = async () => {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/category/all?type=separate`, {
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((response) => {
-        localStorage.setItem(
-          "main",
-          JSON.stringify(response.data.data.mainCats)
-        );
-        localStorage.setItem(
-          "parent",
-          JSON.stringify(response.data.data.parentCats)
-        );
-        localStorage.setItem(
-          "child",
-          JSON.stringify(response.data.data.childCats)
-        );
-        setMain(response.data.data.mainCats);
-        setParent(response.data.data.parentCats);
-        setChild(response.data.data.childCats);
-      })
-      .catch((error) => {
-        if (error.response) {
-        } else {
-        }
-      });
+  const fetchCategory = async () => {
+    const data = await getCategory();
+    setMain(data);
   };
 
   return (
