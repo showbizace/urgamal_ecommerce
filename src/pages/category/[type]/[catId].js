@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Category from "@/components/category";
 import axios from "axios";
@@ -9,15 +9,16 @@ import useSWRInfinite from "swr/infinite";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import ProductCard from "@/components/product-card";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
-import BottomFooter from "@/components/Footer";
 import { Breadcrumbs } from "@mantine/core";
-import { IconArrowBadgeRight, IconChevronsRight } from "@tabler/icons-react";
+import { fetchMethod, getCategory } from "@/utils/fetch";
+
 const fetcher = (url) =>
   axios
     .get(url, { headers: { "Content-Type": "application/json" } })
     .then((res) => {
       return res.data.data;
     })
+    .catch((error) => {});
     .catch((error) => {});
 const PAGE_SIZE = 10;
 
@@ -53,9 +54,11 @@ export async function getServerSideProps({ query }) {
 }
 
 const CategoryPage = ({ initialData }) => {
+  console.log(initialData, "dsadasdas");
   const router = useRouter();
   const { type, catId } = router.query;
   const [parent, setParent] = useState([]);
+  const [main, setMain] = useState([]);
   const [child, setChild] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -111,41 +114,51 @@ const CategoryPage = ({ initialData }) => {
     setSize(0);
   }, [router.asPath]);
 
-  const isLoadingMore =
-    isLoading || (size > 0 && data && typeof data[size - 1] === "undefined");
   const isEmpty = data?.[0]?.length === 0;
   const isReachingEnd =
     isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE);
-  const isRefreshing = isValidating && data && data.length === size;
+
   useEffect(() => {
     setProducts([]);
     setSize(1);
   }, [size]);
+
   useEffect(() => {
-    data?.[0] &&
-      !isEmpty &&
-      setProducts(products.concat(...data[data.length - 1]));
+    data?.length > 0 &&
+      setProducts(products.concat(...data.map((item) => item.result)));
+    // data?.length > 0 && !isEmpty && setProducts(products.concat(...data));
   }, [data]);
+
   useEffect(() => {
     setLoading(true);
     window.dispatchEvent(new Event("storage"));
     setProducts(initialData);
-    getAllCategory();
+    fetchCategory();
     setLoading(false);
   }, []);
+
+  const fetchCategory = async () => {
+    const data = await getCategory();
+    setMain(data);
+    setLoading(false);
+  };
+
   const infiniteScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 350 >=
+        document.documentElement.offsetHeight &&
         document.documentElement.offsetHeight &&
       !isEmpty &&
       !isReachingEnd
     )
       setSize(size + 1);
   };
+
   useEffect(() => {
     window.addEventListener("scroll", infiniteScroll);
     return () => window.removeEventListener("scroll", infiniteScroll);
   }, [data]);
+
   function categoryPositioner() {
     var navbar = document.getElementById("category-menu");
     var content = document.getElementById("content");
@@ -165,24 +178,26 @@ const CategoryPage = ({ initialData }) => {
 
   const getAllCategory = async () => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/category/all?type=separate`, {
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
-        localStorage.setItem(
-          "main",
-          JSON.stringify(response.data.data.mainCats)
-        );
-        localStorage.setItem(
-          "parent",
-          JSON.stringify(response.data.data.parentCats)
-        );
-        localStorage.setItem(
-          "child",
-          JSON.stringify(response.data.data.childCats)
-        );
-        setParent(response.data.data.parentCats);
-        setChild(response.data.data.childCats);
+        setMain(response.data?.result);
+        setLoading(false);
+        // localStorage.setItem(
+        //   "main",
+        //   JSON.stringify(response.data.data.mainCats)
+        // );
+        // localStorage.setItem(
+        //   "parent",
+        //   JSON.stringify(response.data.data.parentCats)
+        // );
+        // localStorage.setItem(
+        //   "child",
+        //   JSON.stringify(response.data.data.childCats)
+        // );
+        // setParent(response.data.data.parentCats);
+        // setChild(response.data.data.childCats);
       })
       .catch((error) => {
         if (error.response) {
@@ -190,6 +205,7 @@ const CategoryPage = ({ initialData }) => {
         }
       });
   };
+
   return (
     <GlobalLayout>
       <div>
@@ -197,11 +213,10 @@ const CategoryPage = ({ initialData }) => {
           <div className="h-full flex flex-row py-6 md:py-12 justify-between gap-10">
             <div className="min-w-[250px] w-[250px] max-w-[250px] hidden lg:block">
               <Category
-                parent={parent}
+                parent={main}
                 child={child}
-                selectedCategoryType={type}
-                selectedCategoryId={catId}
                 padding="1rem"
+                loading={loading}
               />
             </div>
             <div
@@ -252,9 +267,11 @@ const CategoryPage = ({ initialData }) => {
                     : type === "child"
                     ? parent.find((e) => e.id === catId)?.name
                     : ""
+                    ? parent.find((e) => e.id === catId)?.name
+                    : ""
                 }
               >
-                {products.map((e, index) => (
+                {products?.map((e, index) => (
                   <ProductCard
                     key={`product-card-key-${index}-${e.id}`}
                     src={e.product_image?.images?.[0]}

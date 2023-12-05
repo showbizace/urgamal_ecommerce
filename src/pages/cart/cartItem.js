@@ -35,7 +35,7 @@ import { UserConfigContext } from "@/utils/userConfigContext";
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
   const router = useRouter();
-  const { state, dispatch } = useContext(Store);
+  const { _, dispatch } = useContext(Store);
   const { auth } = useContext(UserConfigContext);
   const [cartItem, setCartItem] = useState();
   const [checked, setChecked] = useState(false);
@@ -52,44 +52,36 @@ const CartItems = (props) => {
     router.push("/");
   };
 
-  const handleSelectAll = (e) => {
+  const handleSelectAll = () => {
     setIsCheckAll(!isCheckAll);
-    let arr = [];
-    if (isCheckAll === true) {
-      cartItem.forEach((e) => {
-        let clone = { ...e };
-        clone["isChecked"] = false;
-        arr.push(clone);
-      });
-      setCartItem(arr);
-    } else {
-      cartItem.forEach((e) => {
-        let clone = { ...e };
-        clone["isChecked"] = true;
-        arr.push(clone);
-      });
-      setCartItem(arr);
-    }
+    const newData = cartItem.map((item) => {
+      if (isCheckAll) {
+        item.isChecked = false;
+        return item;
+      } else {
+        item.isChecked = true;
+        return item;
+      }
+    });
+    setCartItem(newData);
   };
 
   const totalPrice = () => {
     let sum = 0;
-    if (cartItem !== undefined) {
+    if (cartItem) {
       cartItem.map((item) => {
         if (item.totalPrice) sum = sum + parseInt(item.totalPrice);
-        else {
-          sum = sum + parseInt(item.total);
-        }
+        else sum = sum + parseInt(item.total);
       });
     }
     return <span>{sum}₮</span>;
   };
 
   const getUserCartItem = async (token) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    myHeaders.append("Content-Type", "application/json");
-    const temp = [];
+    const myHeaders = {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    };
     const requestOption = {
       method: "GET",
       headers: myHeaders,
@@ -101,10 +93,11 @@ const CartItems = (props) => {
     if (res.status === 200) {
       const data = await res.json();
       if (data.success === true) {
-        if (data.result.length > 0) setCartItem(data.result[0].cart_items);
+        if (data.result.length > 0) setCartItem(data.result[0]);
       }
     }
   };
+
   const addToCartMultiple = async (arr, token) => {
     var myHeaders = new Headers();
 
@@ -129,7 +122,6 @@ const CartItems = (props) => {
       .then(async (res) => {
         if (res.status === 200) {
           const data = await res.json();
-          setCookie("addCart", false);
         }
       })
       .catch((err) => console.log(err, "err"));
@@ -150,8 +142,8 @@ const CartItems = (props) => {
           if (e !== null) {
             let clone = { ...e };
             clone["isChecked"] = false;
-            clone["remainStock"] = clone["instock"] - clone["purchaseCount"];
-            clone["totalPrice"] = clone["price"] * clone["purchaseCount"];
+            clone["remainStock"] = clone["Balance"] - clone["purchaseCount"];
+            clone["totalPrice"] = clone["ListPrice"] * clone["purchaseCount"];
             // clone['total'] = clone['purchaseCount'] * clone['price']
             arr.push(clone);
           }
@@ -159,12 +151,11 @@ const CartItems = (props) => {
         setCartItem(arr);
       }
       const token = getCookie("token");
-      const addToCart = getCookie("addCart");
       setUserToken(token);
 
       if (token !== undefined && token !== null && token !== "") {
         setAddressVisible(true);
-        if (addToCart === true) {
+        if (data?.length > 0) {
           addToCartMultiple(arr, token);
           getUserCartItem(token);
         } else {
@@ -196,14 +187,13 @@ const CartItems = (props) => {
         const index = newArr.indexOf(e);
         delete newArr[index];
         cartId = e.cartid;
-        removedArr.push({ productid: e.productid });
+        removedArr.push(e.id);
         check = false;
       }
     });
     let temp = [];
-
     if (check === true) {
-      showNotification({
+      return showNotification({
         message: "Устгах бараа сонгоно уу",
         color: "red",
       });
@@ -223,11 +213,14 @@ const CartItems = (props) => {
           myHeaders.append("Authorization", "Bearer " + userToken);
           myHeaders.append("Content-Type", "application/json");
           const requestOption = {
-            method: "GET",
+            method: "DELETE",
             headers: myHeaders,
+            body: JSON.stringify({
+              cart_id: cartId,
+            }),
           };
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/cart/empty`,
+            `${process.env.NEXT_PUBLIC_API_URL}/cart/whole`,
             requestOption
           );
           if (res.status === 200) {
@@ -243,14 +236,14 @@ const CartItems = (props) => {
           var myHeaders = new Headers();
           myHeaders.append("Authorization", "Bearer " + userToken);
           myHeaders.append("Content-Type", "application/json");
-          let data = { cartid: cartId, data: removedArr };
+          let data = { cart_id: cartId, cart_item_id: removedArr };
           const requestOption = {
-            method: "POST",
+            method: "DELETE",
             headers: myHeaders,
             body: JSON.stringify(data),
           };
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/cart/item/remove`,
+            `${process.env.NEXT_PUBLIC_API_URL}/cart`,
             requestOption
           );
           if (res.status === 200) {
@@ -466,17 +459,17 @@ const CartItems = (props) => {
   };
 
   const minusQuantity = async (count, product) => {
-    if (product?.instock) {
-      const initialStock = product.instock;
+    if (product?.Balance) {
+      const initialStock = product.Balance;
       count--;
       if (initialStock >= count && count > 0) {
         let clone = { ...product };
         clone["remainStock"] = initialStock - count;
         clone["purchaseCount"] = count;
-        clone["totalPrice"] = count * clone["price"];
+        clone["totalPrice"] = count * clone["ListPrice"];
         let temp = [...cartItem];
         temp.forEach((e, index) => {
-          if (e.id === product.id) {
+          if (e.Id === product.Id) {
             temp[index] = clone;
           }
         });
@@ -492,14 +485,14 @@ const CartItems = (props) => {
           method: "POST",
           headers: myHeaders,
           body: JSON.stringify({
-            productid: product.productid,
+            cart_item_id: product.id,
             quantity: count,
-            cartid: product.cartid,
+            cart_id: product.cartid,
           }),
         };
         if (userToken) {
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
+            `${process.env.NEXT_PUBLIC_API_URL}/cart/add`,
             requestOption
           );
 
@@ -519,17 +512,17 @@ const CartItems = (props) => {
   };
 
   const addQuantity = async (count, product) => {
-    if (product?.instock) {
-      const initialStock = product.instock;
+    if (product?.Balance) {
+      const initialStock = product.Balance;
       count++;
       if (initialStock >= count) {
         let clone = { ...product };
         clone["remainStock"] = initialStock - count;
         clone["purchaseCount"] = count;
-        clone["totalPrice"] = count * clone["price"];
+        clone["totalPrice"] = count * clone["ListPrice"];
         let temp = [...cartItem];
         temp.forEach((e, index) => {
-          if (e.id === product.id) {
+          if (e.Id === product.Id) {
             temp[index] = clone;
           }
         });
@@ -542,17 +535,17 @@ const CartItems = (props) => {
         myHeaders.append("Authorization", "Bearer " + userToken);
         myHeaders.append("Content-Type", "application/json");
         const requestOption = {
-          method: "POST",
+          method: "PUT",
           headers: myHeaders,
           body: JSON.stringify({
-            productid: product.productid,
+            cart_item_id: product.id,
             quantity: count,
-            cartid: product.cartid,
+            cart_id: product.cartid,
           }),
         };
         if (userToken) {
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/cart/item/quantity`,
+            `${process.env.NEXT_PUBLIC_API_URL}/cart`,
             requestOption
           );
           if (res.status === 200) {
@@ -594,8 +587,7 @@ const CartItems = (props) => {
   );
 
   const rows =
-    cartItem !== null &&
-    cartItem !== undefined &&
+    cartItem &&
     cartItem.map((item, idx) => {
       if (item !== undefined) {
         return (
@@ -626,7 +618,7 @@ const CartItems = (props) => {
                 /> */}
                 <div className="flex flex-col justify-around ml-2 lg:ml-0">
                   <span className="font-[500] lg:text-[1.002rem] text-[0.55rem] text-[#212529]">
-                    {item.name}
+                    {item.Name}
                   </span>
                   <span className="font-[500] lg:text-[0.87rem] text-[0.6rem] text-[#2125297a]">
                     Үлдэгдэл:{" "}
@@ -634,17 +626,17 @@ const CartItems = (props) => {
                       {/* {item.remainStock !== undefined || item.remainStock !== null
                         ? item.remainStock
                         : item.instock - item.quantity} */}
-                      {item.instock > 10 ? (
+                      {item.Balance > 10 ? (
                         <Badge color="teal" size={"xs"}>
                           Хангалттай
                         </Badge>
-                      ) : item.instock == 0 ? (
+                      ) : item.Balance == 0 ? (
                         <Badge color="yellow" size={"xs"}>
                           Үлдэгдэлгүй
                         </Badge>
                       ) : (
                         <span className="text-greenish-grey text-xs  ">
-                          {item.instock} {item.unit}
+                          {item.Balance}
                         </span>
                       )}
                     </span>
@@ -700,7 +692,7 @@ const CartItems = (props) => {
             </td>
             <td width={"100px"} style={{ textAlign: "center" }}>
               <span className="font-[600] lg:text-[1rem] text-[0.6rem] text-[#212529]">
-                {item.price ? item.price : item.price_mnt} ₮
+                {item.ListPrice} ₮
               </span>
             </td>
             <td width={"100px"} style={{ textAlign: "center" }}>
@@ -876,11 +868,6 @@ const CartItems = (props) => {
             </div>
           </div>
         </div>
-        {/* <div className="mt-20">
-            <div>
-              <span>Санал Болгох Бүтээгдэхүүн</span>
-            </div>
-          </div> */}
       </div>
     </GlobalLayout>
   );

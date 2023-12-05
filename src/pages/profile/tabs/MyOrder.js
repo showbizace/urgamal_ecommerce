@@ -38,6 +38,8 @@ const MyOrder = () => {
   } = useSWR(
     `${process.env.NEXT_PUBLIC_API_URL}/user/order?status=${
       tabs === "all" ? "" : tabs
+    `${process.env.NEXT_PUBLIC_API_URL}/user/order?status=${
+      tabs === "all" ? "" : tabs
     }`,
     fetcher
   );

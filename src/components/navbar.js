@@ -14,36 +14,20 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { forwardRef, useContext, useEffect, useState } from "react";
-import { Store } from "@/utils/Store";
 import { getCookie, setCookie } from "cookies-next";
-import { ErrorNotificatipon } from "../utils/SuccessNotification";
 import { openContextModal } from "@mantine/modals";
 import {
-  IconArrowsExchange,
-  IconArrowsExchange2,
   IconHomeEco,
   IconPackage,
   IconReportSearch,
   IconSearch,
-  IconStatusChange,
 } from "@tabler/icons-react";
 
-import axios from "axios";
 import useSWR from "swr";
 import { useDebouncedValue } from "@mantine/hooks";
-import { CategoryContext } from "@/utils/categoryContext";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { isMobile } from "react-device-detect";
-
-const fetcher = (url) =>
-  axios
-    .get(url)
-    .then((res) => {
-      return res.data.result;
-    })
-    .catch(() => {});
-
-const cookie = getCookie("token");
+import { fetcher } from "@/utils/fetch";
 
 const Navbar = (props) => {
   const { address } = props;
@@ -56,14 +40,14 @@ const Navbar = (props) => {
     data: categories,
     error: catsError,
     isLoading: catsLoading,
-    catsIsValidating,
   } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
     refreshInterval: 0,
   });
-
   const { data, error, isLoading, mutate, isValidating } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/product?limit=${10}&query=${debounced}`
-    // }/product`, //? @lahagva
+    `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/product/local?limit=${10}&query=${debounced}`,
+    fetcher
   );
 
   const suggestions = data
@@ -110,13 +94,11 @@ const Navbar = (props) => {
       </div>
     );
   });
-  const [cartItem, setCartItem] = useState([]);
-  const [quantity, setQuantity] = useState(0);
+
   const [showSearch, setShowSearch] = useState(false);
-  const [cartData, setCartData] = useState("");
+  const [cartData, setCartData] = useState();
   const route = useRouter();
   const [number, setNumber] = useState("");
-  const [total, setTotal] = useState(0);
   const linkToCart = () => {
     router.push({
       pathname: "/cart/cartItem",
@@ -125,53 +107,21 @@ const Navbar = (props) => {
 
   const handleChangeStorage = () => {
     let localStorageCart = JSON.parse(localStorage.getItem("cartItems"));
-    if (localStorageCart !== null) {
-      setCartItem(localStorageCart?.cart?.cartItems);
-      let sum = 0;
-      let total = 0;
-      localStorageCart.cart.cartItems.forEach((e) => {
-        if (e !== null) {
-          sum = sum + e.quantity;
-          if (e.totalPrice !== undefined && e.totalPrice !== null) {
-            total = total + parseInt(e.totalPrice);
-          } else {
-            total = total + parseInt(e.total);
-          }
-        }
-      });
-      setQuantity(sum);
-      setTotal(total);
+    if (localStorageCart) {
+      setCartData(localStorageCart?.cart?.cartItems);
     }
   };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // client-side operation such as local storage.
       window.addEventListener("storage", handleChangeStorage);
     }
     const number = getCookie("number");
-    if (number !== undefined && number !== null && number !== "") {
+    if (number) {
       setNumber(number);
     }
-    getCartTotal();
   }, []);
 
-  const getCartTotal = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${cookie}`);
-
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-    };
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart`, requestOptions)
-      .then((req) => req.json())
-      .then((res) => {
-        if (res.success === true) {
-          setCartData(res.result);
-        }
-      });
-  };
   const [userConfigValue, setUserConfigValue] = useState(
     userContext.preferenceConfig
   );
@@ -354,7 +304,7 @@ const Navbar = (props) => {
               />
               <div className="absolute">
                 <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
-                  <p className="text-sm-5">{quantity}</p>
+                  <p className="text-sm-5">{cartData?.length}</p>
                 </div>
               </div>
             </Button>

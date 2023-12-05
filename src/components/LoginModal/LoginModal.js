@@ -1,3 +1,4 @@
+import { fetchMethod } from "@/utils/fetch";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import {
   ActionIcon,
@@ -38,43 +39,18 @@ export default function LoginModal({ context, id }) {
       clearInterval(interval);
     };
   }, [seconds]);
+
   const fetchOTP = async () => {
     setLoading(true);
     try {
-      //   const res = await fetch(
-      //     `${process.env.NEXT_PUBLIC_API_URL}/auth/code?mobile=${mobileNumber}`
-      //   );
-      //   if (res.status === 200) {
-      //     setOtpRequested(true);
-      //     setSeconds(60);
-      //     showNotification({
-      //       message: "Таны утсанд 6 оронтой код амжилттай илгээлээ.!",
-      //       color: "green",
-      //     });
-      //   }
-      const postData = {
-        mobile: "88560949",
-        code: "12341234",
-      };
-
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/login/code`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(postData),
-        }
-      );
-
-      const data = await res.json();
+      const data = await fetchMethod("GET", `auth/code?mobile=${mobileNumber}`);
       if (data.success) {
-        const bigDate = 30 * 24 * 60 * 60 * 1000;
-        setCookie("token", data.token, {
-          maxAge: bigDate,
+        setOtpRequested(true);
+        setSeconds(60);
+        showNotification({
+          message: "Таны утсанд 6 оронтой код амжилттай илгээлээ.!",
+          color: "green",
         });
-        setCookie("number", mobileNumber, { maxAge: bigDate });
       }
     } catch (e) {
       console.log(e);
@@ -83,34 +59,27 @@ export default function LoginModal({ context, id }) {
   };
   const handleLogin = async () => {
     setLoading(true);
-    axios
-      .post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/login/code`,
-        { mobile: mobileNumber, code: otp },
-        { headers: { "Content-Type": "application/json" } }
-      )
-      .then((res) => {
-        if (res.status === 200) {
-          const bigDate = 30 * 24 * 60 * 60 * 1000;
-          login();
-          setCookie("token", res.data.token, {
-            maxAge: bigDate,
-          });
-          setCookie("number", mobileNumber, { maxAge: bigDate });
-          setCookie("addCart", true);
-          showNotification({
-            message: "Амжилттай нэвтэрлээ",
-            color: "green",
-          });
-          context.closeModal(id);
-        }
-      })
-      .catch((error) => {
-        showNotification({
-          message: "Код буруу эсвэл хүчинтэй хугацаа дууссан байна.",
-          color: "red",
-        });
+    const requestOption = { mobile: mobileNumber, code: otp };
+    const res = await fetchMethod("POST", "auth/login/code", "", requestOption);
+    if (res?.success) {
+      const bigDate = 30 * 24 * 60 * 60 * 1000;
+      login();
+      setCookie("token", res.token, {
+        maxAge: bigDate,
       });
+      setCookie("number", mobileNumber, { maxAge: bigDate });
+      showNotification({
+        message: "Амжилттай нэвтэрлээ",
+        color: "green",
+      });
+      context.closeModal(id);
+    } else {
+      showNotification({
+        message: "Код буруу эсвэл хүчинтэй хугацаа дууссан байна.",
+        color: "red",
+      });
+    }
+
     setLoading(false);
   };
   return (
