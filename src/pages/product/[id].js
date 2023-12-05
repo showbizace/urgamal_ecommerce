@@ -119,7 +119,6 @@ const ProductDetail = ({ product }) => {
             // update cursor position
             const elem = e.currentTarget;
             const { top, left, width, height } = elem.getBoundingClientRect();
-            console.log(width);
             // calculate cursor position on the image
             const x = e.pageX - left - window.pageXOffset;
             const y = e.pageY - top - window.pageYOffset;

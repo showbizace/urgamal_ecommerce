@@ -11,7 +11,6 @@ import Preference_modal from "@/components/preference_modal/preference_modal";
 import axios from "axios";
 import AllCategory from "@/components/AllCategory/AllCategory";
 import { UserConfigContext } from "@/utils/userConfigContext";
-import Image from "next/image";
 import { useDisclosure } from "@mantine/hooks";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 const PAGE_SIZE = 20;
@@ -20,7 +19,7 @@ const fetcher = (url) =>
   axios
     .get(url, { headers: { "Content-Type": "application/json" } })
     .then((res) => {
-      return res.data.data;
+      return res.data.result;
     })
     .catch((error) => console.log(error));
 
@@ -74,13 +73,9 @@ export default function Home({ data }) {
     data: categories,
     error: categoriesError,
     isLoading: categoriesLoading,
-  } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/category/all?type=nest`,
-    fetcher,
-    {
-      refreshInterval: 0,
-    }
-  );
+  } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
+    refreshInterval: 0,
+  });
 
   const {
     data: fetchData,
@@ -90,19 +85,22 @@ export default function Home({ data }) {
     isValidating,
     isLoading,
     error,
-  } = useSWRInfinite(
-    (index) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${
-        index + 1
-      }&limit=${PAGE_SIZE}`,
-    fetcher,
-    { revalidateFirstPage: false }
-  );
+  } = useSWRInfinite((index) => {
+    `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
+      index + 1
+    }&limit=${PAGE_SIZE}`,
+      // `${process.env.NEXT_PUBLIC_API_URL}/product`, //? @lahagva
+      fetcher,
+      { revalidateFirstPage: false };
+  });
 
   useEffect(() => {
-    fetchData &&
-      !isEmpty &&
-      setProducts(products?.concat(...fetchData?.[fetchData.length - 1]));
+    // if (fetchData && fetchData.length > 0) {
+    //   // Ensure fetchData exists and has a length before accessing properties
+    //   setProducts((prevProducts) =>
+    //     prevProducts.concat(...fetchData[fetchData.length - 1].result)
+    //   );
+    // }
   }, [fetchData]);
 
   const isLoadingMore =
@@ -137,7 +135,7 @@ export default function Home({ data }) {
     window.addEventListener("scroll", onScroll);
     // remove event on unmount to prevent a memory leak with the cleanup
     window.dispatchEvent(new Event("storage"));
-    setProducts(data.data);
+    setProducts(data.result);
     getAllCategory();
     return () => {
       window.removeEventListener("scroll", onScroll);
@@ -146,25 +144,27 @@ export default function Home({ data }) {
 
   const getAllCategory = async () => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/category/all?type=separate`, {
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
         localStorage.setItem(
           "main",
-          JSON.stringify(response.data.data.mainCats)
+          // JSON.stringify(response.data.data.mainCats) //! mark
+          JSON.stringify(response.data.result)
         );
-        localStorage.setItem(
-          "parent",
-          JSON.stringify(response.data.data.parentCats)
-        );
-        localStorage.setItem(
-          "child",
-          JSON.stringify(response.data.data.childCats)
-        );
-        setMain(response.data.data.mainCats);
-        setParent(response.data.data.parentCats);
-        setChild(response.data.data.childCats);
+        // localStorage.setItem(
+        //   "parent",
+        //   JSON.stringify(response.data.data.parentCats)
+        // );
+        // localStorage.setItem(
+        //   "child",
+        //   JSON.stringify(response.data.data.childCats)
+        // ); //! mark
+        // setMain(response.data.data.mainCats); //! mark
+        setMain(response.data.result);
+        // setParent(response.data.data.parentCats);
+        // setChild(response.data.data.childCats);
       })
       .catch((error) => {
         if (error.response) {
@@ -199,35 +199,31 @@ export default function Home({ data }) {
                 {categoriesError && <div></div>}
                 {configId && categories && (
                   <AllCategory
-                    categories={
-                      categories.find(
-                        (main) => main.id.toString() == userConfigs.configId
-                      ).parent_categories
-                    }
+                    categories={categories}
                     isLoading={categoriesLoading}
-                  />
+                  /> //! mark
                 )}
               </div>
               <div className="relative  rounded w-full">
                 <Banner />
               </div>
             </div>
-            {configId &&
-              categories &&
-              categories
-                ?.find((main) => main.id.toString() == userConfigs.configId)
-                .parent_categories.map((el) => {
-                  return (
-                    <ProductListWithCategory
-                      key={`list-with-category-${el.id}`}
-                      categoryId={el?.id}
-                      categoryName={el?.name}
-                      categoryIcon={el?.icon}
-                      cols={5}
-                      className="mt-12"
-                    />
-                  );
-                })}
+            {
+              // configId && categories && categories //! mark
+              // ?.find((main) => main.id == userConfigs.configId)
+              // .parent_categories.map((el) => {
+              //   return (
+              //     <ProductListWithCategory
+              //       key={`list-with-category-${el.id}`}
+              //       categoryId={el?.id}
+              //       categoryName={el?.name}
+              //       categoryIcon={el?.icon}
+              //       cols={5}
+              //       className="mt-12"
+              //     />
+              //   );
+              // })
+            }
           </div>
         </div>
       </div>

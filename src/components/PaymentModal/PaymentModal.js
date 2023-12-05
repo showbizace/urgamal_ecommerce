@@ -6,14 +6,13 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function PaymentModal({ context, id, innerProps }) {
-  console.log(innerProps, "innerProps");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   // const callInquiry = (invoiceId) => {
   //   setLoading(true);
   //   const userToken = getCookie("token");
   //   const axiosReqOption = {
-  //     headers: {
+  //     headers: {npmi
   //       Authorization: "Bearer " + userToken,
   //       "Content-Type": "application/json",
   //     },

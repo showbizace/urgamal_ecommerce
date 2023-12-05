@@ -1,31 +1,47 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Loader, Modal, Tabs, Text, TextInput } from "@mantine/core";
 import Order from "../../../components/Profile/Order";
 import { getCookie } from "cookies-next";
 import useSWR from "swr";
 import axios from "axios";
 import { IconPackageOff } from "@tabler/icons-react";
-import { useDisclosure } from "@mantine/hooks";
 
 const MyOrder = () => {
   const [tabs, setTabs] = useState("all");
   const accessToken = getCookie("token");
+
   const config = {
     headers: { Authorization: `Bearer ${accessToken}` },
   };
-  const fetcher = (url) => axios.get(url, config).then((res) => res.data.data);
+
+  const fetcher = async (status) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/order`,
+        {
+          status: tabs === "all" ? "all" : tabs,
+        },
+        config
+      );
+
+      return response.data.data;
+    } catch (error) {
+      console.error("Fetch error:", error);
+      throw new Error("Network response was not ok.");
+    }
+  };
+
   const {
     data: orders,
     error,
     isLoading,
   } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/user/order?status=${tabs === "all" ? "" : tabs
+    `${process.env.NEXT_PUBLIC_API_URL}/user/order?status=${
+      tabs === "all" ? "" : tabs
     }`,
     fetcher
   );
 
-  // useEffect(() => {
-  // }, []);
   const orderTypes = useMemo(
     () => [
       { value: "all", title: "Бүгд" },
@@ -36,8 +52,7 @@ const MyOrder = () => {
     ],
     []
   );
-  const [opened, { open, close }] = useDisclosure(false);
-  const [paymentData, setPaymentData] = useState();
+
   return (
     <Tabs
       variant="outline"

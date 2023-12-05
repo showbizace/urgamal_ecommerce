@@ -22,7 +22,7 @@ const fetcher = (url) =>
     .then((res) => {
       return res.data.data;
     })
-    .catch((error) => { });
+    .catch((error) => {});
 export default function ProductListWithCategory({
   categoryName,
   categoryIcon,
@@ -32,10 +32,14 @@ export default function ProductListWithCategory({
 }) {
   const [pageIndex, setPageIndex] = useState(0);
   const { data, isLoading, error } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL
-    }/product/local?parent_cat_id=${categoryId}&offset=${0}&limit=${PAGE_SIZE}`,
+    `${
+      process.env.NEXT_PUBLIC_API_URL
+    }/product?categoryId=${categoryId}&offset=${0}&limit=${PAGE_SIZE}`,
+    // }/product`,
+    //? @lahagva
     fetcher
   );
+
   return (
     <div className={`flex flex-col justify-center ${className}`}>
       <div className="flex gap-3 justify-between items-end">

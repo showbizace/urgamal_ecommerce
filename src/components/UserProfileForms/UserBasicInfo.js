@@ -34,27 +34,21 @@ export default function UserBasicInfo({ data, refresh }) {
     },
   });
 
-  console.log(dateValue);
-
   const handleEdit = ({ givenName, familyName, birthdate, gender }) => {
-    const data = {
+    var raw = JSON.stringify({
+      gender: gender,
       given_name: givenName,
       family_name: familyName,
       birthdate: birthdate,
-      gender: gender,
-    };
+    });
 
-    console.log(birthdate);
-
-    console.log(data);
-    // Make a POST request to the specified URL with the data as the request body
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${getCookie("token")}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: raw,
     })
       .then(async (response) => {
         if (!response.ok) {
@@ -79,6 +73,7 @@ export default function UserBasicInfo({ data, refresh }) {
         });
       });
   };
+
   return (
     <div className="flex flex-col w-full max-w-md">
       <Title order={4}>Хувийн мэдээлэл</Title>

@@ -12,7 +12,7 @@ export const CategoryContext = createContext();
 
 const CategoryContextProvider = ({ children }) => {
   const { data, error, isLoading, isValidating } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/category/all?type=nest`,
+    `${process.env.NEXT_PUBLIC_API_URL}/product/cats`,
     fetcher,
     { refreshInterval: 0 }
   );

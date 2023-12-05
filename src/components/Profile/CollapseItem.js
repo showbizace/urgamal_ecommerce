@@ -45,7 +45,7 @@ const CollapseItem = ({ data, total, orderItems }) => {
 						</Button>
 					</div> */}
         </div>
-        {/* {console.log(orderItems, "orderItems")}
+        {/* {(orderItems, "orderItems")}
 				{orderItems.map((e) => (
 					<Image alt="prd" src={e.product.image} width={90} height={90} />
 				))}

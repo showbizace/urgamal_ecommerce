@@ -100,7 +100,6 @@ const CartItems = (props) => {
     );
     if (res.status === 200) {
       const data = await res.json();
-      console.log(data, "data sags");
       if (data.success === true) {
         if (data.result.length > 0) setCartItem(data.result[0].cart_items);
       }
@@ -179,7 +178,6 @@ const CartItems = (props) => {
 
   useEffect(() => {
     const token = getCookie("token");
-    console.log(token, "token");
     setUserToken(token);
     if (auth) {
       setAddressVisible(true);
@@ -527,7 +525,6 @@ const CartItems = (props) => {
       if (initialStock >= count) {
         let clone = { ...product };
         clone["remainStock"] = initialStock - count;
-        console.log(clone["remainStock"], "remain");
         clone["purchaseCount"] = count;
         clone["totalPrice"] = count * clone["price"];
         let temp = [...cartItem];
@@ -601,7 +598,6 @@ const CartItems = (props) => {
     cartItem !== undefined &&
     cartItem.map((item, idx) => {
       if (item !== undefined) {
-        console.log(item);
         return (
           <tr key={idx}>
             <td>

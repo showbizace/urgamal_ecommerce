@@ -19,7 +19,6 @@ import { UserConfigContext } from "@/utils/userConfigContext";
 const Address = ({ setSelectedShippingData, setSelect }) => {
   const [value, setValue] = useState(1);
   const [opened, { open, close }] = useDisclosure(false);
-  const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [shippingData, setShippingData] = useState([]);
   const [editingProdData, setEditingProdData] = useState();
@@ -32,6 +31,7 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
     setCookie(cookie);
     getShippingData(cookie);
   }, [auth]);
+
   useEffect(() => {
     getShippingData();
     setSelectedShippingData(shippingData[1]);
@@ -47,7 +47,6 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
   };
 
   const getShippingData = async (cookie = cookie) => {
-    console.log("called");
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${cookie}`);
 
@@ -71,49 +70,45 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
   };
 
   const SubmitCreateShippingData = async (values) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${cookie}`);
-    myHeaders.append("Content-Type", "application/json");
-
-    const initialData = {
-      name: values.name,
-      city: values.city,
-      province: values.province,
-      district: values.district,
-      committee: values.committee,
-      street: values.street,
-      fence: values.fence,
-      apartment: values.apartment,
-      number: values.number,
-      phone: values.phone,
-      type: values.type === undefined ? false : values.type,
-      note: values.note,
-    };
-
-    console.log(initialData, "initialData");
-    const requestOption = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(initialData),
-    };
-
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/address`, requestOption)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.success) {
-          showNotification({
-            message: result.message,
-            color: "green",
-          });
-          getShippingData();
-          close;
-        } else {
-          showNotification({
-            message: result.message,
-            color: "red",
-          });
-        }
-      });
+    // var myHeaders = new Headers();
+    // myHeaders.append("Authorization", `Bearer ${cookie}`);
+    // myHeaders.append("Content-Type", "application/json");
+    // const initialData = {
+    //   name: values.name,
+    //   city: values.city,
+    //   province: values.province,
+    //   district: values.district,
+    //   committee: values.committee,
+    //   street: values.street,
+    //   fence: values.fence,
+    //   apartment: values.apartment,
+    //   number: values.number,
+    //   phone: values.phone,
+    //   type: values.type === undefined ? false : values.type,
+    //   note: values.note,
+    // };
+    // const requestOption = {
+    //   method: "POST",
+    //   headers: myHeaders,
+    //   body: JSON.stringify(initialData),
+    // };
+    // fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/address`, requestOption)
+    //   .then((response) => response.json())
+    //   .then((result) => {
+    //     if (result.success) {
+    //       showNotification({
+    //         message: result.message,
+    //         color: "green",
+    //       });
+    //       getShippingData();
+    //       close;
+    //     } else {
+    //       showNotification({
+    //         message: result.message,
+    //         color: "red",
+    //       });
+    //     }
+    //   });
   };
 
   return (
@@ -220,7 +215,6 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
       ) : (
         <Skeleton sx={{ height: "100%" }} visible={loading} />
       )}
-      {console.log(editingProdData, "editing")}
       <ProductModal
         initialData={editingProdData}
         isOpen={opened}

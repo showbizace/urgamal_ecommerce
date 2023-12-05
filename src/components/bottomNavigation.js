@@ -9,6 +9,7 @@ import {
   IconCategory2,
   IconUserCircle,
 } from "@tabler/icons-react";
+import axios from "axios";
 import { useDisclosure } from "@mantine/hooks";
 import { Drawer, ScrollArea, Text } from "@mantine/core";
 import useSWR from "swr";
@@ -18,7 +19,7 @@ const fetcher = (url) =>
   axios
     .get(url, { headers: { "Content-Type": "application/json" } })
     .then((res) => {
-      return res.data.data;
+      return res.data.result;
     })
     .catch((error) => console.log(error));
 
@@ -68,13 +69,9 @@ const BottomNavBar = () => {
     data: categories,
     error: categoriesError,
     isLoading: categoriesLoading,
-  } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/category/all?type=nest`,
-    fetcher,
-    {
-      refreshInterval: 0,
-    }
-  );
+  } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
+    refreshInterval: 0,
+  });
   return (
     <>
       <Drawer
@@ -85,7 +82,7 @@ const BottomNavBar = () => {
       >
         {categoriesLoading && <div></div>}
         {categoriesError && <div></div>}
-        {configId && categories && (
+        {/* {configId && categories && ( //! mark
           <AllCategory
             type="drawer"
             categories={
@@ -95,7 +92,7 @@ const BottomNavBar = () => {
             }
             isLoading={categoriesLoading}
           />
-        )}
+        )} */}
       </Drawer>
       <div className="block lg:hidden  sticky bottom-0 z-50">
         <div className="relative">

@@ -46,9 +46,10 @@ export default function SearchResult({ initialData }) {
   const { data, mutate, size, setSize, isValidating, isLoading, error } =
     useSWRInfinite(
       (index) =>
-        `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${
+        `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
           index + 1
         }&limit=${PAGE_SIZE}&query=${q}`,
+      // `${process.env.NEXT_PUBLIC_API_URL}/product`, //? @lahagva
       fetcher,
       { revalidateFirstPage: false }
     );
@@ -115,10 +116,6 @@ export default function SearchResult({ initialData }) {
         }
       });
   };
-
-  useEffect(() => {
-    console.log(main, "main");
-  }, [main]);
 
   return (
     <GlobalLayout>

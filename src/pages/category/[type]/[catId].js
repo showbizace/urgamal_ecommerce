@@ -18,7 +18,7 @@ const fetcher = (url) =>
     .then((res) => {
       return res.data.data;
     })
-    .catch((error) => { });
+    .catch((error) => {});
 const PAGE_SIZE = 10;
 
 export async function getServerSideProps({ query }) {
@@ -29,8 +29,11 @@ export async function getServerSideProps({ query }) {
   };
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL
-      }/product/local?offset=0&limit=${PAGE_SIZE}&${type}_cat_id=${catId !== "undefined" ? catId : 0
+      `${
+        process.env.NEXT_PUBLIC_API_URL
+      }/product?offset=0&limit=${PAGE_SIZE}&categoryId=${
+        catId !== "undefined" ? catId : 0
+        // }/product //? @lahagva
       }`,
       requestOption
     );
@@ -98,7 +101,8 @@ const CategoryPage = ({ initialData }) => {
   const { data, mutate, size, setSize, isValidating, isLoading, error } =
     useSWRInfinite(
       (index) => {
-        return `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index}&limit=${PAGE_SIZE}&${type}_cat_id=${catId}`;
+        return `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${index}&limit=${PAGE_SIZE}&categoryId=${catId}`;
+        // return `${process.env.NEXT_PUBLIC_API_URL}/product`; //? @lahagva
       },
       fetcher,
       { revalidateFirstPage: false }
@@ -132,7 +136,7 @@ const CategoryPage = ({ initialData }) => {
   const infiniteScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 350 >=
-      document.documentElement.offsetHeight &&
+        document.documentElement.offsetHeight &&
       !isEmpty &&
       !isReachingEnd
     )
@@ -246,8 +250,8 @@ const CategoryPage = ({ initialData }) => {
                   type === "parent"
                     ? parent.find((e) => e.id === catId)?.name
                     : type === "child"
-                      ? parent.find((e) => e.id === catId)?.name
-                      : ""
+                    ? parent.find((e) => e.id === catId)?.name
+                    : ""
                 }
               >
                 {products.map((e, index) => (

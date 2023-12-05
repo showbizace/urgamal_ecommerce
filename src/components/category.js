@@ -16,7 +16,6 @@ const Category = ({
 }) => {
   const router = useRouter();
   const userConfigs = useContext(UserConfigContext);
-  console.log(loading, "loading");
   return (
     <div
       id="category-menu"
