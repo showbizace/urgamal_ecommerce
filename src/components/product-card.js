@@ -112,38 +112,47 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
 
         <div className="flex flex-col items-start w-full h-[15rem] justify-between">
           <Text className="text-2xl mt-1 text-start" lineClamp={2}>
-            {data?.Name}
+            {data?.name}
           </Text>
           <div className="flex flex-col">
             <div className="flex flex-row items-center  mt-1 gap-1">
               <p className="text-[#696A6C] font-semibold text-xs">
                 Үлдэгдэл :{" "}
               </p>
-              {data?.Balance > 10 ? (
+              {parseInt(data?.balance, 10) > 10 ? (
                 <Badge size="xs" color="teal">
                   Хангалттай
                 </Badge>
-              ) : data?.Balance <= 10 ? (
-                <p className="text-xs font-semibold ">{data?.Balance}</p>
+              ) : parseInt(data?.balance, 10) <= 10 ? (
+                <p className="text-xs font-semibold ">
+                  {parseInt(data?.balance, 10)}
+                </p>
               ) : (
                 <Badge size="xs" color="yellow">
                   Үлдэгдэлгүй
                 </Badge>
               )}
             </div>
-            <p className="font-semibold text-base mt-1">{data?.ListPrice}₮</p>
+            <div className="flex flex-row items-center">
+              <p className="font-semibold text-md text-start mt-1 mr-2">
+                {data?.priceListName}
+              </p>
+              <p className="font-semibold text-start mt-1">
+                {data?.listPrice}₮
+              </p>
+            </div>
             <div className="flex flex-col md:flex-row  gap-4 w-full mt-1 justify-between">
               {/* <Button
-            variant={"filled"}
-            color="red"
-            style={{ padding: "10px" }}
-            onClick={(event) => {
-              event.stopPropagation();
-            }}
-            className="flex justify-center items-center bg-tertiary rounded-md "
-          >
-            <Image width={18} height={8} src="/icons/hearth2.svg" />
-          </Button> */}
+                variant={"filled"}
+                color="red"
+                style={{ padding: "10px" }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                }}
+                className="flex justify-center items-center bg-tertiary rounded-md "
+              >
+                <Image width={18} height={8} src="/icons/hearth2.svg" />
+              </Button> */}
 
               <div className="flex flex-row items-center">
                 <Button
@@ -194,30 +203,30 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
             </div>
 
             {/* <Button
-          variant={"filled"}
-          style={{ width: "100%" }}
-          className="flex justify-center items-center p-1 bg-button-yellow rounded-md mt-1 hover:cursor-pointer"
-          color={"orange"}
-          onClick={(event) => addToCartHandler(event, data)}
-        >
-          {loading === true ? (
-            <LoadingOverlay
-              loaderProps={{ size: "sm", color: "white" }}
-              overlayOpacity={0.1}
-              visible={loading}
-            />
-          ) : (
-            <div className="flex items-center">
-              <p className="text-sm text-white font-semibold ">Сагслах</p>
-              <Image
-                className="ml-2"
-                width={18}
-                height={18}
-                src={"/icons/trolley2.svg"}
-              />
-            </div>
-          )}
-        </Button> */}
+              variant={"filled"}
+              style={{ width: "100%" }}
+              className="flex justify-center items-center p-1 bg-button-yellow rounded-md mt-1 hover:cursor-pointer"
+              color={"orange"}
+              onClick={(event) => addToCartHandler(event, data)}
+            >
+              {loading === true ? (
+                <LoadingOverlay
+                  loaderProps={{ size: "sm", color: "white" }}
+                  overlayOpacity={0.1}
+                  visible={loading}
+                />
+              ) : (
+                <div className="flex items-center">
+                  <p className="text-sm text-white font-semibold ">Сагслах</p>
+                  <Image
+                    className="ml-2"
+                    width={18}
+                    height={18}
+                    src={"/icons/trolley2.svg"}
+                  />
+                </div>
+              )}
+            </Button> */}
           </div>
         </div>
       </div>

@@ -14,7 +14,7 @@ const MyOrder = () => {
     headers: { Authorization: `Bearer ${accessToken}` },
   };
 
-  const fetcher = async (status) => {
+  const fetcher = async () => {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/user/order`,
@@ -36,8 +36,6 @@ const MyOrder = () => {
     error,
     isLoading,
   } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/user/order?status=${
-      tabs === "all" ? "" : tabs
     `${process.env.NEXT_PUBLIC_API_URL}/user/order?status=${
       tabs === "all" ? "" : tabs
     }`,

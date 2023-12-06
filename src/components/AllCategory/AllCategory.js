@@ -3,7 +3,6 @@ import { IconChevronRight } from "@tabler/icons-react";
 import Link from "next/link";
 
 function AllCategory({ type = "default", categories, isLoading }) {
-  const perChunk = 10;
   return type === "drawer" ? (
     <div className="h-full">
       <ul role="list" className="relative flex flex-col gap-2 h-full mt-6 ">
@@ -17,21 +16,21 @@ function AllCategory({ type = "default", categories, isLoading }) {
             categories.map((parent) => {
               return (
                 <Accordion.Item
-                  value={parent?.name + parent?.id}
-                  key={parent?.id}
+                  value={parent?.Name + parent?.Id}
+                  key={parent?.Id}
                 >
                   <Accordion.Control>
                     <li
-                      key={parent?.name + parent?.id}
+                      key={parent?.Name + parent?.Id}
                       className="group/parent  py-2 flex justify-between items-center  "
                     >
                       <Link
-                        href={`/category/parent/${parent?.id}`}
+                        href={`/category/parent/${parent?.Id}`}
                         className="text-2xl group-hover/parent:underline "
                       >
                         {" "}
-                        {parent?.name?.charAt(0).toUpperCase() +
-                          parent?.name?.slice(1)}
+                        {parent?.Name?.charAt(0).toUpperCase() +
+                          parent?.Name?.slice(1)}
                       </Link>
                     </li>
                   </Accordion.Control>
@@ -44,15 +43,15 @@ function AllCategory({ type = "default", categories, isLoading }) {
                         {parent?.child_categories?.map((child, index) => (
                           <div key={`chunk-${index}`}>
                             <li
-                              key={child?.name + child?.id}
+                              key={child?.Name + child?.Id}
                               className="group/item w-full hover:bg-gray-100 px-2 py-2 rounded-md cursor-pointer"
                             >
                               <Link
-                                href={`/category/child/${child?.id} `}
+                                href={`/category/child/${child?.Id} `}
                                 className="text-sm group-hover/item:underline"
                               >
-                                {child?.name?.charAt(0).toUpperCase() +
-                                  child?.name?.slice(1)}
+                                {child?.Name?.charAt(0).toUpperCase() +
+                                  child?.Name?.slice(1)}
                               </Link>
                             </li>
                           </div>
@@ -67,7 +66,7 @@ function AllCategory({ type = "default", categories, isLoading }) {
       </ul>
     </div>
   ) : (
-    <div className="h-full">
+    <div className="h-full ">
       <ul role="list" className="relative flex flex-col gap-2 h-full">
         {isLoading &&
           new Array(6)
@@ -77,8 +76,8 @@ function AllCategory({ type = "default", categories, isLoading }) {
           categories?.map((parent) => {
             return (
               <li
-                key={parent?.name + parent?.Id}
-                className="group/parent w-60 hover:bg-gray-100 px-6 py-2 flex justify-between items-center cursor-pointer"
+                key={parent?.Name + parent?.Id}
+                className="group/parent  hover:bg-gray-100 px-6 py-2 flex justify-between items-center cursor-pointer"
               >
                 <Link
                   href={`/category/parent/${parent?.Id}`}

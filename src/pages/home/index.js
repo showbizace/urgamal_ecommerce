@@ -12,16 +12,9 @@ import axios from "axios";
 import AllCategory from "@/components/AllCategory/AllCategory";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { useDisclosure } from "@mantine/hooks";
+import { fetcher, getCategory } from "@/utils/fetch";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 const PAGE_SIZE = 20;
-
-const fetcher = (url) =>
-  axios
-    .get(url, { headers: { "Content-Type": "application/json" } })
-    .then((res) => {
-      return res.data.result;
-    })
-    .catch((error) => console.log(error));
 
 export async function getStaticProps() {
   const requestOption = {
@@ -43,15 +36,12 @@ export async function getStaticProps() {
 export default function Home({ data }) {
   const userConfigs = useContext(UserConfigContext);
   const { preference_cookie, configId } = userConfigs;
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [positionSticky, setPositionSticky] = useState(false);
 
   const [opened, { open, close }] = useDisclosure(true);
-
-  const [positionSticky, setPositionSticky] = useState(false);
-  const [products, setProducts] = useState([]);
-  const [address, setAddress] = useState();
-  const [main, setMain] = useState([]);
-  const [parent, setParent] = useState([]);
-  const [child, setChild] = useState([]);
 
   const onScroll = useCallback((event) => {
     const { pageYOffset, scrollY, innerHeight } = window;
@@ -68,14 +58,6 @@ export default function Home({ data }) {
       setPositionSticky(false);
     }
   }, []);
-
-  const {
-    data: categories,
-    error: categoriesError,
-    isLoading: categoriesLoading,
-  } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
-    refreshInterval: 0,
-  });
 
   const {
     data: fetchData,
@@ -95,25 +77,18 @@ export default function Home({ data }) {
   });
 
   useEffect(() => {
-    // if (fetchData && fetchData.length > 0) {
-    //   // Ensure fetchData exists and has a length before accessing properties
-    //   setProducts((prevProducts) =>
-    //     prevProducts.concat(...fetchData[fetchData.length - 1].result)
-    //   );
-    // }
+    if (fetchData && fetchData.length > 0) {
+      setProducts((prevProducts) =>
+        prevProducts.concat(...fetchData[fetchData.length - 1].result)
+      );
+    }
   }, [fetchData]);
-
-  const isLoadingMore =
-    isLoading ||
-    (size > 0 && fetchData && typeof fetchData[size - 1] === "undefined");
 
   const isEmpty = fetchData?.[0]?.length === 0;
 
   const isReachingEnd =
     isEmpty ||
     (fetchData && fetchData[fetchData.length - 1]?.length < PAGE_SIZE);
-
-  const isRefreshing = isValidating && fetchData && fetchData.length === size;
 
   const infiniteScroll = () => {
     if (
@@ -136,41 +111,23 @@ export default function Home({ data }) {
     // remove event on unmount to prevent a memory leak with the cleanup
     window.dispatchEvent(new Event("storage"));
     setProducts(data.result);
-    getAllCategory();
+    fetchCategory();
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
-  const getAllCategory = async () => {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, {
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((response) => {
-        localStorage.setItem(
-          "main",
-          // JSON.stringify(response.data.data.mainCats) //! mark
-          JSON.stringify(response.data.result)
-        );
-        // localStorage.setItem(
-        //   "parent",
-        //   JSON.stringify(response.data.data.parentCats)
-        // );
-        // localStorage.setItem(
-        //   "child",
-        //   JSON.stringify(response.data.data.childCats)
-        // ); //! mark
-        // setMain(response.data.data.mainCats); //! mark
-        setMain(response.data.result);
-        // setParent(response.data.data.parentCats);
-        // setChild(response.data.data.childCats);
-      })
-      .catch((error) => {
-        if (error.response) {
-        } else {
-        }
-      });
+  const fetchCategory = async () => {
+    setCategoriesLoading(true);
+
+    const data = await getCategory();
+
+    if (data) {
+      setCategoriesLoading(false);
+      setCategories(data);
+    } else {
+      setCategoriesLoading(true);
+    }
   };
 
   return (
@@ -193,37 +150,37 @@ export default function Home({ data }) {
           <div className="flex flex-col lg:w-[100%]">
             {/* <FeatureProductList /> */}
             {/* <NewProduct /> */}
-            <div className="hidden lg:flex flex-col lg:flex-row bg-white mt-2 rounded-sm">
-              <div className="py-3  text-xxl">
-                {categoriesLoading && <div></div>}
-                {categoriesError && <div></div>}
+            <div className="hidden lg:flex flex-col lg:flex-row bg-white mt-2 rounded-sm py-5">
+              <div className="py-3 text-xxl h-[390px] overflow-x-hidden overflow-y-auto">
                 {configId && categories && (
                   <AllCategory
                     categories={categories}
                     isLoading={categoriesLoading}
-                  /> //! mark
+                  />
                 )}
               </div>
-              <div className="relative  rounded w-full">
+              <div className="relative rounded w-full">
                 <Banner />
               </div>
             </div>
-            {
-              // configId && categories && categories //! mark
-              // ?.find((main) => main.id == userConfigs.configId)
-              // .parent_categories.map((el) => {
-              //   return (
-              //     <ProductListWithCategory
-              //       key={`list-with-category-${el.id}`}
-              //       categoryId={el?.id}
-              //       categoryName={el?.name}
-              //       categoryIcon={el?.icon}
-              //       cols={5}
-              //       className="mt-12"
-              //     />
-              //   );
-              // })
-            }
+
+            {configId &&
+              categories &&
+              categories
+                .filter((el) => el.LevelOrder == userConfigs.configId)
+                .slice(0, 6)
+                .map((item) => {
+                  return (
+                    <ProductListWithCategory
+                      key={`list-with-category-${item.Id}`}
+                      categoryId={item?.Id}
+                      categoryName={item?.Name}
+                      // categoryIcon={el?.icon}
+                      cols={5}
+                      className="mt-12"
+                    />
+                  );
+                })}
           </div>
         </div>
       </div>
