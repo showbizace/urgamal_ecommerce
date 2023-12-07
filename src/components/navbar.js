@@ -304,7 +304,9 @@ const Navbar = (props) => {
               />
               <div className="absolute">
                 <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
-                  <p className="text-sm-5">{cartItem?.cart_items?.length}</p>
+                  <p className="text-sm-5">
+                    {cartItem?.cart_items ? cartItem?.cart_items?.length : 0}
+                  </p>
                 </div>
               </div>
             </Button>

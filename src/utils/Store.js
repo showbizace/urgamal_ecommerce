@@ -1,3 +1,5 @@
+import { deleteCookie } from "cookies-next";
+
 export const addCart = (product) => {
   if (typeof window !== "undefined") {
     // client-side operation such as local storage.
@@ -28,7 +30,8 @@ export const addCart = (product) => {
 
       let total = 0;
       updatedCartItems?.forEach((item) => {
-        total += item.total || item.quantity * item.listPrice;
+        total +=
+          parseInt(item.total) || parseInt(item.quantity * item.listPrice);
       });
 
       const updatedState = {
@@ -63,7 +66,7 @@ export const removeFromCart = (listProduct) => {
   if (typeof window !== "undefined") {
     let total = 0;
     listProduct?.forEach((item) => {
-      total += item.total || item.quantity * item.listPrice;
+      total += parseInt(item.total) || parseInt(item.quantity * item.listPrice);
     });
 
     const updatedState = {
@@ -79,7 +82,7 @@ export const addQuantityProduct = (listProduct) => {
   if (typeof window !== "undefined") {
     let total = 0;
     listProduct?.forEach((item) => {
-      total += item.total || item.quantity * item.listPrice;
+      total += parseInt(item.total) || parseInt(item.quantity * item.listPrice);
     });
 
     const updatedState = {
@@ -95,7 +98,7 @@ export const removeQuantityProduct = (listProduct) => {
   if (typeof window !== "undefined") {
     let total = 0;
     listProduct?.forEach((item) => {
-      total += item.total || item.quantity * item.listPrice;
+      total += parseInt(item.total) || parseInt(item.quantity * item.listPrice);
     });
 
     const updatedState = {
@@ -103,6 +106,13 @@ export const removeQuantityProduct = (listProduct) => {
       cart_items: listProduct,
     };
     localStorage.setItem("cartItems", JSON.stringify(updatedState));
+    window.dispatchEvent(new Event("storage"));
+  }
+};
+
+export const emptyCart = () => {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("cartItems");
     window.dispatchEvent(new Event("storage"));
   }
 };

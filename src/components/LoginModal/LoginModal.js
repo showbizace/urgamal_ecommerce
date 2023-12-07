@@ -68,6 +68,7 @@ export default function LoginModal({ context, id }) {
         maxAge: bigDate,
       });
       setCookie("number", mobileNumber, { maxAge: bigDate });
+      setCookie("addToCart", true);
       showNotification({
         message: "Амжилттай нэвтэрлээ",
         color: "green",

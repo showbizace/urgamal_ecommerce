@@ -28,15 +28,17 @@ import {
   removeFromCart,
   addQuantityProduct,
   removeQuantityProduct,
+  emptyCart,
 } from "@/utils/Store";
 import { IconAlertCircle } from "@tabler/icons-react";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import { SuccessNotification } from "../../utils/SuccessNotification";
-import { getCookie } from "cookies-next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { openContextModal } from "@mantine/modals";
 import axios from "axios";
 import Image from "next/image";
 import { UserConfigContext } from "@/utils/userConfigContext";
+import { fetchMethod } from "@/utils/fetch";
 
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
@@ -47,6 +49,7 @@ const CartItems = (props) => {
   const [addressVisible, setAddressVisible] = useState(false);
   const [orderId, setOrderId] = useState();
   const userToken = getCookie("token");
+  const addToCart = getCookie("addToCart");
   const [total, setTotal] = useState(0);
   const [selectedShippingData, setSelectedShippingData] = useState({});
   const [select, setSelect] = useState(false);
@@ -72,103 +75,20 @@ const CartItems = (props) => {
     setCartItem({ ...cartItem, cart_items: newData });
   };
 
-  // const getUserCartItem = async () => {
-  //   const myHeaders = {
-  //     "Content-Type": "application/json",
-  //     Authorization: "Bearer " + userToken,
-  //   };
-  //   const requestOption = {
-  //     method: "GET",
-  //     headers: myHeaders,
-  //   };
-  //   const res = await fetch(
-  //     `${process.env.NEXT_PUBLIC_API_URL}/cart`,
-  //     requestOption
-  //   );
-  //   if (res.status === 200) {
-  //     const data = await res.json();
-  //     console.log(data, "data");
-  //     if (data.success === true) {
-  //       if (data.result.length > 0) setCartItem(data.result[0]);
-  //     }
-  //   }
-  // };
-
-  // const addToCartMultiple = async (arr) => {
-  //   var myHeaders = new Headers();
-
-  //   myHeaders.append("Authorization", "Bearer " + userToken);
-  //   myHeaders.append("Content-Type", "application/json");
-
-  //   const temp = [];
-  //   arr.forEach((e) => {
-  //     temp.push({ id: e.id, qty: e["purchaseCount"] });
-  //   });
-  //   const requestOption = {
-  //     method: "POST",
-  //     headers: myHeaders,
-  //     body: JSON.stringify({
-  //       items_to_cart: temp,
-  //     }),
-  //   };
-  //   const res = await fetch(
-  //     `${process.env.NEXT_PUBLIC_API_URL}/cart/add/multi`,
-  //     requestOption
-  //   )
-  //     .then(async (res) => {
-  //       if (res.status === 200) {
-  //         const data = await res.json();
-  //       }
-  //     })
-  //     .catch((err) => console.log(err, "err"));
-  // };
-
-  // useEffect(() => {
-  //   if (typeof window !== "undefined") {
-  //     // client-side operation such as local storage.
-  //     let localStorageCart = JSON.parse(localStorage.getItem("cartItems"));
-  //     window.dispatchEvent(new Event("storage"));
-  //     let data = localStorageCart?.cart_items;
-  //     console.log(data, "data");
-  //     let arr = [];
-  //     if (
-  //       localStorageCart !== null &&
-  //       localStorageCart?.cart_items?.length > 0
-  //     ) {
-  //       data.forEach((e) => {
-  //         let clone = { ...e };
-  //         clone.isChecked = false;
-  //         clone.total = clone.listPrice * clone.quantity;
-  //         // clone['total'] = clone['purchaseCount'] * clone['price']
-  //         arr.push(clone);
-  //       });
-  //       setCartItem(arr);
-  //     }
-
-  //     if (userToken !== undefined && userToken !== null && userToken !== "") {
-  //       setAddressVisible(true);
-  //       if (data?.length > 0) {
-  //         addToCartMultiple(arr);
-  //         getUserCartItem();
-  //       } else {
-  //         getUserCartItem();
-  //       }
-  //     } else {
-  //       setAddressVisible(false);
-  //     }
-  //   }
-  // }, []);
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.addEventListener("storage", () => {
         let data = getCart();
-        setCartItem(data);
+        if (data) {
+          setCartItem(data);
+        }
         // ...
       });
     }
     let data = getCart();
-    setCartItem(data);
+    if (data) {
+      setCartItem(data);
+    }
   }, []);
 
   useEffect(() => {
@@ -179,13 +99,44 @@ const CartItems = (props) => {
     }
   }, [auth]);
 
-  // useEffect(() => {
-  //   let totalProduct = 0;
-  //   cartItem?.cart_items.forEach((item) => {
-  //     totalProduct += parseInt(item?.total);
-  //   });
-  //   setTotal(totalProduct);
-  // }, [cartItem]);
+  const storageToCart = async () => {
+    let dataStorage = getCart();
+    if (dataStorage) {
+      const convert = dataStorage?.cart_items?.map((item) => {
+        return {
+          id: item.id,
+          quantity: item.quantity,
+        };
+      });
+      const requestOption = {
+        products: convert,
+      };
+      const data = await fetchMethod(
+        "POST",
+        "cart/sync",
+        userToken,
+        requestOption
+      );
+      if (data?.success) {
+        console.log(convert, "convert success sync");
+      }
+    }
+  };
+
+  const getUserCart = async () => {
+    const data = await fetchMethod("GET", "cart", userToken);
+    if (data?.success) {
+      setCartItem(data?.result[0]);
+      deleteCookie("addToCart");
+    }
+  };
+
+  useEffect(() => {
+    if (addToCart) {
+      storageToCart();
+      getUserCart();
+    }
+  }, [addToCart]);
 
   const deleteFromCart = async () => {
     let check = true;
@@ -215,57 +166,36 @@ const CartItems = (props) => {
       });
       setCartItem({ ...cartItem, cart_items: temp });
       removeFromCart(temp);
-      // dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
-      // if (userToken) {
-      //   if (temp.length === 0) {
-      //     var myHeaders = new Headers();
-      //     myHeaders.append("Authorization", "Bearer " + userToken);
-      //     myHeaders.append("Content-Type", "application/json");
-      //     const requestOption = {
-      //       method: "DELETE",
-      //       headers: myHeaders,
-      //       body: JSON.stringify({
-      //         cart_id: cartId,
-      //       }),
-      //     };
-      //     const res = await fetch(
-      //       `${process.env.NEXT_PUBLIC_API_URL}/cart/whole`,
-      //       requestOption
-      //     );
-      //     if (res.status === 200) {
-      //       const data = await res.json();
-      //       if (data.success === true) {
-      //         SuccessNotification({
-      //           message: "Сагсанд дахь бүх бараа амжилттай устлаа!",
-      //           title: "Сагсны бараа",
-      //         });
-      //       }
-      //     }
-      //   } else {
-      //     var myHeaders = new Headers();
-      //     myHeaders.append("Authorization", "Bearer " + userToken);
-      //     myHeaders.append("Content-Type", "application/json");
-      //     let data = { cart_id: cartId, cart_item_id: removedArr };
-      //     const requestOption = {
-      //       method: "DELETE",
-      //       headers: myHeaders,
-      //       body: JSON.stringify(data),
-      //     };
-      //     const res = await fetch(
-      //       `${process.env.NEXT_PUBLIC_API_URL}/cart`,
-      //       requestOption
-      //     );
-      //     if (res.status === 200) {
-      //       const data = await res.json();
-      //       if (data.success === true) {
-      //         SuccessNotification({
-      //           message: "Сагсанд дахь бараа амжилттай устлаа!",
-      //           title: "Сагсны бараа устгах",
-      //         });
-      //       }
-      //     }
-      //   }
-      // }
+      if (userToken) {
+        if (temp.length === 0) {
+          const requestOption = {
+            cart_id: cartId,
+          };
+          const data = await fetchMethod(
+            "DELETE",
+            "cart/whole",
+            userToken,
+            requestOption
+          );
+          if (data?.success) {
+            console.log("Success remove all Product");
+          }
+        } else {
+          const requestOption = {
+            cart_item_id: removedArr,
+            cart_id: cartId,
+          };
+          const data = await fetchMethod(
+            "DELETE",
+            "cart",
+            userToken,
+            requestOption
+          );
+          if (data?.success) {
+            console.log("Success remove item");
+          }
+        }
+      }
       removedArr = [];
     }
   };
@@ -315,8 +245,8 @@ const CartItems = (props) => {
               let temp = [];
               const cartItems = cartItem;
               setCartItem(temp);
-              dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
-              // SuccessNotification({ message: data.message, title: "Захиалга" });
+              emptyCart();
+              SuccessNotification({ message: data.message, title: "Захиалга" });
               axios
                 .get(
                   `${process.env.NEXT_PUBLIC_API_URL}/order/payment/${data.orderid}`,
@@ -397,8 +327,11 @@ const CartItems = (props) => {
                 let temp = [];
                 const cartItems = cartItem;
                 setCartItem(temp);
-                dispatch({ type: "CART_REMOVED_ITEM", payload: temp });
-                // SuccessNotification({ message: data.message, title: "Захиалга" });
+                emptyCart();
+                SuccessNotification({
+                  message: data.message,
+                  title: "Захиалга",
+                });
                 axios
                   .post(
                     `${process.env.NEXT_PUBLIC_API_URL}/payment`,
@@ -462,182 +395,61 @@ const CartItems = (props) => {
   };
 
   const minusQuantity = async (count, product) => {
-    if (userToken) {
-      const initialStock = product.instock;
-      count--;
-      if (initialStock >= count && count > 0) {
-        let clone = { ...product };
-        clone.total = count * clone.price_mnt;
-        let temp = [...cartItem?.cart_items];
-        temp.forEach((e, index) => {
-          if (e.id === product.id) {
-            temp[index] = clone;
-          }
-        });
-        setCartItem(temp);
-      }
-    } else {
-      const initialStock = product.balance;
-      count--;
-      if (initialStock >= count && count > 0) {
-        let clone = { ...product };
-        clone.quantity = count;
-        clone.total = count * clone.listPrice;
-        let temp = [...cartItem?.cart_items];
-        temp.forEach((e, index) => {
-          if (e.id === product.id) {
-            temp[index] = clone;
-          }
-        });
-        setCartItem({ ...cartItem, cart_items: temp });
-        removeQuantityProduct(temp);
-      }
+    const initialStock = product.balance;
+    count--;
+    if (initialStock >= count && count > 0) {
+      let clone = { ...product };
+      clone.quantity = count;
+      clone.total = count * clone.listPrice;
+      let temp = [...cartItem?.cart_items];
+      temp.forEach((e, index) => {
+        if (e.id === product.id) {
+          temp[index] = clone;
+        }
+      });
+      setCartItem({ ...cartItem, cart_items: temp });
+      removeQuantityProduct(temp);
     }
-    // if (product?.Balance) {
-    //   const initialStock = product.Balance;
-    //   count--;
-    //   if (initialStock >= count && count > 0) {
-    //     let clone = { ...product };
-    //     clone["remainStock"] = initialStock - count;
-    //     clone["purchaseCount"] = count;
-    //     clone["totalPrice"] = count * clone["ListPrice"];
-    //     let temp = [...cartItem];
-    //     temp.forEach((e, index) => {
-    //       if (e.Id === product.Id) {
-    //         temp[index] = clone;
-    //       }
-    //     });
-    //     setCartItem(temp);
-    //     dispatch({
-    //       type: "CART_REMOVE_QUANTITY",
-    //       payload: temp,
-    //     });
-    //     var myHeaders = new Headers();
-    //     myHeaders.append("Authorization", "Bearer " + userToken);
-    //     myHeaders.append("Content-Type", "application/json");
-    //     const requestOption = {
-    //       method: "POST",
-    //       headers: myHeaders,
-    //       body: JSON.stringify({
-    //         cart_item_id: product.id,
-    //         quantity: count,
-    //         cart_id: product.cartid,
-    //       }),
-    //     };
-    //     if (userToken) {
-    //       const res = await fetch(
-    //         `${process.env.NEXT_PUBLIC_API_URL}/cart/add`,
-    //         requestOption
-    //       );
-    //       if (res.status === 200) {
-    //         const data = await res.json();
-    //         if (data.success === true) {
-    //         }
-    //       }
-    //     }
-    //   }
-    // } else {
-    //   showNotification({
-    //     message: "Барааны үлдэгдэл хүрэлцэхгүй байна",
-    //     color: "red",
-    //   });
-    // }
   };
 
   const addQuantity = async (count, product) => {
-    if (userToken) {
-      const initialStock = product.instock;
-      count++;
-      if (initialStock >= count) {
-        let clone = { ...product };
-        clone.quantity = count;
-        clone.total = count * clone.price_mnt;
-        let temp = [...cartItem];
-        temp.forEach((e, index) => {
-          if (e.id === product.id) {
-            temp[index] = clone;
-          }
-        });
-        setCartItem(temp);
+    const initialStock = product.balance;
+    count++;
+    if (initialStock >= count) {
+      let clone = { ...product };
+      clone.quantity = count;
+      clone.total = count * clone.listPrice;
+      let temp = [...cartItem?.cart_items];
+      temp.forEach((e, index) => {
+        if (e.id === product.id) {
+          temp[index] = clone;
+        }
+      });
+      setCartItem({ ...cartItem, cart_items: temp });
+      addQuantityProduct(temp);
+      if (userToken) {
+        const requestOption = {
+          cart_item_id: product.id,
+          cart_id: product.cartid,
+          quantity: count,
+        };
+        const data = await fetchMethod(
+          "UPDATE",
+          "cart",
+          userToken,
+          requestOption
+        );
+        if (data?.success) {
+          console.log("Success in update");
+        }
       }
     } else {
-      const initialStock = product.balance;
-      count++;
-      if (initialStock >= count) {
-        let clone = { ...product };
-        clone.quantity = count;
-        clone.total = count * clone.listPrice;
-        let temp = [...cartItem?.cart_items];
-        temp.forEach((e, index) => {
-          if (e.id === product.id) {
-            temp[index] = clone;
-          }
-        });
-        setCartItem({ ...cartItem, cart_items: temp });
-        addQuantityProduct(temp);
-      } else {
-        showNotification({
-          message: "Барааны үлдэгдэл хүрэлцэхгүй байна.",
-          color: "red",
-        });
-      }
+      showNotification({
+        message: "Барааны үлдэгдэл хүрэлцэхгүй байна.",
+        color: "red",
+      });
     }
   };
-  // if (product?.Balance) {
-  //   const initialStock = product.Balance;
-  //   count++;
-  //   if (initialStock >= count) {
-  //     let clone = { ...product };
-  //     clone["remainStock"] = initialStock - count;
-  //     clone["purchaseCount"] = count;
-  //     clone["totalPrice"] = count * clone["ListPrice"];
-  //     let temp = [...cartItem];
-  //     temp.forEach((e, index) => {
-  //       if (e.Id === product.Id) {
-  //         temp[index] = clone;
-  //       }
-  //     });
-  //     setCartItem(temp);
-  //     dispatch({
-  //       type: "CART_ADD_QUANTITY",
-  //       payload: temp,
-  //     });
-  //     var myHeaders = new Headers();
-  //     myHeaders.append("Authorization", "Bearer " + userToken);
-  //     myHeaders.append("Content-Type", "application/json");
-  //     const requestOption = {
-  //       method: "PUT",
-  //       headers: myHeaders,
-  //       body: JSON.stringify({
-  //         cart_item_id: product.id,
-  //         quantity: count,
-  //         cart_id: product.cartid,
-  //       }),
-  //     };
-  //     if (userToken) {
-  //       const res = await fetch(
-  //         `${process.env.NEXT_PUBLIC_API_URL}/cart`,
-  //         requestOption
-  //       );
-  //       if (res.status === 200) {
-  //         const data = await res.json();
-  //         if (data.success === true) {
-  //           setButtonPressed(false);
-  //         }
-  //       }
-  //     }
-  //   } else {
-  //     showNotification({
-  //       message: "Барааны үлдэгдэл хүрэлцэхгүй байна.",
-  //       color: "red",
-  //     });
-  //   }
-  // } else {
-  //   showNotification({
-  //     message: "Барааны үлдэгдэл хүрэлцэхгүй байна.",
-  //     color: "red",
-  //   });
-  // }
 
   const ths = (
     <tr className="table-row">
@@ -658,7 +470,7 @@ const CartItems = (props) => {
 
   const rows =
     cartItem &&
-    cartItem?.cart_items.map((item, idx) => {
+    cartItem?.cart_items?.map((item, idx) => {
       if (item !== undefined) {
         return (
           <tr key={idx}>
@@ -696,31 +508,17 @@ const CartItems = (props) => {
                       {/* {item.remainStock !== undefined || item.remainStock !== null
                         ? item.remainStock
                         : item.instock - item.quantity} */}
-                      {!userToken ? (
-                        item.balance > 10 ? (
-                          <Badge color="teal" size={"xs"}>
-                            Хангалттай
-                          </Badge>
-                        ) : item.balance == 0 ? (
-                          <Badge color="yellow" size={"xs"}>
-                            Үлдэгдэлгүй
-                          </Badge>
-                        ) : (
-                          <span className="text-greenish-grey text-xs  ">
-                            {item.balance}
-                          </span>
-                        )
-                      ) : item.instock > 10 ? (
+                      {item.balance > 10 ? (
                         <Badge color="teal" size={"xs"}>
                           Хангалттай
                         </Badge>
-                      ) : item.instock == 0 ? (
+                      ) : item.balance == 0 ? (
                         <Badge color="yellow" size={"xs"}>
                           Үлдэгдэлгүй
                         </Badge>
                       ) : (
                         <span className="text-greenish-grey text-xs  ">
-                          {item.instock}
+                          {item.balance}
                         </span>
                       )}
                     </span>
@@ -765,7 +563,7 @@ const CartItems = (props) => {
             </td>
             <td width={"100px"} style={{ textAlign: "center" }}>
               <span className="font-[600] lg:text-[1rem] text-[0.6rem] text-[#212529]">
-                {userToken ? item.price_mnt : item.listPrice} ₮
+                {item.listPrice} ₮
               </span>
             </td>
             <td width={"100px"} style={{ textAlign: "center" }}>

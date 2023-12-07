@@ -32,28 +32,21 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
   const addToCartHandler = async (event) => {
     event.stopPropagation();
     if (data.balance > 0) {
+      addCart({ ...data, quantity: productCount });
+      SuccessNotification({
+        message: data.name,
+        title: "Сагсанд амжилттай орлоо!",
+      });
       if (token) {
+        setLoading(true);
         const body = {
           product_id: data.id,
           quantity: productCount,
         };
         const fetchData = await fetchMethod("POST", "cart/add", token, body);
         if (fetchData?.success) {
-          setLoading(true);
-          SuccessNotification({
-            message: "Сагсанд амжилттай орлоо!",
-            title: "Сагс",
-          });
           setLoading(false);
         }
-      } else {
-        setLoading(true);
-        addCart({ ...data, quantity: productCount });
-        SuccessNotification({
-          message: "Сагсанд амжилттай орлоо!",
-          title: "Сагс",
-        });
-        setLoading(false);
       }
     } else {
       showNotification({

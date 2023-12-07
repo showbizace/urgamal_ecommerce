@@ -52,6 +52,11 @@ const ProductDetail = ({ product }) => {
   // };
 
   const addToCartHandler = async () => {
+    addCart({ ...product, quantity: 1 });
+    SuccessNotification({
+      message: "Сагсанд амжилттай орлоо!",
+      title: `${product?.name}`,
+    });
     if (token) {
       setLoading(true);
       const body = {
@@ -66,12 +71,6 @@ const ProductDetail = ({ product }) => {
         });
         setLoading(false);
       }
-    } else {
-      addCart({ ...product, quantity: 1 });
-      SuccessNotification({
-        message: "Сагсанд амжилттай орлоо!",
-        title: `${product?.name}`,
-      });
     }
   };
 
