@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useDisclosure } from "@mantine/hooks";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 import { fetcher, getCategory } from "@/utils/fetch";
-const PAGE_SIZE = 20;
+import { PAGE_SIZE } from "@/constant";
 
 export async function getStaticProps() {
   const requestOption = {
@@ -81,9 +81,7 @@ export default function Home({ data }) {
     error,
   } = useSWRInfinite(
     (index) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${
-        index + 1
-      }&limit=${PAGE_SIZE}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index}&limit=${PAGE_SIZE}`,
     fetcher,
     { revalidateFirstPage: false }
   );

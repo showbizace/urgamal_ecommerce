@@ -1,5 +1,4 @@
 import "@/styles/globals.css";
-import { StoreProvider } from "@/utils/Store";
 import { MantineProvider, createEmotionCache, rem } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 const appendCache = createEmotionCache({ key: "mantine", prepend: false });
@@ -8,7 +7,7 @@ import LoginModal from "@/components/LoginModal/LoginModal";
 import { UserConfigProvider } from "@/utils/userConfigProvider";
 import CategoryContextProvider from "@/utils/categoryContext";
 import PaymentModal from "@/components/PaymentModal/PaymentModal";
-import { useMantineTheme } from '@mantine/core';
+import { useMantineTheme } from "@mantine/core";
 
 export default function App({ Component, pageProps }) {
   const theme = useMantineTheme();
@@ -31,11 +30,9 @@ export default function App({ Component, pageProps }) {
       <UserConfigProvider>
         <ModalsProvider modals={{ login: LoginModal, payment: PaymentModal }}>
           <CategoryContextProvider>
-            <StoreProvider>
-              <div style={{ background: theme.colors.blue[5] }}>
-                <Component {...pageProps} />
-              </div>
-            </StoreProvider>
+            <div style={{ background: theme.colors.blue[5] }}>
+              <Component {...pageProps} />
+            </div>
           </CategoryContextProvider>
         </ModalsProvider>
       </UserConfigProvider>

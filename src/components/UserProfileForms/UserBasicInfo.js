@@ -34,8 +34,6 @@ export default function UserBasicInfo({ data, refresh }) {
     },
   });
 
-  console.log(dateValue);
-
   const handleEdit = ({ givenName, familyName, birthdate, gender }) => {
     const data = {
       given_name: givenName,
@@ -44,9 +42,6 @@ export default function UserBasicInfo({ data, refresh }) {
       gender: gender,
     };
 
-    console.log(birthdate);
-
-    console.log(data);
     // Make a POST request to the specified URL with the data as the request body
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
       method: "PUT",

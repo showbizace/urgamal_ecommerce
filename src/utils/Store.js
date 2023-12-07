@@ -1,76 +1,108 @@
-import { useLocalStorage } from "@mantine/hooks";
-import { createContext, useReducer } from "react";
-useLocalStorage;
-export const Store = createContext();
-
-const initialState = {
-  cart: { cartItems: [] },
-};
-function reducer(state, action) {
-  console.log(state, "state");
-  switch (action.type) {
-    case "CART_ADD_ITEM": {
-      const newItem = action.payload;
-      const existItem = state.cart.cartItems.find(
-        (item) => item.Id === newItem.Id
+export const addCart = (product) => {
+  if (typeof window !== "undefined") {
+    // client-side operation such as local storage.
+    let state = JSON.parse(localStorage.getItem("cartItems"));
+    if (state) {
+      const existingItemIndex = state?.cart_items?.findIndex(
+        (item) => item.id === product.id
       );
-      const cartItems = existItem
-        ? state.cart.cartItems.map((item) => {
-            if (item.Name === existItem.Name) {
-              return { newItem };
-            } else {
-              return item;
-            }
-          })
-        : [...state.cart.cartItems, newItem];
-      cartItems.forEach((e) => {
-        e["total"] = e["purchaseCount"] * e["ListPrice"];
-      });
-      let value = { ...state, cart: { ...state.cart, cartItems } };
-      if (typeof window !== "undefined") {
-        // client-side operation such as local storage.
-        localStorage.setItem("cartItems", JSON.stringify(value));
-        window.dispatchEvent(new Event("storage"));
+      let updatedCartItems;
+      if (existingItemIndex !== -1) {
+        updatedCartItems = state?.cart_items?.map((item, index) => {
+          if (index === existingItemIndex) {
+            return {
+              ...item,
+              isChecked: false,
+              quantity: item.quantity + product.quantity,
+              total: (item.quantity + product.quantity) * item.listPrice,
+            };
+          }
+          return item;
+        });
+      } else {
+        updatedCartItems = [
+          ...state.cart_items,
+          { ...product, total: product.quantity * product.listPrice },
+        ];
       }
-      return { ...state, cart: { ...state.cart, cartItems } };
-    }
-    case "CART_REMOVED_ITEM": {
-      const cartItems = action.payload;
-      let value = { ...state, cart: { ...state.cart, cartItems } };
-      if (typeof window !== "undefined") {
-        // client-side operation such as local storage.
-        localStorage.setItem("cartItems", JSON.stringify(value));
-        window.dispatchEvent(new Event("storage"));
-      }
-      return { ...state, cart: { ...state.cart, cartItems } };
-    }
-    case "CART_ADD_QUANTITY": {
-      const cartItems = action.payload;
-      let value = { ...state, cart: { ...state.cart, cartItems } };
-      if (typeof window !== "undefined") {
-        // client-side operation such as local storage.
-        localStorage.setItem("cartItems", JSON.stringify(value));
-        window.dispatchEvent(new Event("storage"));
-      }
-      return { ...state, cart: { ...state.cart, cartItems } };
-    }
-    case "CART_REMOVE_QUANTITY": {
-      const cartItems = action.payload;
-      let value = { ...state, cart: { ...state.cart, cartItems } };
-      if (typeof window !== "undefined") {
-        // client-side operation such as local storage.
-        localStorage.setItem("cartItems", JSON.stringify(value));
-        window.dispatchEvent(new Event("storage"));
-      }
-      return { ...state, cart: { ...state.cart, cartItems } };
-    }
-    default:
-      return state;
-  }
-}
 
-export function StoreProvider({ children }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const value = { state, dispatch };
-  return <Store.Provider value={value}>{children}</Store.Provider>;
-}
+      let total = 0;
+      updatedCartItems?.forEach((item) => {
+        total += item.total || item.quantity * item.listPrice;
+      });
+
+      const updatedState = {
+        ...state,
+        total: total,
+        cart_items: updatedCartItems,
+      };
+
+      localStorage.setItem("cartItems", JSON.stringify(updatedState));
+      window.dispatchEvent(new Event("storage"));
+    } else {
+      const updatedState = {
+        cart_items: [
+          { ...product, total: product.quantity * product.listPrice },
+        ],
+        total: product?.total,
+      };
+      localStorage.setItem("cartItems", JSON.stringify(updatedState));
+      window.dispatchEvent(new Event("storage"));
+    }
+  }
+};
+
+export const getCart = () => {
+  if (typeof window !== "undefined") {
+    let state = JSON.parse(localStorage.getItem("cartItems"));
+    return state;
+  }
+};
+
+export const removeFromCart = (listProduct) => {
+  if (typeof window !== "undefined") {
+    let total = 0;
+    listProduct?.forEach((item) => {
+      total += item.total || item.quantity * item.listPrice;
+    });
+
+    const updatedState = {
+      total: total,
+      cart_items: listProduct,
+    };
+    localStorage.setItem("cartItems", JSON.stringify(updatedState));
+    window.dispatchEvent(new Event("storage"));
+  }
+};
+
+export const addQuantityProduct = (listProduct) => {
+  if (typeof window !== "undefined") {
+    let total = 0;
+    listProduct?.forEach((item) => {
+      total += item.total || item.quantity * item.listPrice;
+    });
+
+    const updatedState = {
+      total: total,
+      cart_items: listProduct,
+    };
+    localStorage.setItem("cartItems", JSON.stringify(updatedState));
+    window.dispatchEvent(new Event("storage"));
+  }
+};
+
+export const removeQuantityProduct = (listProduct) => {
+  if (typeof window !== "undefined") {
+    let total = 0;
+    listProduct?.forEach((item) => {
+      total += item.total || item.quantity * item.listPrice;
+    });
+
+    const updatedState = {
+      total: total,
+      cart_items: listProduct,
+    };
+    localStorage.setItem("cartItems", JSON.stringify(updatedState));
+    window.dispatchEvent(new Event("storage"));
+  }
+};

@@ -28,6 +28,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { isMobile } from "react-device-detect";
 import { fetcher } from "@/utils/fetch";
+import { getCart } from "@/utils/Store";
 
 const Navbar = (props) => {
   const { address } = props;
@@ -96,7 +97,7 @@ const Navbar = (props) => {
   });
 
   const [showSearch, setShowSearch] = useState(false);
-  const [cartData, setCartData] = useState();
+  const [cartItem, setCartItem] = useState([]);
   const route = useRouter();
   const [number, setNumber] = useState("");
   const linkToCart = () => {
@@ -105,17 +106,16 @@ const Navbar = (props) => {
     });
   };
 
-  const handleChangeStorage = () => {
-    let localStorageCart = JSON.parse(localStorage.getItem("cartItems"));
-    if (localStorageCart) {
-      setCartData(localStorageCart?.cart?.cartItems);
-    }
-  };
-
   useEffect(() => {
     if (typeof window !== "undefined") {
-      window.addEventListener("storage", handleChangeStorage);
+      window.addEventListener("storage", () => {
+        let data = getCart();
+        setCartItem(data);
+        // ...
+      });
     }
+    let data = getCart();
+    setCartItem(data);
     const number = getCookie("number");
     if (number) {
       setNumber(number);
@@ -304,7 +304,7 @@ const Navbar = (props) => {
               />
               <div className="absolute">
                 <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
-                  <p className="text-sm-5">{cartData?.length}</p>
+                  <p className="text-sm-5">{cartItem?.cart_items?.length}</p>
                 </div>
               </div>
             </Button>

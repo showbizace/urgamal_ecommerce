@@ -1,27 +1,21 @@
 //packages
 import { useEffect, useState } from "react";
 import React from "react";
-import {
-  IconLocation,
-  IconPhoneCall,
-  IconClock,
-} from "@tabler/icons-react";
+import { IconLocation, IconPhoneCall, IconClock } from "@tabler/icons-react";
 import { SegmentedControl, Center, Box, rem } from "@mantine/core";
 import Image from "next/image";
-import sanitizeHtml from 'sanitize-html';
+import sanitizeHtml from "sanitize-html";
 import Map from "@/components/Map";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import axios from "axios";
 import { Carousel } from "@mantine/carousel";
-
-
 
 const Location = ({ data }) => {
   const [selectedLocation, setSelectedLocation] = useState(0);
   const [loadingData, setLoadingData] = useState(true);
   const [loadingMap, setLoadingMap] = useState(false);
   const location = data[selectedLocation];
-  const [loc, setLoc] = useState([])
+  const [loc, setLoc] = useState([]);
 
   useEffect(() => {
     window.dispatchEvent(new Event("storage"));
@@ -38,12 +32,10 @@ const Location = ({ data }) => {
   };
 
   useEffect(() => {
-    console.log(location, "location")
     setLoadingMap(true);
-    setLoc([location?.latitute, location?.longtitute])
-    setLoadingMap(false)
-  }, [location])
-
+    setLoc([location?.latitute, location?.longtitute]);
+    setLoadingMap(false);
+  }, [location]);
 
   const htmlFrom = (htmlString) => {
     const cleanHtmlString = sanitizeHtml(htmlString);
@@ -75,7 +67,14 @@ const Location = ({ data }) => {
               </div>
             </div>
 
-            <Carousel withIndicators height={"100%"} style={{ flex: 1 }} slideSize="100%" sx={{ flex: 1 }} loop>
+            <Carousel
+              withIndicators
+              height={"100%"}
+              style={{ flex: 1 }}
+              slideSize="100%"
+              sx={{ flex: 1 }}
+              loop
+            >
               {location?.img_url.map((el) => {
                 return (
                   <Carousel.Slide key={el}>
@@ -89,29 +88,28 @@ const Location = ({ data }) => {
                       />
                     </div>
                   </Carousel.Slide>
-                )
+                );
               })}
             </Carousel>
             <div className="relative flex h-full md:h-96 flex-col md:flex-row gap-10 justify-center items-center">
-              <div
-                className="w-full h-80 md:h-full rounded-lg border shadow-lg"
-              >
-                {!loadingMap && <Map center={loc} zoom={14} key={location?.name}>
-                  {({ TileLayer, Marker, Popup }) => (
-                    <>
-                      <TileLayer key={location?.name}
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-                      />
+              <div className="w-full h-80 md:h-full rounded-lg border shadow-lg">
+                {!loadingMap && (
+                  <Map center={loc} zoom={14} key={location?.name}>
+                    {({ TileLayer, Marker, Popup }) => (
+                      <>
+                        <TileLayer
+                          key={location?.name}
+                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                        />
 
-                      <Marker position={loc} key={location?.name}>
-                        <Popup key={location?.name}>
-                          {location?.name}
-                        </Popup>
-                      </Marker>
-                    </>
-                  )}
-                </Map>}
+                        <Marker position={loc} key={location?.name}>
+                          <Popup key={location?.name}>{location?.name}</Popup>
+                        </Marker>
+                      </>
+                    )}
+                  </Map>
+                )}
               </div>
               <ul className="h-full w-full md:text-lg list-none text-start">
                 <li className="flex gap-4 gtext-start">
@@ -124,17 +122,30 @@ const Location = ({ data }) => {
                     />
                     <span className="font-semibold">Хаяг:</span>
                   </div>
-                  <span className="w-11/12" dangerouslySetInnerHTML={{ __html: htmlFrom(location?.address) }} />
+                  <span
+                    className="w-11/12"
+                    dangerouslySetInnerHTML={{
+                      __html: htmlFrom(location?.address),
+                    }}
+                  />
                 </li>
                 <li className="flex items-center gap-4 mt-5">
                   <IconPhoneCall width={25} height={25} color={"#f9bc60"} />{" "}
                   <span className="font-semibold">Утас :</span>{" "}
-                  <span dangerouslySetInnerHTML={{ __html: htmlFrom(location?.phone) }} />
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: htmlFrom(location?.phone),
+                    }}
+                  />
                 </li>
                 <li className="flex items-center gap-4 mt-5">
                   <IconClock width={25} height={25} color={"#f9bc60"} />{" "}
                   <span className="font-semibold">Цагийн хуваарь :</span>{" "}
-                  <span dangerouslySetInnerHTML={{ __html: htmlFrom(location?.time_table) }} />
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: htmlFrom(location?.time_table),
+                    }}
+                  />
                 </li>
               </ul>
             </div>
@@ -147,8 +158,9 @@ const Location = ({ data }) => {
 
 export async function getServerSideProps() {
   try {
-
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/config/branch`);
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/config/branch`
+    );
     const data = await response?.data?.data;
 
     return {

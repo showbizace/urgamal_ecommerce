@@ -16,8 +16,7 @@ import useSWR from "swr";
 import axios from "axios";
 import Link from "next/link";
 import { fetcher } from "@/utils/fetch";
-
-const PAGE_SIZE = 15;
+import { PAGE_SIZE } from "@/constant";
 
 export default function ProductListWithCategory({
   categoryName,

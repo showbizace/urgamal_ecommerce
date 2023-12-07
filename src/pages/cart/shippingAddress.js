@@ -47,7 +47,6 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
   };
 
   const getShippingData = async (cookie = cookie) => {
-    console.log("called");
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${cookie}`);
 
@@ -90,7 +89,6 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
       note: values.note,
     };
 
-    console.log(initialData, "initialData");
     const requestOption = {
       method: "POST",
       headers: myHeaders,
@@ -220,7 +218,6 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
       ) : (
         <Skeleton sx={{ height: "100%" }} visible={loading} />
       )}
-      {console.log(editingProdData, "editing")}
       <ProductModal
         initialData={editingProdData}
         isOpen={opened}

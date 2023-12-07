@@ -6,7 +6,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function PaymentModal({ context, id, innerProps }) {
-  console.log(innerProps, "innerProps");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   // const callInquiry = (invoiceId) => {
