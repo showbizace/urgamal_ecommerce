@@ -37,9 +37,7 @@ export const fetchMethod = async (method, path, token, body) => {
 export const fetcher = async (url) =>
   axios
     .get(url, { headers: { "Content-Type": "application/json" } })
-    .then((res) => {
-      return res.data.data;
-    })
+    .then((res) => res.data.result)
     .catch((error) => console.log(error, "err in fetcher"));
 
 export const getCategory = async () => {
@@ -48,7 +46,6 @@ export const getCategory = async () => {
   if (jsonData) {
     return jsonData;
   } else {
-    console.log("dasdasdhoashdoashdoasdhoas");
     const data = await fetchMethod("GET", "product/cats");
     if (data?.success) {
       localStorage.setItem(data?.result);

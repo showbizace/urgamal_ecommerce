@@ -70,45 +70,48 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
   };
 
   const SubmitCreateShippingData = async (values) => {
-    // var myHeaders = new Headers();
-    // myHeaders.append("Authorization", `Bearer ${cookie}`);
-    // myHeaders.append("Content-Type", "application/json");
-    // const initialData = {
-    //   name: values.name,
-    //   city: values.city,
-    //   province: values.province,
-    //   district: values.district,
-    //   committee: values.committee,
-    //   street: values.street,
-    //   fence: values.fence,
-    //   apartment: values.apartment,
-    //   number: values.number,
-    //   phone: values.phone,
-    //   type: values.type === undefined ? false : values.type,
-    //   note: values.note,
-    // };
-    // const requestOption = {
-    //   method: "POST",
-    //   headers: myHeaders,
-    //   body: JSON.stringify(initialData),
-    // };
-    // fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/address`, requestOption)
-    //   .then((response) => response.json())
-    //   .then((result) => {
-    //     if (result.success) {
-    //       showNotification({
-    //         message: result.message,
-    //         color: "green",
-    //       });
-    //       getShippingData();
-    //       close;
-    //     } else {
-    //       showNotification({
-    //         message: result.message,
-    //         color: "red",
-    //       });
-    //     }
-    //   });
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${cookie}`);
+    myHeaders.append("Content-Type", "application/json");
+
+    const initialData = {
+      name: values.name,
+      city: values.city,
+      province: values.province,
+      district: values.district,
+      committee: values.committee,
+      street: values.street,
+      fence: values.fence,
+      apartment: values.apartment,
+      number: values.number,
+      phone: values.phone,
+      type: values.type === undefined ? false : values.type,
+      note: values.note,
+    };
+
+    const requestOption = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(initialData),
+    };
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/address`, requestOption)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.success) {
+          showNotification({
+            message: result.message,
+            color: "green",
+          });
+          getShippingData();
+          close;
+        } else {
+          showNotification({
+            message: result.message,
+            color: "red",
+          });
+        }
+      });
   };
 
   return (

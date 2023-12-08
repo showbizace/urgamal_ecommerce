@@ -10,51 +10,23 @@ import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import ProductCard from "@/components/product-card";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
 import { Breadcrumbs } from "@mantine/core";
-import { fetchMethod, getCategory } from "@/utils/fetch";
-
-const fetcher = (url) =>
-  axios
-    .get(url, { headers: { "Content-Type": "application/json" } })
-    .then((res) => {
-      return res.data.data;
-    })
-    .catch((error) => {});
-    .catch((error) => {});
-const PAGE_SIZE = 10;
+import { fetchMethod, fetcher, getCategory } from "@/utils/fetch";
+import { PAGE_SIZE } from "@/constant";
 
 export async function getServerSideProps({ query }) {
-  const { type, catId } = query;
-  const requestOption = {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
+  const { catId } = query;
+  const data = await fetchMethod(
+    "GET",
+    `product?offset=0&limit=${PAGE_SIZE}&categoryId=${catId}`
+  );
+  return {
+    props: {
+      initialData: data.result,
+    },
   };
-  try {
-    const res = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_API_URL
-      }/product?offset=0&limit=${PAGE_SIZE}&categoryId=${
-        catId !== "undefined" ? catId : 0
-        // }/product //? @lahagva
-      }`,
-      requestOption
-    );
-    const data = await res.json();
-    return {
-      props: {
-        initialData: data.data,
-      },
-    };
-  } catch {
-    return {
-      props: {
-        initialData: [],
-      },
-    };
-  }
 }
 
 const CategoryPage = ({ initialData }) => {
-  console.log(initialData, "dsadasdas");
   const router = useRouter();
   const { type, catId } = router.query;
   const [parent, setParent] = useState([]);
@@ -101,22 +73,21 @@ const CategoryPage = ({ initialData }) => {
     [parent, child, router.asPath]
   );
 
-  const { data, mutate, size, setSize, isValidating, isLoading, error } =
-    useSWRInfinite(
-      (index) => {
-        return `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${index}&limit=${PAGE_SIZE}&categoryId=${catId}`;
-        // return `${process.env.NEXT_PUBLIC_API_URL}/product`; //? @lahagva
-      },
-      fetcher,
-      { revalidateFirstPage: false }
-    );
+  const { data, size, setSize, isValidating, isLoading } = useSWRInfinite(
+    (index) => {
+      return `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
+        index * 20
+      }&limit=${PAGE_SIZE}&categoryId=${catId}`;
+    },
+    fetcher,
+    { revalidateFirstPage: false }
+  );
+
   useEffect(() => {
     setSize(0);
   }, [router.asPath]);
 
   const isEmpty = data?.[0]?.length === 0;
-  const isReachingEnd =
-    isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE);
 
   useEffect(() => {
     setProducts([]);
@@ -125,7 +96,8 @@ const CategoryPage = ({ initialData }) => {
 
   useEffect(() => {
     data?.length > 0 &&
-      setProducts(products.concat(...data.map((item) => item.result)));
+      !isEmpty &&
+      setProducts(products.concat(...data.map((item) => item)));
     // data?.length > 0 && !isEmpty && setProducts(products.concat(...data));
   }, [data]);
 
@@ -147,9 +119,7 @@ const CategoryPage = ({ initialData }) => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 350 >=
         document.documentElement.offsetHeight &&
-        document.documentElement.offsetHeight &&
-      !isEmpty &&
-      !isReachingEnd
+      !isEmpty
     )
       setSize(size + 1);
   };
@@ -273,8 +243,8 @@ const CategoryPage = ({ initialData }) => {
               >
                 {products?.map((e, index) => (
                   <ProductCard
-                    key={`product-card-key-${index}-${e.id}`}
-                    src={e.product_image?.images?.[0]}
+                    key={`product-card-key-${index}-${e?.id}`}
+                    src={e?.product_image?.images?.[0]}
                     data={e}
                   />
                 ))}

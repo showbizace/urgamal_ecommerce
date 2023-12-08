@@ -3,19 +3,18 @@ import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
 import Category from "@/components/category";
 import ProductCard from "@/components/product-card";
+import { PAGE_SIZE } from "@/constant";
 import { fetchMethod, fetcher, getCategory } from "@/utils/fetch";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 // import { Virtuoso, VirtuosoGrid } from "react-virtuoso";
 import useSWRInfinite from "swr/infinite";
 
-const PAGE_SIZE = 15;
-
 export async function getServerSideProps() {
   const data = await fetchMethod("GET", "product");
   return {
     props: {
-      initialData: data?.data?.result,
+      initialData: data?.result,
     },
   };
 }
@@ -27,29 +26,34 @@ export default function SearchResult({ initialData }) {
   const [loading, setLoading] = useState(true);
   const { data, size, setSize, isValidating, isLoading } = useSWRInfinite(
     (index) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/product?${
-        index + 1
+      `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
+        index * 20
       }&limit=${PAGE_SIZE}`,
     fetcher,
     { revalidateFirstPage: false }
   );
 
   const isEmpty = data?.[0]?.length === 0;
-  const isReachingEnd =
-    isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE);
 
   const [main, setMain] = useState();
   const [parent, setParent] = useState();
   const [child, setChild] = useState();
+  const [isFetch, setIsFetch] = useState(false);
   const infiniteScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 350 >=
         document.documentElement.offsetHeight &&
-      !isEmpty &&
-      !isReachingEnd
-    )
-      setSize(size + 1);
+      !isEmpty
+    ) {
+      setIsFetch(true);
+    }
   };
+
+  useEffect(() => {
+    if (isFetch) {
+      setSize((prevSize) => prevSize + 1);
+    }
+  }, [isFetch]);
 
   useEffect(() => {
     window.addEventListener("scroll", infiniteScroll);
@@ -57,8 +61,10 @@ export default function SearchResult({ initialData }) {
   }, [data]);
 
   useEffect(() => {
-    data?.length > 0 &&
-      setProducts(products.concat(...data.map((item) => item.result)));
+    if (data?.length > 0 && !isEmpty) {
+      setProducts(products.concat(...data?.map((item) => item)));
+      setIsFetch(false);
+    }
     // data && !isEmpty && setProducts(products.concat(...data.result));
   }, [data]);
 
@@ -97,8 +103,8 @@ export default function SearchResult({ initialData }) {
           {products.map((e, index) => {
             return (
               <ProductCard
-                key={`product-card-key-${index}-${e.id}`}
-                src={e.product_image?.images?.[0]}
+                key={`product-card-key-${index}-${e?.id}`}
+                src={e?.additionalImage?.images?.[0]}
                 data={e}
               />
             );

@@ -78,7 +78,7 @@ export default function GlobalLayout({
               links={userContext?.links}
             />
           )}
-          <BottomNavBar />
+          {/* <BottomNavBar /> */}
         </main>
       </div>
     </div>

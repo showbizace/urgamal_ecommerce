@@ -3,7 +3,7 @@ import { useEffect, useContext, useState } from "react";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { Button, Badge, Grid, Loader, ThemeIcon, Text } from "@mantine/core";
-import { Store } from "@/utils/Store";
+import { addCart } from "@/utils/Store";
 import { getCookie } from "cookies-next";
 import { SuccessNotification } from "../../utils/SuccessNotification";
 import { IconHeart, IconPhotoOff } from "@tabler/icons-react";
@@ -21,82 +21,58 @@ export async function getServerSideProps({ params }) {
 }
 
 const ProductDetail = ({ product }) => {
-  const { _, dispatch } = useContext(Store);
   const [loading, setLoading] = useState(false);
   const [categoryLoading, setCategoryLoading] = useState(true);
   const [main, setMain] = useState();
   const [parent, setParent] = useState();
   const [child, setChild] = useState();
   const [renderImage, setRenderImage] = useState("");
+  const token = getCookie("token");
+
+  // const addToCartHandler = async () => {
+  //   dispatch({
+  //     type: "CART_ADD_ITEM",
+  //     payload: { ...product, quantity: 1, purchaseCount: 1 },
+  //   });
+  //   if (token) {
+  //     setLoading(true);
+  //     const body = {
+  //       product_id: product.product.Id,
+  //       quantity: 1,
+  //     };
+  //     const fetchData = await fetchMethod("POST", "cart/add", token, body);
+  //     if (fetchData?.success) {
+  //       setLoading(false);
+  //     }
+  //   }
+  //   SuccessNotification({
+  //     message: "Сагсанд амжилттай орлоо!",
+  //     title: `${product?.name}`,
+  //   });
+  // };
 
   const addToCartHandler = async () => {
-    setLoading(true);
-    const token = getCookie("token");
+    addCart({ ...product, quantity: 1 });
+    SuccessNotification({
+      message: "Сагсанд амжилттай орлоо!",
+      title: `${product?.name}`,
+    });
     if (token) {
+      setLoading(true);
       const body = {
-        product_id: product.product.Id,
+        product_id: product.id,
         quantity: 1,
       };
       const fetchData = await fetchMethod("POST", "cart/add", token, body);
       if (fetchData?.success) {
-        setLoading(true);
         SuccessNotification({
           message: "Сагсанд амжилттай орлоо!",
-          title: "Сагс",
+          title: `${product?.name}`,
         });
         setLoading(false);
       }
-    } else {
-      const newData = {
-        ...product?.product,
-        Balance: product?.balances[0]?.Qty,
-        ListPrice: product?.prices[0]?.ListPrice,
-      };
-      dispatch({
-        type: "CART_ADD_ITEM",
-        payload: { ...newData, unitProduct: 1, purchaseCount: 1 },
-      });
-      SuccessNotification({
-        message: "Сагсанд амжилттай орлоо!",
-        title: "Сагс",
-      });
-      setLoading(false);
     }
   };
-  // const addToCartHandler = async () => {
-  //   setLoading(true);
-  //   const newData = {
-  //     ...product?.product,
-  //     Balance: product?.balances[0]?.Qty,
-  //     ListPrice: product?.prices[0]?.ListPrice,
-  //   };
-  //   dispatch({
-  //     type: "CART_ADD_ITEM",
-  //     payload: { ...newData, unitProduct: 1, purchaseCount: 1 },
-  //   });
-  //   const token = getCookie("token");
-  //   var myHeaders = new Headers();
-  //   myHeaders.append("Authorization", "Bearer " + token);
-  //   myHeaders.append("Content-Type", "application/json");
-  //   const requestOption = {
-  //     method: "POST",
-  //     headers: myHeaders,
-  //     body: JSON.stringify({
-  //       product_id: product.product.Id,
-  //       quantity: 1,
-  //     }),
-  //   };
-
-  //   if (token) {
-  //     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add`, requestOption);
-  //   }
-
-  //   SuccessNotification({
-  //     message: "Сагсанд амжилттай орлоо!",
-  //     title: `${product?.product?.Name}`,
-  //   });
-  //   setLoading(false);
-  // };
 
   const clickImage = (item) => {
     setRenderImage(item);
@@ -266,17 +242,14 @@ const ProductDetail = ({ product }) => {
             <div className="flex flex-col justify-between lg:gap-6">
               <div className="flex flex-col gap-6">
                 <div className="lg:text-2xl text-lg font-semibold">
-                  {product?.product?.Name}
+                  {product?.name}
                 </div>
                 <div className="flex font-semibold gap-2">
                   <span className="text-greenish-grey text-base">
                     Ширхэгийн үнэ:
                   </span>
                   <span className="text-base">
-                    {Intl.NumberFormat("mn-MN").format(
-                      product?.prices[0]?.ListPrice
-                    )}
-                    ₮
+                    {Intl.NumberFormat("mn-MN").format(product?.listPrice)}₮
                   </span>
                 </div>
                 <div className="flex font-semibold gap-2">
@@ -285,31 +258,25 @@ const ProductDetail = ({ product }) => {
                   </span>
                   <span className="text-greenish-grey line-through text-base ">
                     {" "}
-                    {Intl.NumberFormat("mn-MN").format(
-                      product?.prices[0]?.ListPrice
-                    )}
-                    ₮
+                    {Intl.NumberFormat("mn-MN").format(product?.listPrice)}₮
                   </span>
                   <span className="text-greenish-grey text-base "> / </span>
                   <span className="text-base">
                     {" "}
-                    {Intl.NumberFormat("mn-MN").format(
-                      product?.prices[0]?.WholePrice
-                    )}
-                    ₮
+                    {Intl.NumberFormat("mn-MN").format(product?.wholePrice)}₮
                   </span>
                 </div>
                 <div className="flex font-semibold  gap-2 items-center">
                   <span className="text-greenish-grey text-base  ">
                     Үлдэгдэл:
                   </span>
-                  {product?.balances[0]?.Qty > 10 ? (
+                  {product?.balance > 10 ? (
                     <Badge color="teal">Хангалттай</Badge>
-                  ) : product?.balances[0]?.Qty == 0 ? (
+                  ) : product?.balance == 0 ? (
                     <Badge color="yellow">Үлдэгдэлгүй</Badge>
                   ) : (
                     <span className="text-greenish-grey text-base  ">
-                      {product?.balances[0]?.Qty}
+                      {product?.balance}
                     </span>
                   )}
                 </div>
@@ -317,9 +284,7 @@ const ProductDetail = ({ product }) => {
                   <span className="text-greenish-grey text-base ">Төрөл:</span>
                   <div className="flex flex-row gap-3 lg:flex-col">
                     <span className="text-base	">
-                      {product.product?.CategoryName +
-                        " " +
-                        product.product?.GroupName}
+                      {product?.categoryName + " " + product?.groupName}
                     </span>
                   </div>
                 </div>

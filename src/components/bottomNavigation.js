@@ -25,7 +25,6 @@ const fetcher = (url) =>
 
 const BottomNavBar = () => {
   const router = useRouter();
-  const [quantity, setQuantity] = useState(0);
   const userContext = useContext(UserConfigContext);
   const [
     categoryDrawerOpened,
@@ -38,31 +37,6 @@ const BottomNavBar = () => {
     });
   };
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      // client-side operation such as local storage.
-      window.addEventListener("storage", handleChangeStorage);
-    }
-  }, []);
-
-  const handleChangeStorage = () => {
-    let localStorageCart = JSON.parse(localStorage.getItem("cartItems"));
-    if (localStorageCart !== null) {
-      let sum = 0;
-      let total = 0;
-      localStorageCart.cart.cartItems.forEach((e) => {
-        if (e !== null) {
-          sum = sum + e.quantity;
-          if (e.totalPrice !== undefined && e.totalPrice !== null) {
-            total = total + parseInt(e.totalPrice);
-          } else {
-            total = total + parseInt(e.total);
-          }
-        }
-      });
-      setQuantity(sum);
-    }
-  };
   const userConfigs = useContext(UserConfigContext);
   const { configId } = userConfigs;
   const {
@@ -125,7 +99,7 @@ const BottomNavBar = () => {
               >
                 <div className="absolute">
                   <div className="w-5 h-5 bg-number flex justify-center items-center text-white -mt-9 rounded-full text-sm ml-8">
-                    <p className="text-md">{quantity}</p>
+                    {/* <p className="text-md">{quantity}</p> */}
                   </div>
                 </div>
                 <IconShoppingCart className="group-hover:text-blue-600 " />

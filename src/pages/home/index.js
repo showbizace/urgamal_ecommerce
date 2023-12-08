@@ -13,8 +13,7 @@ import AllCategory from "@/components/AllCategory/AllCategory";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { useDisclosure } from "@mantine/hooks";
 import { fetcher, getCategory } from "@/utils/fetch";
-import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
-const PAGE_SIZE = 20;
+import { PAGE_SIZE } from "@/constant";
 
 export async function getStaticProps() {
   const requestOption = {
@@ -67,14 +66,18 @@ export default function Home({ data }) {
     isValidating,
     isLoading,
     error,
-  } = useSWRInfinite((index) => {
-    `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
-      index + 1
-    }&limit=${PAGE_SIZE}`,
-      // `${process.env.NEXT_PUBLIC_API_URL}/product`, //? @lahagva
-      fetcher,
-      { revalidateFirstPage: false };
-  });
+  } = useSWRInfinite(
+    (index) =>
+      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index}&limit=${PAGE_SIZE}`,
+    fetcher,
+    { revalidateFirstPage: false }
+  );
+
+  // useEffect(() => {
+  //   fetchData &&
+  //     !isEmpty &&
+  //     setProducts(products?.concat(...fetchData?.[fetchData.length - 1]));
+  // }, [fetchData]);
 
   useEffect(() => {
     if (fetchData && fetchData.length > 0) {

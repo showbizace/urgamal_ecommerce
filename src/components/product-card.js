@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Text, Button, LoadingOverlay, Badge, ThemeIcon } from "@mantine/core";
-import { useContext, useState } from "react";
-import { Store } from "../utils/Store";
+import { useContext, useEffect, useState } from "react";
+import { addCart } from "../utils/Store";
 import { getCookie } from "cookies-next";
 import { showNotification } from "@mantine/notifications";
 import { IconPhotoOff } from "@tabler/icons-react";
@@ -11,13 +11,12 @@ import { fetchMethod } from "@/utils/fetch";
 
 const ProductCard = ({ key, src, data, shouldScale = true }) => {
   const [productCount, setProductCount] = useState(1);
-  const { state, dispatch } = useContext(Store);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+  const token = getCookie("token");
   const addCount = (event) => {
     event.stopPropagation();
-    if (data?.Balance - productCount > 0) setProductCount(productCount + 1);
+    if (data?.balance - productCount > 0) setProductCount(productCount + 1);
     else
       showNotification({
         message: "Барааны үлдэгдэл хүрэлцэхгүй байна.",
@@ -32,33 +31,22 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
 
   const addToCartHandler = async (event) => {
     event.stopPropagation();
-    const token = getCookie("token");
-    if (productCount <= data.Balance) {
-      setLoading(true);
+    if (data.balance > 0) {
+      addCart({ ...data, quantity: productCount });
+      SuccessNotification({
+        message: data.name,
+        title: "Сагсанд амжилттай орлоо!",
+      });
       if (token) {
+        setLoading(true);
         const body = {
-          product_id: data.Id,
+          product_id: data.id,
           quantity: productCount,
         };
         const fetchData = await fetchMethod("POST", "cart/add", token, body);
         if (fetchData?.success) {
-          setLoading(true);
-          SuccessNotification({
-            message: "Сагсанд амжилттай орлоо!",
-            title: "Сагс",
-          });
           setLoading(false);
         }
-      } else {
-        dispatch({
-          type: "CART_ADD_ITEM",
-          payload: { ...data, unitProduct: 1, purchaseCount: productCount },
-        });
-        SuccessNotification({
-          message: "Сагсанд амжилттай орлоо!",
-          title: "Сагс",
-        });
-        setLoading(false);
       }
     } else {
       showNotification({
@@ -67,13 +55,49 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
       });
     }
   };
+  // const addToCartHandler = async (event) => {
+  //   event.stopPropagation();
+  //   if (productCount <= data.balance) {
+  //     setLoading(true);
+  //     dispatch({
+  //       type: "CART_ADD_ITEM",
+  //       payload: { ...data, quantity: productCount },
+  //     });
+  //     if (token) {
+  //       const body = {
+  //         product_id: data.id,
+  //         quantity: productCount,
+  //       };
+  //       const fetchData = await fetchMethod("POST", "cart/add", token, body);
+  //       if (fetchData?.success) {
+  //         setLoading(true);
+  //         SuccessNotification({
+  //           message: "Сагсанд амжилттай орлоо!",
+  //           title: "Сагс",
+  //         });
+  //         setLoading(false);
+  //       }
+  //     } else {
+  //       SuccessNotification({
+  //         message: "Сагсанд амжилттай орлоо!",
+  //         title: "Сагс",
+  //       });
+  //       setLoading(false);
+  //     }
+  //   } else {
+  //     showNotification({
+  //       message: "Барааны үлдэгдэл хүрэлцэхгүй байна.",
+  //       color: "red",
+  //     });
+  //   }
+  // };
 
   const clickProduct = (e) => {
     e.preventDefault();
     router.push({
       shallow: true,
       pathname: "/product/[id]",
-      query: { id: data.Id, data: data },
+      query: { id: data.id },
     });
   };
 
@@ -119,28 +143,19 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
               <p className="text-[#696A6C] font-semibold text-xs">
                 Үлдэгдэл :{" "}
               </p>
-              {parseInt(data?.balance, 10) > 10 ? (
+              {data?.balance > 10 ? (
                 <Badge size="xs" color="teal">
                   Хангалттай
                 </Badge>
-              ) : parseInt(data?.balance, 10) <= 10 ? (
-                <p className="text-xs font-semibold ">
-                  {parseInt(data?.balance, 10)}
-                </p>
+              ) : data?.balance <= 10 ? (
+                <p className="text-xs font-semibold ">{data?.balance}</p>
               ) : (
                 <Badge size="xs" color="yellow">
                   Үлдэгдэлгүй
                 </Badge>
               )}
             </div>
-            <div className="flex flex-row items-center">
-              <p className="font-semibold text-md text-start mt-1 mr-2">
-                {data?.priceListName}
-              </p>
-              <p className="font-semibold text-start mt-1">
-                {data?.listPrice}₮
-              </p>
-            </div>
+            <p className="font-semibold text-base mt-1">{data?.listPrice}₮</p>
             <div className="flex flex-col md:flex-row  gap-4 w-full mt-1 justify-between">
               {/* <Button
                 variant={"filled"}

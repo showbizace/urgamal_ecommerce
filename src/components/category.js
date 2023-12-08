@@ -85,7 +85,6 @@ const Category = ({
                           </p>,
                         ]}
                         onClick={() => {
-                          console.log(el, "el");
                           router.push({
                             pathname: `/category/parent/${el.Id}`,
                           });
