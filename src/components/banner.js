@@ -2,9 +2,10 @@ import Image from "next/image";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Carousel } from "@mantine/carousel";
+
 const Banner = () => {
   return (
-    <div className="w-full ">
+    <div className="w-full">
       <div className="flex w-full h-[180px] lg:h-[390px]">
         <Carousel
           withIndicators
@@ -17,7 +18,7 @@ const Banner = () => {
           ]}
           slideGap="md"
           loop
-          align="start"
+          align="center"
           slidesToScroll={1}
           draggable={true}
           styles={{
@@ -30,10 +31,10 @@ const Banner = () => {
           }}
         >
           <Carousel.Slide>
-            <div className="relative w-full h-full">
+            <div className="relative w-full h-full rounded-lg">
               <Image
-                alt="banner"
-                src="/banner.png"
+                alt="banner2"
+                src="/banner2.png"
                 fill
                 className="rounded object-fill md:object-contain top-0 max-h-full"
                 draggable={false}
@@ -41,10 +42,10 @@ const Banner = () => {
             </div>
           </Carousel.Slide>
           <Carousel.Slide>
-            <div className="relative w-full h-full">
+            <div className="relative w-full h-full rounded-lg">
               <Image
-                alt="banner2"
-                src="/banner2.png"
+                alt="banner"
+                src="/banner.png"
                 fill
                 className="rounded object-fill md:object-contain top-0 max-h-full"
                 draggable={false}

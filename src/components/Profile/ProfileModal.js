@@ -12,7 +12,6 @@ import {
   Textarea,
 } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
-import { useRouter } from "next/router";
 import { useEffect } from "react";
 
 function ProductModal({
@@ -23,26 +22,25 @@ function ProductModal({
   loading,
   handleClick,
 }) {
-  const route = useRouter();
   const form = useForm({
     initialValues: {
-      name: initialData?.name,
-      city: initialData?.city,
-      province: initialData?.province,
-      district: initialData?.district,
-      committee: initialData?.committee,
-      street: initialData?.street,
-      fence: initialData?.fence,
-      apartment: initialData?.apartment,
-      number: initialData?.number,
-      phone: initialData?.phone,
-      type: false,
-      note: initialData?.note,
+      name: initialData?.name ?? "",
+      city: initialData?.city ?? "",
+      province: initialData?.province ?? "",
+      district: initialData?.district ?? "",
+      committee: initialData?.committee ?? "",
+      street: initialData?.street ?? "",
+      fence: initialData?.fence ?? "",
+      apartment: initialData?.apartment ?? "",
+      number: initialData?.number ?? "",
+      phone: initialData?.phone ?? "",
+      // type: false, // ? нэмэгдэж магад
+      note: initialData?.note ?? "",
     },
     validate: {
       name: isNotEmpty("Заавал бөглөх"),
       city: (value, values) =>
-        !values.type && value === undefined ? "Заавал бөглөх city" : null,
+        values.type && value === undefined ? "Заавал бөглөх city" : null,
       province: (value, values) =>
         values.type && value === undefined ? "Заавал бөглөх province" : null,
       district: isNotEmpty("Заавал бөглөх"),
@@ -79,21 +77,21 @@ function ProductModal({
         onSubmit={form.onSubmit(async (values, e) => {
           await onSubmit(values);
           form.setValues(initialData);
-          // handleClick && handleClick();
           // close();
+          // handleClick && handleClick();
           // route.reload();
         })}
       >
         <Group position="center">
           <Grid grow>
-            <Grid.Col span={12}>
+            {/* <Grid.Col span={12}> // ? нэмэгдэж магад
               <Switch
                 label="Орон нутаг"
                 {...form.getInputProps("type", { type: "checkbox" })}
                 color="teal"
                 size="sm"
               />
-            </Grid.Col>
+            </Grid.Col> */}
             <Grid.Col span={12}>
               <TextInput
                 withAsterisk

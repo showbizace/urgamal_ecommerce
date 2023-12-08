@@ -16,11 +16,10 @@ const Search = () => {
   // const [data, setData] = useState()
 
   const { data, error, isLoading, mutate, isValidating } = useSWR(
-    `${
-      process.env.NEXT_PUBLIC_API_URL
-    }/product/local?limit=${10}&query=${debounced}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/product?limit=${10}&query=${debounced}`,
     fetcher
   );
+
   const suggestions = data
     ? data.map((e) => {
         return {

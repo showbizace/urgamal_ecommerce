@@ -19,7 +19,6 @@ import { UserConfigContext } from "@/utils/userConfigContext";
 const Address = ({ setSelectedShippingData, setSelect }) => {
   const [value, setValue] = useState(1);
   const [opened, { open, close }] = useDisclosure(false);
-  const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [shippingData, setShippingData] = useState([]);
   const [editingProdData, setEditingProdData] = useState();
@@ -32,6 +31,7 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
     setCookie(cookie);
     getShippingData(cookie);
   }, [auth]);
+
   useEffect(() => {
     getShippingData();
     setSelectedShippingData(shippingData[1]);

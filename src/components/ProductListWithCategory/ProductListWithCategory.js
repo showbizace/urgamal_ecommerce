@@ -18,6 +18,14 @@ import Link from "next/link";
 import { fetcher } from "@/utils/fetch";
 import { PAGE_SIZE } from "@/constant";
 
+const fetcher = async (url) =>
+  axios
+    .get(url, { headers: { "Content-Type": "application/json" } })
+    .then((res) => {
+      return res.data.result;
+    })
+    .catch((error) => console.log(error, "err in fetcher"));
+
 export default function ProductListWithCategory({
   categoryName,
   categoryIcon,
@@ -25,13 +33,19 @@ export default function ProductListWithCategory({
   cols,
   className,
 }) {
-  const [pageIndex, setPageIndex] = useState(0);
-  const { data, isLoading, error } = useSWR(
+  const {
+    data: product,
+    isLoading,
+    error,
+  } = useSWR(
     `${
       process.env.NEXT_PUBLIC_API_URL
-    }/product/local?parent_cat_id=${categoryId}&offset=${0}&limit=${PAGE_SIZE}`,
+    }/product?parent_cat_id=${categoryId}&offset=${1}&limit=${PAGE_SIZE}`,
     fetcher
   );
+
+  console.log(product);
+
   return (
     <div className={`flex flex-col justify-center ${className}`}>
       <div className="flex gap-3 justify-between items-end">
@@ -108,14 +122,14 @@ export default function ProductListWithCategory({
             .map((e, index) => (
               <MySkeleton key={`product-skeleton-${index}`} />
             ))}
-        {data &&
-          data.map((e, index) => (
+        {product &&
+          product?.map((e, index) => (
             <SwiperSlide className="rounded-md" key={index}>
               <ProductCard
                 key={`product-card-key-${index}-${e.id}`}
                 shouldScale={false}
-                loader={() => e.product_image?.images?.[0]}
-                src={e.product_image?.images?.[0]}
+                loader={() => e.additionalImage?.[0]}
+                src={e.additionalImage?.[0]}
                 alt={e?.name}
                 data={e}
               />

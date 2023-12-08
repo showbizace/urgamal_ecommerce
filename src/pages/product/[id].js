@@ -99,6 +99,32 @@ const ProductDetail = ({ product }) => {
     const [showMagnifier, setShowMagnifier] = useState(false);
     return (
       <div className="relative w-full h-full overflow-hidden">
+        {/* <Image
+          src={src}
+          className="w-full h-full"
+          fill
+          onMouseEnter={(e) => {
+            // update image size and turn-on magnifier
+            const elem = e.currentTarget;
+            const { width, height } = elem.getBoundingClientRect();
+            setSize([width, height]);
+            setShowMagnifier(true);
+          }}
+          onMouseMove={(e) => {
+            // update cursor position
+            const elem = e.currentTarget;
+            const { top, left, width, height } = elem.getBoundingClientRect();
+            // calculate cursor position on the image
+            const x = e.pageX - left - window.pageXOffset;
+            const y = e.pageY - top - window.pageYOffset;
+            setXY([x, y]);
+          }}
+          onMouseLeave={() => {
+            // close magnifier
+            setShowMagnifier(false);
+          }}
+          alt={"img"}
+        /> */}
         <div
           style={{
             display: showMagnifier ? "" : "none",

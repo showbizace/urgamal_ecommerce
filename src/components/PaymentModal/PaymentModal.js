@@ -12,7 +12,7 @@ export default function PaymentModal({ context, id, innerProps }) {
   //   setLoading(true);
   //   const userToken = getCookie("token");
   //   const axiosReqOption = {
-  //     headers: {
+  //     headers: {npmi
   //       Authorization: "Bearer " + userToken,
   //       "Content-Type": "application/json",
   //     },

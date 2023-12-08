@@ -158,16 +158,16 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
             <p className="font-semibold text-base mt-1">{data?.listPrice}₮</p>
             <div className="flex flex-col md:flex-row  gap-4 w-full mt-1 justify-between">
               {/* <Button
-            variant={"filled"}
-            color="red"
-            style={{ padding: "10px" }}
-            onClick={(event) => {
-              event.stopPropagation();
-            }}
-            className="flex justify-center items-center bg-tertiary rounded-md "
-          >
-            <Image width={18} height={8} src="/icons/hearth2.svg" />
-          </Button> */}
+                variant={"filled"}
+                color="red"
+                style={{ padding: "10px" }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                }}
+                className="flex justify-center items-center bg-tertiary rounded-md "
+              >
+                <Image width={18} height={8} src="/icons/hearth2.svg" />
+              </Button> */}
 
               <div className="flex flex-row items-center">
                 <Button
@@ -218,30 +218,30 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
             </div>
 
             {/* <Button
-          variant={"filled"}
-          style={{ width: "100%" }}
-          className="flex justify-center items-center p-1 bg-button-yellow rounded-md mt-1 hover:cursor-pointer"
-          color={"orange"}
-          onClick={(event) => addToCartHandler(event, data)}
-        >
-          {loading === true ? (
-            <LoadingOverlay
-              loaderProps={{ size: "sm", color: "white" }}
-              overlayOpacity={0.1}
-              visible={loading}
-            />
-          ) : (
-            <div className="flex items-center">
-              <p className="text-sm text-white font-semibold ">Сагслах</p>
-              <Image
-                className="ml-2"
-                width={18}
-                height={18}
-                src={"/icons/trolley2.svg"}
-              />
-            </div>
-          )}
-        </Button> */}
+              variant={"filled"}
+              style={{ width: "100%" }}
+              className="flex justify-center items-center p-1 bg-button-yellow rounded-md mt-1 hover:cursor-pointer"
+              color={"orange"}
+              onClick={(event) => addToCartHandler(event, data)}
+            >
+              {loading === true ? (
+                <LoadingOverlay
+                  loaderProps={{ size: "sm", color: "white" }}
+                  overlayOpacity={0.1}
+                  visible={loading}
+                />
+              ) : (
+                <div className="flex items-center">
+                  <p className="text-sm text-white font-semibold ">Сагслах</p>
+                  <Image
+                    className="ml-2"
+                    width={18}
+                    height={18}
+                    src={"/icons/trolley2.svg"}
+                  />
+                </div>
+              )}
+            </Button> */}
           </div>
         </div>
       </div>

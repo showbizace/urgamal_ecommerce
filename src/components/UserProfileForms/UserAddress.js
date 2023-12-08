@@ -34,12 +34,12 @@ export default function UserAddress({ data, refresh }) {
     const initialData = {
       name: values.name,
       city: values.city,
-      province: values.province,
+      // province: values?.province, //? daraa nemeh
       district: values.district,
       committee: values.committee,
       street: values.street,
-      fence: values.fence,
-      apartment: values.apartment,
+      // fence: values.fence, //? daraa nemeh
+      apartment: values?.apartment,
       number: values.number,
       phone: values.phone,
       type: values.type === undefined ? false : values.type,
@@ -61,7 +61,7 @@ export default function UserAddress({ data, refresh }) {
             color: "green",
           });
           refresh();
-          close;
+          close();
         } else {
           showNotification({
             message: result.message,
@@ -70,6 +70,7 @@ export default function UserAddress({ data, refresh }) {
         }
       });
   };
+
   const SubmitUpdateShippingData = async (values) => {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${cookie}`);
@@ -106,7 +107,7 @@ export default function UserAddress({ data, refresh }) {
             color: "green",
           });
           refresh();
-          close;
+          close();
         } else {
           showNotification({
             message: result.message,
@@ -115,6 +116,7 @@ export default function UserAddress({ data, refresh }) {
         }
       });
   };
+
   const SubmitDeleteShippingData = async (id) => {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${cookie}`);
@@ -126,7 +128,10 @@ export default function UserAddress({ data, refresh }) {
       body: JSON.stringify({ id: id }),
     };
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/address`, requestOption)
+    fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/user/address/${id}`,
+      requestOption
+    )
       .then((response) => response.json())
       .then((result) => {
         if (result.success) {

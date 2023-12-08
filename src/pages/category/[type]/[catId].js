@@ -237,6 +237,8 @@ const CategoryPage = ({ initialData }) => {
                     : type === "child"
                     ? parent.find((e) => e.id === catId)?.name
                     : ""
+                    ? parent.find((e) => e.id === catId)?.name
+                    : ""
                 }
               >
                 {products?.map((e, index) => (
