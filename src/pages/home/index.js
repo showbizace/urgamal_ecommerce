@@ -12,9 +12,9 @@ import axios from "axios";
 import AllCategory from "@/components/AllCategory/AllCategory";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { useDisclosure } from "@mantine/hooks";
-import { getCategory } from "@/utils/fetch";
-import { PAGE_SIZE } from "@/constant";
+import { fetcher, getCategory } from "@/utils/fetch";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
+const PAGE_SIZE = 20;
 
 export async function getStaticProps() {
   const requestOption = {
@@ -43,14 +43,6 @@ export default function Home({ data }) {
 
   const [opened, { open, close }] = useDisclosure(true);
 
-  const fetcher = async (url) =>
-    axios
-      .get(url, { headers: { "Content-Type": "application/json" } })
-      .then((res) => {
-        return res.data.result;
-      })
-      .catch((error) => console.log(error, "err in fetcher"));
-
   const onScroll = useCallback((event) => {
     const { pageYOffset, scrollY, innerHeight } = window;
     const bottom = document.documentElement.scrollHeight;
@@ -75,27 +67,22 @@ export default function Home({ data }) {
     isValidating,
     isLoading,
     error,
-  } = useSWRInfinite(
-    (index) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/product/local?offset=${index}&limit=${PAGE_SIZE}`,
-    fetcher,
-    { revalidateFirstPage: false }
-  );
+  } = useSWRInfinite((index) => {
+    `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
+      index + 1
+    }&limit=${PAGE_SIZE}`,
+      // `${process.env.NEXT_PUBLIC_API_URL}/product`, //? @lahagva
+      fetcher,
+      { revalidateFirstPage: false };
+  });
 
-  // useEffect(() => {
-  //   fetchData &&
-  //     !isEmpty &&
-  //     setProducts(products?.concat(...fetchData?.[fetchData.length - 1]));
-  // }, [fetchData]);
-
-  // useEffect(() => {
-  //   if (fetchData && fetchData.length > 0) {
-  //     console.log(fetchData, "fetchData");
-  //     setProducts((prevProducts) =>
-  //       prevProducts.concat(...fetchData[fetchData.length - 1].result)
-  //     );
-  //   }
-  // }, [fetchData]);
+  useEffect(() => {
+    if (fetchData && fetchData.length > 0) {
+      setProducts((prevProducts) =>
+        prevProducts.concat(...fetchData[fetchData.length - 1].result)
+      );
+    }
+  }, [fetchData]);
 
   const isEmpty = fetchData?.[0]?.length === 0;
 
