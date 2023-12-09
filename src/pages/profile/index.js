@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
 import MyOrder from "./tabs/MyOrder";
-import { getCookie, removeCookies } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import {
   IconBox,
@@ -25,6 +25,7 @@ import {
 import UserBasicInfo from "@/components/UserProfileForms/UserBasicInfo";
 import UserAddress from "@/components/UserProfileForms/UserAddress";
 import { UserConfigContext } from "@/utils/userConfigContext";
+import { emptyCart } from "@/utils/Store";
 
 const Profile = () => {
   const token = getCookie("token");
@@ -99,8 +100,10 @@ const Profile = () => {
   };
 
   const handleLogOut = () => {
-    removeCookies("token");
+    deleteCookie("token");
+    emptyCart();
     logout();
+    console.log("logOUT");
     router.replace("/");
   };
 

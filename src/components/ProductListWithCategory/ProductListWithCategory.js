@@ -18,13 +18,13 @@ import Link from "next/link";
 import { fetcher } from "@/utils/fetch";
 import { PAGE_SIZE } from "@/constant";
 
-const fetcher = async (url) =>
-  axios
-    .get(url, { headers: { "Content-Type": "application/json" } })
-    .then((res) => {
-      return res.data.result;
-    })
-    .catch((error) => console.log(error, "err in fetcher"));
+// const fetcher = async (url) =>
+//   axios
+//     .get(url, { headers: { "Content-Type": "application/json" } })
+//     .then((res) => {
+//       return res.data.result;
+//     })
+//     .catch((error) => console.log(error, "err in fetcher"));
 
 export default function ProductListWithCategory({
   categoryName,

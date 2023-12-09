@@ -29,10 +29,14 @@ import {
   addQuantityProduct,
   removeQuantityProduct,
   emptyCart,
+  syncCart,
 } from "@/utils/Store";
 import { IconAlertCircle } from "@tabler/icons-react";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
-import { SuccessNotification } from "../../utils/SuccessNotification";
+import {
+  SuccessNotification,
+  ErrorNotification,
+} from "../../utils/SuccessNotification";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { openContextModal } from "@mantine/modals";
 import axios from "axios";
@@ -78,26 +82,31 @@ const CartItems = (props) => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.addEventListener("storage", () => {
-        let data = getCart();
-        if (data) {
-          setCartItem(data);
+        if (!userToken) {
+          let data = getCart();
+          if (data) {
+            setCartItem(data);
+          }
         }
-        // ...
       });
     }
-    let data = getCart();
-    if (data) {
-      setCartItem(data);
+    if (!userToken) {
+      let data = getCart();
+      if (data) {
+        setCartItem(data);
+      }
+    } else {
+      getUserCart();
     }
   }, []);
 
   useEffect(() => {
-    if (auth) {
+    if (userToken) {
       setAddressVisible(true);
     } else {
       setAddressVisible(false);
     }
-  }, [auth]);
+  }, [userToken]);
 
   const storageToCart = async () => {
     let dataStorage = getCart();
@@ -118,7 +127,9 @@ const CartItems = (props) => {
         requestOption
       );
       if (data?.success) {
-        console.log(convert, "convert success sync");
+        console.log("storage to cart succeed");
+      } else {
+        ErrorNotification({ title: "Алдаа гарлаа." });
       }
     }
   };
@@ -126,15 +137,27 @@ const CartItems = (props) => {
   const getUserCart = async () => {
     const data = await fetchMethod("GET", "cart", userToken);
     if (data?.success) {
-      setCartItem(data?.result[0]);
-      deleteCookie("addToCart");
+      console.log(data?.result?.length, "length");
+      console.log(data?.result, "result");
+      if (data?.result?.length === 0) {
+        setCartItem(data?.result);
+        emptyCart();
+      } else {
+        setCartItem(data?.result[0]);
+        syncCart(data?.result[0]);
+      }
+    } else {
+      ErrorNotification({ title: "Алдаа гарлаа." });
     }
   };
 
   useEffect(() => {
     if (addToCart) {
       storageToCart();
-      getUserCart();
+      setTimeout(() => {
+        getUserCart();
+      }, 1000);
+      deleteCookie("addToCart");
     }
   }, [addToCart]);
 
@@ -164,8 +187,6 @@ const CartItems = (props) => {
           temp.push(e);
         }
       });
-      setCartItem({ ...cartItem, cart_items: temp });
-      removeFromCart(temp);
       if (userToken) {
         if (temp.length === 0) {
           const requestOption = {
@@ -178,7 +199,15 @@ const CartItems = (props) => {
             requestOption
           );
           if (data?.success) {
-            console.log("Success remove all Product");
+            // setCartItem({ ...cartItem, cart_items: temp });
+            // removeFromCart(temp);
+            getUserCart();
+            SuccessNotification({
+              message: "Бараа амжилттай устлаа.",
+              title: "Сагс",
+            });
+          } else {
+            ErrorNotification({ title: "Алдаа гарлаа." });
           }
         } else {
           const requestOption = {
@@ -192,9 +221,24 @@ const CartItems = (props) => {
             requestOption
           );
           if (data?.success) {
-            console.log("Success remove item");
+            getUserCart();
+            // setCartItem({ ...cartItem, cart_items: temp });
+            // removeFromCart(temp);
+            SuccessNotification({
+              message: "Бараа амжилттай устлаа.",
+              title: "Сагс",
+            });
+          } else {
+            ErrorNotification({ title: "Алдаа гарлаа." });
           }
         }
+      } else {
+        setCartItem({ ...cartItem, cart_items: temp });
+        removeFromCart(temp);
+        SuccessNotification({
+          message: "Бараа амжилттай устлаа.",
+          title: "Сагс",
+        });
       }
       removedArr = [];
     }
@@ -279,6 +323,8 @@ const CartItems = (props) => {
                     });
                   }
                 });
+            } else {
+              ErrorNotification({ title: "Алдаа гарлаа." });
             }
           } else if (res.status === 500) {
             showNotification({
@@ -365,6 +411,8 @@ const CartItems = (props) => {
                       });
                     }
                   });
+              } else {
+                ErrorNotification({ title: "Алдаа гарлаа." });
               }
             } else if (res.status === 500) {
               showNotification({
@@ -407,8 +455,24 @@ const CartItems = (props) => {
           temp[index] = clone;
         }
       });
-      setCartItem({ ...cartItem, cart_items: temp });
-      removeQuantityProduct(temp);
+      if (userToken) {
+        const requestOption = {
+          cart_item_id: product.id,
+          cart_id: product.cartid,
+          quantity: count,
+        };
+        const data = await fetchMethod("PUT", "cart", userToken, requestOption);
+        if (data?.success) {
+          getUserCart();
+          // setCartItem({ ...cartItem, cart_items: temp });
+          // removeQuantityProduct(temp);
+        } else {
+          ErrorNotification({ title: "Алдаа гарлаа." });
+        }
+      } else {
+        setCartItem({ ...cartItem, cart_items: temp });
+        removeQuantityProduct(temp);
+      }
     }
   };
 
@@ -425,23 +489,24 @@ const CartItems = (props) => {
           temp[index] = clone;
         }
       });
-      setCartItem({ ...cartItem, cart_items: temp });
-      addQuantityProduct(temp);
       if (userToken) {
+        console.log(product, "oridyct");
         const requestOption = {
           cart_item_id: product.id,
           cart_id: product.cartid,
           quantity: count,
         };
-        const data = await fetchMethod(
-          "UPDATE",
-          "cart",
-          userToken,
-          requestOption
-        );
+        const data = await fetchMethod("PUT", "cart", userToken, requestOption);
         if (data?.success) {
-          console.log("Success in update");
+          getUserCart();
+          // setCartItem({ ...cartItem, cart_items: temp });
+          // addQuantityProduct(temp);
+        } else {
+          ErrorNotification({ title: "Алдаа гарлаа." });
         }
+      } else {
+        setCartItem({ ...cartItem, cart_items: temp });
+        addQuantityProduct(temp);
       }
     } else {
       showNotification({
@@ -653,7 +718,7 @@ const CartItems = (props) => {
                 ) : (
                   <div className="min-h-full h-72 flex flex-col items-center justify-center">
                     <BsCartX size="2rem" stroke={1.5} />
-                    <span className="mt-2 font-medium text-base">
+                    <span className="mt-2 font-medium text-base text-grey">
                       Таны сагс хоосон байна.
                     </span>
                   </div>
@@ -674,7 +739,7 @@ const CartItems = (props) => {
               <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
                 Нийт үнэ
                 <span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
-                  {cartItem?.total}
+                  {cartItem?.total || 0}
                 </span>
               </span>
               <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
@@ -714,7 +779,7 @@ const CartItems = (props) => {
               <span className="flex justify-between mb-1 font-[400] lg:text-[1.1rem] text-sm text-[#212529af]">
                 Нийлбэр үнэ{" "}
                 <span className="font-[500] lg:text-[1.1rem] text-sm text-[#212529]">
-                  {cartItem?.total}
+                  {cartItem?.total || 0}
                 </span>
               </span>
               <Button

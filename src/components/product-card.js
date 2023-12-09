@@ -5,7 +5,10 @@ import { addCart } from "../utils/Store";
 import { getCookie } from "cookies-next";
 import { showNotification } from "@mantine/notifications";
 import { IconPhotoOff } from "@tabler/icons-react";
-import { SuccessNotification } from "../utils/SuccessNotification";
+import {
+  SuccessNotification,
+  ErrorNotification,
+} from "../utils/SuccessNotification";
 import { useRouter } from "next/router";
 import { fetchMethod } from "@/utils/fetch";
 
@@ -32,11 +35,6 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
   const addToCartHandler = async (event) => {
     event.stopPropagation();
     if (data.balance > 0) {
-      addCart({ ...data, quantity: productCount });
-      SuccessNotification({
-        message: data.name,
-        title: "Сагсанд амжилттай орлоо!",
-      });
       if (token) {
         setLoading(true);
         const body = {
@@ -46,7 +44,20 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
         const fetchData = await fetchMethod("POST", "cart/add", token, body);
         if (fetchData?.success) {
           setLoading(false);
+          SuccessNotification({
+            message: data.name,
+            title: "Сагсанд амжилттай орлоо!",
+          });
+          addCart({ ...data, quantity: productCount });
+        } else {
+          ErrorNotification({ title: "Алдаа гарлаа." });
         }
+      } else {
+        addCart({ ...data, quantity: productCount });
+        SuccessNotification({
+          message: data.name,
+          title: "Сагсанд амжилттай орлоо!",
+        });
       }
     } else {
       showNotification({

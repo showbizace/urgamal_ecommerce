@@ -1,5 +1,5 @@
 import { IconCheck, IconAlertCircle } from "@tabler/icons-react";
-import { notifications, showNotification } from "@mantine/notifications";
+import { showNotification } from "@mantine/notifications";
 
 module.exports = {
   SuccessNotification: ({ title, message }) => {
@@ -10,7 +10,7 @@ module.exports = {
       icon: <IconCheck />,
     });
   },
-  ErrorNotificatipon: ({ title, message }) => {
+  ErrorNotification: ({ title, message }) => {
     showNotification({
       title,
       message: message,

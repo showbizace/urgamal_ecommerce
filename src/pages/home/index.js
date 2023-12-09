@@ -12,8 +12,9 @@ import axios from "axios";
 import AllCategory from "@/components/AllCategory/AllCategory";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { useDisclosure } from "@mantine/hooks";
-import { fetcher, getCategory } from "@/utils/fetch";
+import { getCategory } from "@/utils/fetch";
 import { PAGE_SIZE } from "@/constant";
+import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 
 export async function getStaticProps() {
   const requestOption = {
@@ -41,6 +42,14 @@ export default function Home({ data }) {
   const [positionSticky, setPositionSticky] = useState(false);
 
   const [opened, { open, close }] = useDisclosure(true);
+
+  const fetcher = async (url) =>
+    axios
+      .get(url, { headers: { "Content-Type": "application/json" } })
+      .then((res) => {
+        return res.data.result;
+      })
+      .catch((error) => console.log(error, "err in fetcher"));
 
   const onScroll = useCallback((event) => {
     const { pageYOffset, scrollY, innerHeight } = window;
@@ -79,13 +88,14 @@ export default function Home({ data }) {
   //     setProducts(products?.concat(...fetchData?.[fetchData.length - 1]));
   // }, [fetchData]);
 
-  useEffect(() => {
-    if (fetchData && fetchData.length > 0) {
-      setProducts((prevProducts) =>
-        prevProducts.concat(...fetchData[fetchData.length - 1].result)
-      );
-    }
-  }, [fetchData]);
+  // useEffect(() => {
+  //   if (fetchData && fetchData.length > 0) {
+  //     console.log(fetchData, "fetchData");
+  //     setProducts((prevProducts) =>
+  //       prevProducts.concat(...fetchData[fetchData.length - 1].result)
+  //     );
+  //   }
+  // }, [fetchData]);
 
   const isEmpty = fetchData?.[0]?.length === 0;
 
