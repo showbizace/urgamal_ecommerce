@@ -47,7 +47,6 @@ export const addCart = (product) => {
         ],
         total: product.quantity * product.listPrice,
       };
-      console.log(updatedState, "add");
       localStorage.setItem("cartItems", JSON.stringify(updatedState));
       window.dispatchEvent(new Event("storage"));
     }
@@ -82,7 +81,6 @@ export const removeFromCart = (listProduct) => {
       total: total,
       cart_items: listProduct,
     };
-    console.log(updatedState, "remove");
     localStorage.setItem("cartItems", JSON.stringify(updatedState));
     window.dispatchEvent(new Event("storage"));
   }
@@ -99,7 +97,6 @@ export const addQuantityProduct = (listProduct) => {
       total: total,
       cart_items: listProduct,
     };
-    console.log(updatedState, "addQuantity");
     localStorage.setItem("cartItems", JSON.stringify(updatedState));
     window.dispatchEvent(new Event("storage"));
   }
@@ -116,7 +113,6 @@ export const removeQuantityProduct = (listProduct) => {
       total: total,
       cart_items: listProduct,
     };
-    console.log(updatedState, "removeQuantity");
     localStorage.setItem("cartItems", JSON.stringify(updatedState));
     window.dispatchEvent(new Event("storage"));
   }
@@ -124,7 +120,6 @@ export const removeQuantityProduct = (listProduct) => {
 
 export const emptyCart = () => {
   if (typeof window !== "undefined") {
-    console.log("empty caart");
     localStorage.removeItem("cartItems");
     window.dispatchEvent(new Event("storage"));
   }
