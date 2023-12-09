@@ -29,7 +29,7 @@ import { UserConfigContext } from "@/utils/userConfigContext";
 import { isMobile } from "react-device-detect";
 import { fetcher } from "@/utils/fetch";
 import { getCart } from "@/utils/Store";
-
+const token = getCookie("token");
 const Navbar = (props) => {
   const { address } = props;
   const router = useRouter();
@@ -108,12 +108,15 @@ const Navbar = (props) => {
     if (typeof window !== "undefined") {
       window.addEventListener("storage", () => {
         let data = getCart();
-        setCartItem(data);
-        // ...
+        if (data) {
+          setCartItem(data);
+        }
       });
     }
     let data = getCart();
-    setCartItem(data);
+    if (data) {
+      setCartItem(data);
+    }
     const number = getCookie("number");
     if (number) {
       setNumber(number);

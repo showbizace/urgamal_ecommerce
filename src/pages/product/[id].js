@@ -52,11 +52,6 @@ const ProductDetail = ({ product }) => {
   // };
 
   const addToCartHandler = async () => {
-    addCart({ ...product, quantity: 1 });
-    SuccessNotification({
-      message: "Сагсанд амжилттай орлоо!",
-      title: `${product?.name}`,
-    });
     if (token) {
       setLoading(true);
       const body = {
@@ -65,12 +60,21 @@ const ProductDetail = ({ product }) => {
       };
       const fetchData = await fetchMethod("POST", "cart/add", token, body);
       if (fetchData?.success) {
+        addCart({ ...product, quantity: 1 });
         SuccessNotification({
           message: "Сагсанд амжилттай орлоо!",
           title: `${product?.name}`,
         });
         setLoading(false);
+      } else {
+        ErrorNotification({ title: "Алдаа гарлаа." });
       }
+    } else {
+      addCart({ ...product, quantity: 1 });
+      SuccessNotification({
+        message: "Сагсанд амжилттай орлоо!",
+        title: `${product?.name}`,
+      });
     }
   };
 
