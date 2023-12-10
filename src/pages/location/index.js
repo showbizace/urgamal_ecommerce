@@ -17,6 +17,8 @@ const Location = ({ data }) => {
   const location = data[selectedLocation];
   const [loc, setLoc] = useState([]);
 
+  console.log(data);
+
   useEffect(() => {
     window.dispatchEvent(new Event("storage"));
   }, [selectedLocation]);
@@ -75,9 +77,9 @@ const Location = ({ data }) => {
               sx={{ flex: 1 }}
               loop
             >
-              {location?.img_url.map((el) => {
+              {location?.img_url.map((el, idx) => {
                 return (
-                  <Carousel.Slide key={el}>
+                  <Carousel.Slide key={(el, idx)}>
                     <div className="relative w-full h-80" key={el}>
                       <Image
                         key={el}
