@@ -6,10 +6,12 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function PaymentModal({ context, id, innerProps }) {
+  console.log;
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const callInquiry = (invoiceId) => {
     setLoading(true);
+    console.log(invoiceId, "invoice");
     const userToken = getCookie("token");
     const axiosReqOption = {
       headers: {
@@ -19,8 +21,7 @@ export default function PaymentModal({ context, id, innerProps }) {
     };
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_URL}/payment/inquire`,
-        { invoice_id: invoiceId },
+        `${process.env.NEXT_PUBLIC_API_URL}/order/payment/inquiry/${invoiceId}`,
         axiosReqOption
       )
       .then((_) => {})

@@ -43,7 +43,6 @@ import axios from "axios";
 import Image from "next/image";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { fetchMethod } from "@/utils/fetch";
-
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
   const router = useRouter();
@@ -137,17 +136,21 @@ const CartItems = (props) => {
   const getUserCart = async () => {
     const data = await fetchMethod("GET", "cart", userToken);
     if (data?.success) {
-      console.log(data?.result?.length, "length");
-      console.log(data?.result, "result");
-      if (data?.result?.length === 0) {
-        setCartItem(data?.result);
-        emptyCart();
+      if (data?.cart) {
+        if (data?.cart?.cart_items?.length === 0) {
+          setCartItem(data?.cart);
+          emptyCart();
+        } else {
+          setCartItem(data?.cart);
+          syncCart(data?.cart);
+        }
       } else {
-        setCartItem(data?.result[0]);
-        syncCart(data?.result[0]);
+        setCartItem({ cart: { cart_items: [] } });
+        emptyCart();
       }
     } else {
-      ErrorNotification({ title: "Алдаа гарлаа." });
+      setCartItem({ cart: { cart_items: [] } });
+      emptyCart();
     }
   };
 
@@ -189,15 +192,7 @@ const CartItems = (props) => {
       });
       if (userToken) {
         if (temp.length === 0) {
-          const requestOption = {
-            cart_id: cartId,
-          };
-          const data = await fetchMethod(
-            "DELETE",
-            "cart/whole",
-            userToken,
-            requestOption
-          );
+          const data = await fetchMethod("DELETE", "cart/whole", userToken);
           if (data?.success) {
             // setCartItem({ ...cartItem, cart_items: temp });
             // removeFromCart(temp);

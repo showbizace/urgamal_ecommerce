@@ -23,6 +23,7 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
   const [shippingData, setShippingData] = useState([]);
   const [editingProdData, setEditingProdData] = useState();
   const [cookie, setCookie] = useState();
+  const token = getCookie("token");
   const { auth } = useContext(UserConfigContext);
   const [isAddAddress, setIsAddAddress] = useState(false);
 
@@ -46,7 +47,7 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
     setIsAddAddress(!isAddAddress);
   };
 
-  const getShippingData = async (cookie = cookie) => {
+  const getShippingData = async (cookie = token) => {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${cookie}`);
 
