@@ -3,12 +3,29 @@ import axios from "axios";
 import { getCookie } from "cookies-next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+// import io from "socket.io-client";
 
 export default function PaymentModal({ context, id, innerProps }) {
-  console.log;
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  // useEffect(() => {
+  //   const socket = io("http://test.api.urga.mn", {
+  //     withCredentials: true,
+  //     extraHeaders: { "Access-Control-Allow-Credentials": "true" },
+  //     transports: ["websocket"],
+  //   });
+
+  //   socket.on("connection", () => {
+  //     console.log("Connected to server");
+  //   });
+
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
+
   const callInquiry = (invoiceId) => {
     setLoading(true);
     console.log(invoiceId, "invoice");

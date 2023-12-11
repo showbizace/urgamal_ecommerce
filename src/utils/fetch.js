@@ -42,13 +42,13 @@ export const fetcher = async (url) =>
 
 export const getCategory = async () => {
   const main = localStorage.getItem("main");
-  const jsonData = JSON.parse(main);
-  if (jsonData) {
+  if (main) {
+    const jsonData = JSON.parse(main);
     return jsonData;
   } else {
     const data = await fetchMethod("GET", "product/cats");
     if (data?.success) {
-      localStorage.setItem("main", data?.result);
+      localStorage.setItem("main", JSON.stringify(data?.result));
       return data?.result;
     }
   }

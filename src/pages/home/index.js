@@ -33,6 +33,7 @@ export async function getStaticProps() {
 
   const cats = await catResponse.json();
   const data = await res.json();
+
   return {
     props: {
       data,

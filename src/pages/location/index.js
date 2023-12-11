@@ -47,26 +47,6 @@ const Location = ({ data }) => {
       <div className="sm:px-6 sm:py-6 bg-nav-background px-4 py-4 h-full ">
         <div className="border rounded">
           <div className="p-4 md:p-10 flex flex-col gap-10">
-            <div className="flex justify-center ">
-              <div className="overflow-x-auto">
-                <SegmentedControl
-                  data={data?.map((location, index) => ({
-                    value: location?.name,
-                    label: (
-                      <Center key={index}>
-                        <Box key={index}>{`${location?.name}`}</Box>
-                      </Center>
-                    ),
-                  }))}
-                  color="yellow"
-                  size="md"
-                  radius="xl"
-                  bg={"none"}
-                  onChange={(value) => handleLocationChange(value)}
-                />
-              </div>
-            </div>
-
             <Carousel
               withIndicators
               height={"100%"}
@@ -78,7 +58,10 @@ const Location = ({ data }) => {
               {location?.img_url.map((el, idx) => {
                 return (
                   <Carousel.Slide key={(el, idx)}>
-                    <div className="relative w-full h-80" key={el}>
+                    <div
+                      className="relative w-full h-[20rem] lg:h-[34rem] "
+                      key={el}
+                    >
                       <Image
                         key={el}
                         src={el}
@@ -91,6 +74,26 @@ const Location = ({ data }) => {
                 );
               })}
             </Carousel>
+            <div className="flex justify-center ">
+              <div className="overflow-x-auto w-[50%]">
+                <SegmentedControl
+                  data={data?.map((location, index) => ({
+                    value: location?.name,
+                    label: (
+                      <Center key={index}>
+                        <Box key={index}>{`${location?.name}`}</Box>
+                      </Center>
+                    ),
+                  }))}
+                  color="yellow"
+                  size="md"
+                  fullWidth
+                  radius="sm"
+                  bg={"none"}
+                  onChange={(value) => handleLocationChange(value)}
+                />
+              </div>
+            </div>
             <div className="relative flex h-full md:h-96 flex-col md:flex-row gap-10 justify-center items-center">
               <div className="w-full h-80 md:h-full rounded-lg border shadow-lg">
                 {!loadingMap && (
