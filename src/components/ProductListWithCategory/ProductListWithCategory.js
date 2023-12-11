@@ -18,14 +18,6 @@ import Link from "next/link";
 import { fetcher } from "@/utils/fetch";
 import { PAGE_SIZE } from "@/constant";
 
-// const fetcher = async (url) =>
-//   axios
-//     .get(url, { headers: { "Content-Type": "application/json" } })
-//     .then((res) => {
-//       return res.data.result;
-//     })
-//     .catch((error) => console.log(error, "err in fetcher"));
-
 export default function ProductListWithCategory({
   categoryName,
   categoryIcon,
@@ -40,11 +32,9 @@ export default function ProductListWithCategory({
   } = useSWR(
     `${
       process.env.NEXT_PUBLIC_API_URL
-    }/product?parent_cat_id=${categoryId}&offset=${1}&limit=${PAGE_SIZE}`,
+    }/product?categoryId=${categoryId}&offset=${1}&limit=${PAGE_SIZE}`,
     fetcher
   );
-
-  console.log(product);
 
   return (
     <div className={`flex flex-col justify-center ${className}`}>
