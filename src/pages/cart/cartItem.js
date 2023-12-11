@@ -10,6 +10,7 @@ import {
   Stack,
   Switch,
   Tooltip,
+  LoadingOverlay,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
@@ -57,6 +58,7 @@ const CartItems = (props) => {
   const [selectedShippingData, setSelectedShippingData] = useState({});
   const [select, setSelect] = useState(false);
   const [buttonPressed, setButtonPressed] = useState(false);
+  const [loadingCart, setLoadingCart] = useState(false);
   const [loaderOpened, { open: openLoader, close: closeLoader }] =
     useDisclosure(false);
 
@@ -155,13 +157,16 @@ const CartItems = (props) => {
   };
 
   useEffect(() => {
-    if (addToCart) {
-      storageToCart();
-      setTimeout(() => {
-        getUserCart();
-      }, 1000);
-      deleteCookie("addToCart");
-    }
+    const addedCartItems = async () => {
+      if (addToCart) {
+        setLoadingCart(true);
+        await storageToCart();
+        await getUserCart();
+        deleteCookie("addToCart");
+        setTimeout(() => setLoadingCart(false), 1500);
+      }
+    };
+    addedCartItems();
   }, [addToCart]);
 
   const deleteFromCart = async () => {
@@ -703,13 +708,23 @@ const CartItems = (props) => {
                 </div>
                 {/* <Suspense fallback={<Loading />}> */}
                 {cartItem?.cart_items?.length > 0 ? (
-                  <div className="mt-6 overflow-auto max-h-80">
-                    <Table captionSide="bottom" striped>
-                      {/* <caption>Some elements from periodic table</caption> */}
-                      <thead>{ths}</thead>
-                      <tbody>{rows}</tbody>
-                    </Table>
-                  </div>
+                  loadingCart ? (
+                    <div className="min-h-full h-72 flex flex-col items-center justify-center relative">
+                      <LoadingOverlay
+                        loaderProps={{ size: "md", color: "#f9bc60" }}
+                        overlayOpacity={0.1}
+                        visible={loadingCart}
+                      />
+                    </div>
+                  ) : (
+                    <div className="mt-6 overflow-auto max-h-80">
+                      <Table captionSide="bottom" striped>
+                        {/* <caption>Some elements from periodic table</caption> */}
+                        <thead>{ths}</thead>
+                        <tbody>{rows}</tbody>
+                      </Table>
+                    </div>
+                  )
                 ) : (
                   <div className="min-h-full h-72 flex flex-col items-center justify-center">
                     <BsCartX size="2rem" stroke={1.5} />
