@@ -17,8 +17,6 @@ const Location = ({ data }) => {
   const location = data[selectedLocation];
   const [loc, setLoc] = useState([]);
 
-  console.log(data);
-
   useEffect(() => {
     window.dispatchEvent(new Event("storage"));
   }, [selectedLocation]);
