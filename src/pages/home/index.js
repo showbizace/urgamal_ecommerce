@@ -168,20 +168,21 @@ export default function Home({ data, cats }) {
                 <Banner />
               </div>
             </div>
-
             {configId &&
-              cats.success &&
-              cats.result.categories.map((item, idx) => {
-                return (
-                  <ProductListWithCategory
-                    key={`list-with-category-${idx}`}
-                    categoryId={item?.id}
-                    categoryName={item?.name}
-                    // categoryIcon={el?.icon}
-                    cols={5}
-                    className="mt-12"
-                  />
-                );
+              cats?.success &&
+              cats?.result?.categories.map((item, idx) => {
+                if (idx !== 0) {
+                  return (
+                    <ProductListWithCategory
+                      key={`list-with-category-${idx}`}
+                      categoryId={item?.id}
+                      categoryName={item?.name}
+                      // categoryIcon={el?.icon}
+                      cols={5}
+                      className="mt-12"
+                    />
+                  );
+                }
               })}
           </div>
         </div>

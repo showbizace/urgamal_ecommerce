@@ -166,7 +166,9 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
                 </Badge>
               )}
             </div>
-            <p className="font-semibold text-base mt-1">{data?.listPrice}₮</p>
+            <p className="font-semibold text-base mt-1 text-start">
+              {data?.listPrice}₮
+            </p>
             <div className="flex flex-col md:flex-row  gap-4 w-full mt-1 justify-between">
               {/* <Button
                 variant={"filled"}

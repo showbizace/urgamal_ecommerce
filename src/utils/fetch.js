@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { ErrorNotification } from "../utils/SuccessNotification";
 export const fetchMethod = async (method, path, token, body) => {
   const headerWithToken = {
     "Content-Type": "application/json",
@@ -24,7 +24,7 @@ export const fetchMethod = async (method, path, token, body) => {
       if (res.status === 200) {
         return res.json();
       } else {
-        console.log("err in fetch");
+        console.log(res, "ressssss");
       }
     })
     .then((data) => data)
@@ -42,14 +42,14 @@ export const fetcher = async (url) =>
 
 export const getCategory = async () => {
   const main = localStorage.getItem("main");
-  if (main) {
+  if (main && main !== "undefined") {
     const jsonData = JSON.parse(main);
     return jsonData;
   } else {
     const data = await fetchMethod("GET", "product/cats");
     if (data?.success) {
-      localStorage.setItem("main", JSON.stringify(data?.result));
-      return data?.result;
+      localStorage.setItem("main", JSON.stringify(data?.categories?.result));
+      return data?.categories?.result;
     }
   }
 };

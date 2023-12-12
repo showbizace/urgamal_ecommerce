@@ -32,7 +32,7 @@ export default function ProductListWithCategory({
   } = useSWR(
     `${
       process.env.NEXT_PUBLIC_API_URL
-    }/product?categoryId=${categoryId}&offset=${1}&limit=${PAGE_SIZE}`,
+    }/product?categoryId=${categoryId}&offset=${0}&limit=${PAGE_SIZE}`,
     fetcher
   );
 

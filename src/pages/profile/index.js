@@ -103,7 +103,6 @@ const Profile = () => {
     deleteCookie("token");
     emptyCart();
     logout();
-    console.log("logOUT");
     router.replace("/");
   };
 

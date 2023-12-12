@@ -21,9 +21,7 @@ const Category = ({
       }
     >
       {loading ? (
-        new Array(2)
-          .fill(null)
-          .map((e, index) => <MySkeleton key={`product-skeleton-${index}`} />)
+        new Array(2).fill("hhhh").map((e, index) => <MySkeleton key={index} />)
       ) : (
         <Grid.Container
           style={{

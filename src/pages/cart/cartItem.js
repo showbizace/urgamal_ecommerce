@@ -129,7 +129,6 @@ const CartItems = (props) => {
         requestOption
       );
       if (data?.success) {
-        console.log("storage to cart succeed");
       } else {
         ErrorNotification({ title: "Алдаа гарлаа." });
       }
@@ -491,7 +490,6 @@ const CartItems = (props) => {
         }
       });
       if (userToken) {
-        console.log(product, "oridyct");
         const requestOption = {
           cart_item_id: product.id,
           cart_id: product.cartid,

@@ -28,7 +28,6 @@ export default function PaymentModal({ context, id, innerProps }) {
 
   const callInquiry = (invoiceId) => {
     setLoading(true);
-    console.log(invoiceId, "invoice");
     const userToken = getCookie("token");
     const axiosReqOption = {
       headers: {

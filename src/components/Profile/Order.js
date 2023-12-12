@@ -21,17 +21,13 @@ const Order = ({ data }) => {
       },
     };
     axios
-      .post(
-        `${process.env.NEXT_PUBLIC_API_URL}/payment`,
-        { orderid: orderId },
-        axiosReqOption
-      )
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/order/payment/${orderId}`)
       .then((res) => {
         openContextModal({
           modal: "payment",
           title: "Төлбөр төлөлт",
           innerProps: {
-            paymentData: res.data.data,
+            paymentData: res.data?.invoice,
           },
           centered: true,
           size: "lg",
@@ -95,7 +91,7 @@ const Order = ({ data }) => {
         </div>
       </div>
       <Collapse in={opened}>
-        <CollapseItem orderItems={data.order_items} total={data.total} />
+        {/* <CollapseItem orderItems={data.order_items} total={data.total} /> */}
         <div className="w-full py-2 flex flex-row justify-end items-center pr-9">
           <p className="text-grey">Нийт үнийн дүн :</p>
           <p className="ml-1 font-semibold">{data.total}₮</p>

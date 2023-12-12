@@ -41,13 +41,13 @@ const BottomFooter = ({ address, links }) => {
           }}
         >
           <div className="flex flex-col items-center ">
-            <Image
+            {/* <Image
               alt={address?.logo}
               src={address?.logo}
               width={62}
               height={116}
               className="mx-4 max-xs:w-4 max-xs:h-4"
-            />
+            /> */}
             <p className="text-sm mt-2 max-xs:text-sm-5 max-xs:text-center">
               “Таримал ургамал” ХХК
             </p>

@@ -2,7 +2,7 @@
 import { useEffect, useContext, useState } from "react";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { Button, Badge, Grid, Loader, ThemeIcon, Text } from "@mantine/core";
+import { Button, Badge, Grid, Loader } from "@mantine/core";
 import { addCart } from "@/utils/Store";
 import { getCookie } from "cookies-next";
 import { SuccessNotification } from "../../utils/SuccessNotification";
@@ -10,17 +10,33 @@ import { IconHeart, IconPhotoOff } from "@tabler/icons-react";
 import Category from "@/components/category";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 import { fetchMethod, getCategory } from "@/utils/fetch";
-
+import Image from "next/image";
 export async function getServerSideProps({ params }) {
-  const data = await fetchMethod("GET", `product/id/${params.id}`);
+  const requestOption = {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  };
+
+  const catResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/config/home`,
+    requestOption
+  );
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/product/id/${params.id}`,
+    requestOption
+  );
+  const cats = await catResponse.json();
+  const data = await res.json();
   return {
     props: {
       product: data,
+      cats,
     },
   };
 }
 
-const ProductDetail = ({ product }) => {
+const ProductDetail = ({ product, cats }) => {
   const [loading, setLoading] = useState(false);
   const [categoryLoading, setCategoryLoading] = useState(true);
   const [main, setMain] = useState();
@@ -103,7 +119,7 @@ const ProductDetail = ({ product }) => {
     const [showMagnifier, setShowMagnifier] = useState(false);
     return (
       <div className="relative w-full h-full overflow-hidden">
-        {/* <Image
+        <Image
           src={src}
           className="w-full h-full"
           fill
@@ -128,7 +144,7 @@ const ProductDetail = ({ product }) => {
             setShowMagnifier(false);
           }}
           alt={"img"}
-        /> */}
+        />
         <div
           style={{
             display: showMagnifier ? "" : "none",
@@ -177,11 +193,11 @@ const ProductDetail = ({ product }) => {
           <div className="flex lg:gap-14 gap-4 justify-center xl:flex-row lg:flex-col md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
             <div className="flex flex-col">
               <div className="relative h-[50vh] lg:w-[100%] xl:w-[33vw] lg:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
-                {product?.product_image !== null ? (
+                {/* {product?.additionalImage?.length > 0 ? (
                   <ImageMagnifier
                     src={
                       renderImage === ""
-                        ? `${product?.product_image?.images[0]}`
+                        ? `${product?.additionalImage[0]?.url}`
                         : renderImage
                     }
                     width={400}
@@ -203,7 +219,7 @@ const ProductDetail = ({ product }) => {
                       Зураггүй{" "}
                     </Text>
                   </div>
-                )}
+                )} */}
               </div>
               <div>
                 <Grid gutter={1}>
@@ -292,7 +308,7 @@ const ProductDetail = ({ product }) => {
                     </span>
                   </div>
                 </div>
-                {product?.instruction && (
+                {product?.description && (
                   <div className="flex flex-col gap-4">
                     <span className="flex font-semibold text-greenish-grey text-base">
                       Хэрэглэх заавар
@@ -302,7 +318,7 @@ const ProductDetail = ({ product }) => {
                       rows={12}
                       readOnly
                       className="w-full overflow-x-hidden overflow-y-hidden focus: outline-0 py-3 px-3 rounded-md text-base"
-                      value={product.instruction}
+                      value={product.description}
                     ></textarea>
                   </div>
                 )}
@@ -348,12 +364,21 @@ const ProductDetail = ({ product }) => {
 
         <hr className="my-10" />
         <div className="w-full flex flex-col ">
-          <ProductListWithCategory
-            key={`recommended-list-${product?.name}`}
-            categoryId={product?.parent_cat_id?.[0]?.id}
-            categoryName={"Санал болгож буй бүтээгдэхүүнүүд"}
-            className="mt-12 "
-          />
+          {cats?.success &&
+            cats?.result?.categories.map((item, idx) => {
+              if (idx === 1) {
+                return (
+                  <ProductListWithCategory
+                    key={`list-with-category-${idx}`}
+                    categoryId={item?.id}
+                    categoryName={"Санал болгож буй бүтээгдэхүүн"}
+                    // categoryIcon={el?.icon}
+                    cols={5}
+                    className="mt-12"
+                  />
+                );
+              }
+            })}
         </div>
       </div>
     </GlobalLayout>
