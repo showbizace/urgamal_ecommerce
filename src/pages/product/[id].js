@@ -2,7 +2,7 @@
 import { useEffect, useContext, useState } from "react";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { Button, Badge, Grid, Loader } from "@mantine/core";
+import { Button, Badge, Grid, Loader, Text, ThemeIcon } from "@mantine/core";
 import { addCart } from "@/utils/Store";
 import { getCookie } from "cookies-next";
 import { SuccessNotification } from "../../utils/SuccessNotification";
@@ -95,7 +95,7 @@ const ProductDetail = ({ product, cats }) => {
   };
 
   const clickImage = (item) => {
-    setRenderImage(item);
+    setRenderImage(item?.url);
   };
 
   useEffect(() => {
@@ -193,7 +193,8 @@ const ProductDetail = ({ product, cats }) => {
           <div className="flex lg:gap-14 gap-4 justify-center xl:flex-row lg:flex-col md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
             <div className="flex flex-col">
               <div className="relative h-[50vh] lg:w-[100%] xl:w-[33vw] lg:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
-                {/* {product?.additionalImage?.length > 0 ? (
+                {console.log(product, "product")}
+                {product?.additionalImage?.length > 0 ? (
                   <ImageMagnifier
                     src={
                       renderImage === ""
@@ -219,27 +220,27 @@ const ProductDetail = ({ product, cats }) => {
                       Зураггүй{" "}
                     </Text>
                   </div>
-                )} */}
+                )}
               </div>
               <div>
                 <Grid gutter={1}>
-                  {product?.product_image?.images?.map((item, index) => {
+                  {product?.additionalImage?.map((item, index) => {
                     return (
                       <Grid.Col span={3} key={index}>
                         <div
                           className={
-                            renderImage === item
+                            renderImage === item?.url
                               ? "relative w-full h-32 rounded-md border-2 border-button-yellow"
                               : "relative h-32 rounded-md hover:border-2 border-gray-300 w-full"
                           }
                           onClick={() => clickImage(item)}
                         >
-                          {/* <Image
+                          <Image
                             alt="item"
-                            src={item}
+                            src={item.url}
                             fill
                             className="object-fill rounded-md p-1"
-                          /> */}
+                          />
                         </div>
                       </Grid.Col>
                     );

@@ -48,7 +48,9 @@ export default function GlobalLayout({
           href="https://fonts.gstatic.com"
           crossOrigin=""
         />
-        <link rel="icon" href={userContext?.address?.logo} />
+        {userContext?.address?.logo && (
+          <link rel="icon" href={userContext?.address?.logo} />
+        )}
         <link
           href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
           rel="stylesheet"

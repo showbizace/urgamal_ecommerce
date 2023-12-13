@@ -151,13 +151,15 @@ const Navbar = (props) => {
       <div className="flex justify-between items-center">
         <Link href={"/home"}>
           <div className="flex justify-center items-center ">
-            {/* <Image
-              src={userContext?.address?.logo}
-              width={36}
-              height={36}
-              className="w-7 h-7"
-              alt={userContext?.address?.logo}
-            /> */}
+            {userContext?.address?.logo && (
+              <Image
+                src={userContext?.address?.logo}
+                width={36}
+                height={36}
+                className="w-7 h-7"
+                alt={userContext?.address?.logo}
+              />
+            )}
           </div>
         </Link>
         <div className="flex justify-end md:justify-center items-center gap-8 md:gap-3 flex-grow ml-6 md:mx-11 ">

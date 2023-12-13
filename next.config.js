@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["source.unsplash.com", "m.media-amazon.com"],
+    domains: [
+      "source.unsplash.com",
+      "m.media-amazon.com",
+      "127.0.0.1",
+      "test.api.urga.mn",
+    ],
     remotePatterns: [
       {
         protocol: "https",
