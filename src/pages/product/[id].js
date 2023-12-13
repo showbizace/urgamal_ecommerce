@@ -123,6 +123,7 @@ const ProductDetail = ({ product, cats }) => {
           src={src}
           className="w-full h-full"
           fill
+          objectFit="contain"
           onMouseEnter={(e) => {
             // update image size and turn-on magnifier
             const elem = e.currentTarget;
@@ -149,7 +150,6 @@ const ProductDetail = ({ product, cats }) => {
           style={{
             display: showMagnifier ? "" : "none",
             position: "absolute",
-
             // prevent maginier blocks the mousemove event of img
             pointerEvents: "none",
             // set size of magnifier
@@ -193,7 +193,6 @@ const ProductDetail = ({ product, cats }) => {
           <div className="flex lg:gap-14 gap-4 justify-center xl:flex-row lg:flex-col md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
             <div className="flex flex-col">
               <div className="relative h-[50vh] lg:w-[100%] xl:w-[33vw] lg:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
-                {console.log(product, "product")}
                 {product?.additionalImage?.length > 0 ? (
                   <ImageMagnifier
                     src={
@@ -239,7 +238,7 @@ const ProductDetail = ({ product, cats }) => {
                             alt="item"
                             src={item.url}
                             fill
-                            className="object-fill rounded-md p-1"
+                            className="object-cover rounded-md p-1"
                           />
                         </div>
                       </Grid.Col>
@@ -309,6 +308,19 @@ const ProductDetail = ({ product, cats }) => {
                     </span>
                   </div>
                 </div>
+                {product?.note && (
+                  <div className="flex gap-2 font-semibold text-base flex-row ">
+                    <span className="text-greenish-grey text-base ">
+                      Тэмдэглэл:
+                    </span>
+
+                    <div className="flex flex-row gap-3 lg:flex-col">
+                      <Text className="text-base break-all">
+                        {product?.note}
+                      </Text>
+                    </div>
+                  </div>
+                )}
                 {product?.description && (
                   <div className="flex flex-col gap-4">
                     <span className="flex font-semibold text-greenish-grey text-base">
@@ -316,10 +328,24 @@ const ProductDetail = ({ product, cats }) => {
                     </span>
                     <textarea
                       cols={60}
-                      rows={12}
+                      rows={8}
                       readOnly
-                      className="w-full overflow-x-hidden overflow-y-hidden focus: outline-0 py-3 px-3 rounded-md text-base"
+                      className="w-full overflow-x-hidden overflow-y-auto focus: outline-0 py-3 px-3 rounded-md text-base"
                       value={product.description}
+                    ></textarea>
+                  </div>
+                )}
+                {product?.detailed_description && (
+                  <div className="flex flex-col gap-4">
+                    <span className="flex font-semibold text-greenish-grey text-base">
+                      Нэмэлт мэдээлэл
+                    </span>
+                    <textarea
+                      cols={60}
+                      rows={10}
+                      readOnly
+                      className="w-full overflow-x-hidden overflow-y-auto focus: outline-0 py-3 px-3 rounded-md text-base "
+                      value={product?.detailed_description}
                     ></textarea>
                   </div>
                 )}
@@ -363,7 +389,7 @@ const ProductDetail = ({ product, cats }) => {
           </div>
         </div>
 
-        <hr className="my-10" />
+        <hr className="my-12 lg:my-14 w-full border" />
         <div className="w-full flex flex-col ">
           {cats?.success &&
             cats?.result?.categories.map((item, idx) => {
@@ -375,7 +401,7 @@ const ProductDetail = ({ product, cats }) => {
                     categoryName={"Санал болгож буй бүтээгдэхүүн"}
                     // categoryIcon={el?.icon}
                     cols={5}
-                    className="mt-12"
+                    className="mt-0 lg:12"
                   />
                 );
               }

@@ -48,7 +48,6 @@ export const getCategory = async () => {
   } else {
     const data = await fetchMethod("GET", "product/cats");
     if (data?.success) {
-      console.log(data, "data");
       localStorage.setItem("main", JSON.stringify(data?.categories));
       return data?.categories;
     }

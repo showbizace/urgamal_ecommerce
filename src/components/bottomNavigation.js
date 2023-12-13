@@ -121,7 +121,6 @@ const BottomNavBar = () => {
               >
                 <div className="absolute">
                   <div className="w-5 h-5 bg-number flex justify-center items-center text-white -mt-9 rounded-full text-sm ml-8">
-                    {console.log(cartItem, "cartItem")}
                     <p className="text-md">
                       {cartItem?.cart_items ? cartItem?.cart_items?.length : 0}
                     </p>
