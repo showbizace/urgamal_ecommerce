@@ -149,7 +149,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
           <Text className="text-2xl mt-1 text-start" lineClamp={2}>
             {data?.name}
           </Text>
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full">
             <div className="flex flex-row items-center  mt-1 gap-1">
               <p className="text-[#696A6C] font-semibold text-xs">
                 Үлдэгдэл :{" "}
