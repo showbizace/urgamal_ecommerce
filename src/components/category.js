@@ -18,7 +18,7 @@ const Category = ({
     <div
       id="category-menu"
       className={
-        "rounded-md bg-white overflow-y-auto max-h-screen xl:block lg:block md:block sm:hidden xs2:hidden xs:hidden min-w-[250px] w-full  z-10"
+        "rounded-md bg-white overflow-y-auto max-h-screen xl:block lg:block md:block sm:hidden xs2:hidden xs:hidden min-w-[250px] w-[250px] max-w-[250px] z-10"
       }
     >
       {loading ? (
