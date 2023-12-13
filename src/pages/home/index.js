@@ -17,29 +17,33 @@ import ProductListWithCategory from "@/components/ProductListWithCategory/Produc
 const PAGE_SIZE = 20;
 
 export async function getStaticProps() {
-  const requestOption = {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  };
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/product?offset=0&limit=${PAGE_SIZE}`,
-    requestOption
-  );
+  try {
+    const requestOption = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    };
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/product?offset=0&limit=${PAGE_SIZE}`,
+      requestOption
+    );
 
-  const catResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/config/home`,
-    requestOption
-  );
+    const catResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/config/home`,
+      requestOption
+    );
 
-  const cats = await catResponse.json();
-  const data = await res.json();
+    const cats = await catResponse.json();
+    const data = await res.json();
 
-  return {
-    props: {
-      data,
-      cats,
-    },
-  };
+    return {
+      props: {
+        data,
+        cats,
+      },
+    };
+  } catch (error) {
+    console.log(error, "error");
+  }
 }
 
 export default function Home({ data, cats }) {
