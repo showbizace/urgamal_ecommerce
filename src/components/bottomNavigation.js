@@ -15,9 +15,9 @@ import { useDisclosure } from "@mantine/hooks";
 import { Drawer, ScrollArea, Text } from "@mantine/core";
 import useSWR from "swr";
 import AllCategory from "./AllCategory/AllCategory";
-import { getCategory } from "@/utils/fetch";
+import { fetchMethod, getCategory } from "@/utils/fetch";
 import { getCookie } from "cookies-next";
-import { getCart } from "@/utils/Store";
+import { emptyCart, getCart, syncCart } from "@/utils/Store";
 
 const BottomNavBar = () => {
   const router = useRouter();
@@ -51,6 +51,27 @@ const BottomNavBar = () => {
     };
     get();
   }, []);
+
+  const getUserCart = async () => {
+    const data = await fetchMethod("GET", "cart", userToken);
+    if (data?.success) {
+      if (data?.cart) {
+        if (data?.cart?.cart_items?.length === 0) {
+          setCartItem(data?.cart);
+          emptyCart();
+        } else {
+          setCartItem(data?.cart);
+          syncCart(data?.cart);
+        }
+      } else {
+        setCartItem({ cart: { cart_items: [] } });
+        emptyCart();
+      }
+    } else {
+      setCartItem({ cart: { cart_items: [] } });
+      emptyCart();
+    }
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {

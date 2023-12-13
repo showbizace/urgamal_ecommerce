@@ -23,8 +23,6 @@ export const fetchMethod = async (method, path, token, body) => {
     .then((res) => {
       if (res.status === 200) {
         return res.json();
-      } else {
-        console.log(res, "ressssss");
       }
     })
     .then((data) => data)
