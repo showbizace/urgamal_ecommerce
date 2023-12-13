@@ -38,13 +38,13 @@ export default function ProductListWithCategory({
 
   return (
     <div className={`flex flex-col justify-center ${className}`}>
-      <div className="flex gap-3 justify-between items-end">
+      <div className="flex justify-between items-end">
         <div className="flex items-center gap-4 ml-2">
           <p
             className="
-            text-md font-medium
+            text-xl font-medium
 		   md:text-xxl md:font-bold
-		   sm:font-medium sm:text-base
+		   sm:font-medium sm:text-xl
 		   xs:font-medium xs:text-xl"
           >
             {categoryName}
@@ -63,10 +63,11 @@ export default function ProductListWithCategory({
         </div>
         <Link
           href={`/category/parent/${categoryId}`}
-          className="flex items-center gap-2 hover:underline text-greenish-grey"
+          className="flex flex-row items-center gap-2 hover:underline text-greenish-grey"
         >
           <p
             className="
+            text-sm
 		   md:font-medium md:text-base
 		   sm:font-normal sm:text-sm
 		   xs:font-light xs:text-sm

@@ -2,7 +2,6 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import sanitizeHtml from "sanitize-html";
 import Link from "next/link";
-import { IconClock } from "@tabler/icons-react";
 const BottomFooter = ({ address, links }) => {
   const router = useRouter();
 
@@ -140,17 +139,22 @@ const BottomFooter = ({ address, links }) => {
                 width={20}
                 height={20}
               />
-              {links?.map((item, index) => {
+              <Link href={`mailto:${"tarimalurgamal2016@gmail.com"}`}>
+                <p className="text-sm ml-2 max-xs:text-sm-5">
+                  tarimalurgamal2016@gmail.com
+                </p>
+              </Link>
+              {/* {links?.map((item, index) => {
                 if (item?.title === "email") {
                   return (
                     <Link href={`mailto:${item?.url}`} key={index}>
                       <p className="text-sm ml-2 max-xs:text-sm-5">
-                        {item?.url}
+                        tarimalurgamal2016@gmail.com
                       </p>
                     </Link>
                   );
                 }
-              })}
+              })} */}
             </div>
           </div>
         </div>

@@ -182,7 +182,7 @@ const ProductDetail = ({ product, cats }) => {
     <GlobalLayout title={product?.name}>
       <div className="flex flex-col w-full min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 lg:py-12  items-start py-4 px-4 ">
         <div className="flex w-full lg:gap-20 justify-start ">
-          <div className="hidden lg:block">
+          <div className="hidden lg:block w-[25%]">
             <Category
               parent={main}
               child={child}
