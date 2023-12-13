@@ -5,7 +5,7 @@ const nextConfig = {
       "source.unsplash.com",
       "m.media-amazon.com",
       "127.0.0.1",
-      "test.api.urga.mn",
+      "api.urga.mn",
     ],
     remotePatterns: [
       {

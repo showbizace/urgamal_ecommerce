@@ -6,6 +6,7 @@ import {
   Container,
   Divider,
   Group,
+  Input,
   Loader,
   PinInput,
   Stack,
@@ -90,16 +91,14 @@ export default function LoginModal({ context, id }) {
           <label for="mobile-number-input">
             <Text weight={500}>Утасны дугаар</Text>
           </label>
-          <PinInput
+          <Input
             id="mobile-number-input"
             inputMode="tel"
             type="number"
-            placeholder=""
             length={8}
             autoFocus
-            size="md"
             value={mobileNumber}
-            onChange={setMobileNumber}
+            onChange={(event) => setMobileNumber(event.currentTarget.value)}
           />
         </Stack>
         {otpRequested && <Divider />}
