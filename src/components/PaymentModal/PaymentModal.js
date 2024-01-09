@@ -4,27 +4,25 @@ import { getCookie } from "cookies-next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-// import io from "socket.io-client";
+import io from "socket.io-client";
 
 export default function PaymentModal({ context, id, innerProps }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   const socket = io("http://test.api.urga.mn", {
-  //     withCredentials: true,
-  //     extraHeaders: { "Access-Control-Allow-Credentials": "true" },
-  //     transports: ["websocket"],
-  //   });
+  useEffect(() => {
+    const socket = io("https://api.urga.mn/dev");
 
-  //   socket.on("connection", () => {
-  //     console.log("Connected to server");
-  //   });
+    socket.emit("test", (message) => {
+      console.log(message, "message");
+    });
 
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
+    socket.on("connection", () => console.log("Connected"));
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const callInquiry = (invoiceId) => {
     setLoading(true);

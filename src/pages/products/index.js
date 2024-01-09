@@ -27,7 +27,7 @@ export default function SearchResult({ initialData }) {
   const { data, size, setSize, isValidating, isLoading } = useSWRInfinite(
     (index) =>
       `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
-        index * 20
+        (index + 1) * 20
       }&limit=${PAGE_SIZE}`,
     fetcher,
     { revalidateFirstPage: false }
@@ -62,7 +62,7 @@ export default function SearchResult({ initialData }) {
 
   useEffect(() => {
     if (data?.length > 0 && !isEmpty) {
-      setProducts(products.concat(...data?.map((item) => item)));
+      setProducts(products.concat(...data[data.length - 1]));
       setIsFetch(false);
     }
     // data && !isEmpty && setProducts(products.concat(...data.result));

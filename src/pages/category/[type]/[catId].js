@@ -76,7 +76,7 @@ const CategoryPage = ({ initialData }) => {
   const { data, size, setSize, isValidating, isLoading } = useSWRInfinite(
     (index) => {
       return `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
-        index * 20
+        (index + 1) * 20
       }&limit=${PAGE_SIZE}&categoryId=${catId}`;
     },
     fetcher,
@@ -97,7 +97,7 @@ const CategoryPage = ({ initialData }) => {
   useEffect(() => {
     data?.length > 0 &&
       !isEmpty &&
-      setProducts(products.concat(...data.map((item) => item)));
+      setProducts(products.concat(...data[data.length - 1]));
     // data?.length > 0 && !isEmpty && setProducts(products.concat(...data));
   }, [data]);
 
