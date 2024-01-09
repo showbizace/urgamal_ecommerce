@@ -1,5 +1,7 @@
 import { fetchMethod } from "@/utils/fetch";
 import { UserConfigContext } from "@/utils/userConfigContext";
+import { tokenDecode } from "@/utils/utils";
+import { jwtDecode } from "jwt-decode";
 import {
   ActionIcon,
   Button,
@@ -19,6 +21,7 @@ import { IconRefresh, IconReload } from "@tabler/icons-react";
 import axios from "axios";
 import { setCookie } from "cookies-next";
 import { useContext, useEffect, useState } from "react";
+import { createConnection } from "@/utils/Socket";
 
 export default function LoginModal({ context, id }) {
   const { login } = useContext(UserConfigContext);
@@ -64,12 +67,18 @@ export default function LoginModal({ context, id }) {
     const res = await fetchMethod("POST", "auth/login/code", "", requestOption);
     if (res?.success) {
       const bigDate = 30 * 24 * 60 * 60 * 1000;
+      const socket = createConnection();
       login();
-      setCookie("token", res.token, {
+      const token = res.token;
+      const decoded = jwtDecode(token);
+      setCookie("token", token, {
         maxAge: bigDate,
       });
       setCookie("number", mobileNumber, { maxAge: bigDate });
       setCookie("addToCart", true);
+      const userid = tokenDecode(token);
+      socket.emit("storeMyId", userid);
+
       showNotification({
         message: "Амжилттай нэвтэрлээ",
         color: "green",

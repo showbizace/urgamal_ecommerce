@@ -10,20 +10,6 @@ export default function PaymentModal({ context, id, innerProps }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const socket = io("https://api.urga.mn/dev");
-
-    socket.emit("test", (message) => {
-      console.log(message, "message");
-    });
-
-    socket.on("connection", () => console.log("Connected"));
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
   const callInquiry = (invoiceId) => {
     setLoading(true);
     const userToken = getCookie("token");
