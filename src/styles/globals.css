@@ -29,6 +29,14 @@ body {
   font-family: "Open Sans", sans-serif;
   font-weight: 400;
 }
+html,
+body,
+#__next {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
 .swiper-button-prev {
   background-color: #f1b13a;
   border-radius: 999px;
@@ -166,20 +174,20 @@ body {
 }
 
 @media screen and (max-width: 480px) {
-   .radio-button .mantine-1fbks7c {
-		width: 25px !important;
-		height: 25px !important;
-	}
-	.mantine-1phcupv thead tr th,
-	.mantine-1phcupv tfoot tr th,
-	.mantine-1phcupv tbody tr th{
-		padding : 0.325rem 0.325rem !important;
-	}
-		.mantine-1phcupv tbody tr td {
-				padding: 0.325rem 0.325rem !important;
-		}
-		.magni-mobile{
-			width: 40px !important;
-			height: 40px !important;
-		}
+  .radio-button .mantine-1fbks7c {
+    width: 25px !important;
+    height: 25px !important;
+  }
+  .mantine-1phcupv thead tr th,
+  .mantine-1phcupv tfoot tr th,
+  .mantine-1phcupv tbody tr th {
+    padding: 0.325rem 0.325rem !important;
+  }
+  .mantine-1phcupv tbody tr td {
+    padding: 0.325rem 0.325rem !important;
+  }
+  .magni-mobile {
+    width: 40px !important;
+    height: 40px !important;
+  }
 }

@@ -103,7 +103,7 @@ const Profile = () => {
     deleteCookie("token");
     emptyCart();
     logout();
-    router.replace("/");
+    router.replace("/login");
   };
 
   const data = [
@@ -170,7 +170,7 @@ const Profile = () => {
               variant="outline"
               classNames={{
                 root: "bg-white  h-full w-full rounded-md px-4 py-2 overflow-y-auto",
-                panel: "mt-7 pl-6 flex-grow",
+                panel: "mt-7 pl-6 flex-grow pr-6",
               }}
             >
               <Tabs.List>

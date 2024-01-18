@@ -14,6 +14,7 @@ import { UserConfigContext } from "@/utils/userConfigContext";
 import { useDisclosure } from "@mantine/hooks";
 import { fetcher, getCategory } from "@/utils/fetch";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
+
 const PAGE_SIZE = 20;
 
 export async function getStaticProps() {
@@ -126,6 +127,7 @@ export default function Home({ data, cats }) {
     window.dispatchEvent(new Event("storage"));
     // setProducts(data.result);
     fetchCategory();
+
     return () => {
       window.removeEventListener("scroll", onScroll);
     };

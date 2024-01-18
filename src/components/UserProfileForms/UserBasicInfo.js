@@ -7,15 +7,12 @@ import {
   Text,
   TextInput,
   Title,
+  rem,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
-import {
-  IconCheck,
-  IconCircleCheck,
-  IconCirclePlus,
-} from "@tabler/icons-react";
+import { IconCheck, IconUserShield } from "@tabler/icons-react";
 import { getCookie } from "cookies-next";
 
 export default function UserBasicInfo({ data, refresh }) {
@@ -75,12 +72,22 @@ export default function UserBasicInfo({ data, refresh }) {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-md">
-      <Title order={4}>Хувийн мэдээлэл</Title>
-      <Text size="xs" c="dimmed">
-        Та хувийн мэдээллээ доорх талбаруудаар засварлаарай
-      </Text>
-      <form
+    <div className="flex flex-col w-full">
+      <div className="flex flex-row items-center w-full bg-white drop-shadow-lg px-6 py-4">
+        <div className="flex justify-center items-centerp-3 rounded-full bg-background-sort">
+          <IconUserShield
+            style={{ width: rem(64), height: rem(64), color: "black" }}
+            stroke={1.5}
+          />
+        </div>
+        <div className="ml-4 flex flex-col">
+          <Title order={3}>Хувийн мэдээлэл</Title>
+          <Text size="md" c="dimmed">
+            Та хувийн мэдээллээ доорх талбаруудаар засварлаарай
+          </Text>
+        </div>
+      </div>
+      {/* <form
         className="mt-6"
         onSubmit={form.onSubmit((values) => handleEdit(values))}
       >
@@ -130,7 +137,7 @@ export default function UserBasicInfo({ data, refresh }) {
             Засварлах
           </Button>
         </Group>
-      </form>
+      </form> */}
     </div>
   );
 }

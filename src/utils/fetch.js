@@ -20,13 +20,13 @@ export const fetchMethod = async (method, path, token, body) => {
     `${process.env.NEXT_PUBLIC_API_URL}/${path}`,
     requestOption
   )
-    .then((res) => {
+    .then(async (res) => {
       if (res.status === 200) {
-        return res.json();
+        return await res.json();
+      } else {
+        return await res.json();
       }
     })
-    .then((data) => data)
-    .catch((err) => err)
     .catch((err) => err);
 
   return data;

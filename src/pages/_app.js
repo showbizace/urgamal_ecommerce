@@ -8,6 +8,12 @@ import { UserConfigProvider } from "@/utils/userConfigProvider";
 import CategoryContextProvider from "@/utils/categoryContext";
 import PaymentModal from "@/components/PaymentModal/PaymentModal";
 import { useMantineTheme } from "@mantine/core";
+import { Open_Sans } from "@next/font/google";
+
+const sans = Open_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export default function App({ Component, pageProps }) {
   const theme = useMantineTheme();
@@ -30,8 +36,18 @@ export default function App({ Component, pageProps }) {
       <UserConfigProvider>
         <ModalsProvider modals={{ login: LoginModal, payment: PaymentModal }}>
           <CategoryContextProvider>
-            <div style={{ background: theme.colors.blue[5] }}>
-              <Component {...pageProps} />
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <main
+                className={`${sans.variable}`}
+                style={{ width: "100%", height: "100%" }}
+              >
+                <Component {...pageProps} />
+              </main>
             </div>
           </CategoryContextProvider>
         </ModalsProvider>
