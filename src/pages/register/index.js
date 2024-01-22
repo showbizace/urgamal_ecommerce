@@ -78,14 +78,21 @@ const Register = () => {
 
   const handleRegister = async () => {
     if (password.length === 0) {
-      setErrorEmail(true);
+      setErrorPass(true);
+    } else {
+      setErrorConPass(false);
     }
     if (email.length === 0) {
-      setErrorPass(true);
+      setErrorEmail(true);
+    } else {
+      setErrorEmail(false);
     }
     if (confirmPass.length === 0) {
       setErrorConPass(true);
+    } else {
+      setErrorConPass(false);
     }
+
     if (
       !errorConPass &&
       !errorEmail &&

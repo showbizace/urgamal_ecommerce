@@ -8,16 +8,14 @@ import { UserConfigProvider } from "@/utils/userConfigProvider";
 import CategoryContextProvider from "@/utils/categoryContext";
 import PaymentModal from "@/components/PaymentModal/PaymentModal";
 import { useMantineTheme } from "@mantine/core";
-import { Open_Sans } from "@next/font/google";
+import { Montserrat } from "@next/font/google";
 
-const sans = Open_Sans({
+const mont = Montserrat({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-mont",
 });
 
 export default function App({ Component, pageProps }) {
-  const theme = useMantineTheme();
-
   return (
     <MantineProvider
       withCSSVariables
@@ -27,8 +25,8 @@ export default function App({ Component, pageProps }) {
       theme={{
         colorScheme: "light",
         focusRingStyles: {
-          styles: (theme) => ({ outline: `${rem(2)} solid #f9bc609d` }),
-          inputStyles: (theme) => ({ outline: `${rem(2)} solid #f9bc609d` }),
+          styles: (theme) => ({ outline: `${rem(1)} solid #f9bc609d` }),
+          inputStyles: (theme) => ({ outline: `${rem(1)} solid #f9bc609d` }),
         },
       }}
     >
@@ -43,7 +41,7 @@ export default function App({ Component, pageProps }) {
               }}
             >
               <main
-                className={`${sans.variable}`}
+                className={`${mont.variable}`}
                 style={{ width: "100%", height: "100%" }}
               >
                 <Component {...pageProps} />

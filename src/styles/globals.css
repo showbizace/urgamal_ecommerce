@@ -173,6 +173,9 @@ body,
   height: 350px;
 }
 
+#profile-button {
+  width: calc(50% - 1.5rem);
+}
 @media screen and (max-width: 480px) {
   .radio-button .mantine-1fbks7c {
     width: 25px !important;
@@ -190,4 +193,8 @@ body,
     width: 40px !important;
     height: 40px !important;
   }
+}
+
+.profile-icon :hover {
+  color: "white";
 }

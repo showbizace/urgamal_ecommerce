@@ -1,15 +1,23 @@
+import { Text } from "@mantine/core";
+import Image from "next/image";
+const ProfileTabs = ({ icon, text, id, onClickTabs, first }) => {
+  return (
+    <div
+      className="flex justify-center items-center w-full hover:bg-grey-back "
+      key={id}
+      onClick={(values) => onClickTabs(id)}
+      style={
+        first === true ? { backgroundColor: "#F9BC60", color: "white" } : {}
+      }
+    >
+      <div className="flex w-4/6 flex-row items-center py-3 ">
+        {icon}
+        <Text className="ml-4 text-base" size={"md"}>
+          {text}
+        </Text>
+      </div>
+    </div>
+  );
+};
 
-import Image from 'next/image'
-const ProfileTabs = ({ image, text, id, onClickTabs, first }) => {
-    return (
-        <div className='tab'>
-            <div className='flex flex-row items-center py-3 pl-14 hover:bg-grey-back' key={id} onClick={(values) => onClickTabs(id)}
-                style={first === true ? { "backgroundColor": "#F9BC60", color: "white" } : {}}>
-                <Image width={30} height={30} src={image} color={"black"} alt={image} />
-                <p className='ml-4 text-base'>{text}</p>
-            </div>
-        </div>
-    )
-}
-
-export default ProfileTabs
+export default ProfileTabs;
