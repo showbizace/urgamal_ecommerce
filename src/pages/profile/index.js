@@ -80,25 +80,25 @@
 //     setLoading(false);
 //   };
 
-//   const getUserAddress = async () => {
-//     setLoading(true);
-//     var requestOptions = {
-//       method: "GET",
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     };
-
-//     fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/address`, requestOptions)
-//       .then((req) => req.json())
-//       .then((res) => {
-//         if (res.success === true) {
-//           setLoading(false);
-//           setAddressData(res.data);
-//         }
-//       });
-//     setLoading(false);
+// const getUserAddress = async () => {
+//   setLoading(true);
+//   var requestOptions = {
+//     method: "GET",
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
 //   };
+
+//   fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/address`, requestOptions)
+//     .then((req) => req.json())
+//     .then((res) => {
+//       if (res.success === true) {
+//         setLoading(false);
+//         setAddressData(res.data);
+//       }
+//     });
+//   setLoading(false);
+// };
 
 //   const handleLogOut = () => {
 //     deleteCookie("token");
@@ -211,34 +211,64 @@
 
 import Image from "next/image";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
-import { Button, rem } from "@mantine/core";
+import { Button, Loader, rem } from "@mantine/core";
 import ProfileTabs from "../../components/ProfileTab";
 import { useEffect, useState } from "react";
 import ProfileInfo from "./tabs/ProfileInfo";
-import EmailPhone from "./tabs/EmailPhone";
-import UserLocation from "./tabs/UserLocation";
+import Address from "./tabs/Address";
 import SavedOrder from "./tabs/SavedOrder";
 import MyOrder from "./tabs/MyOrder";
 import PurchaseHistory from "./tabs/PurchaseHistory";
-import { setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import {
   IconBoxSeam,
+  IconCircleXFilled,
   IconClipboardText,
   IconHeart,
   IconTruck,
   IconUserEdit,
 } from "@tabler/icons-react";
+import { fetchMethod } from "@/utils/fetch";
+import { showNotification } from "@mantine/notifications";
+import Wishlist from "./tabs/Wishlist";
 
 const Profile = () => {
   const router = useRouter();
   const [tabs, setTabs] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState();
+
+  const getUserInfo = async () => {
+    setLoading(true);
+    const token = getCookie("token");
+    const data = await fetchMethod("GET", "user/profile", token);
+    if (data.success) {
+      setUserInfo(data.data);
+      setLoading(false);
+    } else {
+      showNotification({
+        message: data.message,
+        color: "red",
+        icon: (
+          <IconCircleXFilled
+            style={{
+              width: rem(30),
+              height: rem(30),
+            }}
+          />
+        ),
+      });
+    }
+    setLoading(false);
+  };
+
   const onClickTabs = (e) => {
     setTabs(e);
   };
 
   useEffect(() => {
-    window.dispatchEvent(new Event("storage"));
+    getUserInfo();
   }, []);
 
   return (
@@ -472,12 +502,23 @@ const Profile = () => {
             )}
           </div>
           <div className="w-full pl-8">
-            {tabs === 1 && <ProfileInfo />}
-            {tabs === 2 && <EmailPhone />}
-            {tabs === 3 && <UserLocation />}
-            {tabs === 4 && <SavedOrder />}
-            {tabs === 5 && <MyOrder />}
-            {tabs === 6 && <PurchaseHistory />}
+            {loading ? (
+              <div className="w-full h-full flex items-center justify-center bg-white">
+                <Loader color="yellow" />
+              </div>
+            ) : (
+              tabs === 1 && (
+                <ProfileInfo
+                  data={userInfo}
+                  refresh={getUserInfo}
+                  setUserInfo={setUserInfo}
+                />
+              )
+            )}
+            {tabs === 2 && <Address />}
+            {tabs === 3 && <Wishlist />}
+            {tabs === 4 && <MyOrder />}
+            {tabs === 5 && <PurchaseHistory />}
           </div>
         </div>
       </div>

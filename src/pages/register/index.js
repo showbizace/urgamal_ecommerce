@@ -106,7 +106,6 @@ const Register = () => {
       const requestOption = {
         email,
         password,
-        given_name: "test",
       };
       const data = await fetchMethod("POST", "auth", "", requestOption);
       if (data?.success) {

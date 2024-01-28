@@ -174,7 +174,7 @@ body,
 }
 
 #profile-button {
-  width: calc(50% - 1.5rem);
+  width: calc(50% - 0.8rem);
 }
 @media screen and (max-width: 480px) {
   .radio-button .mantine-1fbks7c {

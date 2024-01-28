@@ -20,7 +20,7 @@ const mobileIcon = (
   <IconDeviceMobile style={{ width: rem(16), height: rem(16) }} />
 );
 
-const LoginButton = ({ handleOTP, handleRegister }) => {
+const LoginButton = ({ handleOTP, handleRegister, handleFacebook }) => {
   return (
     <div>
       <Button
@@ -50,6 +50,7 @@ const LoginButton = ({ handleOTP, handleRegister }) => {
         w={"100%"}
         className="mt-2"
         leftIcon={facebookIcon}
+        onClick={() => handleFacebook()}
       >
         Facebook-ээр нэвтрэх
       </Button>

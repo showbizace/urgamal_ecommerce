@@ -1,13 +1,14 @@
-import { Text, Title } from "@mantine/core";
+import { Loader, Text, Title } from "@mantine/core";
 
 import { Mail, Mobile, Password, ProfileButton, UserEdit } from "../component";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { IconCircleXFilled } from "@tabler/icons-react";
+import { getCookie } from "cookies-next";
+import { fetchMethod } from "@/utils/fetch";
 
 const ProfileInfo = (props) => {
-  const { givenName, familyName, mobile, email } = props;
-
+  const { data, setUserInfo, refresh } = props;
   const [tabs, setTabs] = useState("info");
-
   const handleTabs = (type) => {
     if (type === "info") {
       setTabs("info");
@@ -22,6 +23,7 @@ const ProfileInfo = (props) => {
       setTabs("email");
     }
   };
+
   return (
     <div className="flex flex-col w-full bg-white px-8 py-6 rounded-md">
       {tabs === "info" && (
@@ -49,7 +51,9 @@ const ProfileInfo = (props) => {
         </>
       )}
       <ProfileButton handleTabs={handleTabs} tabs={tabs} />
-      {tabs === "info" && <UserEdit {...props} />}
+      {tabs === "info" && (
+        <UserEdit data={data} setUserInfo={setUserInfo} refresh={refresh} />
+      )}
       {tabs === "change" && <Password />}
       {tabs === "mobile" && <Mobile />}
       {tabs === "email" && <Mail />}

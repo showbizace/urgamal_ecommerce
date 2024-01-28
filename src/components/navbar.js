@@ -322,16 +322,9 @@ const Navbar = (props) => {
               radius="xl"
               component="button"
               onClick={() => {
+                console.log(userContext, "context");
                 if (!userContext.auth) {
-                  openContextModal({
-                    modal: "login",
-                    title: (
-                      <Text size="sm" weight={400}>
-                        Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
-                      </Text>
-                    ),
-                    centered: true,
-                  });
+                  route.push("/login");
                 } else {
                   route.push("/profile");
                 }

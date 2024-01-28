@@ -152,15 +152,11 @@ export default function UserAddress({ data, refresh }) {
   };
   return (
     <div className="flex flex-col w-full h-full">
-      <Title order={4}>Хүргэлтийн хаяг</Title>
-      <Text size="xs" c="dimmed">
-        Та хүргэлтийн хаягаа оруулж захиалгаа хялбар хийгээрэй
-      </Text>
-      <div className="lg:mt-12 mt-3 h-full">
-        <div className="flex flex-col lg:flex-row  items-start gap-3 flex-wrap h-full">
+      <div className="lg:mt-3 h-full w-full">
+        <div className="flex flex-col lg:flex-row gap-3 h-full w-full flex-wrap">
           {data?.map((e) => {
             return (
-              <div key={`user-address-card-${e.id}`}>
+              <div key={`user-address-card-${e.id}`} className="w-full">
                 <ShippingAddressCard
                   name={e.name}
                   address={e}
@@ -170,24 +166,25 @@ export default function UserAddress({ data, refresh }) {
               </div>
             );
           })}
-
-          <Paper
-            withBorder
-            radius="md"
-            className="w-28 h-28 hover:bg-[#1970c221] "
-            component="button"
-            onClick={(e) => {
-              e.preventDefault();
-              openProductEditingModal({}, "creation");
-            }}
-          >
-            <div className="w-28 h-28 cursor-pointer flex flex-col justify-center items-center gap-1 ">
-              <IconPlus stroke={1.5} color="#228BE6" />
-              <Text color="#228BE6" size="sm">
-                Нэмэх
-              </Text>
-            </div>
-          </Paper>
+          <div>
+            <Paper
+              withBorder
+              radius="md"
+              className="w-28 h-28 hover:bg-[#1970c221] "
+              component="button"
+              onClick={(e) => {
+                e.preventDefault();
+                openProductEditingModal({}, "creation");
+              }}
+            >
+              <div className="w-28 h-28 cursor-pointer flex flex-col justify-center items-center gap-1 ">
+                <IconPlus stroke={1.5} color="#228BE6" />
+                <Text color="#228BE6" size="sm">
+                  Нэмэх
+                </Text>
+              </div>
+            </Paper>
+          </div>
         </div>
       </div>
       <DeleteConfirmationDialog

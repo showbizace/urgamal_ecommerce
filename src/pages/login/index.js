@@ -76,6 +76,9 @@ const Login = () => {
     }
   };
 
+  const handleFacebook = async () => {
+    router.push("/auth/facebook");
+  };
   return (
     <div className="w-full h-full flex flex-row absolute">
       <div className="w-4/6 h-full relative">
@@ -136,7 +139,11 @@ const Login = () => {
               Нэвтрэх
             </Button>
           </form>
-          <Buttons handleOTP={handleOTP} handleRegister={handleRegister} />
+          <Buttons
+            handleOTP={handleOTP}
+            handleRegister={handleRegister}
+            handleFacebook={handleFacebook}
+          />
         </div>
       </div>
     </div>

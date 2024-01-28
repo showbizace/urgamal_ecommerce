@@ -117,6 +117,7 @@ const ProductDetail = ({ product, cats }) => {
     const [[x, y], setXY] = useState([0, 0]);
     const [[imgWidth, imgHeight], setSize] = useState([0, 0]);
     const [showMagnifier, setShowMagnifier] = useState(false);
+    console.log(src, "src");
     return (
       <div className="relative w-full h-full overflow-hidden">
         <Image

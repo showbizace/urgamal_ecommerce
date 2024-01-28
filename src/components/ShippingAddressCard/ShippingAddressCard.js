@@ -9,7 +9,7 @@ export default function ShippingAddressCard({
   onDelete,
 }) {
   return (
-    <Card p="xs" radius="md" withBorder>
+    <Card p="xs" radius="md" withBorder fluid>
       <Group position="apart">
         <Text weight="500" size="sm">
           {name}
