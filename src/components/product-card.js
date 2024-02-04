@@ -149,7 +149,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
           <Text className="text-2xl mt-1 text-start" lineClamp={2}>
             {data?.name}
           </Text>
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full">
             <div className="flex flex-row items-center  mt-1 gap-1">
               <p className="text-[#696A6C] font-semibold text-xs">
                 Үлдэгдэл :{" "}
@@ -166,7 +166,9 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
                 </Badge>
               )}
             </div>
-            <p className="font-semibold text-base mt-1">{data?.listPrice}₮</p>
+            <p className="font-semibold text-base mt-1 text-start">
+              {data?.listPrice}₮
+            </p>
             <div className="flex flex-col md:flex-row  gap-4 w-full mt-1 justify-between">
               {/* <Button
                 variant={"filled"}

@@ -1,17 +1,39 @@
+import socket from "@/utils/Socket";
 import { Button, Card, Stack, Tabs, Text } from "@mantine/core";
 import axios from "axios";
 import { getCookie } from "cookies-next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import io from "socket.io-client";
 
 export default function PaymentModal({ context, id, innerProps }) {
-  console.log;
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    console.log(socket, "socket");
+    if (socket.connected) {
+      console.log("emit inquiry");
+      socket.on("inquiryStatus", (data) => {
+        if (data.success) {
+          callInquiry(innerProps.paymentData?.invoice_id);
+          context.closeModal(id);
+          if (innerProps.shouldRedirect) {
+            router.push({
+              pathname: "/profile",
+              query: {
+                cr: "order",
+              },
+            });
+          }
+        }
+      });
+    }
+  }, []);
+
   const callInquiry = (invoiceId) => {
     setLoading(true);
-    console.log(invoiceId, "invoice");
     const userToken = getCookie("token");
     const axiosReqOption = {
       headers: {
@@ -83,7 +105,7 @@ export default function PaymentModal({ context, id, innerProps }) {
           </Stack>
         </Tabs.Panel>
       </Tabs>
-      <Button
+      {/* <Button
         variant="subtle"
         color="yellow"
         fullWidth
@@ -102,7 +124,7 @@ export default function PaymentModal({ context, id, innerProps }) {
         }}
       >
         Болсон
-      </Button>
+      </Button> */}
     </div>
   );
 }

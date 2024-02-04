@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Button,
   Checkbox,
@@ -44,6 +45,9 @@ import axios from "axios";
 import Image from "next/image";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { fetchMethod } from "@/utils/fetch";
+import socket from "@/utils/Socket";
+import { tokenDecode } from "@/utils/utils";
+
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
   const router = useRouter();
@@ -128,7 +132,6 @@ const CartItems = (props) => {
         requestOption
       );
       if (data?.success) {
-        console.log("storage to cart succeed");
       } else {
         ErrorNotification({ title: "Алдаа гарлаа." });
       }
@@ -285,6 +288,10 @@ const CartItems = (props) => {
             const data = await res.json();
             if (data.success === true) {
               // open();
+              const token = getCookie("token");
+              const decoded = tokenDecode(token);
+              console.log(decoded, "devocede");
+              socket.emit("storeMySocketId", decoded.userid);
               setOrderId(data.orderid);
               let temp = [];
               const cartItems = cartItem;
@@ -333,6 +340,7 @@ const CartItems = (props) => {
             });
           }
         } catch (error) {
+          console.log(error, "error");
           showNotification({
             message: "Захиалга үүсгэхэд алдаа гарлаа!",
             color: "red",
@@ -490,7 +498,6 @@ const CartItems = (props) => {
         }
       });
       if (userToken) {
-        console.log(product, "oridyct");
         const requestOption = {
           cart_item_id: product.id,
           cart_id: product.cartid,

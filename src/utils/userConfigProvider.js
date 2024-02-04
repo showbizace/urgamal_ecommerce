@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { UserConfigContext } from "./userConfigContext";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
 const userToken = getCookie("token");
@@ -27,20 +27,22 @@ export const UserConfigProvider = ({ children }) => {
 
   const getAddress = async () => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/config/layout`,
-        { headers: { "Content-Type": "application/json" }, })
-      .then((response) => {
-        setAddress(response?.data?.data)
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/config/layout`, {
+        headers: { "Content-Type": "application/json" },
       })
-  }
+      .then((response) => {
+        setAddress(response?.data?.data);
+      });
+  };
   const getLinks = async () => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/config/links`,
-        { headers: { "Content-Type": "application/json" }, })
-      .then((response) => {
-        setLinks(response?.data?.data)
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/config/links`, {
+        headers: { "Content-Type": "application/json" },
       })
-  }
+      .then((response) => {
+        setLinks(response?.data?.data);
+      });
+  };
   //useEffect
   useEffect(() => {
     getAddress();
@@ -57,15 +59,14 @@ export const UserConfigProvider = ({ children }) => {
     }
     if (userToken) {
       if (jwtDecode(userToken).exp < Date.now() / 1000) {
-        setAuth(false)
-        deleteCookie('token')
-        deleteCookie('preference_config')
-        deleteCookie("number")
+        setAuth(false);
+        deleteCookie("token");
+        deleteCookie("preference_config");
+        deleteCookie("number");
       } else {
-        setAuth(true)
+        setAuth(true);
       }
     }
-
   }, []);
 
   return (
@@ -78,7 +79,7 @@ export const UserConfigProvider = ({ children }) => {
         configId,
         preference_cookie,
         address,
-        links
+        links,
       }}
     >
       {children}

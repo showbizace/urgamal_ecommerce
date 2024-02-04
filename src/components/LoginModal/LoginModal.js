@@ -1,11 +1,14 @@
 import { fetchMethod } from "@/utils/fetch";
 import { UserConfigContext } from "@/utils/userConfigContext";
+import { tokenDecode } from "@/utils/utils";
+import { jwtDecode } from "jwt-decode";
 import {
   ActionIcon,
   Button,
   Container,
   Divider,
   Group,
+  Input,
   Loader,
   PinInput,
   Stack,
@@ -18,6 +21,7 @@ import { IconRefresh, IconReload } from "@tabler/icons-react";
 import axios from "axios";
 import { setCookie } from "cookies-next";
 import { useContext, useEffect, useState } from "react";
+import socket from "@/utils/Socket";
 
 export default function LoginModal({ context, id }) {
   const { login } = useContext(UserConfigContext);
@@ -64,11 +68,13 @@ export default function LoginModal({ context, id }) {
     if (res?.success) {
       const bigDate = 30 * 24 * 60 * 60 * 1000;
       login();
-      setCookie("token", res.token, {
+      const token = res.token;
+      setCookie("token", token, {
         maxAge: bigDate,
       });
       setCookie("number", mobileNumber, { maxAge: bigDate });
       setCookie("addToCart", true);
+
       showNotification({
         message: "Амжилттай нэвтэрлээ",
         color: "green",
@@ -90,16 +96,14 @@ export default function LoginModal({ context, id }) {
           <label for="mobile-number-input">
             <Text weight={500}>Утасны дугаар</Text>
           </label>
-          <PinInput
+          <Input
             id="mobile-number-input"
             inputMode="tel"
             type="number"
-            placeholder=""
             length={8}
             autoFocus
-            size="md"
             value={mobileNumber}
-            onChange={setMobileNumber}
+            onChange={(event) => setMobileNumber(event.currentTarget.value)}
           />
         </Stack>
         {otpRequested && <Divider />}

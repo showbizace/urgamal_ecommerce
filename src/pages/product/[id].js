@@ -2,7 +2,7 @@
 import { useEffect, useContext, useState } from "react";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { Button, Badge, Grid, Loader, ThemeIcon, Text } from "@mantine/core";
+import { Button, Badge, Grid, Loader, Text, ThemeIcon } from "@mantine/core";
 import { addCart } from "@/utils/Store";
 import { getCookie } from "cookies-next";
 import { SuccessNotification } from "../../utils/SuccessNotification";
@@ -10,17 +10,33 @@ import { IconHeart, IconPhotoOff } from "@tabler/icons-react";
 import Category from "@/components/category";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 import { fetchMethod, getCategory } from "@/utils/fetch";
-
+import Image from "next/image";
 export async function getServerSideProps({ params }) {
-  const data = await fetchMethod("GET", `product/id/${params.id}`);
+  const requestOption = {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  };
+
+  const catResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/config/home`,
+    requestOption
+  );
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/product/id/${params.id}`,
+    requestOption
+  );
+  const cats = await catResponse.json();
+  const data = await res.json();
   return {
     props: {
       product: data,
+      cats,
     },
   };
 }
 
-const ProductDetail = ({ product }) => {
+const ProductDetail = ({ product, cats }) => {
   const [loading, setLoading] = useState(false);
   const [categoryLoading, setCategoryLoading] = useState(true);
   const [main, setMain] = useState();
@@ -79,7 +95,7 @@ const ProductDetail = ({ product }) => {
   };
 
   const clickImage = (item) => {
-    setRenderImage(item);
+    setRenderImage(item?.url);
   };
 
   useEffect(() => {
@@ -101,12 +117,14 @@ const ProductDetail = ({ product }) => {
     const [[x, y], setXY] = useState([0, 0]);
     const [[imgWidth, imgHeight], setSize] = useState([0, 0]);
     const [showMagnifier, setShowMagnifier] = useState(false);
+    console.log(src, "src");
     return (
       <div className="relative w-full h-full overflow-hidden">
-        {/* <Image
+        <Image
           src={src}
           className="w-full h-full"
           fill
+          objectFit="contain"
           onMouseEnter={(e) => {
             // update image size and turn-on magnifier
             const elem = e.currentTarget;
@@ -128,12 +146,11 @@ const ProductDetail = ({ product }) => {
             setShowMagnifier(false);
           }}
           alt={"img"}
-        /> */}
+        />
         <div
           style={{
             display: showMagnifier ? "" : "none",
             position: "absolute",
-
             // prevent maginier blocks the mousemove event of img
             pointerEvents: "none",
             // set size of magnifier
@@ -166,7 +183,7 @@ const ProductDetail = ({ product }) => {
     <GlobalLayout title={product?.name}>
       <div className="flex flex-col w-full min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 lg:py-12  items-start py-4 px-4 ">
         <div className="flex w-full lg:gap-20 justify-start ">
-          <div className="hidden lg:block">
+          <div className="hidden lg:block w-[25%]">
             <Category
               parent={main}
               child={child}
@@ -177,11 +194,11 @@ const ProductDetail = ({ product }) => {
           <div className="flex lg:gap-14 gap-4 justify-center xl:flex-row lg:flex-col md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
             <div className="flex flex-col">
               <div className="relative h-[50vh] lg:w-[100%] xl:w-[33vw] lg:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
-                {product?.product_image !== null ? (
+                {product?.additionalImage?.length > 0 ? (
                   <ImageMagnifier
                     src={
                       renderImage === ""
-                        ? `${product?.product_image?.images[0]}`
+                        ? `${product?.additionalImage[0]?.url}`
                         : renderImage
                     }
                     width={400}
@@ -207,23 +224,23 @@ const ProductDetail = ({ product }) => {
               </div>
               <div>
                 <Grid gutter={1}>
-                  {product?.product_image?.images?.map((item, index) => {
+                  {product?.additionalImage?.map((item, index) => {
                     return (
                       <Grid.Col span={3} key={index}>
                         <div
                           className={
-                            renderImage === item
+                            renderImage === item?.url
                               ? "relative w-full h-32 rounded-md border-2 border-button-yellow"
                               : "relative h-32 rounded-md hover:border-2 border-gray-300 w-full"
                           }
                           onClick={() => clickImage(item)}
                         >
-                          {/* <Image
+                          <Image
                             alt="item"
-                            src={item}
+                            src={item.url}
                             fill
-                            className="object-fill rounded-md p-1"
-                          /> */}
+                            className="object-cover rounded-md p-1"
+                          />
                         </div>
                       </Grid.Col>
                     );
@@ -292,17 +309,44 @@ const ProductDetail = ({ product }) => {
                     </span>
                   </div>
                 </div>
-                {product?.instruction && (
+                {product?.note && (
+                  <div className="flex gap-2 font-semibold text-base flex-row ">
+                    <span className="text-greenish-grey text-base ">
+                      Тэмдэглэл:
+                    </span>
+
+                    <div className="flex flex-row gap-3 lg:flex-col">
+                      <Text className="text-base break-all">
+                        {product?.note}
+                      </Text>
+                    </div>
+                  </div>
+                )}
+                {product?.description && (
                   <div className="flex flex-col gap-4">
                     <span className="flex font-semibold text-greenish-grey text-base">
                       Хэрэглэх заавар
                     </span>
                     <textarea
                       cols={60}
-                      rows={12}
+                      rows={8}
                       readOnly
-                      className="w-full overflow-x-hidden overflow-y-hidden focus: outline-0 py-3 px-3 rounded-md text-base"
-                      value={product.instruction}
+                      className="w-full overflow-x-hidden overflow-y-auto focus: outline-0 py-3 px-3 rounded-md text-base"
+                      value={product.description}
+                    ></textarea>
+                  </div>
+                )}
+                {product?.detailed_description && (
+                  <div className="flex flex-col gap-4">
+                    <span className="flex font-semibold text-greenish-grey text-base">
+                      Нэмэлт мэдээлэл
+                    </span>
+                    <textarea
+                      cols={60}
+                      rows={10}
+                      readOnly
+                      className="w-full overflow-x-hidden overflow-y-auto focus: outline-0 py-3 px-3 rounded-md text-base "
+                      value={product?.detailed_description}
                     ></textarea>
                   </div>
                 )}
@@ -346,14 +390,23 @@ const ProductDetail = ({ product }) => {
           </div>
         </div>
 
-        <hr className="my-10" />
+        <hr className="my-12 lg:my-14 w-full border" />
         <div className="w-full flex flex-col ">
-          <ProductListWithCategory
-            key={`recommended-list-${product?.name}`}
-            categoryId={product?.parent_cat_id?.[0]?.id}
-            categoryName={"Санал болгож буй бүтээгдэхүүнүүд"}
-            className="mt-12 "
-          />
+          {cats?.success &&
+            cats?.result?.categories.map((item, idx) => {
+              if (idx === 1) {
+                return (
+                  <ProductListWithCategory
+                    key={`list-with-category-${idx}`}
+                    categoryId={item?.id}
+                    categoryName={"Санал болгож буй бүтээгдэхүүн"}
+                    // categoryIcon={el?.icon}
+                    cols={5}
+                    className="mt-0 lg:12"
+                  />
+                );
+              }
+            })}
         </div>
       </div>
     </GlobalLayout>

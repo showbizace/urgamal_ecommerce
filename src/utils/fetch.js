@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { ErrorNotification } from "../utils/SuccessNotification";
 export const fetchMethod = async (method, path, token, body) => {
   const headerWithToken = {
     "Content-Type": "application/json",
@@ -20,15 +20,13 @@ export const fetchMethod = async (method, path, token, body) => {
     `${process.env.NEXT_PUBLIC_API_URL}/${path}`,
     requestOption
   )
-    .then((res) => {
+    .then(async (res) => {
       if (res.status === 200) {
-        return res.json();
+        return await res.json();
       } else {
-        console.log("err in fetch");
+        return await res.json();
       }
     })
-    .then((data) => data)
-    .catch((err) => err)
     .catch((err) => err);
 
   return data;
@@ -42,14 +40,14 @@ export const fetcher = async (url) =>
 
 export const getCategory = async () => {
   const main = localStorage.getItem("main");
-  const jsonData = JSON.parse(main);
-  if (jsonData) {
+  if (main && main !== "undefined") {
+    const jsonData = JSON.parse(main);
     return jsonData;
   } else {
     const data = await fetchMethod("GET", "product/cats");
     if (data?.success) {
-      localStorage.setItem("main", data?.result);
-      return data?.result;
+      localStorage.setItem("main", JSON.stringify(data?.categories));
+      return data?.categories;
     }
   }
 };

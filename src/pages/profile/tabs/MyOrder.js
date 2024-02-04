@@ -78,7 +78,7 @@ const MyOrder = () => {
             </div>
           )}
           {orders && orders.length === 0 ? (
-            <div className="h-full w-full flex items-center justify-center">
+            <div className="w-full flex items-center justify-center h-56">
               <div className="flex flex-col gap-2 items-center">
                 <IconPackageOff size={"3rem"} stroke={1.2} />
                 <Text span weight={500}>

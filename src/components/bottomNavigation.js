@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useRouter } from "next/router";
 import { useState, useEffect, useContext } from "react";
 import { UserConfigContext } from "@/utils/userConfigContext";
+
 import Link from "next/link";
 import { openContextModal } from "@mantine/modals";
 import {
@@ -14,18 +16,17 @@ import { useDisclosure } from "@mantine/hooks";
 import { Drawer, ScrollArea, Text } from "@mantine/core";
 import useSWR from "swr";
 import AllCategory from "./AllCategory/AllCategory";
-
-const fetcher = (url) =>
-  axios
-    .get(url, { headers: { "Content-Type": "application/json" } })
-    .then((res) => {
-      return res.data.result;
-    })
-    .catch((error) => console.log(error));
+import { fetchMethod, getCategory } from "@/utils/fetch";
+import { getCookie } from "cookies-next";
+import { emptyCart, getCart, syncCart } from "@/utils/Store";
 
 const BottomNavBar = () => {
   const router = useRouter();
   const userContext = useContext(UserConfigContext);
+  const [categories, setCategories] = useState();
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [cartItem, setCartItem] = useState();
+  const userToken = getCookie("token");
   const [
     categoryDrawerOpened,
     { open: openCategoryDrawer, close: closeCategoryDrawer },
@@ -39,13 +40,61 @@ const BottomNavBar = () => {
 
   const userConfigs = useContext(UserConfigContext);
   const { configId } = userConfigs;
-  const {
-    data: categories,
-    error: categoriesError,
-    isLoading: categoriesLoading,
-  } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
-    refreshInterval: 0,
-  });
+
+  useEffect(() => {
+    const get = async () => {
+      setCategoriesLoading(true);
+      const data = await getCategory();
+      if (data) {
+        setCategories(data);
+      }
+      setCategoriesLoading(false);
+    };
+    get();
+  }, []);
+
+  const getUserCart = async () => {
+    const data = await fetchMethod("GET", "cart", userToken);
+    if (data?.success) {
+      if (data?.cart) {
+        if (data?.cart?.cart_items?.length === 0) {
+          setCartItem(data?.cart);
+          emptyCart();
+        } else {
+          setCartItem(data?.cart);
+          syncCart(data?.cart);
+        }
+      } else {
+        setCartItem({ cart: { cart_items: [] } });
+        emptyCart();
+      }
+    } else {
+      setCartItem({ cart: { cart_items: [] } });
+      emptyCart();
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("storage", () => {
+        if (!userToken) {
+          let data = getCart();
+          if (data) {
+            setCartItem(data);
+          }
+        }
+      });
+    }
+    if (!userToken) {
+      let data = getCart();
+      if (data) {
+        setCartItem(data);
+      }
+    } else {
+      getUserCart();
+    }
+  }, []);
+
   return (
     <>
       <Drawer
@@ -55,18 +104,13 @@ const BottomNavBar = () => {
         scrollAreaComponent={ScrollArea.Autosize}
       >
         {categoriesLoading && <div></div>}
-        {categoriesError && <div></div>}
-        {/* {configId && categories && ( //! mark
+        {configId && categories && (
           <AllCategory
             type="drawer"
-            categories={
-              categories.find(
-                (main) => main.id.toString() == userConfigs.configId
-              ).parent_categories
-            }
+            categories={categories}
             isLoading={categoriesLoading}
           />
-        )} */}
+        )}
       </Drawer>
       <div className="block lg:hidden  sticky bottom-0 z-50">
         <div className="relative">
@@ -99,7 +143,9 @@ const BottomNavBar = () => {
               >
                 <div className="absolute">
                   <div className="w-5 h-5 bg-number flex justify-center items-center text-white -mt-9 rounded-full text-sm ml-8">
-                    {/* <p className="text-md">{quantity}</p> */}
+                    <p className="text-md">
+                      {cartItem?.cart_items ? cartItem?.cart_items?.length : 0}
+                    </p>
                   </div>
                 </div>
                 <IconShoppingCart className="group-hover:text-blue-600 " />

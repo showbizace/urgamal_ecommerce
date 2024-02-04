@@ -14,31 +14,42 @@ import { UserConfigContext } from "@/utils/userConfigContext";
 import { useDisclosure } from "@mantine/hooks";
 import { fetcher, getCategory } from "@/utils/fetch";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
+
 const PAGE_SIZE = 20;
 
 export async function getStaticProps() {
-  const requestOption = {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  };
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/product?offset=0&limit=${PAGE_SIZE}`,
-    requestOption
-  );
+  try {
+    const requestOption = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    };
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/product?offset=0&limit=${PAGE_SIZE}`,
+      requestOption
+    );
 
-  const catResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/config/home`,
-    requestOption
-  );
+    const catResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/config/home`,
+      requestOption
+    );
 
-  const cats = await catResponse.json();
-  const data = await res.json();
-  return {
-    props: {
-      data,
-      cats,
-    },
-  };
+    const cats = await catResponse.json();
+    const data = await res.json();
+
+    return {
+      props: {
+        data,
+        cats,
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        data: [],
+        cats: [],
+      },
+    };
+  }
 }
 
 export default function Home({ data, cats }) {
@@ -116,6 +127,7 @@ export default function Home({ data, cats }) {
     window.dispatchEvent(new Event("storage"));
     // setProducts(data.result);
     fetchCategory();
+
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
@@ -167,20 +179,21 @@ export default function Home({ data, cats }) {
                 <Banner />
               </div>
             </div>
-
             {configId &&
-              cats.success &&
-              cats.result.categories.map((item, idx) => {
-                return (
-                  <ProductListWithCategory
-                    key={`list-with-category-${idx}`}
-                    categoryId={item?.id}
-                    categoryName={item?.name}
-                    // categoryIcon={el?.icon}
-                    cols={5}
-                    className="mt-12"
-                  />
-                );
+              cats?.success &&
+              cats?.result?.categories.map((item, idx) => {
+                if (idx !== 0) {
+                  return (
+                    <ProductListWithCategory
+                      key={`list-with-category-${idx}`}
+                      categoryId={item?.id}
+                      categoryName={item?.name}
+                      // categoryIcon={el?.icon}
+                      cols={5}
+                      className="mt-12"
+                    />
+                  );
+                }
               })}
           </div>
         </div>

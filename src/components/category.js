@@ -2,6 +2,7 @@ import { Collapse, Text, Grid } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { IconChevronRight } from "@tabler/icons-react";
 import MySkeleton from "./MySkeleton";
+import Image from "next/image";
 
 const Category = ({
   parent,
@@ -21,9 +22,7 @@ const Category = ({
       }
     >
       {loading ? (
-        new Array(2)
-          .fill(null)
-          .map((e, index) => <MySkeleton key={`product-skeleton-${index}`} />)
+        new Array(2).fill("hhhh").map((e, index) => <MySkeleton key={index} />)
       ) : (
         <Grid.Container
           style={{
@@ -65,8 +64,8 @@ const Category = ({
                   parent?.map((el, index) => {
                     return (
                       <Collapse
-                        key={el?.Id}
-                        id={el?.Id}
+                        key={el?.id}
+                        id={el?.id}
                         css={{
                           paddingLeft: "$5",
                           paddingRight: "$5",
@@ -77,16 +76,26 @@ const Category = ({
                           <IconChevronRight color="#fcbc60" key={index} />,
                         ]}
                         title={[
-                          <p
-                            className="hover:text-[#fd7e14] font-semibold"
-                            key={index}
-                          >
-                            {el.Name}
-                          </p>,
+                          <div className="flex flex-row gap-2" key={index}>
+                            {el?.icon && (
+                              <Image
+                                alt="category-icon"
+                                src={el.icon}
+                                width={24}
+                                height={24}
+                              />
+                            )}
+                            <p
+                              className="hover:text-[#fd7e14] font-semibold"
+                              key={index}
+                            >
+                              {el.name}
+                            </p>
+                          </div>,
                         ]}
                         onClick={() => {
                           router.push({
-                            pathname: `/category/parent/${el.Id}`,
+                            pathname: `/category/parent/${el.id}`,
                           });
                         }}
                         expanded={() => {
