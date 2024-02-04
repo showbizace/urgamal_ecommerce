@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { showNotification } from "@mantine/notifications";
+import { IconCheck } from "@tabler/icons-react";
 import { setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";

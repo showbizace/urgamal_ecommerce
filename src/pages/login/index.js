@@ -5,7 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useRouter } from "next/router";
 import { getCookie, setCookie } from "cookies-next";
-import { IconAt, IconLock } from "@tabler/icons-react";
+import { IconAt, IconCheck, IconLock } from "@tabler/icons-react";
 import { Buttons } from "./component";
 import { fetchMethod } from "@/utils/fetch";
 import { showNotification } from "@mantine/notifications";
@@ -68,7 +68,41 @@ const Login = () => {
 
       if (data.success) {
         const bigDate = 30 * 24 * 60 * 60 * 1000;
+        showNotification({
+          message: "Амжилттай нэвтэрлээ.",
+          icon: <IconCheck />,
+          color: "green",
+        });
+        setCookie("token", data.token, {
+          maxAge: bigDate,
+        });
+        router.push("/home");
+      } else {
+        console.log("error in else");
+      }
+    } catch (err) {
+      console.log(err, "err");
+    }
+  };
 
+  const getFacebook = async () => {
+    try {
+      const requestOption = {
+        "Content-Type": "application/json",
+      };
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/facebook/callback?code=${router.query.code}`,
+        requestOption
+      );
+      const data = await res.json();
+      console.log(res, "data");
+      if (data.success) {
+        const bigDate = 30 * 24 * 60 * 60 * 1000;
+        showNotification({
+          message: "Амжилттай нэвтэрлээ.",
+          icon: <IconCheck />,
+          color: "green",
+        });
         setCookie("token", data.token, {
           maxAge: bigDate,
         });
@@ -89,6 +123,9 @@ const Login = () => {
       router.query.prompt
     ) {
       getQueryParams();
+    }
+    if (router.query.code) {
+      getFacebook();
     }
   }, [router.query]);
 
@@ -117,7 +154,7 @@ const Login = () => {
   };
 
   const handleFacebook = async () => {
-    window.open(`${process.env.NEXT_PUBLIC_API_URL}/auth/facebook`);
+    location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/facebook`;
   };
 
   const handleGoogle = async () => {
