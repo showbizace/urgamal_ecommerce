@@ -21,14 +21,15 @@ import {
   IconPackage,
   IconReportSearch,
   IconSearch,
+  IconCircleXFilled,
 } from "@tabler/icons-react";
 
 import useSWR from "swr";
 import { useDebouncedValue } from "@mantine/hooks";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { isMobile } from "react-device-detect";
-import { fetcher } from "@/utils/fetch";
-import { getCart } from "@/utils/Store";
+import { fetchMethod, fetcher } from "@/utils/fetch";
+import { getCart, getWishlist } from "@/utils/Store";
 const token = getCookie("token");
 const Navbar = (props) => {
   const { address } = props;
@@ -36,7 +37,11 @@ const Navbar = (props) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debounced] = useDebouncedValue(searchQuery, 250);
   const userContext = useContext(UserConfigContext);
-  // const [data, setData] = useState()
+  const [showSearch, setShowSearch] = useState(false);
+  const [cartItem, setCartItem] = useState([]);
+  const route = useRouter();
+  const [number, setNumber] = useState("");
+  const [wishlistItems, setWishlistItems] = useState([]);
   const {
     data: categories,
     error: catsError,
@@ -94,14 +99,40 @@ const Navbar = (props) => {
     );
   });
 
-  const [showSearch, setShowSearch] = useState(false);
-  const [cartItem, setCartItem] = useState([]);
-  const route = useRouter();
-  const [number, setNumber] = useState("");
   const linkToCart = () => {
     router.push({
       pathname: "/cart/cartItem",
     });
+  };
+
+  const linkToHeart = () => {
+    router.push({
+      pathname: "/profile",
+      query: "wishlist",
+    });
+  };
+
+  const getWishlist = async () => {
+    const token = getCookie("token");
+    if (token) {
+      const data = await fetchMethod("GET", "user/wishlist", token);
+      if (data.success) {
+        setWishlistItems(data.data);
+      } else {
+        showNotification({
+          message: data?.message,
+          color: "red",
+          icon: (
+            <IconCircleXFilled
+              style={{
+                width: rem(30),
+                height: rem(30),
+              }}
+            />
+          ),
+        });
+      }
+    }
   };
 
   useEffect(() => {
@@ -117,6 +148,7 @@ const Navbar = (props) => {
     if (data) {
       setCartItem(data);
     }
+    getWishlist();
     const number = getCookie("number");
     if (number) {
       setNumber(number);
@@ -297,6 +329,29 @@ const Navbar = (props) => {
         </div>
         <div className="flex items-center gap-4 max-xs:gap-2">
           <div className="hidden md:block">
+            <Button
+              compact
+              variant={"white"}
+              onClick={() => linkToHeart()}
+              className="mr-1"
+            >
+              <Image
+                alt="heart"
+                src="/icons/hearth.svg"
+                width={23}
+                height={23}
+                className="max-xs:w-6 h-6"
+              />
+              <div className="absolute">
+                {wishlistItems.length > 0 && (
+                  <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
+                    <p className="text-sm-5">
+                      {wishlistItems && wishlistItems.length}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </Button>
             <Button compact variant={"white"} onClick={() => linkToCart()}>
               <Image
                 alt="trolley"
@@ -306,11 +361,13 @@ const Navbar = (props) => {
                 className="max-xs:w-6 h-6"
               />
               <div className="absolute">
-                <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
-                  <p className="text-sm-5">
-                    {cartItem?.cart_items ? cartItem?.cart_items?.length : 0}
-                  </p>
-                </div>
+                {cartItem?.cart_items?.length && (
+                  <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
+                    <p className="text-sm-5">
+                      {cartItem?.cart_items && cartItem?.cart_items?.length}
+                    </p>
+                  </div>
+                )}
               </div>
             </Button>
           </div>

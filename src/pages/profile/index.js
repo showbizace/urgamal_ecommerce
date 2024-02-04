@@ -228,10 +228,13 @@ import {
   IconHeart,
   IconTruck,
   IconUserEdit,
+  IconGift,
 } from "@tabler/icons-react";
 import { fetchMethod } from "@/utils/fetch";
 import { showNotification } from "@mantine/notifications";
 import Wishlist from "./tabs/Wishlist";
+import Loyalty from "./tabs/Loyalty";
+import Feedback from "./tabs/Feedback";
 
 const Profile = () => {
   const router = useRouter();
@@ -270,6 +273,12 @@ const Profile = () => {
   useEffect(() => {
     getUserInfo();
   }, []);
+
+  useEffect(() => {
+    if (router.query.hasOwnProperty("wishlist")) {
+      setTabs(3);
+    }
+  }, [router]);
 
   return (
     <GlobalLayout>
@@ -478,7 +487,7 @@ const Profile = () => {
                     stroke={1.5}
                   />
                 }
-                text={"Худалдан авсан түүх"}
+                text={"Санал хүсэлт илгээх"}
                 onClickTabs={() => onClickTabs(5)}
                 id={5}
                 first={true}
@@ -495,9 +504,43 @@ const Profile = () => {
                     stroke={1.5}
                   />
                 }
-                text={"Худалдан авсан түүх"}
+                text={"Санал хүсэлт илгээх"}
                 onClickTabs={() => onClickTabs(5)}
                 id={5}
+              />
+            )}
+            {tabs === 6 ? (
+              <ProfileTabs
+                icon={
+                  <IconGift
+                    style={{
+                      width: rem(30),
+                      height: rem(30),
+                      color: "#fff",
+                    }}
+                    stroke={1.5}
+                  />
+                }
+                text={"Loyalty"}
+                onClickTabs={() => onClickTabs(6)}
+                id={6}
+                first={true}
+              />
+            ) : (
+              <ProfileTabs
+                icon={
+                  <IconGift
+                    style={{
+                      width: rem(30),
+                      height: rem(30),
+                      color: "#F9BC60",
+                    }}
+                    stroke={1.5}
+                  />
+                }
+                text={"Loyalty"}
+                onClickTabs={() => onClickTabs(6)}
+                id={6}
               />
             )}
           </div>
@@ -518,7 +561,8 @@ const Profile = () => {
             {tabs === 2 && <Address />}
             {tabs === 3 && <Wishlist />}
             {tabs === 4 && <MyOrder />}
-            {tabs === 5 && <PurchaseHistory />}
+            {tabs === 5 && <Feedback />}
+            {tabs === 6 && <Loyalty userInfo={userInfo} />}
           </div>
         </div>
       </div>

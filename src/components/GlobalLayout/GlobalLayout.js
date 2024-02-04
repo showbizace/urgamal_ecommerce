@@ -56,11 +56,6 @@ export default function GlobalLayout({
           rel="stylesheet"
         />
         <title>{title}</title>
-        <link
-          rel="stylesheet"
-          href="https://kit.fontawesome.com/af91f056ad.css"
-          crossorigin="anonymous"
-        />
       </Head>
       <div className="shadow bg-white">
         {/* <Search /> */}

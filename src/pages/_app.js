@@ -9,7 +9,6 @@ import CategoryContextProvider from "@/utils/categoryContext";
 import PaymentModal from "@/components/PaymentModal/PaymentModal";
 import { useMantineTheme } from "@mantine/core";
 import { Montserrat } from "@next/font/google";
-
 const mont = Montserrat({
   subsets: ["latin"],
   variable: "--font-mont",

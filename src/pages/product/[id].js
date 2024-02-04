@@ -28,6 +28,7 @@ export async function getServerSideProps({ params }) {
   );
   const cats = await catResponse.json();
   const data = await res.json();
+  console.log(data, "Data");
   return {
     props: {
       product: data,

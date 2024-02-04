@@ -1,0 +1,87 @@
+import { fetchMethod } from "@/utils/fetch";
+import { Loader, Text, Title, rem } from "@mantine/core";
+import { getCookie } from "cookies-next";
+import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import { IconStarFilled } from "@tabler/icons-react";
+
+const Loyalty = ({ userInfo }) => {
+  const [loyalty, setLoyalty] = useState();
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    getLoyalty();
+  }, []);
+
+  const getLoyalty = async () => {
+    const token = getCookie("token");
+    setLoading(true);
+    const data = await fetchMethod("GET", "user/loyalty", token);
+    if (data.success) {
+      setLoyalty(data.data);
+    }
+    setLoading(false);
+  };
+  return (
+    <div className="flex flex-col w-full bg-white px-8 py-6 rounded-md">
+      <Title order={3}>Loyalty</Title>
+      {loading ? (
+        <div className="w-full h-[20rem] flex items-center justify-center">
+          <Loader color="yellow" />
+        </div>
+      ) : (
+        <div className="mt-4">
+          {loyalty?.map((item, index) => (
+            <div
+              key={index}
+              className="flex flex-row justify-between items-center p-2 hover:bg-gray-50 hover:cursor-pointer"
+              style={{ borderBottom: "1px solid rgba(0, 30, 29, 0.23)" }}
+            >
+              <div className="flex flex-col">
+                <div className="flex flex-row">
+                  <p className="text-base text-grey">Захиалгын дугаар :</p>
+                  <p className="text-base ml-1">{item?.orderid}</p>
+                </div>
+                <div className="flex flex-row">
+                  <p className="text-base text-grey">Огноо : </p>
+                  <p className="text-base ml-1">
+                    {dayjs(item?.createdAt)
+                      .add(8, "hours")
+                      .format("YYYY-MM-DD HH:mm")}
+                    {/* {data?.createdAt} */}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-row gap-2 items-center">
+                <Text size={"md"} weight={"600"}>
+                  {item.amount}
+                </Text>
+                <IconStarFilled
+                  style={{
+                    width: rem(20),
+                    height: rem(20),
+                    color: "#F9BC60",
+                  }}
+                  stroke={2}
+                />
+              </div>
+            </div>
+          ))}
+          <div className="mt-2 w-full justify-between">
+            {userInfo?.loyalty_wallet?.balance && (
+              <span className="font-semibold">
+                Нийт оноо : {userInfo?.loyalty_wallet?.balance}
+              </span>
+            )}
+            {userInfo?.loyalty_wallet?.onhold > 0 && (
+              <span className="font-semibold">
+                Хүлээгдэж буй оноо : {userInfo?.loyalty_wallet?.onhold}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Loyalty;

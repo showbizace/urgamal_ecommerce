@@ -1,14 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Image from "next/image";
 import { TextInput, Button, rem, PasswordInput } from "@mantine/core";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useRouter } from "next/router";
-import { setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { IconAt, IconLock } from "@tabler/icons-react";
 import { Buttons } from "./component";
 import { fetchMethod } from "@/utils/fetch";
 import { showNotification } from "@mantine/notifications";
 import { UserConfigContext } from "@/utils/userConfigContext";
+
 const icon = (
   <IconAt
     style={{ width: rem(16), height: rem(16), color: "green" }}
@@ -25,6 +27,7 @@ const passIcon = (
 const Login = () => {
   const router = useRouter();
   const { login } = useContext(UserConfigContext);
+  const token = getCookie("token");
   const form = useForm({
     initialValues: {
       email: "",
@@ -52,6 +55,43 @@ const Login = () => {
     router.push("login/otp");
   };
 
+  const getQueryParams = async () => {
+    try {
+      const requestOption = {
+        "Content-Type": "application/json",
+      };
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/google/callback?code=${router.query.code}&scope=${router.query.scope}&authuser=${router.query.authuser}&prompt=${router.query.prompt}`,
+        requestOption
+      );
+      const data = await res.json();
+
+      if (data.success) {
+        const bigDate = 30 * 24 * 60 * 60 * 1000;
+
+        setCookie("token", data.token, {
+          maxAge: bigDate,
+        });
+        router.push("/home");
+      } else {
+        console.log("error in else");
+      }
+    } catch (err) {
+      console.log(err, "err");
+    }
+  };
+
+  useEffect(() => {
+    if (
+      router.query.code &&
+      router.query.scope &&
+      router.query.authuser &&
+      router.query.prompt
+    ) {
+      getQueryParams();
+    }
+  }, [router.query]);
+
   const loginFetchData = async (values) => {
     const requestOption = { email: values.email, password: values.password };
     const data = await fetchMethod("POST", `auth/login`, "", requestOption);
@@ -77,8 +117,13 @@ const Login = () => {
   };
 
   const handleFacebook = async () => {
-    router.push("/auth/facebook");
+    window.open(`${process.env.NEXT_PUBLIC_API_URL}/auth/facebook`);
   };
+
+  const handleGoogle = async () => {
+    location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+  };
+
   return (
     <div className="w-full h-full flex flex-row absolute">
       <div className="w-4/6 h-full relative">
@@ -143,6 +188,7 @@ const Login = () => {
             handleOTP={handleOTP}
             handleRegister={handleRegister}
             handleFacebook={handleFacebook}
+            handleGoogle={handleGoogle}
           />
         </div>
       </div>

@@ -1,10 +1,24 @@
 import Image from "next/image";
-import { Text, Button, LoadingOverlay, Badge, ThemeIcon } from "@mantine/core";
+import {
+  Text,
+  Button,
+  LoadingOverlay,
+  Badge,
+  ThemeIcon,
+  ActionIcon,
+  rem,
+} from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
-import { addCart } from "../utils/Store";
+import { addCart, addWishlist } from "../utils/Store";
 import { getCookie } from "cookies-next";
 import { showNotification } from "@mantine/notifications";
-import { IconPhotoOff } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconCircleXFilled,
+  IconHeart,
+  IconHeartFilled,
+  IconPhotoOff,
+} from "@tabler/icons-react";
 import {
   SuccessNotification,
   ErrorNotification,
@@ -17,6 +31,8 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const token = getCookie("token");
+  const [toggle, setToggle] = useState(false);
+
   const addCount = (event) => {
     event.stopPropagation();
     if (data?.balance - productCount > 0) setProductCount(productCount + 1);
@@ -25,6 +41,47 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
         message: "Барааны үлдэгдэл хүрэлцэхгүй байна.",
         color: "red",
       });
+  };
+
+  const handleWishlist = async (event) => {
+    event.stopPropagation();
+    setToggle(!wishlist);
+    if (!wishlist) {
+      if (token) {
+        const requestOption = {
+          productid: data.id,
+        };
+        const res = await fetchMethod(
+          "POST",
+          "user/wishlist",
+          token,
+          requestOption
+        );
+
+        if (res.status === 200) {
+          showNotification({
+            message: "Амжилттай нэмэгдлээ.",
+            icon: <IconCheck />,
+            color: "green",
+          });
+        } else {
+          showNotification({
+            message: res?.message,
+            color: "red",
+            icon: (
+              <IconCircleXFilled
+                style={{
+                  width: rem(30),
+                  height: rem(30),
+                }}
+              />
+            ),
+          });
+        }
+      } else {
+        dispatch({ type: "ADD_TO_WISHLIST", payload: product });
+      }
+    }
   };
 
   const minusCount = (event) => {
@@ -66,42 +123,6 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
       });
     }
   };
-  // const addToCartHandler = async (event) => {
-  //   event.stopPropagation();
-  //   if (productCount <= data.balance) {
-  //     setLoading(true);
-  //     dispatch({
-  //       type: "CART_ADD_ITEM",
-  //       payload: { ...data, quantity: productCount },
-  //     });
-  //     if (token) {
-  //       const body = {
-  //         product_id: data.id,
-  //         quantity: productCount,
-  //       };
-  //       const fetchData = await fetchMethod("POST", "cart/add", token, body);
-  //       if (fetchData?.success) {
-  //         setLoading(true);
-  //         SuccessNotification({
-  //           message: "Сагсанд амжилттай орлоо!",
-  //           title: "Сагс",
-  //         });
-  //         setLoading(false);
-  //       }
-  //     } else {
-  //       SuccessNotification({
-  //         message: "Сагсанд амжилттай орлоо!",
-  //         title: "Сагс",
-  //       });
-  //       setLoading(false);
-  //     }
-  //   } else {
-  //     showNotification({
-  //       message: "Барааны үлдэгдэл хүрэлцэхгүй байна.",
-  //       color: "red",
-  //     });
-  //   }
-  // };
 
   const clickProduct = (e) => {
     e.preventDefault();
@@ -122,7 +143,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
           : "hover:cursor-pointer"
       }
     >
-      <div className="flex flex-col justify-between items-center py-4 px-4 bg-white rounded-md w-full h-[25rem]">
+      <div className="flex flex-col justify-between items-center py-4 px-4 bg-white rounded-md w-full h-[25rem] relative">
         {src ? (
           <div className="h-96 w-48 relative">
             <Image
@@ -166,22 +187,23 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
                 </Badge>
               )}
             </div>
-            <p className="font-semibold text-base mt-1 text-start">
-              {data?.listPrice}₮
-            </p>
+            <div className="flex flex-row justify-between items-center">
+              <p className="font-semibold text-base mt-1 text-start">
+                {data?.listPrice}₮
+              </p>
+              <ActionIcon onClick={(event) => handleWishlist(event)}>
+                {toggle ? (
+                  <IconHeartFilled
+                    stroke={2}
+                    size={rem(23)}
+                    style={{ color: "#F9BC60" }}
+                  />
+                ) : (
+                  <IconHeart stroke={2} size={rem(23)} color="#F9BC60" />
+                )}
+              </ActionIcon>
+            </div>
             <div className="flex flex-col md:flex-row  gap-4 w-full mt-1 justify-between">
-              {/* <Button
-                variant={"filled"}
-                color="red"
-                style={{ padding: "10px" }}
-                onClick={(event) => {
-                  event.stopPropagation();
-                }}
-                className="flex justify-center items-center bg-tertiary rounded-md "
-              >
-                <Image width={18} height={8} src="/icons/hearth2.svg" />
-              </Button> */}
-
               <div className="flex flex-row items-center">
                 <Button
                   variant={"outline"}
@@ -229,7 +251,6 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
                 )}
               </Button>
             </div>
-
             {/* <Button
               variant={"filled"}
               style={{ width: "100%" }}

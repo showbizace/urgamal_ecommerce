@@ -20,7 +20,12 @@ const mobileIcon = (
   <IconDeviceMobile style={{ width: rem(16), height: rem(16) }} />
 );
 
-const LoginButton = ({ handleOTP, handleRegister, handleFacebook }) => {
+const LoginButton = ({
+  handleOTP,
+  handleRegister,
+  handleFacebook,
+  handleGoogle,
+}) => {
   return (
     <div>
       <Button
@@ -61,6 +66,7 @@ const LoginButton = ({ handleOTP, handleRegister, handleFacebook }) => {
         className="mt-2"
         color="orange"
         leftIcon={googleIcon}
+        onClick={handleGoogle}
       >
         Google-ээр нэвтрэх
       </Button>
