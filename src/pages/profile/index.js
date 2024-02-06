@@ -213,13 +213,13 @@ import Image from "next/image";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import { Button, Loader, rem } from "@mantine/core";
 import ProfileTabs from "../../components/ProfileTab";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ProfileInfo from "./tabs/ProfileInfo";
 import Address from "./tabs/Address";
 import SavedOrder from "./tabs/SavedOrder";
 import MyOrder from "./tabs/MyOrder";
 import PurchaseHistory from "./tabs/PurchaseHistory";
-import { getCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import {
   IconBoxSeam,
@@ -235,13 +235,14 @@ import { showNotification } from "@mantine/notifications";
 import Wishlist from "./tabs/Wishlist";
 import Loyalty from "./tabs/Loyalty";
 import Feedback from "./tabs/Feedback";
+import { UserConfigContext } from "@/utils/userConfigContext";
 
 const Profile = () => {
   const router = useRouter();
   const [tabs, setTabs] = useState(1);
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState();
-
+  const userContext = useContext(UserConfigContext);
   const getUserInfo = async () => {
     setLoading(true);
     const token = getCookie("token");
@@ -280,23 +281,46 @@ const Profile = () => {
     }
   }, [router]);
 
+  const logOut = () => {
+    userContext.logout();
+    deleteCookie("token");
+    deleteCookie("preference_config");
+    deleteCookie("number");
+    router.push("/login");
+  };
+
   return (
     <GlobalLayout>
       <div className="bg-grey-back w-full px-32 py-8">
         <div className="w-full h-56 bg-white rounded-md relative">
           <div className="absolute left-14 w-36 h-36 top-12">
-            <Image
-              src={"/profile.jpg"}
-              width={150}
-              height={150}
-              style={{
-                objectFit: "cover",
-                width: "100%",
-                height: "100%",
-                borderRadius: "100%",
-                border: "3px solid #EBEFEE",
-              }}
-            />
+            {userInfo?.picture ? (
+              <Image
+                src={userInfo.picture}
+                width={150}
+                height={150}
+                style={{
+                  objectFit: "cover",
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "100%",
+                  border: "3px solid #EBEFEE",
+                }}
+              />
+            ) : (
+              <Image
+                src={"/user.png"}
+                width={150}
+                height={150}
+                style={{
+                  objectFit: "cover",
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "100%",
+                  border: "3px solid #EBEFEE",
+                }}
+              />
+            )}
             <div
               className="absolute bottom-0 left-28 w-8 h-8 flex justify-center items-center bg-grey-back rounded-full"
               style={{ border: "3px solid white" }}
@@ -327,11 +351,7 @@ const Profile = () => {
               variant="outline"
               color="red"
               className="mr-16"
-              onClick={() => {
-                setCookie("token", ""),
-                  setCookie("number", ""),
-                  router.push("/login");
-              }}
+              onClick={() => logOut()}
             >
               Системээс гарах
             </Button>

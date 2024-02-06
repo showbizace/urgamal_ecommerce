@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Image from "next/image";
-import { TextInput, Button, rem, PasswordInput } from "@mantine/core";
+import { TextInput, Button, rem, PasswordInput, Text } from "@mantine/core";
 import React, { useContext, useEffect, useState } from "react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useRouter } from "next/router";
@@ -210,6 +210,17 @@ const Login = () => {
                 },
               })}
             />
+            <div className="flex justify-end">
+              <Button
+                variant="transparent"
+                color="gray"
+                onClick={() => router.push("/login/forget")}
+              >
+                <Text color="gray" size={"xs"}>
+                  Нууц үгээ мартсан уу?
+                </Text>
+              </Button>
+            </div>
             <Button
               variant="outline"
               color="green"

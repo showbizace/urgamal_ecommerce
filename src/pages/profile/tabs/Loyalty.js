@@ -3,7 +3,7 @@ import { Loader, Text, Title, rem } from "@mantine/core";
 import { getCookie } from "cookies-next";
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { IconStarFilled } from "@tabler/icons-react";
+import { IconGiftOff, IconStarFilled } from "@tabler/icons-react";
 
 const Loyalty = ({ userInfo }) => {
   const [loyalty, setLoyalty] = useState();
@@ -28,7 +28,7 @@ const Loyalty = ({ userInfo }) => {
         <div className="w-full h-[20rem] flex items-center justify-center">
           <Loader color="yellow" />
         </div>
-      ) : (
+      ) : loyalty?.length > 0 ? (
         <div className="mt-4">
           {loyalty?.map((item, index) => (
             <div
@@ -78,6 +78,13 @@ const Loyalty = ({ userInfo }) => {
               </span>
             )}
           </div>
+        </div>
+      ) : (
+        <div className="w-full h-80 flex justify-center items-center flex-col">
+          <IconGiftOff size="2rem" stroke={1.5} />
+          <span className="mt-2 font-medium text-base text-grey">
+            Таны loyalty хоосон байна.
+          </span>
         </div>
       )}
     </div>

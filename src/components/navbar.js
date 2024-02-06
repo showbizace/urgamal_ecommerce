@@ -12,6 +12,7 @@ import {
   Select,
   Text,
   Tooltip,
+  rem,
 } from "@mantine/core";
 import { forwardRef, useContext, useEffect, useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
@@ -30,6 +31,7 @@ import { UserConfigContext } from "@/utils/userConfigContext";
 import { isMobile } from "react-device-detect";
 import { fetchMethod, fetcher } from "@/utils/fetch";
 import { getCart, getWishlist } from "@/utils/Store";
+import { showNotification } from "@mantine/notifications";
 const token = getCookie("token");
 const Navbar = (props) => {
   const { address } = props;
@@ -39,6 +41,7 @@ const Navbar = (props) => {
   const userContext = useContext(UserConfigContext);
   const [showSearch, setShowSearch] = useState(false);
   const [cartItem, setCartItem] = useState([]);
+  const [userImage, setUserImage] = useState("");
   const route = useRouter();
   const [number, setNumber] = useState("");
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -55,12 +58,12 @@ const Navbar = (props) => {
   );
 
   const suggestions = data
-    ? data.map((e) => {
+    ? data?.map((e) => {
         return {
-          value: e.name,
-          id: e.id,
-          image: e.product_image?.images?.[0],
-          description: e.description,
+          value: e?.name || "",
+          id: e?.id || "",
+          image: e?.product_image?.images?.[0] || "",
+          description: e?.description || "",
         };
       })
     : [];
@@ -135,6 +138,28 @@ const Navbar = (props) => {
     }
   };
 
+  const getUserInfo = async () => {
+    const token = getCookie("token");
+    if (token) {
+      const data = await fetchMethod("GET", "user/profile", token);
+      if (data.success) {
+        setUserImage(data.data.picture);
+      } else {
+        showNotification({
+          message: data?.message,
+          color: "red",
+          icon: (
+            <IconCircleXFilled
+              style={{
+                width: rem(30),
+                height: rem(30),
+              }}
+            />
+          ),
+        });
+      }
+    }
+  };
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.addEventListener("storage", () => {
@@ -149,6 +174,7 @@ const Navbar = (props) => {
       setCartItem(data);
     }
     getWishlist();
+    getUserInfo();
     const number = getCookie("number");
     if (number) {
       setNumber(number);
@@ -331,7 +357,7 @@ const Navbar = (props) => {
           <div className="hidden md:block">
             <Button
               compact
-              variant={"white"}
+              variant={"transparent"}
               onClick={() => linkToHeart()}
               className="mr-1"
             >
@@ -352,7 +378,11 @@ const Navbar = (props) => {
                 )}
               </div>
             </Button>
-            <Button compact variant={"white"} onClick={() => linkToCart()}>
+            <Button
+              compact
+              variant={"transparent"}
+              onClick={() => linkToCart()}
+            >
               <Image
                 alt="trolley"
                 src="/icons/trolley.svg"
@@ -373,27 +403,38 @@ const Navbar = (props) => {
           </div>
           <div className="hidden md:block">
             <Avatar
+              variant="transparent"
               src={null}
               size={40}
               alt="user"
               radius="xl"
               component="button"
               onClick={() => {
-                console.log(userContext, "context");
-                if (!userContext.auth) {
+                const token = getCookie("token");
+                if (!token) {
                   route.push("/login");
                 } else {
                   route.push("/profile");
                 }
               }}
             >
-              <Image
-                alt="user"
-                src="/user.png"
-                width={40}
-                height={40}
-                className="w-8 h-8"
-              />
+              {userImage ? (
+                <Image
+                  alt="user"
+                  src={userImage}
+                  width={40}
+                  height={40}
+                  className="w-8 h-8 rounded-full"
+                />
+              ) : (
+                <Image
+                  alt="user"
+                  src="/user.png"
+                  width={40}
+                  height={40}
+                  className="w-8 h-8"
+                />
+              )}
             </Avatar>
           </div>
         </div>

@@ -27,7 +27,7 @@ import { getCookie } from "cookies-next";
 import React, { useEffect, useState } from "react";
 
 const Password = (props) => {
-  const { givenName, familyName, mobile, email } = props;
+  const { setTabs } = props;
   const [seconds, setSeconds] = useState(60);
   const [number, setNumber] = useState("");
   const [otp, setOtp] = useState("");
@@ -157,6 +157,10 @@ const Password = (props) => {
           requestOption
         );
         if (data.success) {
+          setTabs("info");
+          setOtp("");
+          setPassword("");
+          confirmPass("");
           showNotification({
             message: "Таны нууц үг амжилттай солигдлоо.!",
             color: "green",
