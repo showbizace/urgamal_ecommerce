@@ -8,8 +8,8 @@ import {
   ActionIcon,
   rem,
 } from "@mantine/core";
-import { useContext, useEffect, useState } from "react";
-import { addCart, addWishlist } from "../utils/Store";
+import { useState } from "react";
+import { addCart } from "../utils/Store";
 import { getCookie } from "cookies-next";
 import { showNotification } from "@mantine/notifications";
 import {
@@ -45,8 +45,8 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
 
   const handleWishlist = async (event) => {
     event.stopPropagation();
-    setToggle(!wishlist);
-    if (!wishlist) {
+    setToggle(!toggle);
+    if (!toggle) {
       if (token) {
         const requestOption = {
           productid: data.id,
@@ -79,7 +79,18 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
           });
         }
       } else {
-        dispatch({ type: "ADD_TO_WISHLIST", payload: product });
+        showNotification({
+          message: "Нэвтрэх шаардлагатай",
+          color: "red",
+          icon: (
+            <IconCircleXFilled
+              style={{
+                width: rem(30),
+                height: rem(30),
+              }}
+            />
+          ),
+        });
       }
     }
   };
