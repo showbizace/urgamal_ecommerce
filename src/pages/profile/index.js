@@ -213,13 +213,11 @@ import Image from "next/image";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import { Button, Loader, rem } from "@mantine/core";
 import ProfileTabs from "../../components/ProfileTab";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ProfileInfo from "./tabs/ProfileInfo";
 import Address from "./tabs/Address";
-import SavedOrder from "./tabs/SavedOrder";
 import MyOrder from "./tabs/MyOrder";
-import PurchaseHistory from "./tabs/PurchaseHistory";
-import { getCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import {
   IconBoxSeam,
@@ -228,17 +226,21 @@ import {
   IconHeart,
   IconTruck,
   IconUserEdit,
+  IconGift,
 } from "@tabler/icons-react";
 import { fetchMethod } from "@/utils/fetch";
 import { showNotification } from "@mantine/notifications";
 import Wishlist from "./tabs/Wishlist";
+import Loyalty from "./tabs/Loyalty";
+import Feedback from "./tabs/Feedback";
+import { UserConfigContext } from "@/utils/userConfigContext";
 
 const Profile = () => {
   const router = useRouter();
   const [tabs, setTabs] = useState(1);
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState();
-
+  const userContext = useContext(UserConfigContext);
   const getUserInfo = async () => {
     setLoading(true);
     const token = getCookie("token");
@@ -271,23 +273,52 @@ const Profile = () => {
     getUserInfo();
   }, []);
 
+  useEffect(() => {
+    if (router.query.hasOwnProperty("wishlist")) {
+      setTabs(3);
+    }
+  }, [router]);
+
+  const logOut = () => {
+    userContext.logout();
+    deleteCookie("token");
+    deleteCookie("preference_config");
+    deleteCookie("number");
+    router.push("/login");
+  };
+
   return (
     <GlobalLayout>
       <div className="bg-grey-back w-full px-32 py-8">
         <div className="w-full h-56 bg-white rounded-md relative">
           <div className="absolute left-14 w-36 h-36 top-12">
-            <Image
-              src={"/profile.jpg"}
-              width={150}
-              height={150}
-              style={{
-                objectFit: "cover",
-                width: "100%",
-                height: "100%",
-                borderRadius: "100%",
-                border: "3px solid #EBEFEE",
-              }}
-            />
+            {userInfo?.picture ? (
+              <Image
+                src={userInfo.picture}
+                width={150}
+                height={150}
+                style={{
+                  objectFit: "cover",
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "100%",
+                  border: "3px solid #EBEFEE",
+                }}
+              />
+            ) : (
+              <Image
+                src={"/user.png"}
+                width={150}
+                height={150}
+                style={{
+                  objectFit: "cover",
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "100%",
+                  border: "3px solid #EBEFEE",
+                }}
+              />
+            )}
             <div
               className="absolute bottom-0 left-28 w-8 h-8 flex justify-center items-center bg-grey-back rounded-full"
               style={{ border: "3px solid white" }}
@@ -308,8 +339,9 @@ const Profile = () => {
             style={{ height: "50%" }}
           >
             <div className="flex flex-col">
-              <p className="text-2xl">Г.Цэцгээ</p>
-              <p className="text-base">Цэцэгчин</p>
+              <p className="text-2xl mb-4">
+                {userInfo?.family_name} {userInfo?.given_name}
+              </p>
             </div>
             <Button
               leftIcon={
@@ -318,11 +350,7 @@ const Profile = () => {
               variant="outline"
               color="red"
               className="mr-16"
-              onClick={() => {
-                setCookie("token", ""),
-                  setCookie("number", ""),
-                  router.push("/login");
-              }}
+              onClick={() => logOut()}
             >
               Системээс гарах
             </Button>
@@ -478,7 +506,7 @@ const Profile = () => {
                     stroke={1.5}
                   />
                 }
-                text={"Худалдан авсан түүх"}
+                text={"Санал хүсэлт илгээх"}
                 onClickTabs={() => onClickTabs(5)}
                 id={5}
                 first={true}
@@ -495,9 +523,43 @@ const Profile = () => {
                     stroke={1.5}
                   />
                 }
-                text={"Худалдан авсан түүх"}
+                text={"Санал хүсэлт илгээх"}
                 onClickTabs={() => onClickTabs(5)}
                 id={5}
+              />
+            )}
+            {tabs === 6 ? (
+              <ProfileTabs
+                icon={
+                  <IconGift
+                    style={{
+                      width: rem(30),
+                      height: rem(30),
+                      color: "#fff",
+                    }}
+                    stroke={1.5}
+                  />
+                }
+                text={"Loyalty"}
+                onClickTabs={() => onClickTabs(6)}
+                id={6}
+                first={true}
+              />
+            ) : (
+              <ProfileTabs
+                icon={
+                  <IconGift
+                    style={{
+                      width: rem(30),
+                      height: rem(30),
+                      color: "#F9BC60",
+                    }}
+                    stroke={1.5}
+                  />
+                }
+                text={"Loyalty"}
+                onClickTabs={() => onClickTabs(6)}
+                id={6}
               />
             )}
           </div>
@@ -518,7 +580,8 @@ const Profile = () => {
             {tabs === 2 && <Address />}
             {tabs === 3 && <Wishlist />}
             {tabs === 4 && <MyOrder />}
-            {tabs === 5 && <PurchaseHistory />}
+            {tabs === 5 && <Feedback />}
+            {tabs === 6 && <Loyalty userInfo={userInfo} />}
           </div>
         </div>
       </div>

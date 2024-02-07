@@ -11,12 +11,12 @@ import {
 } from "@mantine/core";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { IconMailForward } from "@tabler/icons-react";
+import { IconPhoneCall } from "@tabler/icons-react";
 import { fetchMethod } from "@/utils/fetch";
 import { showNotification } from "@mantine/notifications";
 
 const icon = (
-  <IconMailForward
+  <IconPhoneCall
     style={{ width: rem(16), height: rem(16), color: "green" }}
     stroke={1.5}
   />
@@ -72,7 +72,6 @@ const OTP = () => {
         message: "Амжилттай нэвтэрлээ",
         color: "green",
       });
-      context.closeModal(id);
     } else {
       showNotification({
         message: "Код буруу эсвэл хүчинтэй хугацаа дууссан байна.",
@@ -103,7 +102,7 @@ const OTP = () => {
       </div>
       <div className="flex flex-col relative items-center justify-center w-2/6">
         <Image src="/logo.png" width={100} height={100} alt="logo" />
-        <p className="text-xl font-bold mt-4 font-sans">Нэг удаагийн кодэ</p>
+        <p className="text-xl font-bold mt-4 font-sans">Нэг удаагийн код</p>
         <div className="mt-5 w-4/6">
           <Input.Wrapper label="Утасны дугаар" size="md">
             <Input

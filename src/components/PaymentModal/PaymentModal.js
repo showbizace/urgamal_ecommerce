@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import socket from "@/utils/Socket";
 import { Button, Card, Stack, Tabs, Text } from "@mantine/core";
 import axios from "axios";

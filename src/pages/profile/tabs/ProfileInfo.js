@@ -1,10 +1,10 @@
-import { Loader, Text, Title } from "@mantine/core";
-
-import { Mail, Mobile, Password, ProfileButton, UserEdit } from "../component";
-import { useEffect, useState } from "react";
-import { IconCircleXFilled } from "@tabler/icons-react";
-import { getCookie } from "cookies-next";
-import { fetchMethod } from "@/utils/fetch";
+import Mail from "@/components/Profile/Mail";
+import Mobile from "@/components/Profile/Mobile";
+import Password from "@/components/Profile/Password";
+import ProfileButton from "@/components/Profile/ProfileButton";
+import UserEdit from "@/components/Profile/UserEdit";
+import { Text, Title } from "@mantine/core";
+import { useState } from "react";
 
 const ProfileInfo = (props) => {
   const { data, setUserInfo, refresh } = props;
@@ -36,7 +36,7 @@ const ProfileInfo = (props) => {
       )}
       {tabs === "change" && (
         <>
-          <Title order={3}>Гар ут</Title>
+          <Title order={3}>Гар утас</Title>
           <Text size="sm" c="dimmed">
             Та нууц үгээ доорх талбаруудаар засварлаарай
           </Text>
@@ -54,7 +54,7 @@ const ProfileInfo = (props) => {
       {tabs === "info" && (
         <UserEdit data={data} setUserInfo={setUserInfo} refresh={refresh} />
       )}
-      {tabs === "change" && <Password />}
+      {tabs === "change" && <Password setTabs={setTabs} />}
       {tabs === "mobile" && <Mobile />}
       {tabs === "email" && <Mail />}
     </div>

@@ -12,6 +12,7 @@ import {
   Select,
   Text,
   Tooltip,
+  rem,
 } from "@mantine/core";
 import { forwardRef, useContext, useEffect, useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
@@ -21,14 +22,16 @@ import {
   IconPackage,
   IconReportSearch,
   IconSearch,
+  IconCircleXFilled,
 } from "@tabler/icons-react";
 
 import useSWR from "swr";
 import { useDebouncedValue } from "@mantine/hooks";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { isMobile } from "react-device-detect";
-import { fetcher } from "@/utils/fetch";
-import { getCart } from "@/utils/Store";
+import { fetchMethod, fetcher } from "@/utils/fetch";
+import { getCart, getWishlist } from "@/utils/Store";
+import { showNotification } from "@mantine/notifications";
 const token = getCookie("token");
 const Navbar = (props) => {
   const { address } = props;
@@ -36,7 +39,12 @@ const Navbar = (props) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debounced] = useDebouncedValue(searchQuery, 250);
   const userContext = useContext(UserConfigContext);
-  // const [data, setData] = useState()
+  const [showSearch, setShowSearch] = useState(false);
+  const [cartItem, setCartItem] = useState([]);
+  const [userImage, setUserImage] = useState("");
+  const route = useRouter();
+  const [number, setNumber] = useState("");
+  const [wishlistItems, setWishlistItems] = useState([]);
   const {
     data: categories,
     error: catsError,
@@ -50,12 +58,12 @@ const Navbar = (props) => {
   );
 
   const suggestions = data
-    ? data.map((e) => {
+    ? data?.map((e) => {
         return {
-          value: e.name,
-          id: e.id,
-          image: e.product_image?.images?.[0],
-          description: e.description,
+          value: e?.name || "",
+          id: e?.id || "",
+          image: e?.product_image?.images?.[0] || "",
+          description: e?.description || "",
         };
       })
     : [];
@@ -94,16 +102,80 @@ const Navbar = (props) => {
     );
   });
 
-  const [showSearch, setShowSearch] = useState(false);
-  const [cartItem, setCartItem] = useState([]);
-  const route = useRouter();
-  const [number, setNumber] = useState("");
   const linkToCart = () => {
     router.push({
       pathname: "/cart/cartItem",
     });
   };
 
+  const linkToHeart = () => {
+    const token = getCookie("token");
+    if (token) {
+      router.push({
+        pathname: "/profile",
+        query: "wishlist",
+      });
+    } else {
+      showNotification({
+        message: "Нэвтрэх шаардлагатай",
+        color: "red",
+        icon: (
+          <IconCircleXFilled
+            style={{
+              width: rem(30),
+              height: rem(30),
+            }}
+          />
+        ),
+      });
+    }
+  };
+
+  const getWishlist = async () => {
+    const token = getCookie("token");
+    if (token) {
+      const data = await fetchMethod("GET", "user/wishlist", token);
+      if (data.success) {
+        setWishlistItems(data.data);
+      } else {
+        showNotification({
+          message: data?.message,
+          color: "red",
+          icon: (
+            <IconCircleXFilled
+              style={{
+                width: rem(30),
+                height: rem(30),
+              }}
+            />
+          ),
+        });
+      }
+    }
+  };
+
+  const getUserInfo = async () => {
+    const token = getCookie("token");
+    if (token) {
+      const data = await fetchMethod("GET", "user/profile", token);
+      if (data.success) {
+        setUserImage(data.data.picture);
+      } else {
+        showNotification({
+          message: data?.message,
+          color: "red",
+          icon: (
+            <IconCircleXFilled
+              style={{
+                width: rem(30),
+                height: rem(30),
+              }}
+            />
+          ),
+        });
+      }
+    }
+  };
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.addEventListener("storage", () => {
@@ -117,6 +189,8 @@ const Navbar = (props) => {
     if (data) {
       setCartItem(data);
     }
+    getWishlist();
+    getUserInfo();
     const number = getCookie("number");
     if (number) {
       setNumber(number);
@@ -297,7 +371,34 @@ const Navbar = (props) => {
         </div>
         <div className="flex items-center gap-4 max-xs:gap-2">
           <div className="hidden md:block">
-            <Button compact variant={"white"} onClick={() => linkToCart()}>
+            <Button
+              compact
+              variant={"transparent"}
+              onClick={() => linkToHeart()}
+              className="mr-1"
+            >
+              <Image
+                alt="heart"
+                src="/icons/hearth.svg"
+                width={23}
+                height={23}
+                className="max-xs:w-6 h-6"
+              />
+              <div className="absolute">
+                {wishlistItems.length > 0 && (
+                  <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
+                    <p className="text-sm-5">
+                      {wishlistItems && wishlistItems.length}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </Button>
+            <Button
+              compact
+              variant={"transparent"}
+              onClick={() => linkToCart()}
+            >
               <Image
                 alt="trolley"
                 src="/icons/trolley.svg"
@@ -306,37 +407,50 @@ const Navbar = (props) => {
                 className="max-xs:w-6 h-6"
               />
               <div className="absolute">
-                <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
-                  <p className="text-sm-5">
-                    {cartItem?.cart_items ? cartItem?.cart_items?.length : 0}
-                  </p>
-                </div>
+                {cartItem?.cart_items?.length && (
+                  <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
+                    <p className="text-sm-5">
+                      {cartItem?.cart_items && cartItem?.cart_items?.length}
+                    </p>
+                  </div>
+                )}
               </div>
             </Button>
           </div>
           <div className="hidden md:block">
             <Avatar
+              variant="transparent"
               src={null}
               size={40}
               alt="user"
               radius="xl"
               component="button"
               onClick={() => {
-                console.log(userContext, "context");
-                if (!userContext.auth) {
+                const token = getCookie("token");
+                if (!token) {
                   route.push("/login");
                 } else {
                   route.push("/profile");
                 }
               }}
             >
-              <Image
-                alt="user"
-                src="/user.png"
-                width={40}
-                height={40}
-                className="w-8 h-8"
-              />
+              {userImage ? (
+                <Image
+                  alt="user"
+                  src={userImage}
+                  width={40}
+                  height={40}
+                  className="w-8 h-8 rounded-full"
+                />
+              ) : (
+                <Image
+                  alt="user"
+                  src="/user.png"
+                  width={40}
+                  height={40}
+                  className="w-8 h-8"
+                />
+              )}
             </Avatar>
           </div>
         </div>

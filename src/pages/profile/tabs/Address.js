@@ -23,10 +23,6 @@ const Address = () => {
   const token = getCookie("token");
 
   useEffect(() => {
-    const { cr } = router.query;
-    if (cr && cr === "order") {
-      setActiveTab(1);
-    }
     getUserAddress();
   }, []);
 

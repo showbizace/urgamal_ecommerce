@@ -84,7 +84,9 @@ const MyOrder = () => {
                 <Text span weight={500}>
                   {orderTypes.find((types) => types.value === e.value).title}
                 </Text>
-                <Text size="sm">захиалга одоогоор байхгүй байна</Text>
+                <span className="mt-2 font-medium text-base text-grey">
+                  захиалга одоогоор байхгүй байна.
+                </span>
               </div>
             </div>
           ) : (

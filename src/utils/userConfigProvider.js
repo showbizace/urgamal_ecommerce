@@ -34,6 +34,7 @@ export const UserConfigProvider = ({ children }) => {
         setAddress(response?.data?.data);
       });
   };
+
   const getLinks = async () => {
     axios
       .get(`${process.env.NEXT_PUBLIC_API_URL}/config/links`, {
