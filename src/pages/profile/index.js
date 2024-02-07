@@ -341,8 +341,9 @@ const Profile = () => {
             style={{ height: "50%" }}
           >
             <div className="flex flex-col">
-              <p className="text-2xl">Г.Цэцгээ</p>
-              <p className="text-base">Цэцэгчин</p>
+              <p className="text-2xl mb-4">
+                {userInfo?.family_name} {userInfo?.given_name}
+              </p>
             </div>
             <Button
               leftIcon={

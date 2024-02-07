@@ -1,10 +1,7 @@
-import { Loader, Text, Title } from "@mantine/core";
+import { Text, Title } from "@mantine/core";
 
 import { Mail, Mobile, Password, ProfileButton, UserEdit } from "../component";
-import { useEffect, useState } from "react";
-import { IconCircleXFilled } from "@tabler/icons-react";
-import { getCookie } from "cookies-next";
-import { fetchMethod } from "@/utils/fetch";
+import { useState } from "react";
 
 const ProfileInfo = (props) => {
   const { data, setUserInfo, refresh } = props;
