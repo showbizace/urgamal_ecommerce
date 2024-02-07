@@ -11,7 +11,7 @@ import ProductCard from "@/components/product-card";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
 import { Breadcrumbs } from "@mantine/core";
 import { fetchMethod, fetcher, getCategory } from "@/utils/fetch";
-import { PAGE_SIZE } from "@/constant";
+import { PAGE_SIZE } from "@/utils/constant";
 
 export async function getServerSideProps({ query }) {
   const { catId } = query;

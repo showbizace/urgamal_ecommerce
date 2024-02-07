@@ -245,7 +245,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
               <Button
                 variant={"filled"}
                 className="bg-button-yellow rounded-md  hover:cursor-pointer"
-                color={"orange"}
+                color={"yellow"}
                 onClick={(event) => addToCartHandler(event)}
               >
                 {loading === true ? (
