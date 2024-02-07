@@ -97,7 +97,7 @@ const UserEdit = (props) => {
               size="sm"
               label="Нэр"
               placeholder="Нэр"
-              value={data?.given_name}
+              value={data.given_name}
               onChange={(event) =>
                 setUserInfo({
                   ...data,
@@ -129,7 +129,7 @@ const UserEdit = (props) => {
             <TextInput
               size="sm"
               label="Цахим шуудан"
-              value={data?.email}
+              value={data.email}
               onChange={(event) =>
                 setUserInfo({
                   ...data,
@@ -161,7 +161,7 @@ const UserEdit = (props) => {
               size="sm"
               label="Утасны дугаар"
               placeholder="Утасны дугаар"
-              value={data?.mobile}
+              value={data.mobile}
               onChange={(event) =>
                 setUserInfo({
                   ...data,
@@ -232,7 +232,7 @@ const UserEdit = (props) => {
                   stroke={2}
                 />
               }
-              value={data?.birthdate ? new Date(data?.birthdate) : new Date()}
+              value={new Date(data.birthdate)}
               onChange={(date) => setUserInfo({ ...data, birthdate: date })}
               valueFormat="YYYY/MM/DD"
               label="Төрсөн огноо"
@@ -255,7 +255,7 @@ const UserEdit = (props) => {
               placeholder="Хүйс"
               label="Хүйс"
               data={["Эрэгтэй", "Эмэгтэй"]}
-              value={data?.gender}
+              value={data.gender}
               onChange={(value) => setUserInfo({ ...data, gender: value })}
               icon={
                 <IconGenderMale

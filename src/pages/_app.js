@@ -8,10 +8,10 @@ import { UserConfigProvider } from "@/utils/userConfigProvider";
 import CategoryContextProvider from "@/utils/categoryContext";
 import PaymentModal from "@/components/PaymentModal/PaymentModal";
 import { useMantineTheme } from "@mantine/core";
-import { Open_Sans } from "@next/font/google";
-const mont = Open_Sans({
+import { Montserrat } from "@next/font/google";
+const mont = Montserrat({
   subsets: ["latin"],
-  variable: "--font-open",
+  variable: "--font-mont",
 });
 
 export default function App({ Component, pageProps }) {

@@ -109,26 +109,10 @@ const Navbar = (props) => {
   };
 
   const linkToHeart = () => {
-    const token = getCookie("token");
-    if (token) {
-      router.push({
-        pathname: "/profile",
-        query: "wishlist",
-      });
-    } else {
-      showNotification({
-        message: "Нэвтрэх шаардлагатай",
-        color: "red",
-        icon: (
-          <IconCircleXFilled
-            style={{
-              width: rem(30),
-              height: rem(30),
-            }}
-          />
-        ),
-      });
-    }
+    router.push({
+      pathname: "/profile",
+      query: "wishlist",
+    });
   };
 
   const getWishlist = async () => {

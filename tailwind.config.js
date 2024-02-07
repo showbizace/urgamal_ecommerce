@@ -29,7 +29,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        mont: ["var(--font-open)"],
+        mont: ["var(--font-mont)"],
       },
       colors: {
         "main-background": "#3E503C",
