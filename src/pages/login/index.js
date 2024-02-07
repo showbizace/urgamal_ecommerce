@@ -6,7 +6,7 @@ import { isNotEmpty, useForm } from "@mantine/form";
 import { useRouter } from "next/router";
 import { getCookie, setCookie } from "cookies-next";
 import { IconAt, IconCheck, IconLock } from "@tabler/icons-react";
-import { Buttons } from "./component";
+import Buttons from "../../components/Buttons";
 import { fetchMethod } from "@/utils/fetch";
 import { showNotification } from "@mantine/notifications";
 import { UserConfigContext } from "@/utils/userConfigContext";
