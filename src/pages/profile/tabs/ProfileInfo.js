@@ -1,6 +1,9 @@
+import Mail from "@/components/Profile/Mail";
+import Mobile from "@/components/Profile/Mobile";
+import Password from "@/components/Profile/Password";
+import ProfileButton from "@/components/Profile/ProfileButton";
+import UserEdit from "@/components/Profile/UserEdit";
 import { Text, Title } from "@mantine/core";
-
-import { Mail, Mobile, Password, ProfileButton, UserEdit } from "../component";
 import { useState } from "react";
 
 const ProfileInfo = (props) => {

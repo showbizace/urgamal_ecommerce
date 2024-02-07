@@ -216,10 +216,8 @@ import ProfileTabs from "../../components/ProfileTab";
 import { useContext, useEffect, useState } from "react";
 import ProfileInfo from "./tabs/ProfileInfo";
 import Address from "./tabs/Address";
-import SavedOrder from "./tabs/SavedOrder";
 import MyOrder from "./tabs/MyOrder";
-import PurchaseHistory from "./tabs/PurchaseHistory";
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import {
   IconBoxSeam,
