@@ -132,43 +132,15 @@ export const syncCart = (products) => {
   }
 };
 
-// export const addWishlist = (product) => {
-//   if (typeof window !== "undefined") {
-//     const get = localStorage.getItem("wishlistItems");
-//     if (get) {
-//       let state = JSON.parse(get);
-//       const existingItemIndex = state?.wishlist_items?.findIndex(
-//         (item) => item.id === product.id
-//       );
-//       if (existingItemIndex === -1) {
-//         const updatedCartItems = state.wishlist_items.push({ ...product });
+export const rememberMe = (user) => {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("user", JSON.stringify(user));
+  }
+};
 
-//         localStorage.setItem("wishlistItems", JSON.stringify(updatedCartItems));
-//         window.dispatchEvent(new Event("storage"));
-//       }
-//     } else {
-//       const updatedState = {
-//         wishlist_items: [{ ...product }],
-//       };
-//       localStorage.setItem("wishlistItems", JSON.stringify(updatedState));
-//       window.dispatchEvent(new Event("wishlist"));
-//     }
-//   }
-// };
-
-// export const getWishlist = () => {
-//   if (typeof window !== "undefined") {
-//     const get = localStorage.getItem("wishlistItems");
-//     let state;
-//     if (
-//       get !== "undefined" &&
-//       get !== undefined &&
-//       get !== null &&
-//       get !== ""
-//     ) {
-//       state = JSON.parse(get);
-//       return state;
-//     }
-//     return state || [];
-//   }
-// };
+export const rememberMeRemove = () => {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("user");
+    console.log("working");
+  }
+};

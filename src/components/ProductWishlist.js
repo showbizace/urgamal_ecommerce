@@ -17,13 +17,14 @@ import { getCookie } from "cookies-next";
 import { showNotification } from "@mantine/notifications";
 import { addCart } from "@/utils/Store";
 import { useState } from "react";
+import useWishlist from "@/utils/useWishlist";
 const ProductWishlist = ({ data, refresh }) => {
   const [loading, setLoading] = useState(false);
-
+  const wishlist = useWishlist();
   const handleDelete = async () => {
     const token = getCookie("token");
     const requestOption = {
-      product_id: data.productid,
+      productid: data.productid,
     };
     const res = await fetchMethod(
       "DELETE",
@@ -37,6 +38,7 @@ const ProductWishlist = ({ data, refresh }) => {
         icon: <IconCheck />,
         color: "green",
       });
+      wishlist.removeItem(data.productid);
     } else {
       showNotification({
         message: res?.message,

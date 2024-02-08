@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { regexNumber } from "@/utils/constant";
 import { fetchMethod } from "@/utils/fetch";
 import {
   Button,
@@ -35,19 +36,11 @@ const Password = (props) => {
   const [password, setPassword] = useState("");
   const [errorPass, setErrorPass] = useState(false);
   const [errorConPass, setErrorConPass] = useState(false);
-  const [checkUpper, setCheckUpper] = useState(false);
-  const [checkLower, setCheckLower] = useState(false);
-  const [checkSpecial, setCheckSpecial] = useState(false);
-  const [checkCharacter, setCheckCharacter] = useState(false);
+  const [checkNumber, setCheckNumber] = useState(false);
   const [checkSame, setCheckSame] = useState(false);
   const [show, setShow] = useState(false);
   const [confirmPass, setConfirmPass] = useState("");
   const [otpRequested, setOtpRequested] = useState(false);
-
-  const uppercase = /[A-Z]/;
-  const lowercase = /[a-z]/;
-  const special = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
-  const character = /.{8,}/;
 
   useEffect(() => {
     if (otpRequested) {
@@ -74,10 +67,7 @@ const Password = (props) => {
   useEffect(() => {
     if (password.length > 0) {
       setShow(true);
-      check("upper", uppercase);
-      check("lower", lowercase);
-      check("special", special);
-      check("character", character);
+      check("number", regexNumber);
     } else {
       setShow(false);
     }
@@ -103,19 +93,8 @@ const Password = (props) => {
 
   const check = (type, regex) => {
     switch (type) {
-      case "upper":
-        regex.test(password) ? setCheckUpper(true) : setCheckUpper(false);
-        break;
-      case "lower":
-        regex.test(password) ? setCheckLower(true) : setCheckLower(false);
-        break;
-      case "special":
-        regex.test(password) ? setCheckSpecial(true) : setCheckSpecial(false);
-        break;
-      case "character":
-        regex.test(password)
-          ? setCheckCharacter(true)
-          : setCheckCharacter(false);
+      case "number":
+        regex.test(password) ? setCheckNumber(true) : setCheckNumber(false);
         break;
       case "same":
         password === confirmPass ? setCheckSame(true) : setCheckSame(false);
@@ -135,52 +114,40 @@ const Password = (props) => {
       setErrorConPass(false);
     }
 
-    if (
-      !errorConPass &&
-      !errorPass &&
-      checkUpper &&
-      checkLower &&
-      checkSpecial &&
-      checkCharacter &&
-      checkSame
-    ) {
+    if (!errorConPass && !errorPass && checkNumber && checkSame) {
       const token = getCookie("token");
       const requestOption = {
         code: otp,
         newpassword: password,
       };
-      try {
-        const data = await fetchMethod(
-          "POST",
-          "auth/changepass",
-          token,
-          requestOption
-        );
-        if (data.success) {
-          setTabs("info");
-          setOtp("");
-          setPassword("");
-          confirmPass("");
-          showNotification({
-            message: "Таны нууц үг амжилттай солигдлоо.!",
-            color: "green",
-          });
-        } else {
-          showNotification({
-            message: data.message,
-            color: "red",
-            icon: (
-              <IconCircleXFilled
-                style={{
-                  width: rem(30),
-                  height: rem(30),
-                }}
-              />
-            ),
-          });
-        }
-      } catch (e) {
-        console.log(e);
+      const data = await fetchMethod(
+        "POST",
+        "auth/changepass",
+        token,
+        requestOption
+      );
+      if (data.success) {
+        showNotification({
+          message: "Таны нууц үг амжилттай солигдлоо.!",
+          color: "green",
+        });
+        setTabs("info");
+        setOtp("");
+        setPassword("");
+        setConfirmPass("");
+      } else {
+        showNotification({
+          message: data.message,
+          color: "red",
+          icon: (
+            <IconCircleXFilled
+              style={{
+                width: rem(30),
+                height: rem(30),
+              }}
+            />
+          ),
+        });
       }
     }
   };
@@ -239,14 +206,14 @@ const Password = (props) => {
             </Center>
             <Center>
               <Text size="md" fw={600}>
-                {otpRequested ? "Нэг удаагийн кодэ" : "Утасны дугаар"}
+                {otpRequested ? "Нэг удаагийн код" : "Утасны дугаар"}
               </Text>
             </Center>
             <Center>
               <Text size="sm" c="dimmed">
                 {otpRequested
-                  ? "Та 6 оронтой кодэ оруулна уу"
-                  : "Та нэг удаагийн кодэ авах дугаараа оруулна уу"}
+                  ? "Та 6 оронтой код оруулна уу"
+                  : "Та нэг удаагийн код авах дугаараа оруулна уу"}
               </Text>
             </Center>
             <Center>
@@ -395,23 +362,10 @@ const Password = (props) => {
         <div
           className="w-full py-2 px-4 rounded-lg mt-2"
           style={{
-            backgroundColor:
-              checkUpper &&
-              checkLower &&
-              checkSpecial &&
-              checkCharacter &&
-              checkSame
-                ? "#D1FADF"
-                : "#FEE4E2",
+            backgroundColor: checkNumber && checkSame ? "#D1FADF" : "#FEE4E2",
           }}
         >
-          {renderCheck(checkUpper, "Багадаа хаяж 1 том үсэг оруулсан байна")}
-          {renderCheck(checkLower, "Багадаа хаяж 1 жижиг үсэг оруулсан байна")}
-          {renderCheck(
-            checkSpecial,
-            "Багадаа  1 тусгай тэмдэгт оруулсан байна"
-          )}
-          {renderCheck(checkCharacter, "8-аас багагүй урттай байна")}
+          {renderCheck(checkNumber, "Нууц үг 4 оронтой тооноос бүрдсэн байна")}
           {renderCheck(checkSame, "Нууц үг ижилхэн байна")}
         </div>
       )}

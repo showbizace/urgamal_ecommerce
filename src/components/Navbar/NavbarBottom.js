@@ -1,12 +1,14 @@
 /* eslint-disable jsx-a11y/alt-text */
 import { htmlFrom } from "@/utils/constant";
-import { Autocomplete } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+import { Autocomplete, rem } from "@mantine/core";
+import { IconCircleXFilled, IconSearch } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { isMobile } from "react-device-detect";
 import CategoryHover from "../AllCategory/CategoryHover";
+import { fetchMethod } from "@/utils/fetch";
+import { showNotification } from "@mantine/notifications";
 
 const NavbarBottom = ({
   AutocompleteItem,
@@ -17,12 +19,39 @@ const NavbarBottom = ({
 }) => {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const getCats = async () => {
+    setLoading(true);
+    const data = await fetchMethod("GET", "product/cat-list");
+    if (data.success) {
+      setCategories(data.categories);
+    } else {
+      showNotification({
+        message: data.message,
+        color: "red",
+        icon: (
+          <IconCircleXFilled
+            style={{
+              width: rem(30),
+              height: rem(30),
+            }}
+          />
+        ),
+      });
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getCats();
+  }, []);
+
   return (
     <div className="py-2 px-12 max-sm:px-2 flex flex-row justify-between relative">
       <button
         className="flex flex-row bg-button-yellow items-center justify-center rounded-md gap-1 px-3"
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
         <Image
           src={"/icons/cube.svg"}
@@ -34,7 +63,14 @@ const NavbarBottom = ({
           Бүх ангилал
         </div>
       </button>
-      {isHovered && <CategoryHover />}
+      {isHovered && (
+        <CategoryHover
+          setIsHovered={setIsHovered}
+          categories={categories}
+          loading={loading}
+        />
+      )}
+
       <div className="hidden md:block flex-grow mx-12">
         <Autocomplete
           className="w-full"

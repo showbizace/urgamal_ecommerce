@@ -10,6 +10,7 @@ import {
   Button,
   Group,
   Loader,
+  ScrollArea,
   Select,
   Text,
   Tooltip,
@@ -32,11 +33,13 @@ import { isMobile } from "react-device-detect";
 import { fetchMethod, fetcher } from "@/utils/fetch";
 import { getCart } from "@/utils/Store";
 import { showNotification } from "@mantine/notifications";
-import NavbarBottom from "./navbarBottom";
+import NavbarBottom from "./NavbarBottom";
+import useWishlist from "@/utils/useWishlist";
 const Navbar = (props) => {
   const { address } = props;
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const wishlist = useWishlist();
   const [debounced] = useDebouncedValue(searchQuery, 250);
   const userContext = useContext(UserConfigContext);
   const [showSearch, setShowSearch] = useState(false);
@@ -44,14 +47,13 @@ const Navbar = (props) => {
   const [userInfo, setUserInfo] = useState({ name: "", picture: "" });
   const route = useRouter();
   const [number, setNumber] = useState("");
-  const [wishlistItems, setWishlistItems] = useState([]);
-  const {
-    data: categories,
-    error: catsError,
-    isLoading: catsLoading,
-  } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
-    refreshInterval: 0,
-  });
+  // const {
+  //   data: categories,
+  //   error: catsError,
+  //   isLoading: catsLoading,
+  // } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
+  //   refreshInterval: 0,
+  // });
   const { data, error, isLoading, mutate, isValidating } = useSWR(
     `${process.env.NEXT_PUBLIC_API_URL}/product?limit=${10}&query=${debounced}`,
     fetcher
@@ -72,11 +74,11 @@ const Navbar = (props) => {
     mutate();
   }, [debounced]);
 
-  useEffect(() => {
-    if (isMobile === true && catsLoading === false) {
-      props.getValue(categories);
-    }
-  }, [categories]);
+  // useEffect(() => {
+  //   if (isMobile === true && catsLoading === false) {
+  //     props.getValue(categories);
+  //   }
+  // }, [categories]);
 
   // eslint-disable-next-line react/display-name
   const AutocompleteItem = forwardRef(({ image, value, ...others }, ref) => {
@@ -132,29 +134,6 @@ const Navbar = (props) => {
     }
   };
 
-  const getWishlist = async () => {
-    const token = getCookie("token");
-    if (token) {
-      const data = await fetchMethod("GET", "user/wishlist", token);
-      if (data.success) {
-        setWishlistItems(data.data);
-      } else {
-        showNotification({
-          message: data?.message,
-          color: "red",
-          icon: (
-            <IconCircleXFilled
-              style={{
-                width: rem(30),
-                height: rem(30),
-              }}
-            />
-          ),
-        });
-      }
-    }
-  };
-
   const getUserInfo = async () => {
     const token = getCookie("token");
     if (token) {
@@ -180,6 +159,7 @@ const Navbar = (props) => {
       }
     }
   };
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.addEventListener("storage", () => {
@@ -193,7 +173,6 @@ const Navbar = (props) => {
     if (data) {
       setCartItem(data);
     }
-    getWishlist();
     getUserInfo();
     const number = getCookie("number");
     if (number) {
@@ -276,11 +255,9 @@ const Navbar = (props) => {
           className="max-xs:w-6 h-6"
         />
         <div className="absolute">
-          {wishlistItems.length > 0 && (
+          {wishlist.get.length > 0 && (
             <div className="w-3.5 h-3.5 bg-number flex justify-center items-center text-white -mt-5 rounded-full text-xs ml-5">
-              <p className="text-sm-5">
-                {wishlistItems && wishlistItems.length}
-              </p>
+              <p className="text-sm-5">{wishlist.get.length}</p>
             </div>
           )}
         </div>
@@ -319,14 +296,8 @@ const Navbar = (props) => {
           </div>
           <div className="font-open">УРГАМАЛ</div>
         </Link>
-        <div className="flex justify-end md:justify-center items-center gap-8 md:gap-3 flex-grow ml-6 md:mx-11 ">
-          {catsError && <div>error</div>}
-          {catsLoading && (
-            <div>
-              <Loader variant="dots" color="yellow" />
-            </div>
-          )}
-          {categories && (
+        <div className="flex justify-end md:justify-center items-center gap-8 md:gap-3 flex-grow ml-6 md:mx-11">
+          {/* {categories && (
             <Tooltip
               withArrow
               label="Танд зөвхөн уг төрлийн бараа, ангиллууд харагдана"
@@ -372,13 +343,26 @@ const Navbar = (props) => {
                 }
               />
             </Tooltip>
-          )}
-          <div className="flex flex-1 items-center justify-center">
-            <NavBarLinks name={"Цэцэгчин"} />
-            <NavBarLinks name={"Ногоочин"} />
-            <NavBarLinks name={"Үйлдвэр"} />
-            <NavBarLinks name={"Аж ахуйн нэгж"} />
-          </div>
+          )} */}
+
+          {/* <div
+            id="scroll"
+            className="flex items-center justify-center w-[45%] hover:overflow-x-auto whitespace-nowrap pb-3 pt-3"
+          >
+            {catsLoading ? (
+              <div>
+                <Loader variant="dots" color="yellow" />
+              </div>
+            ) : (
+              <>
+                <NavBarLinks name={"Цэцэгчин"} />
+                <NavBarLinks name={"Ногоочин"} />
+                <NavBarLinks name={"Үйлдвэр"} />
+                <NavBarLinks name={"Аж ахуйн нэгж"} />
+              </>
+            )}
+          </div> */}
+
           <div className="block md:hidden">
             <button
               className="w-full m-auto h-full bg-background-sort p-3 rounded-full max-xs:w-11 max-xs:h-11 max-xs:flex max-xs:items-center max-xs:justify-center max-xs:p-0 max-xs:px-0 "
@@ -430,20 +414,21 @@ const Navbar = (props) => {
               })}
               leftIcon={<ProfileButtonImage />}
               onClick={() => {
-                const token = getCookie("token");
-                if (!token) {
+                if (!userContext.auth) {
                   route.push("/login");
                 } else {
                   route.push("/profile");
                 }
               }}
             >
-              <div className="flex flex-col font-open font-light text-sm-2 text-[#001E1D] gap-1">
-                Сайн байна уу?
-                <div className="font-open font-semibold text-xs">
-                  {userInfo.name}
+              {userContext.auth && (
+                <div className="flex flex-col font-open font-light text-sm-2 text-[#001E1D] gap-1">
+                  Сайн байна уу?
+                  <div className="font-open font-semibold text-xs">
+                    {userInfo.name}
+                  </div>
                 </div>
-              </div>
+              )}
             </Button>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { Collapse, Text, Grid } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { IconChevronRight } from "@tabler/icons-react";
-import MySkeleton from "./MySkeleton";
+import MySkeleton from "../MySkeleton";
 import Image from "next/image";
 
 const Category = ({

@@ -62,6 +62,7 @@ module.exports = {
         "greenish-grey": "rgba(53, 105, 102, 0.75)",
         description: "#001E1D",
         tertiary: "#e16162",
+        primary: "#F9BC60",
       },
       backgroundColor: {
         main: "#F1F4F0",

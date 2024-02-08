@@ -25,6 +25,7 @@ import {
 } from "../utils/SuccessNotification";
 import { useRouter } from "next/router";
 import { fetchMethod } from "@/utils/fetch";
+import useWishlist from "@/utils/useWishlist";
 
 const ProductCard = ({ key, src, data, shouldScale = true }) => {
   const [productCount, setProductCount] = useState(1);
@@ -32,7 +33,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
   const router = useRouter();
   const token = getCookie("token");
   const [toggle, setToggle] = useState(false);
-
+  const wishlist = useWishlist();
   const addCount = (event) => {
     event.stopPropagation();
     if (data?.balance - productCount > 0) setProductCount(productCount + 1);
@@ -57,10 +58,10 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
           token,
           requestOption
         );
-
-        if (res.status === 200) {
+        if (res.success) {
+          wishlist.addItem(data);
           showNotification({
-            message: "Амжилттай нэмэгдлээ.",
+            message: res.message,
             icon: <IconCheck />,
             color: "green",
           });
