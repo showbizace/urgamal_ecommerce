@@ -8,6 +8,7 @@ import CategoryHoverResult from "./CategoryHoverResult";
 import Image from "next/image";
 import { showNotification } from "@mantine/notifications";
 import { IconCircleXFilled } from "@tabler/icons-react";
+import Link from "next/link";
 const CategoryHover = ({ setIsHovered, loading, categories }) => {
   const [filterData, setFilterData] = useState([]);
 
@@ -18,7 +19,7 @@ const CategoryHover = ({ setIsHovered, loading, categories }) => {
 
   return (
     <div
-      className="flex flex-row bg-white absolute left-0 top-14 rounded-md py-2 px-4 w-full h-[32rem] overflow-auto"
+      className="flex flex-row bg-white absolute left-0 top-14 rounded-md py-6 px-6 w-full h-[32rem] overflow-auto"
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="flex flex-row relative w-full">
@@ -30,7 +31,8 @@ const CategoryHover = ({ setIsHovered, loading, categories }) => {
           <div className="flex flex-row w-full h-full ">
             <div className="flex flex-col">
               {categories?.map((item, index) => (
-                <div
+                <Link
+                  href={`/category/parent/${item.id}`}
                   key={index}
                   className="flex flex-row gap-2 items-center w-80"
                   onMouseEnter={() => handleEnter(item, index)}
@@ -39,7 +41,7 @@ const CategoryHover = ({ setIsHovered, loading, categories }) => {
                     <Image src={item.icon} width={24} height={24} alt="icon" />
                   )}
                   <CategoryHoverItem item={item} index={index} />
-                </div>
+                </Link>
               ))}
             </div>
             <div className="w-full relative h-full  ">

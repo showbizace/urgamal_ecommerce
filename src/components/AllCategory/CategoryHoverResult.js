@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import CategoryHoverInner from "./CategoryHoverInner";
 import { IoIosArrowForward } from "react-icons/io";
 import { rem } from "@mantine/core";
+import Link from "next/link";
 
 const CategoryHoverResult = ({ item, index }) => {
   const [filterData, setFilterData] = useState([]);
@@ -17,7 +18,8 @@ const CategoryHoverResult = ({ item, index }) => {
           <div className="flex flex-col flex-wrap items-start px-8" key={index}>
             <span className="mt-1 mb-3 text-grey600 text-base">Ангилал</span>
             {item?.child_cats?.map((item, index) => (
-              <button
+              <Link
+                href={`/category/parent/${item.id}`}
                 key={index}
                 className="py-2 text-sm hover:text-primary text-grey600 font-semibold flex flex-row justify-between w-96"
                 onMouseEnter={() => {
@@ -26,7 +28,7 @@ const CategoryHoverResult = ({ item, index }) => {
               >
                 {item?.name}
                 <IoIosArrowForward size={rem(16)} />
-              </button>
+              </Link>
             ))}
           </div>
           <CategoryHoverInner item={filterData} />
