@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
-import Category from "@/components/category";
+import Category from "@/components/AllCategory/category";
 import axios from "axios";
 import useSWRInfinite from "swr/infinite";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
@@ -11,7 +11,7 @@ import ProductCard from "@/components/product-card";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
 import { Breadcrumbs } from "@mantine/core";
 import { fetchMethod, fetcher, getCategory } from "@/utils/fetch";
-import { PAGE_SIZE } from "@/constant";
+import { PAGE_SIZE } from "@/utils/constant";
 
 export async function getServerSideProps({ query }) {
   const { catId } = query;

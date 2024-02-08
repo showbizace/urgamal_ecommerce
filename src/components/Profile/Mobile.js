@@ -175,14 +175,14 @@ const Mobile = () => {
             <Center>
               <Text size="md" fw={600}>
                 {otpRequested
-                  ? "Нэг удаагийн кодэ"
+                  ? "Нэг удаагийн код"
                   : "Утасны дугаар баталгаажуулах"}
               </Text>
             </Center>
             <Center>
               <Text size="sm" c="dimmed">
                 {otpRequested
-                  ? "Та 6 оронтой кодэ оруулна уу"
+                  ? "Та 6 оронтой код оруулна уу"
                   : "Та зөвхөн өөрийн утасны дугаарыг оруулна уу"}
               </Text>
             </Center>

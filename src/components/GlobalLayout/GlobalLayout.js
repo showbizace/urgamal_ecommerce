@@ -1,13 +1,9 @@
 /* eslint-disable @next/next/no-page-custom-font */
 import Head from "next/head";
-import React, { Children, useContext, useEffect, useState } from "react";
-import Navbar from "../navbar";
-import Search from "../search";
+import React, { useContext, useEffect, useState } from "react";
+import Navbar from "../Navbar/navbar";
 import BottomFooter from "../Footer";
-import { isMobile } from "react-device-detect";
-import { Select, Tooltip } from "@mantine/core";
 import { UserConfigContext } from "@/utils/userConfigContext";
-import { IconHomeEco, IconReportSearch } from "@tabler/icons-react";
 import { setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import BottomNavBar from "../bottomNavigation";

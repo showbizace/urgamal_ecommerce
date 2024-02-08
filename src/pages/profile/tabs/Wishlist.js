@@ -1,21 +1,15 @@
-import ProductCardProfile from "@/components/ProductWishlist";
+import ProductWishlist from "@/components/ProductWishlist";
 import { fetchMethod } from "@/utils/fetch";
-import { Button, Loader, Title, rem } from "@mantine/core";
+import { Loader, Title, rem } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import {
-  IconCircleXFilled,
-  IconHeartOff,
-  IconShoppingCart,
-  IconTrashX,
-} from "@tabler/icons-react";
+import { IconCircleXFilled, IconHeartOff } from "@tabler/icons-react";
 import { getCookie } from "cookies-next";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { BsCartX } from "react-icons/bs";
 
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     getWishlist();
   }, []);
@@ -54,7 +48,7 @@ const Wishlist = () => {
           </div>
         ) : wishlist.length > 0 ? (
           wishlist.map((item, index) => (
-            <ProductCardProfile data={item} key={index} refresh={getWishlist} />
+            <ProductWishlist data={item} key={index} refresh={getWishlist} />
           ))
         ) : (
           <div className="min-h-full h-72 flex flex-col items-center justify-center">

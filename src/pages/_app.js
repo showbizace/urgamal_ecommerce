@@ -9,6 +9,7 @@ import CategoryContextProvider from "@/utils/categoryContext";
 import PaymentModal from "@/components/PaymentModal/PaymentModal";
 import { useMantineTheme } from "@mantine/core";
 import { Open_Sans } from "@next/font/google";
+import WishlistProvider from "@/utils/wishlistProvider";
 const mont = Open_Sans({
   subsets: ["latin"],
   variable: "--font-open",
@@ -31,23 +32,25 @@ export default function App({ Component, pageProps }) {
     >
       <Notifications />
       <UserConfigProvider>
-        <ModalsProvider modals={{ login: LoginModal, payment: PaymentModal }}>
-          <CategoryContextProvider>
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-            >
-              <main
-                className={`${mont.variable}`}
-                style={{ width: "100%", height: "100%" }}
+        <WishlistProvider>
+          <ModalsProvider modals={{ login: LoginModal, payment: PaymentModal }}>
+            <CategoryContextProvider>
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                }}
               >
-                <Component {...pageProps} />
-              </main>
-            </div>
-          </CategoryContextProvider>
-        </ModalsProvider>
+                <main
+                  className={`${mont.variable}`}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <Component {...pageProps} />
+                </main>
+              </div>
+            </CategoryContextProvider>
+          </ModalsProvider>
+        </WishlistProvider>
       </UserConfigProvider>
     </MantineProvider>
   );

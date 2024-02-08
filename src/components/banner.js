@@ -6,7 +6,7 @@ import { Carousel } from "@mantine/carousel";
 const Banner = () => {
   return (
     <div className="w-full">
-      <div className="flex w-full h-[180px] lg:h-[390px]">
+      <div className="flex w-full h-[180px] lg:h-[32rem]">
         <Carousel
           withIndicators
           height="100%"
@@ -36,7 +36,7 @@ const Banner = () => {
                 alt="banner2"
                 src="/banner2.png"
                 fill
-                className="rounded object-fill md:object-contain top-0 max-h-full"
+                className="rounded object-fill md:object-cover  max-h-full"
                 draggable={false}
               />
             </div>
@@ -47,7 +47,7 @@ const Banner = () => {
                 alt="banner"
                 src="/banner.png"
                 fill
-                className="rounded object-fill md:object-contain top-0 max-h-full"
+                className="rounded object-fill md:object-cover  max-h-full"
                 draggable={false}
               />
             </div>
