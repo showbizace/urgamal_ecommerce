@@ -5,7 +5,7 @@ const appendCache = createEmotionCache({ key: "mantine", prepend: false });
 import { ModalsProvider } from "@mantine/modals";
 import LoginModal from "@/components/LoginModal/LoginModal";
 import { UserConfigProvider } from "@/utils/userConfigProvider";
-import CategoryContextProvider from "@/utils/categoryContext";
+import CategoryContextProvider from "@/utils/categoryContextProvider";
 import PaymentModal from "@/components/PaymentModal/PaymentModal";
 import { useMantineTheme } from "@mantine/core";
 import { Open_Sans } from "@next/font/google";

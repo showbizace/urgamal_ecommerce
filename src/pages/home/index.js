@@ -8,8 +8,8 @@ import { useEffect, useCallback, useState, useContext } from "react";
 import Preference_modal from "@/components/preference_modal/preference_modal";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { useDisclosure } from "@mantine/hooks";
-import { getCategory } from "@/utils/fetch";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
+import useCategories from "@/hooks/useCategories";
 
 const PAGE_SIZE = 20;
 
@@ -51,8 +51,7 @@ export async function getStaticProps() {
 export default function Home({ data, cats }) {
   const userConfigs = useContext(UserConfigContext);
   const { preference_cookie, configId } = userConfigs;
-  const [categories, setCategories] = useState([]);
-  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const categories = useCategories();
   const [positionSticky, setPositionSticky] = useState(false);
 
   const [opened, { open, close }] = useDisclosure(true);
@@ -77,25 +76,11 @@ export default function Home({ data, cats }) {
     window.addEventListener("scroll", onScroll);
     window.dispatchEvent(new Event("storage"));
     // setProducts(data.result);
-    fetchCategory();
 
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
-
-  const fetchCategory = async () => {
-    setCategoriesLoading(true);
-
-    const data = await getCategory();
-
-    if (data) {
-      setCategoriesLoading(false);
-      setCategories(data);
-    } else {
-      setCategoriesLoading(true);
-    }
-  };
 
   return (
     <GlobalLayout>

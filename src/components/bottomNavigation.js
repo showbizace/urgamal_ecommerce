@@ -16,7 +16,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Drawer, ScrollArea, Text } from "@mantine/core";
 import useSWR from "swr";
 import AllCategory from "./AllCategory/AllCategory";
-import { fetchMethod, getCategory } from "@/utils/fetch";
+import { fetchMethod } from "@/utils/fetch";
 import { getCookie } from "cookies-next";
 import { emptyCart, getCart, syncCart } from "@/utils/Store";
 
@@ -40,18 +40,6 @@ const BottomNavBar = () => {
 
   const userConfigs = useContext(UserConfigContext);
   const { configId } = userConfigs;
-
-  useEffect(() => {
-    const get = async () => {
-      setCategoriesLoading(true);
-      const data = await getCategory();
-      if (data) {
-        setCategories(data);
-      }
-      setCategoriesLoading(false);
-    };
-    get();
-  }, []);
 
   const getUserCart = async () => {
     const data = await fetchMethod("GET", "cart", userToken);

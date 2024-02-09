@@ -11,6 +11,7 @@ import Category from "@/components/AllCategory/category";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 import { fetchMethod, getCategory } from "@/utils/fetch";
 import Image from "next/image";
+import useCategories from "@/hooks/useCategories";
 export async function getServerSideProps({ params }) {
   const requestOption = {
     method: "GET",
@@ -39,10 +40,7 @@ export async function getServerSideProps({ params }) {
 
 const ProductDetail = ({ product, cats }) => {
   const [loading, setLoading] = useState(false);
-  const [categoryLoading, setCategoryLoading] = useState(true);
-  const [main, setMain] = useState();
-  const [parent, setParent] = useState();
-  const [child, setChild] = useState();
+  const categories = useCategories();
   const [renderImage, setRenderImage] = useState("");
   const token = getCookie("token");
 
@@ -97,16 +95,6 @@ const ProductDetail = ({ product, cats }) => {
 
   const clickImage = (item) => {
     setRenderImage(item?.url);
-  };
-
-  useEffect(() => {
-    fetchCategory();
-  }, []);
-
-  const fetchCategory = async () => {
-    const data = await getCategory();
-    setMain(data);
-    setCategoryLoading(false);
   };
 
   function ImageMagnifier({

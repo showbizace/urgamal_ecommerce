@@ -17,7 +17,7 @@ import { getCookie } from "cookies-next";
 import { showNotification } from "@mantine/notifications";
 import { addCart } from "@/utils/Store";
 import { useState } from "react";
-import useWishlist from "@/utils/useWishlist";
+import useWishlist from "@/hooks/useWishlist";
 const ProductWishlist = ({ data, refresh }) => {
   const [loading, setLoading] = useState(false);
   const wishlist = useWishlist();

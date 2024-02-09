@@ -23,7 +23,6 @@ export default function SearchResult({ initialData }) {
   const router = useRouter();
   const { q } = router.query;
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const { data, size, setSize, isValidating, isLoading } = useSWRInfinite(
     (index) =>
       `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
@@ -35,9 +34,6 @@ export default function SearchResult({ initialData }) {
 
   const isEmpty = data?.[0]?.length === 0;
 
-  const [main, setMain] = useState();
-  const [parent, setParent] = useState();
-  const [child, setChild] = useState();
   const [isFetch, setIsFetch] = useState(false);
   const infiniteScroll = () => {
     if (
@@ -71,27 +67,13 @@ export default function SearchResult({ initialData }) {
   useEffect(() => {
     window.dispatchEvent(new Event("storage"));
     setProducts(initialData);
-    fetchCategory();
   }, []);
-
-  const fetchCategory = async () => {
-    const data = await getCategory();
-    setMain(data);
-    setLoading(false);
-  };
 
   return (
     <GlobalLayout>
       <div className="flex w-full min-h-screen px-10 py-12 gap-6">
-        <div className="min-w-[250px] w-[250px] max-w-[250px] hidden lg:block">
-          <Category
-            parent={main}
-            child={child}
-            padding="1rem"
-            loading={loading}
-            fetch={true}
-            setProducts={setProducts}
-          />
+        <div className="min-w-[350px] w-[350px] max-w-[350px] hidden lg:block">
+          <Category padding="1rem" />
         </div>
 
         <ProductGridList

@@ -34,7 +34,7 @@ import { fetchMethod, fetcher } from "@/utils/fetch";
 import { getCart } from "@/utils/Store";
 import { showNotification } from "@mantine/notifications";
 import NavbarBottom from "./NavbarBottom";
-import useWishlist from "@/utils/useWishlist";
+import useWishlist from "@/hooks/useWishlist";
 const Navbar = (props) => {
   const { address } = props;
   const router = useRouter();

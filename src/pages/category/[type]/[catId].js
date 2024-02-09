@@ -105,15 +105,8 @@ const CategoryPage = ({ initialData }) => {
     setLoading(true);
     window.dispatchEvent(new Event("storage"));
     setProducts(initialData);
-    fetchCategory();
     setLoading(false);
   }, []);
-
-  const fetchCategory = async () => {
-    const data = await getCategory();
-    setMain(data);
-    setLoading(false);
-  };
 
   const infiniteScroll = () => {
     if (
@@ -146,48 +139,13 @@ const CategoryPage = ({ initialData }) => {
     };
   }, []);
 
-  const getAllCategory = async () => {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, {
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((response) => {
-        setMain(response.data?.result);
-        setLoading(false);
-        // localStorage.setItem(
-        //   "main",
-        //   JSON.stringify(response.data.data.mainCats)
-        // );
-        // localStorage.setItem(
-        //   "parent",
-        //   JSON.stringify(response.data.data.parentCats)
-        // );
-        // localStorage.setItem(
-        //   "child",
-        //   JSON.stringify(response.data.data.childCats)
-        // );
-        // setParent(response.data.data.parentCats);
-        // setChild(response.data.data.childCats);
-      })
-      .catch((error) => {
-        if (error.response) {
-        } else {
-        }
-      });
-  };
-
   return (
     <GlobalLayout>
       <div>
         <div className="px-4 md:px-10 h-full">
           <div className="h-full flex flex-row py-6 md:py-12 justify-between gap-10">
-            <div className="min-w-[250px] w-[250px] max-w-[250px] hidden lg:block">
-              <Category
-                parent={main}
-                child={child}
-                padding="1rem"
-                loading={loading}
-              />
+            <div className="w-[27rem] hidden lg:block">
+              <Category padding="1rem" />
             </div>
             <div
               className="flex flex-row w-full h-full"

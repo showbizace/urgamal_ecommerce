@@ -25,7 +25,7 @@ import {
 } from "../utils/SuccessNotification";
 import { useRouter } from "next/router";
 import { fetchMethod } from "@/utils/fetch";
-import useWishlist from "@/utils/useWishlist";
+import useWishlist from "@/hooks/useWishlist";
 
 const ProductCard = ({ key, src, data, shouldScale = true }) => {
   const [productCount, setProductCount] = useState(1);
