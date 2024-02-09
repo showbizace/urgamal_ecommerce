@@ -67,14 +67,10 @@ export default function LoginModal({ context, id }) {
     const res = await fetchMethod("POST", "auth/login/code", "", requestOption);
     if (res?.success) {
       const bigDate = 30 * 24 * 60 * 60 * 1000;
-      login();
       const token = res.token;
-      setCookie("token", token, {
-        maxAge: bigDate,
-      });
+      login(token);
       setCookie("number", mobileNumber, { maxAge: bigDate });
       setCookie("addToCart", true);
-
       showNotification({
         message: "Амжилттай нэвтэрлээ",
         color: "green",

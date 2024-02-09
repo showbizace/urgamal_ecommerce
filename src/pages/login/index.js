@@ -18,6 +18,8 @@ import { fetchMethod } from "@/utils/fetch";
 import { showNotification } from "@mantine/notifications";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { rememberMe, rememberMeRemove } from "@/utils/Store";
+import { tokenDecode } from "@/utils/utils";
+import socket from "@/utils/Socket";
 
 const Login = () => {
   const router = useRouter();
@@ -168,13 +170,16 @@ const Login = () => {
       } else {
         rememberMeRemove();
       }
-      const bigDate = 30 * 24 * 60 * 60 * 1000;
-      login();
       const token = data.token;
-      setCookie("token", token, {
-        maxAge: bigDate,
-      });
+      const bigDate = 30 * 24 * 60 * 60 * 1000;
+      login(token);
       setCookie("email", form.values.email, { maxAge: bigDate });
+
+      const decoded = tokenDecode(token);
+      console.log(socket.id, "socket id");
+      console.log(decoded.userid, "decoded id");
+      socket.emit("storeMySocketId", decoded.userid);
+
       router.push("/home");
       showNotification({
         message: "Амжилттай нэвтэрлээ.",

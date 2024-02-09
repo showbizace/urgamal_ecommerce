@@ -86,11 +86,8 @@ const Register = () => {
       });
       if (data?.success) {
         const bigDate = 30 * 24 * 60 * 60 * 1000;
-        login();
         const token = data.token;
-        setCookie("token", token, {
-          maxAge: bigDate,
-        });
+        login(token);
         setCookie("email", email, { maxAge: bigDate });
         router.push("/home");
         showNotification({
