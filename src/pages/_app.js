@@ -10,6 +10,7 @@ import PaymentModal from "@/components/PaymentModal/PaymentModal";
 import { useMantineTheme } from "@mantine/core";
 import { Open_Sans } from "@next/font/google";
 import WishlistProvider from "@/utils/wishlistProvider";
+import InvoiceModal from "@/components/InvoiceModal/InvoiceModal";
 const mont = Open_Sans({
   subsets: ["latin"],
   variable: "--font-open",
@@ -33,7 +34,13 @@ export default function App({ Component, pageProps }) {
       <Notifications />
       <UserConfigProvider>
         <WishlistProvider>
-          <ModalsProvider modals={{ login: LoginModal, payment: PaymentModal }}>
+          <ModalsProvider
+            modals={{
+              login: LoginModal,
+              payment: PaymentModal,
+              invoice: InvoiceModal,
+            }}
+          >
             <CategoryContextProvider>
               <div
                 style={{

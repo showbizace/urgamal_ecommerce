@@ -83,7 +83,7 @@ const Category = ({ padding }) => {
                       ]}
                       onClick={() => {
                         router.push({
-                          pathname: `/category/parent/${el.id}`,
+                          pathname: `/category/${el.name}`,
                         });
                       }}
                       expanded={() => {}}

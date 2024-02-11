@@ -14,10 +14,11 @@ import { fetchMethod, fetcher, getCategory } from "@/utils/fetch";
 import { PAGE_SIZE } from "@/utils/constant";
 
 export async function getServerSideProps({ query }) {
-  const { catId } = query;
+  const { catName } = query;
+
   const data = await fetchMethod(
     "GET",
-    `product?offset=0&limit=${PAGE_SIZE}&categoryId=${catId}`
+    `product?offset=0&limit=${PAGE_SIZE}&query=&categoryName${catName}`
   );
   return {
     props: {
@@ -28,56 +29,56 @@ export async function getServerSideProps({ query }) {
 
 const CategoryPage = ({ initialData }) => {
   const router = useRouter();
-  const { type, catId } = router.query;
+  const { catName } = router.query;
   const [parent, setParent] = useState([]);
   const [main, setMain] = useState([]);
   const [child, setChild] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const getCurrentCategoryPath = (parent, child) => {
-    if (type === "parent") {
-      const current = parent.find((e) => e.id == catId);
-      if (current) {
-        return [
-          {
-            title: current.name,
-            href: `/category/parent/${current.id}`,
-          },
-        ];
-      } else {
-        return [];
-      }
-    } else if (type === "child") {
-      const current = child.find((e) => e.id == catId);
-      if (current) {
-        const parentCat = parent.find((e) => e.id == current.parent_id);
-        return [
-          {
-            title: parentCat ? parentCat.name : "",
-            href: `/category/parent/${parentCat ? parentCat.id : ""}`,
-          },
-          {
-            title: current.name,
-            href: `/category/child/${current.id}`,
-          },
-        ];
-      } else {
-        return [];
-      }
-    } else {
-      return [];
-    }
-  };
-  const currentCategoryPath = useMemo(
-    () => getCurrentCategoryPath(parent, child),
-    [parent, child, router.asPath]
-  );
+  // const getCurrentCategoryPath = (parent, child) => {
+  //   if (type === "parent") {
+  //     const current = parent.find((e) => e.id == catName);
+  //     if (current) {
+  //       return [
+  //         {
+  //           title: current.name,
+  //           href: `/category/parent/${current.id}`,
+  //         },
+  //       ];
+  //     } else {
+  //       return [];
+  //     }
+  //   } else if (type === "child") {
+  //     const current = child.find((e) => e.id == catName);
+  //     if (current) {
+  //       const parentCat = parent.find((e) => e.id == current.parent_id);
+  //       return [
+  //         {
+  //           title: parentCat ? parentCat.name : "",
+  //           href: `/category/parent/${parentCat ? parentCat.id : ""}`,
+  //         },
+  //         {
+  //           title: current.name,
+  //           href: `/category/child/${current.id}`,
+  //         },
+  //       ];
+  //     } else {
+  //       return [];
+  //     }
+  //   } else {
+  //     return [];
+  //   }
+  // };
+  // const currentCategoryPath = useMemo(
+  //   () => getCurrentCategoryPath(parent, child),
+  //   [parent, child, router.asPath]
+  // );
 
   const { data, size, setSize, isValidating, isLoading } = useSWRInfinite(
     (index) => {
       return `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
         (index + 1) * 20
-      }&limit=${PAGE_SIZE}&categoryId=${catId}`;
+      }&limit=${PAGE_SIZE}&categoryId=${catName}`;
     },
     fetcher,
     { revalidateFirstPage: false }
@@ -154,7 +155,7 @@ const CategoryPage = ({ initialData }) => {
             >
               <div className="flex flex-row justify-between w-full">
                 <div className="flex flex-row items-center">
-                  <Breadcrumbs mt="xs">
+                  {/* <Breadcrumbs mt="xs">
                     {[
                       {
                         title: "Нүүр",
@@ -170,7 +171,7 @@ const CategoryPage = ({ initialData }) => {
                         {title}
                       </Link>
                     ))}
-                  </Breadcrumbs>
+                  </Breadcrumbs> */}
                 </div>
                 <div className="flex justify-center items-center bg-white flex-row  px-4 py-2">
                   <p className="font-semibold text-sm text-[#3E503C]">
@@ -189,15 +190,15 @@ const CategoryPage = ({ initialData }) => {
                 showSkeleton={isLoading || isValidating}
                 isEmpty={isEmpty}
                 emptyStateMessage="ангиллын бараа олдсонгүй"
-                query={
-                  type === "parent"
-                    ? parent.find((e) => e.id === catId)?.name
-                    : type === "child"
-                    ? parent.find((e) => e.id === catId)?.name
-                    : ""
-                    ? parent.find((e) => e.id === catId)?.name
-                    : ""
-                }
+                // query={
+                //   type === "parent"
+                //     ? parent.find((e) => e.id === catName)?.name
+                //     : type === "child"
+                //     ? parent.find((e) => e.id === catName)?.name
+                //     : ""
+                //     ? parent.find((e) => e.id === catName)?.name
+                //     : ""
+                // }
               >
                 {products?.map((e, index) => (
                   <ProductCard

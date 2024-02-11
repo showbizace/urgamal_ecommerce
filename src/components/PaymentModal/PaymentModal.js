@@ -13,9 +13,7 @@ export default function PaymentModal({ context, id, innerProps }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log(socket, "socket");
     if (socket.connected) {
-      console.log("emit inquiry", socket.id);
       socket.on("inquiryStatus", (data) => {
         if (data.success) {
           callInquiry(innerProps.paymentData?.invoice_id);
@@ -42,6 +40,7 @@ export default function PaymentModal({ context, id, innerProps }) {
         "Content-Type": "application/json",
       },
     };
+    console.log(invoiceId, "invoice");
     axios
       .get(
         `${process.env.NEXT_PUBLIC_API_URL}/order/payment/inquiry/${invoiceId}`,
@@ -106,7 +105,7 @@ export default function PaymentModal({ context, id, innerProps }) {
           </Stack>
         </Tabs.Panel>
       </Tabs>
-      {/* <Button
+      <Button
         variant="subtle"
         color="yellow"
         fullWidth
@@ -125,7 +124,7 @@ export default function PaymentModal({ context, id, innerProps }) {
         }}
       >
         Болсон
-      </Button> */}
+      </Button>
     </div>
   );
 }

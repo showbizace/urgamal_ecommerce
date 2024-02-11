@@ -20,6 +20,8 @@ import {
   IconPlus,
   IconTrash,
   IconArrowLeft,
+  IconCheck,
+  IconCircleXFilled,
 } from "@tabler/icons-react";
 import { BsCartX } from "react-icons/bs";
 import { useState, useEffect, useContext } from "react";
@@ -47,6 +49,8 @@ import { UserConfigContext } from "@/utils/userConfigContext";
 import { fetchMethod } from "@/utils/fetch";
 import socket from "@/utils/Socket";
 import { tokenDecode } from "@/utils/utils";
+import InvoiceModal from "@/components/InvoiceModal/InvoiceModal";
+import InvoiceInputModal from "@/components/InvoiceModal/InvoiceInputModal";
 
 const CartItems = (props) => {
   const [isCheckAll, setIsCheckAll] = useState(false);
@@ -65,7 +69,9 @@ const CartItems = (props) => {
   const [loadingCart, setLoadingCart] = useState(false);
   const [loaderOpened, { open: openLoader, close: closeLoader }] =
     useDisclosure(false);
-
+  const [opened, { open, close }] = useDisclosure(false);
+  const [inputOpened, { open: openInput, close: closeInput }] =
+    useDisclosure(false);
   const handleBack = () => {
     router.push("/");
   };
@@ -257,197 +263,429 @@ const CartItems = (props) => {
     setCartItem({ ...cartItem, cart_items: newArr });
   };
 
-  const makeOrder = async () => {
-    if (auth) {
-      if (select) {
-        openLoader();
-        const data = `Хот: ${selectedShippingData?.city}, Дүүрэг: ${selectedShippingData?.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData?.street}, Байр: ${selectedShippingData?.apartment}, Тоот: ${selectedShippingData?.number}, Утас: ${selectedShippingData?.phone}`;
-        const axiosReqOption = {
-          headers: {
-            Authorization: "Bearer " + userToken,
-            "Content-Type": "application/json",
-          },
-        };
-        const requestOption = {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + userToken,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            address: data,
-          }),
-        };
-        try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/order`,
-            requestOption
-          );
-
-          if (res.status === 200) {
-            const data = await res.json();
-            if (data.success === true) {
-              // open();
-              const token = getCookie("token");
-              const decoded = tokenDecode(token);
-              console.log(decoded, "devocede");
-              socket.emit("storeMySocketId", decoded.userid);
-              setOrderId(data.orderid);
-              let temp = [];
-              const cartItems = cartItem;
-              setCartItem(temp);
-              emptyCart();
-              SuccessNotification({ message: data.message, title: "Захиалга" });
-              axios
-                .get(
-                  `${process.env.NEXT_PUBLIC_API_URL}/order/payment/${data.orderid}`,
-                  axiosReqOption
-                )
-                .then((res) => {
-                  openContextModal({
-                    modal: "payment",
-                    title: "Төлбөр төлөлт",
-                    innerProps: {
-                      paymentData: res.data?.invoice,
-                      shouldRedirect: true,
-                    },
-                    centered: true,
-                    size: "lg",
-                    closeOnClickOutside: false,
-                    withCloseButton: false,
-                  });
-                })
-                .catch((err) => {
-                  if (err.response) {
-                    showNotification({
-                      message: err.response.data,
-                      color: "red",
-                    });
-                  } else {
-                    showNotification({
-                      message: "Төлбөрийн мэдээлэл авахад алдаа гарлаа",
-                      color: "red",
-                    });
-                  }
+  const handleOrder = async () => {
+    close();
+    openLoader();
+    const data = `Хот: ${selectedShippingData?.city}, Дүүрэг: ${selectedShippingData?.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData?.street}, Байр: ${selectedShippingData?.apartment}, Тоот: ${selectedShippingData?.number}, Утас: ${selectedShippingData?.phone}`;
+    const axiosReqOption = {
+      headers: {
+        Authorization: "Bearer " + userToken,
+        "Content-Type": "application/json",
+      },
+    };
+    const requestOption = {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + userToken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        address: data,
+      }),
+    };
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/order`,
+        requestOption
+      );
+      if (res.status === 200) {
+        const data = await res.json();
+        if (data.success === true) {
+          setOrderId(data.orderid);
+          let temp = [];
+          setCartItem(temp);
+          emptyCart();
+          SuccessNotification({ message: data.message, title: "Захиалга" });
+          axios
+            .get(
+              `${process.env.NEXT_PUBLIC_API_URL}/order/payment/${data.orderid}`,
+              axiosReqOption
+            )
+            .then((res) => {
+              openContextModal({
+                modal: "payment",
+                title: "Төлбөр төлөлт",
+                innerProps: {
+                  paymentData: res.data?.invoice,
+                  shouldRedirect: true,
+                },
+                centered: true,
+                size: "lg",
+                closeOnClickOutside: false,
+                withCloseButton: false,
+              });
+            })
+            .catch((err) => {
+              if (err.response) {
+                showNotification({
+                  message: err.response.data,
+                  color: "red",
                 });
-            } else {
-              ErrorNotification({ title: "Алдаа гарлаа." });
-            }
-          } else if (res.status === 500) {
+              } else {
+                showNotification({
+                  message: "Төлбөрийн мэдээлэл авахад алдаа гарлаа",
+                  color: "red",
+                });
+              }
+            });
+        } else {
+          ErrorNotification({ title: "Алдаа гарлаа." });
+        }
+      } else if (res.status === 500) {
+        showNotification({
+          message: "Сагсанд бараа байхгүй байна!",
+          color: "red",
+        });
+      }
+    } catch (error) {
+      console.log(error, "error");
+      showNotification({
+        message: "Захиалга үүсгэхэд алдаа гарлаа!",
+        color: "red",
+      });
+    }
+    closeLoader();
+  };
+
+  const handleInvoice = () => {
+    close();
+    openInput();
+  };
+
+  const makeOrder = async () => {
+    if (cartItem?.cart_items?.length > 0) {
+      if (auth) {
+        if (select) {
+          open();
+        } else {
+          if (checked === false) {
             showNotification({
-              message: "Сагсанд бараа байхгүй байна!",
+              message: "Хаяг сонгоно уу эсвэл очиж авахыг идэвхжүүлнэ үү",
               color: "red",
             });
-          }
-        } catch (error) {
-          console.log(error, "error");
-          showNotification({
-            message: "Захиалга үүсгэхэд алдаа гарлаа!",
-            color: "red",
-          });
-        }
-        closeLoader();
-      } else {
-        if (checked === false) {
-          showNotification({
-            message: "Хаяг сонгоно уу эсвэл очиж авахыг идэвхжүүлнэ үү",
-            color: "red",
-          });
-        } else {
-          openLoader();
-          const axiosReqOption = {
-            headers: {
-              Authorization: "Bearer " + userToken,
-              "Content-Type": "application/json",
-            },
-          };
-          const requestOption = {
-            method: "POST",
-            headers: {
-              Authorization: "Bearer " + userToken,
-              "Content-Type": "application/json",
-            },
-          };
-          try {
-            const res = await fetch(
-              `${process.env.NEXT_PUBLIC_API_URL}/order`,
-              requestOption
-            );
-            if (res.status === 200) {
-              const data = await res.json();
-              if (data.success === true) {
-                // open();
-                setOrderId(data.orderid);
-                let temp = [];
-                const cartItems = cartItem;
-                setCartItem(temp);
-                emptyCart();
-                SuccessNotification({
-                  message: data.message,
-                  title: "Захиалга",
-                });
-                axios
-                  .post(
-                    `${process.env.NEXT_PUBLIC_API_URL}/payment`,
-                    { orderid: data.orderid },
-                    axiosReqOption
-                  )
-                  .then((res) => {
-                    openContextModal({
-                      modal: "payment",
-                      title: "Төлбөр төлөлт",
-                      innerProps: {
-                        paymentData: res.data.data,
-                        shouldRedirect: true,
-                      },
-                      centered: true,
-                      size: "lg",
-                      closeOnClickOutside: false,
-                      withCloseButton: false,
-                    });
-                  })
-                  .catch((err) => {
-                    if (err.response) {
-                      showNotification({
-                        message: err.response.data,
-                        color: "red",
-                      });
-                    } else {
-                      showNotification({
-                        message: "Төлбөрийн мэдээлэл авахад алдаа гарлаа",
-                        color: "red",
-                      });
-                    }
+          } else {
+            openLoader();
+            const axiosReqOption = {
+              headers: {
+                Authorization: "Bearer " + userToken,
+                "Content-Type": "application/json",
+              },
+            };
+            const requestOption = {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer " + userToken,
+                "Content-Type": "application/json",
+              },
+            };
+            try {
+              const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/order`,
+                requestOption
+              );
+              if (res.status === 200) {
+                const data = await res.json();
+                if (data.success === true) {
+                  // open();
+                  setOrderId(data.orderid);
+                  let temp = [];
+                  const cartItems = cartItem;
+                  setCartItem(temp);
+                  emptyCart();
+                  SuccessNotification({
+                    message: data.message,
+                    title: "Захиалга",
                   });
-              } else {
-                ErrorNotification({ title: "Алдаа гарлаа." });
+                  axios
+                    .post(
+                      `${process.env.NEXT_PUBLIC_API_URL}/payment`,
+                      { orderid: data.orderid },
+                      axiosReqOption
+                    )
+                    .then((res) => {
+                      openContextModal({
+                        modal: "payment",
+                        title: "Төлбөр төлөлт",
+                        innerProps: {
+                          paymentData: res.data.data,
+                          shouldRedirect: true,
+                        },
+                        centered: true,
+                        size: "lg",
+                        closeOnClickOutside: false,
+                        withCloseButton: false,
+                      });
+                    })
+                    .catch((err) => {
+                      if (err.response) {
+                        showNotification({
+                          message: err.response.data,
+                          color: "red",
+                        });
+                      } else {
+                        showNotification({
+                          message: "Төлбөрийн мэдээлэл авахад алдаа гарлаа",
+                          color: "red",
+                        });
+                      }
+                    });
+                } else {
+                  ErrorNotification({ title: "Алдаа гарлаа." });
+                }
+              } else if (res.status === 500) {
+                showNotification({
+                  message: "Сагсанд бараа байхгүй байна!",
+                  color: "red",
+                });
               }
-            } else if (res.status === 500) {
+            } catch (error) {
               showNotification({
-                message: "Сагсанд бараа байхгүй байна!",
+                message: "Захиалга үүсгэхэд алдаа гарлаа!",
                 color: "red",
               });
             }
-          } catch (error) {
-            showNotification({
-              message: "Захиалга үүсгэхэд алдаа гарлаа!",
-              color: "red",
-            });
+            closeLoader();
           }
-          closeLoader();
         }
+      } else {
+        router.push("/login");
       }
     } else {
-      openContextModal({
-        modal: "login",
-        title: (
-          <Text size="sm" weight={400}>
-            Хэрэглэгч та өөрийн утасны дугаараар нэвтрэнэ үү
-          </Text>
-        ),
-        centered: true,
+      showNotification({
+        message: "Сагс хоосон байна.",
+        color: "red",
       });
     }
+  };
+
+  const handleInvoiceInput = async (name, phone, setError, setErrorPhone) => {
+    if (!name) {
+      return setError(true);
+    }
+    if (!phone) {
+      return setErrorPhone(true);
+    }
+    const addressData = `Хот: ${selectedShippingData?.city}, Дүүрэг: ${selectedShippingData?.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData?.street}, Байр: ${selectedShippingData?.apartment}, Тоот: ${selectedShippingData?.number}`;
+    const requestOption = {
+      address: addressData,
+      method: "invoice",
+      companyName: name,
+      contact: phone,
+    };
+    const token = getCookie("token");
+    const data = await fetchMethod(
+      "POST",
+      "order/invoice",
+      token,
+      requestOption
+    )
+      .then(() => {
+        showNotification({
+          message: "Амжилттай нэхэмжлэл үүслээ.",
+          icon: <IconCheck />,
+          color: "green",
+        });
+        let temp = [];
+        setCartItem(temp);
+        emptyCart();
+        closeInput();
+      })
+      .catch(() => {
+        showNotification({
+          message: data?.message,
+          color: "red",
+          icon: (
+            <IconCircleXFilled
+              style={{
+                width: rem(30),
+                height: rem(30),
+              }}
+            />
+          ),
+        });
+      });
+
+    // if (auth) {
+    //   if (select) {
+    //     openLoader();
+    //     const data = `Хот: ${selectedShippingData?.city}, Дүүрэг: ${selectedShippingData?.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData?.street}, Байр: ${selectedShippingData?.apartment}, Тоот: ${selectedShippingData?.number}, Утас: ${selectedShippingData?.phone}`;
+    //     const axiosReqOption = {
+    //       headers: {
+    //         Authorization: "Bearer " + userToken,
+    //         "Content-Type": "application/json",
+    //       },
+    //     };
+    //     const requestOption = {
+    //       method: "POST",
+    //       headers: {
+    //         Authorization: "Bearer " + userToken,
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({
+    //         address: data,
+    //       }),
+    //     };
+    //     try {
+    //       const res = await fetch(
+    //         `${process.env.NEXT_PUBLIC_API_URL}/order`,
+    //         requestOption
+    //       );
+    //       if (res.status === 200) {
+    //         const data = await res.json();
+    //         if (data.success === true) {
+    //           // open();
+    //           const token = getCookie("token");
+    //           const decoded = tokenDecode(token);
+    //           console.log(decoded, "devocede");
+    //           socket.emit("storeMySocketId", decoded.userid);
+    //           setOrderId(data.orderid);
+    //           let temp = [];
+    //           const cartItems = cartItem;
+    //           setCartItem(temp);
+    //           emptyCart();
+    //           SuccessNotification({ message: data.message, title: "Захиалга" });
+    //           axios
+    //             .get(
+    //               `${process.env.NEXT_PUBLIC_API_URL}/order/payment/${data.orderid}`,
+    //               axiosReqOption
+    //             )
+    //             .then((res) => {
+    //               openContextModal({
+    //                 modal: "payment",
+    //                 title: "Төлбөр төлөлт",
+    //                 innerProps: {
+    //                   paymentData: res.data?.invoice,
+    //                   shouldRedirect: true,
+    //                 },
+    //                 centered: true,
+    //                 size: "lg",
+    //                 closeOnClickOutside: false,
+    //                 withCloseButton: false,
+    //               });
+    //             })
+    //             .catch((err) => {
+    //               if (err.response) {
+    //                 showNotification({
+    //                   message: err.response.data,
+    //                   color: "red",
+    //                 });
+    //               } else {
+    //                 showNotification({
+    //                   message: "Төлбөрийн мэдээлэл авахад алдаа гарлаа",
+    //                   color: "red",
+    //                 });
+    //               }
+    //             });
+    //         } else {
+    //           ErrorNotification({ title: "Алдаа гарлаа." });
+    //         }
+    //       } else if (res.status === 500) {
+    //         showNotification({
+    //           message: "Сагсанд бараа байхгүй байна!",
+    //           color: "red",
+    //         });
+    //       }
+    //     } catch (error) {
+    //       console.log(error, "error");
+    //       showNotification({
+    //         message: "Захиалга үүсгэхэд алдаа гарлаа!",
+    //         color: "red",
+    //       });
+    //     }
+    //     closeLoader();
+    //   } else {
+    //     if (checked === false) {
+    //       showNotification({
+    //         message: "Хаяг сонгоно уу эсвэл очиж авахыг идэвхжүүлнэ үү",
+    //         color: "red",
+    //       });
+    //     } else {
+    //       openLoader();
+    //       const axiosReqOption = {
+    //         headers: {
+    //           Authorization: "Bearer " + userToken,
+    //           "Content-Type": "application/json",
+    //         },
+    //       };
+    //       const requestOption = {
+    //         method: "POST",
+    //         headers: {
+    //           Authorization: "Bearer " + userToken,
+    //           "Content-Type": "application/json",
+    //         },
+    //       };
+    //       try {
+    //         const res = await fetch(
+    //           `${process.env.NEXT_PUBLIC_API_URL}/order`,
+    //           requestOption
+    //         );
+    //         if (res.status === 200) {
+    //           const data = await res.json();
+    //           if (data.success === true) {
+    //             // open();
+    //             setOrderId(data.orderid);
+    //             let temp = [];
+    //             const cartItems = cartItem;
+    //             setCartItem(temp);
+    //             emptyCart();
+    //             SuccessNotification({
+    //               message: data.message,
+    //               title: "Захиалга",
+    //             });
+    //             axios
+    //               .post(
+    //                 `${process.env.NEXT_PUBLIC_API_URL}/payment`,
+    //                 { orderid: data.orderid },
+    //                 axiosReqOption
+    //               )
+    //               .then((res) => {
+    //                 openContextModal({
+    //                   modal: "payment",
+    //                   title: "Төлбөр төлөлт",
+    //                   innerProps: {
+    //                     paymentData: res.data.data,
+    //                     shouldRedirect: true,
+    //                   },
+    //                   centered: true,
+    //                   size: "lg",
+    //                   closeOnClickOutside: false,
+    //                   withCloseButton: false,
+    //                 });
+    //               })
+    //               .catch((err) => {
+    //                 if (err.response) {
+    //                   showNotification({
+    //                     message: err.response.data,
+    //                     color: "red",
+    //                   });
+    //                 } else {
+    //                   showNotification({
+    //                     message: "Төлбөрийн мэдээлэл авахад алдаа гарлаа",
+    //                     color: "red",
+    //                   });
+    //                 }
+    //               });
+    //           } else {
+    //             ErrorNotification({ title: "Алдаа гарлаа." });
+    //           }
+    //         } else if (res.status === 500) {
+    //           showNotification({
+    //             message: "Сагсанд бараа байхгүй байна!",
+    //             color: "red",
+    //           });
+    //         }
+    //       } catch (error) {
+    //         showNotification({
+    //           message: "Захиалга үүсгэхэд алдаа гарлаа!",
+    //           color: "red",
+    //         });
+    //       }
+    //       closeLoader();
+    //     }
+    //   }
+    // } else {
+    //   router.push("/login");
+    // }
   };
 
   const minusQuantity = async (count, product) => {
@@ -664,6 +902,18 @@ const CartItems = (props) => {
         </Stack>
       </Modal>
 
+      <InvoiceModal
+        opened={opened}
+        onClose={close}
+        handleOrder={handleOrder}
+        handleInvoice={handleInvoice}
+      />
+
+      <InvoiceInputModal
+        opened={inputOpened}
+        onClose={closeInput}
+        handleInvoiceInput={handleInvoiceInput}
+      />
       <div className="bg-grey-back w-full lg:px-8 lg:py-4 px-4 py-4  h-screen relative">
         <div className="absolute top-9">
           <Button

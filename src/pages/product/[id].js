@@ -173,12 +173,7 @@ const ProductDetail = ({ product, cats }) => {
       <div className="flex flex-col w-full min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 lg:py-12  items-start py-4 px-4 ">
         <div className="flex w-full lg:gap-20 justify-start ">
           <div className="hidden lg:block w-[25%]">
-            <Category
-              parent={main}
-              child={child}
-              padding={"1rem"}
-              loading={categoryLoading}
-            />
+            <Category padding={"1rem"} />
           </div>
           <div className="flex lg:gap-14 gap-4 justify-center xl:flex-row lg:flex-col md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
             <div className="flex flex-col">
