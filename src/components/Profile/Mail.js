@@ -47,7 +47,7 @@ const Mail = () => {
           if (data.success) {
             setEmailRequested(true);
             showNotification({
-              message: "Таны цахим шуудан луу кодэ илгээлээ.!",
+              message: "Таны цахим шуудан луу код илгээлээ.!",
               color: "green",
             });
           } else {
@@ -161,14 +161,14 @@ const Mail = () => {
             <Center>
               <Text size="md" fw={600}>
                 {emailRequested
-                  ? "Нэг удаагийн кодэ"
+                  ? "Нэг удаагийн код"
                   : "Цахим шуудан баталгаажуулах"}
               </Text>
             </Center>
             <Center>
               <Text size="sm" c="dimmed">
                 {emailRequested
-                  ? "Таны цахим шуудан дээрх 6 оронтой кодэ оруулна уу"
+                  ? "Таны цахим шуудан дээрх 6 оронтой код оруулна уу"
                   : "Та зөвхөн өөрийн цахим шууданг оруулна уу"}
               </Text>
             </Center>

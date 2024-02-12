@@ -7,10 +7,11 @@ import { addCart } from "@/utils/Store";
 import { getCookie } from "cookies-next";
 import { SuccessNotification } from "../../utils/SuccessNotification";
 import { IconHeart, IconPhotoOff } from "@tabler/icons-react";
-import Category from "@/components/category";
+import Category from "@/components/AllCategory/category";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 import { fetchMethod, getCategory } from "@/utils/fetch";
 import Image from "next/image";
+import useCategories from "@/hooks/useCategories";
 export async function getServerSideProps({ params }) {
   const requestOption = {
     method: "GET",
@@ -39,10 +40,7 @@ export async function getServerSideProps({ params }) {
 
 const ProductDetail = ({ product, cats }) => {
   const [loading, setLoading] = useState(false);
-  const [categoryLoading, setCategoryLoading] = useState(true);
-  const [main, setMain] = useState();
-  const [parent, setParent] = useState();
-  const [child, setChild] = useState();
+  const categories = useCategories();
   const [renderImage, setRenderImage] = useState("");
   const token = getCookie("token");
 
@@ -97,16 +95,6 @@ const ProductDetail = ({ product, cats }) => {
 
   const clickImage = (item) => {
     setRenderImage(item?.url);
-  };
-
-  useEffect(() => {
-    fetchCategory();
-  }, []);
-
-  const fetchCategory = async () => {
-    const data = await getCategory();
-    setMain(data);
-    setCategoryLoading(false);
   };
 
   function ImageMagnifier({
@@ -185,12 +173,7 @@ const ProductDetail = ({ product, cats }) => {
       <div className="flex flex-col w-full min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 lg:py-12  items-start py-4 px-4 ">
         <div className="flex w-full lg:gap-20 justify-start ">
           <div className="hidden lg:block w-[25%]">
-            <Category
-              parent={main}
-              child={child}
-              padding={"1rem"}
-              loading={categoryLoading}
-            />
+            <Category padding={"1rem"} />
           </div>
           <div className="flex lg:gap-14 gap-4 justify-center xl:flex-row lg:flex-col md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
             <div className="flex flex-col">

@@ -1,6 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Image from "next/image";
-import { TextInput, Button, rem, PasswordInput, Text } from "@mantine/core";
+import {
+  TextInput,
+  Button,
+  rem,
+  PasswordInput,
+  Text,
+  Checkbox,
+} from "@mantine/core";
 import React, { useContext, useEffect, useState } from "react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useRouter } from "next/router";
@@ -10,28 +17,19 @@ import Buttons from "../../components/Buttons";
 import { fetchMethod } from "@/utils/fetch";
 import { showNotification } from "@mantine/notifications";
 import { UserConfigContext } from "@/utils/userConfigContext";
-
-const icon = (
-  <IconAt
-    style={{ width: rem(16), height: rem(16), color: "green" }}
-    stroke={1.5}
-  />
-);
-const passIcon = (
-  <IconLock
-    style={{ width: rem(16), height: rem(16), color: "green" }}
-    stroke={1.5}
-  />
-);
+import { rememberMe, rememberMeRemove } from "@/utils/Store";
+import { tokenDecode } from "@/utils/utils";
+import socket from "@/utils/Socket";
 
 const Login = () => {
   const router = useRouter();
   const { login } = useContext(UserConfigContext);
-  const token = getCookie("token");
+  const [remember, setRemember] = useState(false);
   const form = useForm({
     initialValues: {
       email: "",
       password: "",
+      remember: false,
     },
     validate: {
       email: (value) =>
@@ -46,6 +44,19 @@ const Login = () => {
           : "Нууц үг хоосон байна",
     },
   });
+
+  const icon = (
+    <IconAt
+      style={{ width: rem(16), height: rem(16), color: "green" }}
+      stroke={1.5}
+    />
+  );
+  const passIcon = (
+    <IconLock
+      style={{ width: rem(16), height: rem(16), color: "green" }}
+      stroke={1.5}
+    />
+  );
 
   const handleRegister = () => {
     router.push("register");
@@ -129,17 +140,46 @@ const Login = () => {
     }
   }, [router.query]);
 
+  const getStorageUser = () => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      const userInfo = JSON.parse(user);
+      form.setValues({
+        email: userInfo.email,
+        password: userInfo.password,
+      });
+      setRemember(userInfo.remember);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      getStorageUser();
+    }
+  }, []);
+
   const loginFetchData = async (values) => {
-    const requestOption = { email: values.email, password: values.password };
+    const requestOption = {
+      email: values.email,
+      password: values.password,
+    };
     const data = await fetchMethod("POST", `auth/login`, "", requestOption);
     if (data?.success) {
-      const bigDate = 30 * 24 * 60 * 60 * 1000;
-      login();
+      if (remember) {
+        rememberMe({ ...requestOption, remember: true });
+      } else {
+        rememberMeRemove();
+      }
       const token = data.token;
-      setCookie("token", token, {
-        maxAge: bigDate,
-      });
+      const bigDate = 30 * 24 * 60 * 60 * 1000;
+      login(token);
       setCookie("email", form.values.email, { maxAge: bigDate });
+
+      const decoded = tokenDecode(token);
+      console.log(socket.id, "socket id");
+      console.log(decoded.userid, "decoded id");
+      socket.emit("storeMySocketId", decoded.userid);
+
       router.push("/home");
       showNotification({
         message: "Амжилттай нэвтэрлээ.",
@@ -210,9 +250,17 @@ const Login = () => {
                 },
               })}
             />
-            <div className="flex justify-end">
+            <div className="flex justify-between items-center">
+              <Checkbox
+                label="Сануулах"
+                size={"xs"}
+                variant="outline"
+                checked={remember}
+                onChange={(event) => setRemember(event.currentTarget.checked)}
+              />
               <Button
                 variant="transparent"
+                styles={() => ({ root: { padding: 0 } })}
                 color="gray"
                 onClick={() => router.push("/login/forget")}
               >

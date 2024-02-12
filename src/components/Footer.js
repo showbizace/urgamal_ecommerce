@@ -1,15 +1,10 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import sanitizeHtml from "sanitize-html";
+
 import Link from "next/link";
+import { htmlFrom } from "@/utils/constant";
 const BottomFooter = ({ address, links }) => {
   const router = useRouter();
-
-  const htmlFrom = (htmlString) => {
-    const cleanHtmlString = sanitizeHtml(htmlString);
-    // const html = JSON.parse(cleanHtmlString, {});
-    return cleanHtmlString;
-  };
 
   const icon = (item) => {
     if (item?.title !== "email") {

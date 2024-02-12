@@ -37,17 +37,3 @@ export const fetcher = async (url) =>
     .get(url, { headers: { "Content-Type": "application/json" } })
     .then((res) => res.data.result)
     .catch((error) => console.log(error, "err in fetcher"));
-
-export const getCategory = async () => {
-  const main = localStorage.getItem("main");
-  if (main && main !== "undefined") {
-    const jsonData = JSON.parse(main);
-    return jsonData;
-  } else {
-    const data = await fetchMethod("GET", "product/cats");
-    if (data?.success) {
-      localStorage.setItem("main", JSON.stringify(data?.categories));
-      return data?.categories;
-    }
-  }
-};

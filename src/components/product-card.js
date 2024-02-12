@@ -25,6 +25,7 @@ import {
 } from "../utils/SuccessNotification";
 import { useRouter } from "next/router";
 import { fetchMethod } from "@/utils/fetch";
+import useWishlist from "@/hooks/useWishlist";
 
 const ProductCard = ({ key, src, data, shouldScale = true }) => {
   const [productCount, setProductCount] = useState(1);
@@ -32,7 +33,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
   const router = useRouter();
   const token = getCookie("token");
   const [toggle, setToggle] = useState(false);
-
+  const wishlist = useWishlist();
   const addCount = (event) => {
     event.stopPropagation();
     if (data?.balance - productCount > 0) setProductCount(productCount + 1);
@@ -57,10 +58,10 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
           token,
           requestOption
         );
-
-        if (res.status === 200) {
+        if (res.success) {
+          wishlist.addItem(data);
           showNotification({
-            message: "Амжилттай нэмэгдлээ.",
+            message: res.message,
             icon: <IconCheck />,
             color: "green",
           });
@@ -182,22 +183,24 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
             {data?.name}
           </Text>
           <div className="flex flex-col w-full">
-            <div className="flex flex-row items-center  mt-1 gap-1">
-              <p className="text-[#696A6C] font-semibold text-xs">
-                Үлдэгдэл :{" "}
-              </p>
-              {data?.balance > 10 ? (
-                <Badge size="xs" color="teal">
-                  Хангалттай
-                </Badge>
-              ) : data?.balance <= 10 ? (
-                <p className="text-xs font-semibold ">{data?.balance}</p>
-              ) : (
-                <Badge size="xs" color="yellow">
-                  Үлдэгдэлгүй
-                </Badge>
-              )}
-            </div>
+            {data.balance && (
+              <div className="flex flex-row items-center  mt-1 gap-1">
+                <p className="text-[#696A6C] font-semibold text-xs">
+                  Үлдэгдэл :{" "}
+                </p>
+                {data?.balance > 10 ? (
+                  <Badge size="xs" color="teal">
+                    Хангалттай
+                  </Badge>
+                ) : data?.balance <= 10 ? (
+                  <p className="text-xs font-semibold ">{data?.balance}</p>
+                ) : (
+                  <Badge size="xs" color="yellow">
+                    Үлдэгдэлгүй
+                  </Badge>
+                )}
+              </div>
+            )}
             <div className="flex flex-row justify-between items-center">
               <p className="font-semibold text-base mt-1 text-start">
                 {data?.listPrice}₮
@@ -245,7 +248,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
               <Button
                 variant={"filled"}
                 className="bg-button-yellow rounded-md  hover:cursor-pointer"
-                color={"orange"}
+                color={"yellow"}
                 onClick={(event) => addToCartHandler(event)}
               >
                 {loading === true ? (

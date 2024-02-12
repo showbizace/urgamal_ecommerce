@@ -1,9 +1,6 @@
 import { fetchMethod } from "@/utils/fetch";
 import { UserConfigContext } from "@/utils/userConfigContext";
-import { tokenDecode } from "@/utils/utils";
-import { jwtDecode } from "jwt-decode";
 import {
-  ActionIcon,
   Button,
   Container,
   Divider,
@@ -13,15 +10,10 @@ import {
   PinInput,
   Stack,
   Text,
-  TextInput,
-  Tooltip,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { IconRefresh, IconReload } from "@tabler/icons-react";
-import axios from "axios";
 import { setCookie } from "cookies-next";
 import { useContext, useEffect, useState } from "react";
-import socket from "@/utils/Socket";
 
 export default function LoginModal({ context, id }) {
   const { login } = useContext(UserConfigContext);
@@ -67,14 +59,10 @@ export default function LoginModal({ context, id }) {
     const res = await fetchMethod("POST", "auth/login/code", "", requestOption);
     if (res?.success) {
       const bigDate = 30 * 24 * 60 * 60 * 1000;
-      login();
       const token = res.token;
-      setCookie("token", token, {
-        maxAge: bigDate,
-      });
+      login(token);
       setCookie("number", mobileNumber, { maxAge: bigDate });
       setCookie("addToCart", true);
-
       showNotification({
         message: "Амжилттай нэвтэрлээ",
         color: "green",

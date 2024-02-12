@@ -17,6 +17,7 @@ import { IconAt, IconLock, IconShieldLock } from "@tabler/icons-react";
 import { fetchMethod } from "@/utils/fetch";
 import { showNotification } from "@mantine/notifications";
 import { UserConfigContext } from "@/utils/userConfigContext";
+import { regexNumber } from "@/utils/constant";
 const icon = (
   <IconAt
     style={{ width: rem(16), height: rem(16), color: "green" }}
@@ -40,81 +41,53 @@ const shieldIcon = (
 const Register = () => {
   const router = useRouter();
   const { login } = useContext(UserConfigContext);
-  const [password, setPassowrd] = useState("");
-  const [confirmPass, setConfirmPass] = useState("");
-  const [email, setEmail] = useState("");
-  const [errorPass, setErrorPass] = useState(false);
-  const [errorConPass, setErrorConPass] = useState(false);
-  const [errorEmail, setErrorEmail] = useState(false);
-  const [checkUpper, setCheckUpper] = useState(false);
-  const [checkLower, setCheckLower] = useState(false);
-  const [checkSpecial, setCheckSpecial] = useState(false);
-  const [checkCharacter, setCheckCharacter] = useState(false);
+  const [checkNumber, setCheckNumber] = useState(false);
   const [checkSame, setCheckSame] = useState(false);
   const [show, setShow] = useState(false);
 
-  const uppercase = /[A-Z]/;
-  const lowercase = /[a-z]/;
-  const special = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
-  const character = /.{8,}/;
+  const form = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+      confirmPass: "",
+    },
+    validate: {
+      email: (value) =>
+        value.length > 0
+          ? /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(value)
+            ? null
+            : "Цахим шуудан буруу байна."
+          : "Цахим шуудан хоосон байна",
+      password: (value) => !value && "Нууц үг хоосон байна",
+      confirmPass: (value) => !value && "Нууц үг давтах хоосон байна",
+    },
+  });
 
   useEffect(() => {
-    if (password.length > 0) {
+    if (form.values.password.length > 0) {
       setShow(true);
-      check("upper", uppercase);
-      check("lower", lowercase);
-      check("special", special);
-      check("character", character);
+      check("number", regexNumber);
     } else {
       setShow(false);
     }
-  }, [password]);
+  }, [form.values.password]);
 
   useEffect(() => {
-    if (confirmPass.length > 0) {
+    if (form.values.confirmPass.length > 0) {
       check("same", new RegExp(""));
     }
-  }, [confirmPass]);
+  }, [form.values.confirmPass]);
 
-  const handleRegister = async () => {
-    if (password.length === 0) {
-      setErrorPass(true);
-    } else {
-      setErrorConPass(false);
-    }
-    if (email.length === 0) {
-      setErrorEmail(true);
-    } else {
-      setErrorEmail(false);
-    }
-    if (confirmPass.length === 0) {
-      setErrorConPass(true);
-    } else {
-      setErrorConPass(false);
-    }
-
-    if (
-      !errorConPass &&
-      !errorEmail &&
-      !errorPass &&
-      checkUpper &&
-      checkLower &&
-      checkSpecial &&
-      checkCharacter &&
-      checkSame
-    ) {
-      const requestOption = {
-        email,
-        password,
-      };
-      const data = await fetchMethod("POST", "auth", "", requestOption);
+  const handleRegister = async (values) => {
+    if (checkNumber && checkSame) {
+      const data = await fetchMethod("POST", "auth", "", {
+        email: values?.email,
+        password: values?.password,
+      });
       if (data?.success) {
         const bigDate = 30 * 24 * 60 * 60 * 1000;
-        login();
         const token = data.token;
-        setCookie("token", token, {
-          maxAge: bigDate,
-        });
+        login(token);
         setCookie("email", email, { maxAge: bigDate });
         router.push("/home");
         showNotification({
@@ -132,29 +105,22 @@ const Register = () => {
 
   const check = (type, regex) => {
     switch (type) {
-      case "upper":
-        regex.test(password) ? setCheckUpper(true) : setCheckUpper(false);
-        break;
-      case "lower":
-        regex.test(password) ? setCheckLower(true) : setCheckLower(false);
-        break;
-      case "special":
-        regex.test(password) ? setCheckSpecial(true) : setCheckSpecial(false);
-        break;
-      case "character":
-        regex.test(password)
-          ? setCheckCharacter(true)
-          : setCheckCharacter(false);
+      case "number":
+        regex.test(form.values.password)
+          ? setCheckNumber(true)
+          : setCheckNumber(false);
         break;
       case "same":
-        password === confirmPass ? setCheckSame(true) : setCheckSame(false);
+        form.values.password === form.values.confirmPass
+          ? setCheckSame(true)
+          : setCheckSame(false);
         break;
     }
   };
 
   const renderCheck = (state, text) => {
     return (
-      <Text size={"sm"} color={state ? "#32D583" : "#F97066"}>
+      <Text size={"sm"} fw={500} color={state ? "#32D583" : "#F97066"}>
         {text}
       </Text>
     );
@@ -168,15 +134,17 @@ const Register = () => {
       <div className="flex flex-col relative items-center justify-center w-2/6">
         <Image src="/logo.png" width={100} height={100} alt="logo" />
         <p className="text-xl font-bold mt-4">Бүртгүүлэх</p>
-        <div className="mt-5 w-4/6">
+        <form
+          className="mt-5 w-4/6"
+          onSubmit={form.onSubmit((values) => handleRegister(values))}
+        >
           <TextInput
             className="mt-2"
             label="Цахим шуудан"
             placeholder="Цахим шуудан"
             radius={"xl"}
-            value={email}
+            {...form.getInputProps("email")}
             icon={icon}
-            onChange={(event) => setEmail(event.currentTarget.value)}
             styles={(theme) => ({
               label: {
                 marginBottom: rem(4),
@@ -190,19 +158,14 @@ const Register = () => {
               },
             })}
           />
-          {errorEmail && (
-            <Input.Error className="mt-1">
-              Цахим шуудан хоосон байна
-            </Input.Error>
-          )}
+
           <PasswordInput
             className="mt-2"
             label="Нууц үг"
             placeholder="*********"
             radius={"xl"}
             icon={passIcon}
-            value={password}
-            onChange={(event) => setPassowrd(event.currentTarget.value)}
+            {...form.getInputProps("password")}
             styles={(theme) => ({
               label: {
                 marginBottom: rem(4),
@@ -216,17 +179,14 @@ const Register = () => {
               },
             })}
           />
-          {errorPass && (
-            <Input.Error className="mt-1">Нууц үг хоосон байна</Input.Error>
-          )}
+
           <PasswordInput
             className="mt-2"
             label="Нууц үг давтах"
             placeholder="*********"
             radius={"xl"}
             icon={shieldIcon}
-            value={confirmPass}
-            onChange={(event) => setConfirmPass(event.currentTarget.value)}
+            {...form.getInputProps("confirmPass")}
             styles={(theme) => ({
               label: {
                 marginBottom: rem(4),
@@ -240,38 +200,19 @@ const Register = () => {
               },
             })}
           />
-          {errorConPass && (
-            <Input.Error className="mt-1">
-              Нууц үг давтах хоосон байна
-            </Input.Error>
-          )}
+
           {show && (
             <div
               className="w-full py-2 px-4 rounded-lg mt-2"
               style={{
                 backgroundColor:
-                  checkUpper &&
-                  checkLower &&
-                  checkSpecial &&
-                  checkCharacter &&
-                  checkSame
-                    ? "#D1FADF"
-                    : "#FEE4E2",
+                  checkNumber && checkSame ? "#D1FADF" : "#FEE4E2",
               }}
             >
               {renderCheck(
-                checkUpper,
-                "Багадаа хаяж 1 том үсэг оруулсан байна"
+                checkNumber,
+                "Нууц үг 4 оронтой тооноос бүрдсэн байна"
               )}
-              {renderCheck(
-                checkLower,
-                "Багадаа хаяж 1 жижиг үсэг оруулсан байна"
-              )}
-              {renderCheck(
-                checkSpecial,
-                "Багадаа  1 тусгай тэмдэгт оруулсан байна"
-              )}
-              {renderCheck(checkCharacter, "8-аас багагүй урттай байна")}
               {renderCheck(checkSame, "Нууц үг ижилхэн байна")}
             </div>
           )}
@@ -281,11 +222,10 @@ const Register = () => {
             className="mt-8"
             w={"100%"}
             type="submit"
-            onClick={() => handleRegister()}
           >
             Бүртгүүлэх
           </Button>
-        </div>
+        </form>
       </div>
     </div>
   );

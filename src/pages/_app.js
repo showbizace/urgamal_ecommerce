@@ -5,12 +5,12 @@ const appendCache = createEmotionCache({ key: "mantine", prepend: false });
 import { ModalsProvider } from "@mantine/modals";
 import LoginModal from "@/components/LoginModal/LoginModal";
 import { UserConfigProvider } from "@/utils/userConfigProvider";
-import CategoryContextProvider from "@/utils/categoryContext";
+import CategoryContextProvider from "@/utils/categoryContextProvider";
 import PaymentModal from "@/components/PaymentModal/PaymentModal";
 import { Open_Sans } from "@next/font/google";
-import RefundRichText from "@/components/refund_modals/descriptionModal";
-import BankInfoModal from "@/components/refund_modals/bankInformationmodal";
 
+import WishlistProvider from "@/utils/wishlistProvider";
+import InvoiceModal from "@/components/InvoiceModal/InvoiceModal";
 const mont = Open_Sans({
   subsets: ["latin"],
   variable: "--font-open",
@@ -33,30 +33,32 @@ export default function App({ Component, pageProps }) {
     >
       <Notifications />
       <UserConfigProvider>
-        <ModalsProvider
-          modals={{
-            login: LoginModal,
-            payment: PaymentModal,
-            refundDescription: RefundRichText,
-            bankInfo: BankInfoModal,
-          }}
-        >
-          <CategoryContextProvider>
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-            >
-              <main
-                className={`${mont.variable}`}
-                style={{ width: "100%", height: "100%" }}
+
+        <WishlistProvider>
+          <ModalsProvider
+            modals={{
+              login: LoginModal,
+              payment: PaymentModal,
+              invoice: InvoiceModal,
+            }}
+          >
+            <CategoryContextProvider>
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                }}
               >
-                <Component {...pageProps} />
-              </main>
-            </div>
-          </CategoryContextProvider>
-        </ModalsProvider>
+                <main
+                  className={`${mont.variable}`}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <Component {...pageProps} />
+                </main>
+              </div>
+            </CategoryContextProvider>
+          </ModalsProvider>
+        </WishlistProvider>
       </UserConfigProvider>
     </MantineProvider>
   );

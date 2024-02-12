@@ -9,11 +9,13 @@ import {
   Loader,
   PinInput,
 } from "@mantine/core";
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { IconPhoneCall } from "@tabler/icons-react";
 import { fetchMethod } from "@/utils/fetch";
 import { showNotification } from "@mantine/notifications";
+import { UserConfigContext } from "@/utils/userConfigContext";
+import { setCookie } from "cookies-next";
 
 const icon = (
   <IconPhoneCall
@@ -24,6 +26,7 @@ const icon = (
 
 const OTP = () => {
   const router = useRouter();
+  const { login } = useContext(UserConfigContext);
   const [otpRequested, setOtpRequested] = useState(false);
   const [otp, setOtp] = useState("");
   const [number, setNumber] = useState("");
@@ -56,22 +59,20 @@ const OTP = () => {
 
   const handleLogin = async () => {
     setLoading(true);
-    const requestOption = { mobile: mobileNumber, code: otp };
+    const requestOption = { mobile: number, code: otp };
     const res = await fetchMethod("POST", "auth/login/code", "", requestOption);
     if (res?.success) {
       const bigDate = 30 * 24 * 60 * 60 * 1000;
-      login();
       const token = res.token;
-      setCookie("token", token, {
-        maxAge: bigDate,
-      });
-      setCookie("number", mobileNumber, { maxAge: bigDate });
+      login(token);
+      setCookie("number", number, { maxAge: bigDate });
       setCookie("addToCart", true);
 
       showNotification({
         message: "Амжилттай нэвтэрлээ",
         color: "green",
       });
+      router.push("/home");
     } else {
       showNotification({
         message: "Код буруу эсвэл хүчинтэй хугацаа дууссан байна.",

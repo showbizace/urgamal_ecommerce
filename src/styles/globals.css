@@ -198,3 +198,14 @@ body,
 .profile-icon :hover {
   color: "white";
 }
+#scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.chevron {
+  background-color: red;
+}
+
+.mantine-1oy32v8[data-active] {
+  background-color: transparent !important;
+}
