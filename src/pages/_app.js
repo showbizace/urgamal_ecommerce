@@ -7,8 +7,10 @@ import LoginModal from "@/components/LoginModal/LoginModal";
 import { UserConfigProvider } from "@/utils/userConfigProvider";
 import CategoryContextProvider from "@/utils/categoryContext";
 import PaymentModal from "@/components/PaymentModal/PaymentModal";
-import { useMantineTheme } from "@mantine/core";
 import { Open_Sans } from "@next/font/google";
+import RefundRichText from "@/components/refund_modals/descriptionModal";
+import BankInfoModal from "@/components/refund_modals/bankInformationmodal";
+
 const mont = Open_Sans({
   subsets: ["latin"],
   variable: "--font-open",
@@ -31,7 +33,14 @@ export default function App({ Component, pageProps }) {
     >
       <Notifications />
       <UserConfigProvider>
-        <ModalsProvider modals={{ login: LoginModal, payment: PaymentModal }}>
+        <ModalsProvider
+          modals={{
+            login: LoginModal,
+            payment: PaymentModal,
+            refundDescription: RefundRichText,
+            bankInfo: BankInfoModal,
+          }}
+        >
           <CategoryContextProvider>
             <div
               style={{

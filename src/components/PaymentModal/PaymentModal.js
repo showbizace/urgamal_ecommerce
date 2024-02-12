@@ -13,9 +13,7 @@ export default function PaymentModal({ context, id, innerProps }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log(socket, "socket");
     if (socket.connected) {
-      console.log("emit inquiry");
       socket.on("inquiryStatus", (data) => {
         if (data.success) {
           callInquiry(innerProps.paymentData?.invoice_id);

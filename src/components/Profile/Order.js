@@ -1,17 +1,51 @@
-import { Button, Collapse } from "@mantine/core";
+import { Button, Collapse, Badge } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import CollapseItem from "./CollapseItem";
 import axios from "axios";
 import { showNotification } from "@mantine/notifications";
 import { getCookie } from "cookies-next";
 import { useState } from "react";
 import { openContextModal } from "@mantine/modals";
 import dayjs from "dayjs";
+import { useRouter } from "next/router";
 
 const Order = ({ data }) => {
+  const Router = useRouter();
   const [opened, { toggle }] = useDisclosure(false);
   const userToken = getCookie("token");
   const [loading, setLoading] = useState(false);
+  const [refundStatus, setRefundStatus] = useState("");
+
+  const refundFormRequest = async () => {
+    openContextModal({
+      modal: "refundDescription",
+      title: "Буцаалт хийх",
+      innerProps: {
+        orderid: data?.orderid,
+        setStatus: setRefundStatus,
+        status: refundStatus,
+      },
+      centered: true,
+      size: "lg",
+      onclose: () => {
+        Router.reload();
+      },
+    });
+  };
+
+  const bankInfomation = async () => {
+    openContextModal({
+      modal: "bankInfo",
+      title: "Ta банкны мэдээллээ үнэн зөв оруулна уу!",
+      innerProps: {
+        orderid: data?.refund_request?.id,
+        setStatus: setRefundStatus,
+        status: refundStatus,
+      },
+      centered: true,
+      size: "lg",
+    });
+  };
+
   const fetchPaymentData = async (orderId) => {
     setLoading(true);
     const axiosReqOption = {
@@ -48,6 +82,7 @@ const Order = ({ data }) => {
       });
     setLoading(false);
   };
+
   return (
     <div>
       <div
@@ -66,15 +101,10 @@ const Order = ({ data }) => {
               {dayjs(data?.createdAt)
                 .add(8, "hours")
                 .format("YYYY-MM-DD HH:mm")}
-              {/* {data?.createdAt} */}
             </p>
           </div>
         </div>
         <div className="flex flex-row gap-2">
-          {/* <Button variant="outline" color={"red"}>Захиалга цуцлах</Button> */}
-          {/* <Button variant="outline" color={"dark"}>
-						Дэлгэрэнгүй
-					</Button> */}
           {data.status.toString() === "100" && (
             <Button
               variant="light"
@@ -88,10 +118,51 @@ const Order = ({ data }) => {
               Төлбөр төлөх
             </Button>
           )}
+
+          {data.refund_request === null && data.status.toString() === "200" ? (
+            <Button
+              variant="light"
+              color="red.5"
+              loading={loading}
+              onClick={(e) => {
+                e.stopPropagation();
+                refundFormRequest();
+              }}
+            >
+              Буцаалт хийх
+            </Button>
+          ) : data.refund_request?.status === 100 ? (
+            <Badge color="voilet.4" radius="xs" p={15}>
+              Хүлээгдэж байна
+            </Badge>
+          ) : data.refund_request?.status === 200 ? (
+            <Button
+              variant="light"
+              color="indigo"
+              loading={loading}
+              onClick={(e) => {
+                e.stopPropagation();
+                bankInfomation();
+              }}
+            >
+              Банк мэдээлэл
+            </Button>
+          ) : data.refund_request?.status === 300 ? (
+            <Badge color="voilet.4" radius="xs" p={15}>
+              Хүлээгдэж байна
+            </Badge>
+          ) : data.refund_request?.status === 400 ? (
+            <Badge color="red.9" radius="xs" p={15}>
+              Татгалзсан
+            </Badge>
+          ) : data.refund_request?.status === 500 ? (
+            <Badge color="green" radius="xs" p={15}>
+              Буцаалт хийгдсэн
+            </Badge>
+          ) : null}
         </div>
       </div>
       <Collapse in={opened}>
-        {/* <CollapseItem orderItems={data.order_items} total={data.total} /> */}
         <div className="w-full py-2 flex flex-row justify-end items-center pr-9">
           <p className="text-grey">Нийт үнийн дүн :</p>
           <p className="ml-1 font-semibold">{data.total}₮</p>
