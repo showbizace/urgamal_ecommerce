@@ -26,7 +26,7 @@ function AllCategory({ type = "default", categories, isLoading }) {
                       className="group/parent  py-2 flex justify-between items-center  "
                     >
                       <Link
-                        href={`/category/parent/${parent?.id}`}
+                        href={`/category/${parent?.id}`}
                         className="text-2xl group-hover/parent:underline "
                       >
                         <div className="flex flex-row gap-2">
@@ -89,7 +89,7 @@ function AllCategory({ type = "default", categories, isLoading }) {
             return (
               <Link
                 key={parent?.name + parent?.id}
-                href={`/category/parent/${parent?.id}`}
+                href={`/category/${parent?.id}`}
                 className="text-sm group-hover/parent:font-medium"
               >
                 <li

@@ -32,7 +32,7 @@ const CategoryHover = ({ setIsHovered, loading, categories }) => {
             <div className="flex flex-col">
               {categories?.map((item, index) => (
                 <Link
-                  href={`/category/parent/${item.id}`}
+                  href={`/category/${item.id}`}
                   key={index}
                   className="flex flex-row gap-2 items-center w-80"
                   onMouseEnter={() => handleEnter(item, index)}

@@ -58,45 +58,6 @@ const CategoryPage = ({ initialData }) => {
     }
   }, [data]);
 
-  // const getCurrentCategoryPath = (parent, child) => {
-  //   if (type === "parent") {
-  //     const current = parent.find((e) => e.id == catName);
-  //     if (current) {
-  //       return [
-  //         {
-  //           title: current.name,
-  //           href: `/category/parent/${current.id}`,
-  //         },
-  //       ];
-  //     } else {
-  //       return [];
-  //     }
-  //   } else if (type === "child") {
-  //     const current = child.find((e) => e.id == catName);
-  //     if (current) {
-  //       const parentCat = parent.find((e) => e.id == current.parent_id);
-  //       return [
-  //         {
-  //           title: parentCat ? parentCat.name : "",
-  //           href: `/category/parent/${parentCat ? parentCat.id : ""}`,
-  //         },
-  //         {
-  //           title: current.name,
-  //           href: `/category/child/${current.id}`,
-  //         },
-  //       ];
-  //     } else {
-  //       return [];
-  //     }
-  //   } else {
-  //     return [];
-  //   }
-  // };
-  // const currentCategoryPath = useMemo(
-  //   () => getCurrentCategoryPath(parent, child),
-  //   [parent, child, router.asPath]
-  // );
-
   useEffect(() => {
     setLoading(true);
     setProducts(initialData?.result);
@@ -107,13 +68,14 @@ const CategoryPage = ({ initialData }) => {
   function categoryPositioner() {
     var navbar = document.getElementById("category-menu");
     var content = document.getElementById("content");
-    var sticky = navbar.offsetTop;
+    var sticky = navbar?.offsetTop;
     if (window.pageYOffset >= sticky) {
-      navbar.classList.add("fixed", "top-16");
+      navbar?.classList.add("fixed", "top-16");
     } else {
-      navbar.classList.remove("fixed", "top-16");
+      navbar?.classList.remove("fixed", "top-16");
     }
   }
+
   useEffect(() => {
     window.addEventListener("scroll", categoryPositioner);
     return () => {
@@ -135,25 +97,7 @@ const CategoryPage = ({ initialData }) => {
               id={"content"}
             >
               <div className="flex flex-row justify-between w-full">
-                <div className="flex flex-row items-center">
-                  {/* <Breadcrumbs mt="xs">
-                    {[
-                      {
-                        title: "Нүүр",
-                        href: `/`,
-                      },
-                      ...currentCategoryPath,
-                    ].map(({ title, href }, index) => (
-                      <Link
-                        href={href}
-                        key={title + index}
-                        className="text-sm text-grey hover:underline"
-                      >
-                        {title}
-                      </Link>
-                    ))}
-                  </Breadcrumbs> */}
-                </div>
+                <div className="flex flex-row items-center"></div>
                 <div className="flex justify-center items-center bg-white flex-row  px-4 py-2">
                   <p className="font-semibold text-sm text-[#3E503C]">
                     Эрэмбэлэх
@@ -172,15 +116,6 @@ const CategoryPage = ({ initialData }) => {
                   showSkeleton={loading}
                   emptyStateMessage="Ангиллын бараа олдсонгүй"
                   isEmpty={isEmpty}
-                  // query={
-                  //   type === "parent"
-                  //     ? parent.find((e) => e.id === catName)?.name
-                  //     : type === "child"
-                  //     ? parent.find((e) => e.id === catName)?.name
-                  //     : ""
-                  //     ? parent.find((e) => e.id === catName)?.name
-                  //     : ""
-                  // }
                 >
                   {products?.map((e, index) => (
                     <ProductCard
