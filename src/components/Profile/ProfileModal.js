@@ -77,9 +77,6 @@ function ProductModal({
         onSubmit={form.onSubmit(async (values, e) => {
           await onSubmit(values);
           form.setValues(initialData);
-          // close();
-          // handleClick && handleClick();
-          // route.reload();
         })}
       >
         <Group position="center">
