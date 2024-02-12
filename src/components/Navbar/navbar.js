@@ -59,12 +59,13 @@ const Navbar = (props) => {
     fetcher
   );
 
+  console.log(data, "data");
   const suggestions = data
     ? data?.map((e) => {
         return {
           value: e?.name || "",
           id: e?.id || "",
-          image: e?.product_image?.images?.[0] || "",
+          image: e?.additionalImage[0]?.url || "",
           description: e?.description || "",
         };
       })

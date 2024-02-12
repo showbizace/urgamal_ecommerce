@@ -12,6 +12,7 @@ import BankInfoModal from "@/components/refund_modals/bankInformationmodal";
 import RefundRichText from "@/components/refund_modals/descriptionModal";
 import WishlistProvider from "@/utils/wishlistProvider";
 import InvoiceModal from "@/components/InvoiceModal/InvoiceModal";
+import InvoiceFileModal from "@/components/InvoiceModal/InvoiceFileModal";
 const mont = Open_Sans({
   subsets: ["latin"],
   variable: "--font-open",
@@ -42,6 +43,7 @@ export default function App({ Component, pageProps }) {
               invoice: InvoiceModal,
               bankInfo: BankInfoModal,
               refundDescription: RefundRichText,
+              invoiceFile: InvoiceFileModal,
             }}
           >
             <CategoryContextProvider>
