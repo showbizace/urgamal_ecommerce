@@ -16,7 +16,7 @@ const CategoryHoverInner = ({ item }) => {
             if (index < 20) {
               return (
                 <Link
-                  href={`/category/parent/${item.id}`}
+                  href={`/category/${item.id}`}
                   key={index}
                   className="py-2 text-sm hover:text-primary text-grey600 font-semibold flex flex-row justify-between w-96"
                 >
@@ -27,7 +27,7 @@ const CategoryHoverInner = ({ item }) => {
           })}
           <Link
             className="mt-4 text-md text-primary flex flex-row items-center gap-2"
-            href={`/category/parent/${item.id}`}
+            href={`/category/${item.id}`}
           >
             Бүгдийг үзэх
             <IconArrowBigRight size={rem(16)} />

@@ -62,7 +62,7 @@ export default function ProductListWithCategory({
           )}
         </div>
         <Link
-          href={`/category/parent/${categoryId}`}
+          href={`/category/${categoryId}`}
           className="flex flex-row items-center gap-2 hover:underline text-greenish-grey"
         >
           <p

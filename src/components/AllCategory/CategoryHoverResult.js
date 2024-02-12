@@ -19,7 +19,7 @@ const CategoryHoverResult = ({ item, index }) => {
             <span className="mt-1 mb-3 text-grey600 text-base">Ангилал</span>
             {item?.child_cats?.map((item, index) => (
               <Link
-                href={`/category/parent/${item.id}`}
+                href={`/category/${item.id}`}
                 key={index}
                 className="py-2 text-sm hover:text-primary text-grey600 font-semibold flex flex-row justify-between w-96"
                 onMouseEnter={() => {
