@@ -8,7 +8,8 @@ import { UserConfigProvider } from "@/utils/userConfigProvider";
 import CategoryContextProvider from "@/utils/categoryContextProvider";
 import PaymentModal from "@/components/PaymentModal/PaymentModal";
 import { Open_Sans } from "@next/font/google";
-
+import BankInfoModal from "@/components/refund_modals/bankInformationmodal";
+import RefundRichText from "@/components/refund_modals/descriptionModal";
 import WishlistProvider from "@/utils/wishlistProvider";
 import InvoiceModal from "@/components/InvoiceModal/InvoiceModal";
 const mont = Open_Sans({
@@ -33,13 +34,14 @@ export default function App({ Component, pageProps }) {
     >
       <Notifications />
       <UserConfigProvider>
-
         <WishlistProvider>
           <ModalsProvider
             modals={{
               login: LoginModal,
               payment: PaymentModal,
               invoice: InvoiceModal,
+              bankInfo: BankInfoModal,
+              refundDescription: RefundRichText,
             }}
           >
             <CategoryContextProvider>
