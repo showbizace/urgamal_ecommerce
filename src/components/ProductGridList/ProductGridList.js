@@ -15,14 +15,8 @@ export default function ProductGridList({
     <div className={`w-full h-screen flex justify-center items-start mt-32`}>
       <Stack align="center">
         <IconSearch size="2rem" stroke={1.5} />
-        <Text size="lg" weight={500}>
-          Хайлт илэрцгүй
-        </Text>
-        <Text size="md" weight={500}>
-          "{query}"{" "}
-          <Text span size="md" weight={400}>
-            {emptyStateMessage}
-          </Text>
+        <Text size="lg" weight={400}>
+          Ангилал дээрх бараа олдсонгүй...
         </Text>
       </Stack>
     </div>

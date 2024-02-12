@@ -9,32 +9,55 @@ import useSWRInfinite from "swr/infinite";
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import ProductCard from "@/components/product-card";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
-import { Breadcrumbs } from "@mantine/core";
+import { Breadcrumbs, Button, rem } from "@mantine/core";
 import { fetchMethod, fetcher, getCategory } from "@/utils/fetch";
 import { PAGE_SIZE } from "@/utils/constant";
 
 export async function getServerSideProps({ query }) {
-  const { catName } = query;
-
+  const { catId } = query;
   const data = await fetchMethod(
     "GET",
-    `product?offset=0&limit=${PAGE_SIZE}&query=&categoryName${catName}`
+    `product?offset=0&limit=${PAGE_SIZE}&query=&categoryId=${catId}`
   );
   return {
     props: {
-      initialData: data.result,
+      initialData: data,
     },
   };
 }
 
 const CategoryPage = ({ initialData }) => {
   const router = useRouter();
-  const { catName } = router.query;
-  const [parent, setParent] = useState([]);
-  const [main, setMain] = useState([]);
-  const [child, setChild] = useState([]);
+  const { catId } = router.query;
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState(0);
+
+  const { data, size, setSize, isLoading, isValidating } = useSWRInfinite(
+    (index) =>
+      `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
+        (index + 1) * 20
+      }&limit=${PAGE_SIZE}&query=&categoryId=${catId}`,
+    fetcher,
+    { revalidateFirstPage: false }
+  );
+
+  const isEmpty = products?.length === 0;
+  const fetchMore = async () => {
+    setLoading(true);
+    if (total === data?.length) {
+      return;
+    }
+    setSize((prev) => prev + 1);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (data?.length > 0) {
+      setProducts(products.concat(data[data?.length - 1]));
+    }
+  }, [data]);
+
   // const getCurrentCategoryPath = (parent, child) => {
   //   if (type === "parent") {
   //     const current = parent.find((e) => e.id == catName);
@@ -74,54 +97,12 @@ const CategoryPage = ({ initialData }) => {
   //   [parent, child, router.asPath]
   // );
 
-  const { data, size, setSize, isValidating, isLoading } = useSWRInfinite(
-    (index) => {
-      return `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
-        (index + 1) * 20
-      }&limit=${PAGE_SIZE}&categoryId=${catName}`;
-    },
-    fetcher,
-    { revalidateFirstPage: false }
-  );
-
-  useEffect(() => {
-    setSize(0);
-  }, [router.asPath]);
-
-  const isEmpty = data?.[0]?.length === 0;
-
-  useEffect(() => {
-    setProducts([]);
-    setSize(1);
-  }, [size]);
-
-  useEffect(() => {
-    data?.length > 0 &&
-      !isEmpty &&
-      setProducts(products.concat(...data[data.length - 1]));
-    // data?.length > 0 && !isEmpty && setProducts(products.concat(...data));
-  }, [data]);
-
   useEffect(() => {
     setLoading(true);
-    window.dispatchEvent(new Event("storage"));
-    setProducts(initialData);
+    setProducts(initialData?.result);
     setLoading(false);
-  }, []);
-
-  const infiniteScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop + 350 >=
-        document.documentElement.offsetHeight &&
-      !isEmpty
-    )
-      setSize(size + 1);
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", infiniteScroll);
-    return () => window.removeEventListener("scroll", infiniteScroll);
-  }, [data]);
+    setTotal(initialData?.meta?.total);
+  }, [initialData]);
 
   function categoryPositioner() {
     var navbar = document.getElementById("category-menu");
@@ -186,28 +167,41 @@ const CategoryPage = ({ initialData }) => {
                   />
                 </div>
               </div>
-              <ProductGridList
-                showSkeleton={isLoading || isValidating}
-                isEmpty={isEmpty}
-                emptyStateMessage="ангиллын бараа олдсонгүй"
-                // query={
-                //   type === "parent"
-                //     ? parent.find((e) => e.id === catName)?.name
-                //     : type === "child"
-                //     ? parent.find((e) => e.id === catName)?.name
-                //     : ""
-                //     ? parent.find((e) => e.id === catName)?.name
-                //     : ""
-                // }
-              >
-                {products?.map((e, index) => (
-                  <ProductCard
-                    key={`product-card-key-${index}-${e?.id}`}
-                    src={e?.product_image?.images?.[0]}
-                    data={e}
-                  />
-                ))}
-              </ProductGridList>
+              <div className="flex flex-col w-full">
+                <ProductGridList
+                  showSkeleton={loading}
+                  emptyStateMessage="Ангиллын бараа олдсонгүй"
+                  isEmpty={isEmpty}
+                  // query={
+                  //   type === "parent"
+                  //     ? parent.find((e) => e.id === catName)?.name
+                  //     : type === "child"
+                  //     ? parent.find((e) => e.id === catName)?.name
+                  //     : ""
+                  //     ? parent.find((e) => e.id === catName)?.name
+                  //     : ""
+                  // }
+                >
+                  {products?.map((e, index) => (
+                    <ProductCard
+                      key={`product-card-key-${index}-${e?.id}`}
+                      src={e?.product_image?.images?.[0]}
+                      data={e}
+                    />
+                  ))}
+                </ProductGridList>
+                {total !== products?.length && (
+                  <div className="flex justify-center items-center mt-8">
+                    <Button
+                      variant="outline"
+                      color="yellow"
+                      onClick={() => fetchMore()}
+                    >
+                      Цааш үзэх
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

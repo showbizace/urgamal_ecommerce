@@ -64,7 +64,7 @@ export default function SearchResult({ initialData }) {
   }, [data]);
 
   const fetchMore = () => {
-    if (total === data?.length) {
+    if (total === products?.length) {
       return;
     }
     setSize((prev) => prev + 1);

@@ -7,6 +7,7 @@ import useCategories from "@/hooks/useCategories";
 
 const Category = ({ padding }) => {
   const router = useRouter();
+  const { catId } = router.query;
   const categories = useCategories();
   return (
     <div
@@ -76,23 +77,38 @@ const Category = ({ padding }) => {
                               height={24}
                             />
                           )}
-                          <p className="hover:text-[#fd7e14]" key={index}>
+                          <p
+                            className={`hover:text-[#fd7e14] ${
+                              catId === el.id && "font-semibold"
+                            }`}
+                            key={index}
+                          >
                             {el.name}
                           </p>
                         </div>,
                       ]}
                       onClick={() => {
                         router.push({
-                          pathname: `/category/${el.name}`,
+                          pathname: `/category/${el.id}`,
                         });
                       }}
-                      expanded={() => {}}
+                      expanded={() => {
+                        if (catId) {
+                          if (catId === el.id) {
+                            return true;
+                          } else {
+                            return false;
+                          }
+                        } else {
+                          return false;
+                        }
+                      }}
                     >
                       {el?.child_cats &&
                         el?.child_cats.map((el, index) => (
                           <Collapse
-                            key={index}
-                            id="2"
+                            key={el?.id}
+                            id={el?.id}
                             css={{
                               paddingLeft: "$5",
                               paddingRight: "$5",
@@ -103,14 +119,10 @@ const Category = ({ padding }) => {
                               <IconChevronRight color="#fcbc60" key={index} />,
                             ]}
                             title={[
-                              <p
-                                className="hover:text-[#fd7e14] font-semibold"
-                                key={index}
-                              >
-                                {el.name}
+                              <p className="hover:text-[#fd7e14]" key={index}>
+                                {el?.name}
                               </p>,
                             ]}
-                            expanded={() => {}}
                           >
                             <div className="overflow-auto scrollbar-hide">
                               {/* {child !== undefined &&

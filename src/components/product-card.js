@@ -183,22 +183,24 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
             {data?.name}
           </Text>
           <div className="flex flex-col w-full">
-            <div className="flex flex-row items-center  mt-1 gap-1">
-              <p className="text-[#696A6C] font-semibold text-xs">
-                Үлдэгдэл :{" "}
-              </p>
-              {data?.balance > 10 ? (
-                <Badge size="xs" color="teal">
-                  Хангалттай
-                </Badge>
-              ) : data?.balance <= 10 ? (
-                <p className="text-xs font-semibold ">{data?.balance}</p>
-              ) : (
-                <Badge size="xs" color="yellow">
-                  Үлдэгдэлгүй
-                </Badge>
-              )}
-            </div>
+            {data.balance && (
+              <div className="flex flex-row items-center  mt-1 gap-1">
+                <p className="text-[#696A6C] font-semibold text-xs">
+                  Үлдэгдэл :{" "}
+                </p>
+                {data?.balance > 10 ? (
+                  <Badge size="xs" color="teal">
+                    Хангалттай
+                  </Badge>
+                ) : data?.balance <= 10 ? (
+                  <p className="text-xs font-semibold ">{data?.balance}</p>
+                ) : (
+                  <Badge size="xs" color="yellow">
+                    Үлдэгдэлгүй
+                  </Badge>
+                )}
+              </div>
+            )}
             <div className="flex flex-row justify-between items-center">
               <p className="font-semibold text-base mt-1 text-start">
                 {data?.listPrice}₮
