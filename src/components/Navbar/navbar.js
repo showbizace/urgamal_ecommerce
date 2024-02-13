@@ -59,7 +59,6 @@ const Navbar = (props) => {
     fetcher
   );
 
-  console.log(data, "data");
   const suggestions = data
     ? data?.map((e) => {
         return {

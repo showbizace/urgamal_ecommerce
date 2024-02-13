@@ -64,7 +64,6 @@ const Category = ({ padding }) => {
                 <div className="flex flex-col gap-2">
                   {el?.child_cats &&
                     el?.child_cats.map((el, index) => {
-                      console.log(el);
                       return (
                         <div
                           onClick={() => {

@@ -2,7 +2,6 @@ import { htmlFrom } from "@/utils/constant";
 import React from "react";
 
 const InvoiceFileModal = ({ context, id, innerProps }) => {
-  console.log(innerProps, "inner");
   return (
     <div
       dangerouslySetInnerHTML={{

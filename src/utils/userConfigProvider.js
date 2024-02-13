@@ -25,9 +25,7 @@ export const UserConfigProvider = ({ children }) => {
       maxAge: bigDate,
     });
     const decoded = tokenDecode(token);
-    console.log(socket.id, "socket id")
-    console.log(decoded.userid, "decoded id")
-    socket.emit("storeMySocketId", decoded.userid)
+    socket.emit("storeMySocketId", decoded.userid);
     setAuth(true);
   };
   const logout = () => setAuth(false);
