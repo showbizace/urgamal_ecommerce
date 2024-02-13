@@ -64,7 +64,7 @@ export default function SearchResult({ initialData }) {
   }, [data]);
 
   const fetchMore = () => {
-    if (total === products?.length) {
+    if (total === data?.length) {
       return;
     }
     setSize(size + 1);
@@ -98,15 +98,17 @@ export default function SearchResult({ initialData }) {
               );
             })}
           </ProductGridList>
-          <div className="flex justify-center items-center mt-8">
-            <Button
-              variant="outline"
-              color="yellow"
-              onClick={() => fetchMore()}
-            >
-              Цааш үзэх
-            </Button>
-          </div>
+          {total !== products?.length && (
+            <div className="flex justify-center items-center mt-8">
+              <Button
+                variant="outline"
+                color="yellow"
+                onClick={() => fetchMore()}
+              >
+                Цааш үзэх
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </GlobalLayout>

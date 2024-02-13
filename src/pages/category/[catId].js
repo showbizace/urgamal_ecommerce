@@ -36,7 +36,7 @@ const CategoryPage = ({ initialData }) => {
   const { data, size, setSize, isLoading, isValidating } = useSWRInfinite(
     (index) =>
       `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
-        index * 20
+        (index + 1) * 20
       }&limit=${PAGE_SIZE}&query=&categoryId=${catId}`,
     fetcher,
     { revalidateFirstPage: false }
