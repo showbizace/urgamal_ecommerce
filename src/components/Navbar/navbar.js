@@ -1,27 +1,13 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable react-hooks/exhaustive-deps */
 import Image from "next/image";
-import NavBarLinks from "./nav-bar-links";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import {
-  Autocomplete,
-  Avatar,
-  Button,
-  Group,
-  Loader,
-  ScrollArea,
-  Select,
-  Text,
-  Tooltip,
-  rem,
-} from "@mantine/core";
+import { Avatar, Button, Group, Text, rem } from "@mantine/core";
 import { forwardRef, useContext, useEffect, useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
 import {
-  IconHomeEco,
   IconPackage,
-  IconReportSearch,
   IconSearch,
   IconCircleXFilled,
 } from "@tabler/icons-react";
@@ -55,8 +41,14 @@ const Navbar = (props) => {
   //   refreshInterval: 0,
   // });
   const { data, error, isLoading, mutate, isValidating } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/product?limit=${10}&query=${debounced}`,
-    fetcher
+    `${process.env.NEXT_PUBLIC_API_URL}/product?limit=${10}${
+      debounced && `&query=${debounced}`
+    }`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
   );
 
   const suggestions = data
@@ -434,7 +426,7 @@ const Navbar = (props) => {
         </div>
       </div>
       <div>
-        {showSearch && (
+        {/* {showSearch && (
           <div>
             <Autocomplete
               className="w-full"
@@ -479,7 +471,7 @@ const Navbar = (props) => {
               }
             />
           </div>
-        )}
+        )} */}
       </div>
       <NavbarBottom
         AutocompleteItem={AutocompleteItem}

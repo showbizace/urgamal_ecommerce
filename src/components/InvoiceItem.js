@@ -23,9 +23,7 @@ const InvoiceItem = ({ data, index, handleInvoice }) => {
           <div className="flex flex-row">
             <p className="text-base text-grey">Огноо : </p>
             <p className="text-base ml-1">
-              {dayjs(data?.createdAt)
-                .add(8, "hours")
-                ?.format("YYYY-MM-DD HH:mm")}
+              {dayjs(data?.createdAt)?.format("YYYY-MM-DD HH:mm")}
             </p>
           </div>
         </div>
@@ -45,8 +43,8 @@ const InvoiceItem = ({ data, index, handleInvoice }) => {
       <Collapse in={opened}>
         <div>
           <div className="w-full py-2 flex flex-row items-center">
-            {data?.order?.order_item &&
-              data?.order?.order_item.map((item, index) => {
+            {data?.order_item &&
+              data?.order_item.map((item, index) => {
                 return (
                   <div
                     key={index}
@@ -82,7 +80,7 @@ const InvoiceItem = ({ data, index, handleInvoice }) => {
           </div>
           <div className="flex justify-end">
             <p className="text-grey">Нийт үнийн дүн :</p>
-            <p className="ml-1 font-semibold">{data?.order?.total}₮</p>
+            <p className="ml-1 font-semibold">{data?.total}₮</p>
           </div>
         </div>
       </Collapse>

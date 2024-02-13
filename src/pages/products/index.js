@@ -28,7 +28,7 @@ export default function SearchResult({ initialData }) {
   const { data, size, setSize, isValidating, isLoading } = useSWRInfinite(
     (index) =>
       `${process.env.NEXT_PUBLIC_API_URL}/product?offset=${
-        (index + 1) * 20
+        index * 20
       }&limit=${PAGE_SIZE}`,
     fetcher,
     { revalidateFirstPage: false }
@@ -67,7 +67,7 @@ export default function SearchResult({ initialData }) {
     if (total === products?.length) {
       return;
     }
-    setSize((prev) => prev + 1);
+    setSize(size + 1);
   };
 
   useEffect(() => {

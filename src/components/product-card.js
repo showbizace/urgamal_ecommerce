@@ -103,7 +103,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
 
   const addToCartHandler = async (event) => {
     event.stopPropagation();
-    if (data.balance > 0) {
+    if (data?.balance > 0) {
       if (token) {
         setLoading(true);
         const body = {
@@ -183,7 +183,7 @@ const ProductCard = ({ key, src, data, shouldScale = true }) => {
             {data?.name}
           </Text>
           <div className="flex flex-col w-full">
-            {data.balance && (
+            {data?.balance && (
               <div className="flex flex-row items-center  mt-1 gap-1">
                 <p className="text-[#696A6C] font-semibold text-xs">
                   Үлдэгдэл :{" "}

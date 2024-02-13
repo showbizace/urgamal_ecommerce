@@ -1,6 +1,6 @@
 import InvoiceItem from "@/components/InvoiceItem";
 import { fetchMethod } from "@/utils/fetch";
-import { Loader, Title } from "@mantine/core";
+import { Loader, Title, rem } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { getCookie } from "cookies-next";
 import React, { useEffect, useState } from "react";
@@ -14,9 +14,15 @@ const Invoice = () => {
   const getInvoice = async () => {
     setLoading(true);
     const token = getCookie("token");
-    const data = await fetchMethod("GET", "order/invoice", token);
+    const requestOption = {
+      status: "all",
+    };
+    const data = await fetchMethod("POST", "user/order", token, requestOption);
     if (data?.success) {
-      setInvoiceList(data?.invoice);
+      const filtered = data?.data?.filter(
+        (item) => item?.method === "invoicing"
+      );
+      setInvoiceList(filtered);
       setLoading(false);
     } else {
       console.log(data?.message, "err");
@@ -29,31 +35,37 @@ const Invoice = () => {
   }, []);
 
   const handleInvoice = async (id) => {
-    const data = await fetchMethod("GET", `order/invoice/file?orderid=${id}`);
-    if (data.success) {
-      openContextModal({
-        modal: "invoiceFile",
-        title: "Нэхэмжлэл дэлгэрэнгүй",
-        centered: true,
-        innerProps: {
-          data: data.invoice,
-        },
-        size: "lg",
-      });
-    } else {
-      showNotification({
-        message: data?.message,
-        color: "red",
-        icon: (
-          <IconCircleXFilled
-            style={{
-              width: rem(30),
-              height: rem(30),
-            }}
-          />
-        ),
-      });
-    }
+    openContextModal({
+      modal: "invoiceFile",
+      title: "Нэхэмжлэл дэлгэрэнгүй",
+      centered: true,
+      style: { padding: "8px" },
+    });
+    // const data = await fetchMethod("GET", `order/invoice/file?orderid=${id}`);
+    // if (data.success) {
+    //   openContextModal({
+    //     modal: "invoiceFile",
+    //     title: "Нэхэмжлэл дэлгэрэнгүй",
+    //     centered: true,
+    //     innerProps: {
+    //       data: data.invoice,
+    //     },
+    //     size: "lg",
+    //   });
+    // } else {
+    //   showNotification({
+    //     message: data?.message,
+    //     color: "red",
+    //     icon: (
+    //       <IconCircleXFilled
+    //         style={{
+    //           width: rem(30),
+    //           height: rem(30),
+    //         }}
+    //       />
+    //     ),
+    //   });
+    // }
   };
 
   return (
