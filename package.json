@@ -36,6 +36,7 @@
     "cookies-next": "^2.1.1",
     "dayjs": "^1.11.7",
     "embla-carousel-react": "^7.0.9",
+    "fast-average-color": "^9.4.0",
     "framer-motion": "^11.0.3",
     "jquery": "^3.6.4",
     "jwt-decode": "^4.0.0",

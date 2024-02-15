@@ -1,22 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/router";
-import axios from "axios";
-import useSWRInfinite from "swr/infinite";
-import ProductCard from "@/components/product-card";
-import ProductGridList from "@/components/ProductGridList/ProductGridList";
-import { Breadcrumbs, Button, rem } from "@mantine/core";
-import { fetchMethod, fetcher, getCategory } from "@/utils/fetch";
-import { PAGE_SIZE } from "@/utils/constant";
-import CategoryLayout from "@/components/GlobalLayout/CategoryLayout";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
+import Category from '@/components/AllCategory/category';
+import axios from 'axios';
+import useSWRInfinite from 'swr/infinite';
+import GlobalLayout from '@/components/GlobalLayout/GlobalLayout';
+import ProductCard from '@/components/product-card';
+import ProductGridList from '@/components/ProductGridList/ProductGridList';
+import { Breadcrumbs, Button, rem } from '@mantine/core';
+import { fetchMethod, fetcher, getCategory } from '@/utils/fetch';
+import { PAGE_SIZE } from '@/utils/constant';
+import CategoryLayout from '@/components/GlobalLayout/CategoryLayout';
 
 export async function getServerSideProps({ query }) {
   const { catId } = query;
 
   const data = await fetchMethod(
-    "GET",
+    'GET',
     `product?offset=0&limit=${PAGE_SIZE}&query=&categoryId=${catId}`
   );
   return {
@@ -66,32 +68,34 @@ const CategoryPage = ({ initialData }) => {
   }, [initialData]);
 
   function categoryPositioner() {
-    var navbar = document.getElementById("category-menu");
-    var content = document.getElementById("content");
+    var navbar = document.getElementById('category-menu');
+    var content = document.getElementById('content');
     var sticky = navbar?.offsetTop;
     if (window.pageYOffset >= sticky) {
-      navbar?.classList.add("fixed", "top-16");
+      navbar?.classList.add('fixed', 'top-16');
     } else {
-      navbar?.classList.remove("fixed", "top-16");
+      navbar?.classList.remove('fixed', 'top-16');
     }
   }
 
   useEffect(() => {
-    window.addEventListener("scroll", categoryPositioner);
+    window.addEventListener('scroll', categoryPositioner);
     return () => {
-      window.removeEventListener("scroll", categoryPositioner);
+      window.removeEventListener('scroll', categoryPositioner);
     };
   }, []);
 
   return (
     <CategoryLayout>
+
       <div className="flex-1">
-        <div className="px-4 md:px-10 h-full">
-          <div className="h-full flex flex-row py-6 md:py-12 justify-between gap-10">
+         <div className="px-4 md:px-5 h-full">
+          <div className="h-full flex flex-row py-6 md:py-6 justify-between gap-10">
+
             <div
               className="flex flex-row w-full h-full"
-              style={{ gap: "30px", flexWrap: "wrap" }}
-              id={"content"}
+              style={{ gap: '30px', flexWrap: 'wrap' }}
+              id={'content'}
             >
               {/* <div className="flex flex-row justify-between w-full">
                 <div className="flex flex-row items-center"></div>
@@ -102,7 +106,7 @@ const CategoryPage = ({ initialData }) => {
                   <Image
                     width={13}
                     height={13}
-                    src={"/icons/arrow-down-outline.svg"}
+                    src={'/icons/arrow-down-outline.svg'}
                     className="ml-2 mt-1"
                     alt="arrow-down"
                   />
@@ -117,7 +121,8 @@ const CategoryPage = ({ initialData }) => {
                   {products?.map((e, index) => (
                     <ProductCard
                       key={`product-card-key-${index}-${e?.id}`}
-                      src={e?.additionalImage?.images?.[0]}
+                      src={e?.additionalImage?.[0]}
+                      additionalImages={e.additionalImage?.slice(1)}
                       data={e}
                     />
                   ))}
