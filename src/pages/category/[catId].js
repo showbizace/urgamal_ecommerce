@@ -15,6 +15,7 @@ import { PAGE_SIZE } from "@/utils/constant";
 
 export async function getServerSideProps({ query }) {
   const { catId } = query;
+
   const data = await fetchMethod(
     "GET",
     `product?offset=0&limit=${PAGE_SIZE}&query=&categoryId=${catId}`
@@ -120,7 +121,7 @@ const CategoryPage = ({ initialData }) => {
                   {products?.map((e, index) => (
                     <ProductCard
                       key={`product-card-key-${index}-${e?.id}`}
-                      src={e?.product_image?.images?.[0]}
+                      src={e?.additionalImage?.images?.[0]}
                       data={e}
                     />
                   ))}

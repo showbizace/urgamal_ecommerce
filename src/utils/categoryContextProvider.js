@@ -10,7 +10,7 @@ const CategoryContextProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
 
   const getCats = async () => {
-    const data = await fetchMethod("GET", "product/cats");
+    const data = await fetchMethod("GET", "product/cat-list");
     if (data?.success) {
       setCategories(data?.categories);
     }
