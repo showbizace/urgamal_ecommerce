@@ -1,4 +1,4 @@
-import RickText from "../ RickText";
+import RickText from "../RickText";
 import { useState } from "react";
 import { Button } from "@mantine/core";
 import { IconAlertCircle, IconCheck, IconError404 } from "@tabler/icons-react";

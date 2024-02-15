@@ -16,7 +16,7 @@ import {
   IconSend,
   IconTextSize,
 } from "@tabler/icons-react";
-import RickText from "@/components/ RickText";
+import RickText from "@/components/RickText";
 import { fetchMethod } from "@/utils/fetch";
 import { showNotification } from "@mantine/notifications";
 

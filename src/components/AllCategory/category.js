@@ -4,7 +4,7 @@ import { IconChevronDown, IconChevronRight } from "@tabler/icons-react";
 import Image from "next/image";
 import useCategories from "@/hooks/useCategories";
 import { Container, Grid, rem } from "@mantine/core";
-import { Accordion, AccordionItem } from "@nextui-org/react";
+import { Accordion, AccordionItem, Divider } from "@nextui-org/react";
 import { useState } from "react";
 
 const Category = ({ padding }) => {
@@ -15,31 +15,31 @@ const Category = ({ padding }) => {
   const [selectChild, setSelectChild] = useState(new Set([""]));
   const [selectInner, setSelectInner] = useState("");
   const itemClasses = {
-    base: "py-0 w-full",
-    title: "font-normal text-medium",
+    base: "pl-2 w-full rounded-lg data-[open=true]:bg-[#F9FAFB]",
+    title:
+      "font-open text-[1.1rem] data-[open=true]:text-[#F9BC60] data-[hover=true]:text-[#FD7E14]",
     trigger:
-      "px-2 py-0 rounded-lg h-14 flex items-center data-[focus-visible=true]:outline-0 focus:outline-none",
-    indicator: "text-medium",
+      "data-[hover=true]:text-[#ffffff] px-2 py-0 rounded-lg h-14 flex items-center data-[focus-visible=true]:outline-0 focus:outline-none data-[open=true]:font-bold",
+    indicator:
+      "text-medium data-[open=true]:text-[#F9BC60] data-[open=true]:rotate-90",
     content: "text-small px-2",
   };
   const childItemClasses = {
-    base: "py-0 w-full",
-    title: "font-normal text-medium",
+    base: "px-0 py-0 w-full",
+    title: "font-open text-medium data-[open=true]:text-[#F9BC60]",
     trigger:
-      " py-0 rounded-lg h-10 flex items-center data-[focus-visible=true]:outline-0 focus:outline-none",
-    indicator: "text-medium",
-    content: "text-small",
+      "rounded-lg h-14 flex items-center data-[focus-visible=true]:outline-0 focus:outline-none data-[open=true]:font-bold",
+    indicator:
+      "text-medium data-[open=true]:text-[#F9BC60] data-[open=true]:rotate-90",
+    content: "pl-4 text-small",
   };
+
   return (
-    <div className="p-3 rounded-md bg-white overflow-y-auto max-h-screen xl:block lg:block md:block sm:hidden xs2:hidden xs:hidden z-10 min-w-[350px] w-[350px] max-w-[350px]">
-      <div className="flex flex-row justify-between w-full">
-        <span className="text-xl font-semibold">Бүх ангилал</span>
-      </div>
+    <div className="font-open pt-2 rounded-md bg-white overflow-y-auto max-h-screen xl:block lg:block md:block  z-10 min-w-[400px] w-[350px] max-w-[450px]">
       <Accordion
+        className="p-0"
         showDivider={false}
         itemClasses={itemClasses}
-        className="p-2 flex flex-col gap-1 w-full max-w-[300px]"
-        variant="shadow"
         selectedKeys={selectParent}
         onSelectionChange={setSelectParent}
       >
@@ -47,135 +47,95 @@ const Category = ({ padding }) => {
           categories?.categories?.map((el, index) => {
             return (
               <AccordionItem
-                key={el.id}
+                classNames="p-0"
+                key={index}
                 aria-label={el?.name}
-                indicator={
-                  catId === el.id ? (
-                    <IconChevronDown
-                      color="#fcbc60"
-                      key={index}
-                      size={rem(20)}
-                    />
-                  ) : selectParent.currentKey === el.id ? (
-                    <IconChevronDown
-                      color="#fcbc60"
-                      key={index}
-                      size={rem(20)}
-                    />
-                  ) : (
-                    <IconChevronRight key={index} size={rem(20)} />
-                  )
-                }
-                title={
-                  <span
-                    className={`hover:text-[#fd7e14] ${
-                      catId === el.id
-                        ? "font-semibold"
-                        : selectParent.currentKey === el.id
-                        ? "font-semibold"
-                        : "font-normal"
-                    }`}
-                    key={index}
-                  >
-                    {el?.name}
-                  </span>
-                }
+                indicator={<IconChevronRight key={index} size={rem(20)} />}
+                title={<span key={index}>{el?.name}</span>}
                 startContent={
                   el?.icon && (
                     <Image
                       alt="category-icon"
                       src={el.icon}
-                      width={24}
-                      height={24}
+                      width={34}
+                      height={34}
                     />
                   )
                 }
                 onPress={() => {
-                  router.push({
-                    pathname: `/category/${el.id}`,
-                  });
+                  router.push(
+                    {
+                      pathname: `/category/${el.id}`,
+                    },
+                    undefined,
+                    { shallow: true }
+                  );
                 }}
               >
-                <div className="flex flex-col gap-2">
-                  {el?.secondary_cats &&
-                    el?.secondary_cats.map((el, index) => {
-                      return (
-                        <Accordion
-                          key={index}
-                          showDivider={false}
-                          itemClasses={childItemClasses}
-                          className="w-full  px-0 pl-3"
-                          variant="shadow"
-                          selectedKeys={selectChild}
-                          onSelectionChange={setSelectChild}
-                        >
-                          <AccordionItem
-                            key={index.toString()}
-                            aria-label={el?.name}
-                            indicator={
-                              catId === el.id ? (
-                                <IconChevronDown
-                                  color="#fcbc60"
-                                  key={index}
-                                  size={rem(20)}
-                                />
-                              ) : (
-                                <IconChevronRight key={index} size={rem(20)} />
-                              )
-                            }
-                            title={
-                              <span
-                                className={`hover:text-[#fd7e14] ${
-                                  catId === el.id && "font-semibold"
-                                }`}
-                                key={index}
-                              >
-                                {el?.name}
-                              </span>
-                            }
-                            startContent={
-                              el?.icon && (
-                                <Image
-                                  alt="category-icon"
-                                  src={el.icon}
-                                  width={24}
-                                  height={24}
-                                />
-                              )
-                            }
-                            onPress={() => {
-                              router.push({
+                {el?.secondary_cats &&
+                  el?.secondary_cats.map((el, index) => {
+                    console.log(el?.icon);
+                    return (
+                      <Accordion
+                        key={index}
+                        showDivider={true}
+                        itemClasses={childItemClasses}
+                        selectedKeys={selectChild}
+                        onSelectionChange={setSelectChild}
+                      >
+                        <AccordionItem
+                          key={index.toString()}
+                          aria-label={el?.name}
+                          indicator={
+                            <IconChevronRight key={index} size={rem(20)} />
+                          }
+                          title={<span key={index}>{el?.name}</span>}
+                          startContent={
+                            el?.icon && (
+                              <Image
+                                alt="category-icon"
+                                src={
+                                  el?.icon
+                                  // "https://api.urga.mn/dev/public/category/c4331a20-bc59-4712-b74d-fe9fe42a231f-icon.webp"
+                                }
+                                width={24}
+                                height={24}
+                              />
+                            )
+                          }
+                          onPress={() => {
+                            router.push(
+                              {
                                 pathname: `/category/${el.id}`,
-                              });
-                            }}
+                              },
+                              undefined,
+                              { shallow: true }
+                            );
+                          }}
+                        >
+                          <div
+                            title={el?.name}
+                            key={index}
+                            className="pl-5 py-1 overflow-auto scrollbar-hide flex flex-row justify-between cursor-pointer"
                           >
-                            <div
-                              title={el?.name}
+                            <span
                               onClick={() => {
-                                setSelectInner(el.id);
-                                router.push({
-                                  pathname: `/category/${el.id}`,
-                                });
+                                router.push(
+                                  {
+                                    pathname: `/category/${el.id}`,
+                                  },
+                                  undefined,
+                                  { shallow: true }
+                                );
                               }}
-                              key={index}
-                              className="pl-5 py-1 overflow-auto scrollbar-hide flex flex-row justify-between
-                            hover:text-[#fd7e14] cursor-pointer"
                             >
-                              <span
-                                className={`${
-                                  selectInner === el.id
-                                    ? "font-semibold"
-                                    : "font-normal"
-                                }`}
-                              >
-                                {el?.name}
-                              </span>
-                            </div>
-                          </AccordionItem>
-                        </Accordion>
-                      );
-                    })}
-                </div>
+                              {el?.name}
+                            </span>
+                          </div>
+                        </AccordionItem>
+                      </Accordion>
+                    );
+                  })}
               </AccordionItem>
             );
           })}

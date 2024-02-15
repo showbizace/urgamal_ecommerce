@@ -3,15 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
-import Category from "@/components/AllCategory/category";
 import axios from "axios";
 import useSWRInfinite from "swr/infinite";
-import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
 import ProductCard from "@/components/product-card";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
 import { Breadcrumbs, Button, rem } from "@mantine/core";
 import { fetchMethod, fetcher, getCategory } from "@/utils/fetch";
 import { PAGE_SIZE } from "@/utils/constant";
+import CategoryLayout from "@/components/GlobalLayout/CategoryLayout";
 
 export async function getServerSideProps({ query }) {
   const { catId } = query;
@@ -85,19 +84,16 @@ const CategoryPage = ({ initialData }) => {
   }, []);
 
   return (
-    <GlobalLayout>
+    <CategoryLayout>
       <div>
         <div className="px-4 md:px-10 h-full">
           <div className="h-full flex flex-row py-6 md:py-12 justify-between gap-10">
-            <div className="w-[27rem] hidden lg:block">
-              <Category padding="1rem" />
-            </div>
             <div
               className="flex flex-row w-full h-full"
               style={{ gap: "30px", flexWrap: "wrap" }}
               id={"content"}
             >
-              <div className="flex flex-row justify-between w-full">
+              {/* <div className="flex flex-row justify-between w-full">
                 <div className="flex flex-row items-center"></div>
                 <div className="flex justify-center items-center bg-white flex-row  px-4 py-2">
                   <p className="font-semibold text-sm text-[#3E503C]">
@@ -111,7 +107,7 @@ const CategoryPage = ({ initialData }) => {
                     alt="arrow-down"
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="flex flex-col w-full">
                 <ProductGridList
                   showSkeleton={loading}
@@ -142,7 +138,7 @@ const CategoryPage = ({ initialData }) => {
           </div>
         </div>
       </div>
-    </GlobalLayout>
+    </CategoryLayout>
   );
 };
 

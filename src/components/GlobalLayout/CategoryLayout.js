@@ -7,8 +7,9 @@ import { UserConfigContext } from "@/utils/userConfigContext";
 import { setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import BottomNavBar from "../bottomNavigation";
+import Category from "@/components/AllCategory/category";
 
-export default function GlobalLayout({
+export default function CategoryLayout({
   children,
   footer = true,
   title = "Таримал Ургамал ХХК",
@@ -55,7 +56,6 @@ export default function GlobalLayout({
         <title>{title}</title>
       </Head>
       <div className="shadow bg-white">
-        {/* <Search /> */}
         <main
           className="flex flex-col justify-between bg-main"
           style={{
@@ -65,7 +65,12 @@ export default function GlobalLayout({
           }}
         >
           <Navbar getValue={getValue} address={userContext?.address} />
-          {children}
+          <div className="flex flex-row">
+            <aside className="hidden lg:block h-screen sticky top-0">
+              <Category />
+            </aside>
+            {children}
+          </div>
           {footer && (
             <BottomFooter
               address={userContext?.address}

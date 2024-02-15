@@ -1,6 +1,11 @@
+import { nextui } from "@nextui-org/react";
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
-  content: ["./src/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     screens: {
       "2xs": "320px",
@@ -29,8 +34,9 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        mont: ["var(--font-open)"],
+        body: ["var(--font-commissioner)"],
       },
+
       colors: {
         "main-background": "#3E503C",
         "nav-background": "#F6F7FB",
@@ -76,5 +82,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [nextui()],
 };

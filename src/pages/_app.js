@@ -7,63 +7,67 @@ import LoginModal from "@/components/LoginModal/LoginModal";
 import { UserConfigProvider } from "@/utils/userConfigProvider";
 import CategoryContextProvider from "@/utils/categoryContextProvider";
 import PaymentModal from "@/components/PaymentModal/PaymentModal";
-import { Open_Sans } from "@next/font/google";
+import { Commissioner } from "@next/font/google";
 import BankInfoModal from "@/components/refund_modals/bankInformationmodal";
 import RefundRichText from "@/components/refund_modals/descriptionModal";
 import WishlistProvider from "@/utils/wishlistProvider";
 import InvoiceModal from "@/components/InvoiceModal/InvoiceModal";
 import InvoiceFileModal from "@/components/InvoiceModal/InvoiceFileModal";
-const mont = Open_Sans({
+import { NextUIProvider } from "@nextui-org/react";
+
+const commissioner = Commissioner({
   subsets: ["latin"],
-  variable: "--font-open",
+  variable: "--font-commissioner",
 });
 
 export default function App({ Component, pageProps }) {
   return (
-    <MantineProvider
-      withCSSVariables
-      withGlobalStyles
-      withNormalizeCSS
-      emotionCache={appendCache}
-      theme={{
-        colorScheme: "light",
-        focusRingStyles: {
-          styles: (theme) => ({ outline: `${rem(1)} solid #f9bc609d` }),
-          inputStyles: (theme) => ({ outline: `${rem(1)} solid #f9bc609d` }),
-        },
-      }}
-    >
-      <Notifications />
-      <UserConfigProvider>
-        <WishlistProvider>
-          <ModalsProvider
-            modals={{
-              login: LoginModal,
-              payment: PaymentModal,
-              invoice: InvoiceModal,
-              bankInfo: BankInfoModal,
-              refundDescription: RefundRichText,
-              invoiceFile: InvoiceFileModal,
-            }}
-          >
-            <CategoryContextProvider>
-              <div
-                style={{
-                  width: "100%",
-                  height: "100%",
-                }}
-              >
-                <main
-                  className={`${mont.variable}`}
-                  style={{ width: "100%", height: "100%" }}
+    <NextUIProvider>
+      <MantineProvider
+        withCSSVariables
+        withGlobalStyles
+        withNormalizeCSS
+        emotionCache={appendCache}
+        theme={{
+          colorScheme: "light",
+          focusRingStyles: {
+            styles: (theme) => ({ outline: `${rem(1)} solid #f9bc609d` }),
+            inputStyles: (theme) => ({ outline: `${rem(1)} solid #f9bc609d` }),
+          },
+        }}
+      >
+        <Notifications />
+        <UserConfigProvider>
+          <WishlistProvider>
+            <ModalsProvider
+              modals={{
+                login: LoginModal,
+                payment: PaymentModal,
+                invoice: InvoiceModal,
+                bankInfo: BankInfoModal,
+                refundDescription: RefundRichText,
+                invoiceFile: InvoiceFileModal,
+              }}
+            >
+              <CategoryContextProvider>
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
                 >
-                  <Component {...pageProps} />
-                </main>
-              </div>
-            </CategoryContextProvider>
-          </ModalsProvider>
-        </WishlistProvider>
-      </UserConfigProvider>
-    </MantineProvider>
+                  <main
+                    className={`${commissioner.variable}`}
+                    style={{ width: "100%", height: "100%" }}
+                  >
+                    <Component {...pageProps} />
+                  </main>
+                </div>
+              </CategoryContextProvider>
+            </ModalsProvider>
+          </WishlistProvider>
+        </UserConfigProvider>
+      </MantineProvider>
+    </NextUIProvider>
   );
 }

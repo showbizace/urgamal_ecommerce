@@ -19,6 +19,7 @@ import AllCategory from "./AllCategory/AllCategory";
 import { fetchMethod } from "@/utils/fetch";
 import { getCookie } from "cookies-next";
 import { emptyCart, getCart, syncCart } from "@/utils/Store";
+import Category from "./AllCategory/category";
 
 const BottomNavBar = () => {
   const router = useRouter();
@@ -91,16 +92,17 @@ const BottomNavBar = () => {
         title={<Text fw="lighter">Ангилал</Text>}
         scrollAreaComponent={ScrollArea.Autosize}
       >
-        {categoriesLoading && <div></div>}
-        {configId && categories && (
-          <AllCategory
-            type="drawer"
-            categories={categories}
-            isLoading={categoriesLoading}
-          />
-        )}
+        {/* {categoriesLoading && <div></div>} */}
+        {
+          <Category />
+          // <AllCategory
+          //   type="drawer"
+          //   categories={categories}
+          //   isLoading={categoriesLoading}
+          // />
+        }
       </Drawer>
-      <div className="block lg:hidden  sticky bottom-0 z-50">
+      <div className="block lg:hidden sticky bottom-0 z-50">
         <div className="relative">
           <div className="w-full bg-white p-4 h-full border-t border-gray-200 ">
             <div className="grid h-full max-w-lg grid-cols-4 mx-auto">
