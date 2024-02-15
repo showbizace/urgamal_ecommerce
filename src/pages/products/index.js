@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
+import CategoryLayout from "@/components/GlobalLayout/CategoryLayout";
 import ProductGridList from "@/components/ProductGridList/ProductGridList";
-import Category from "@/components/AllCategory/category";
 import ProductCard from "@/components/product-card";
 import { PAGE_SIZE } from "@/utils/constant";
 import { fetchMethod, fetcher, getCategory } from "@/utils/fetch";
@@ -76,11 +76,11 @@ export default function SearchResult({ initialData }) {
   }, []);
 
   return (
-    <GlobalLayout>
+    <CategoryLayout>
       <div className="flex w-full min-h-screen px-10 py-12 gap-6">
-        <div className="min-w-[350px] w-[350px] max-w-[350px] hidden lg:block relative">
-          <Category padding="1rem" />
-        </div>
+        {/* //! todo */}
+        {/* <div className="min-w-[350px] w-[350px] max-w-[350px] hidden lg:block relative">
+        </div> */}
         <div className="flex flex-col">
           <ProductGridList
             showSkeleton={isLoading}
@@ -111,6 +111,6 @@ export default function SearchResult({ initialData }) {
           )}
         </div>
       </div>
-    </GlobalLayout>
+    </CategoryLayout>
   );
 }

@@ -7,11 +7,12 @@ import { addCart } from "@/utils/Store";
 import { getCookie } from "cookies-next";
 import { SuccessNotification } from "../../utils/SuccessNotification";
 import { IconHeart, IconPhotoOff } from "@tabler/icons-react";
-import Category from "@/components/AllCategory/category";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 import { fetchMethod, getCategory } from "@/utils/fetch";
 import Image from "next/image";
 import useCategories from "@/hooks/useCategories";
+import CategoryLayout from "@/components/GlobalLayout/CategoryLayout";
+
 export async function getServerSideProps({ params }) {
   const requestOption = {
     method: "GET",
@@ -167,12 +168,9 @@ const ProductDetail = ({ product, cats }) => {
   }
 
   return (
-    <GlobalLayout title={product?.name}>
+    <CategoryLayout title={product?.name}>
       <div className="flex flex-col w-full min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 lg:py-12  items-start py-4 px-4 ">
         <div className="flex w-full lg:gap-20 justify-start ">
-          <div className="hidden lg:block w-[25%]">
-            <Category padding={"1rem"} />
-          </div>
           <div className="flex lg:gap-14 gap-4 justify-center xl:flex-row lg:flex-col md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
             <div className="flex flex-col">
               <div className="relative h-[50vh] lg:w-[100%] xl:w-[33vw] lg:h-[33vw] sm:w-[100%] sm:h-[66vw] xs:w-[100%] xs:h-[66vw]  xs2:w-[66vw] xs2:h-[66vw] bg-gray-100 border-2 rounded-md w-full">
@@ -391,7 +389,7 @@ const ProductDetail = ({ product, cats }) => {
             })}
         </div>
       </div>
-    </GlobalLayout>
+    </CategoryLayout>
   );
 };
 

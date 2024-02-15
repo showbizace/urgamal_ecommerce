@@ -9,6 +9,7 @@ import Image from "next/image";
 import { showNotification } from "@mantine/notifications";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import Link from "next/link";
+
 const CategoryHover = ({ setIsHovered, loading, categories }) => {
   const [filterData, setFilterData] = useState([]);
 
