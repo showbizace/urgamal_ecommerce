@@ -1,18 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import GlobalLayout from "@/components/GlobalLayout/GlobalLayout";
-import CategoryLayout from "@/components/GlobalLayout/CategoryLayout";
-import ProductGridList from "@/components/ProductGridList/ProductGridList";
-import ProductCard from "@/components/product-card";
-import { PAGE_SIZE } from "@/utils/constant";
-import { fetchMethod, fetcher, getCategory } from "@/utils/fetch";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import GlobalLayout from '@/components/GlobalLayout/GlobalLayout';
+import ProductGridList from '@/components/ProductGridList/ProductGridList';
+import Category from '@/components/AllCategory/category';
+import ProductCard from '@/components/product-card';
+import { PAGE_SIZE } from '@/utils/constant';
+import { fetchMethod, fetcher, getCategory } from '@/utils/fetch';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 // import { Virtuoso, VirtuosoGrid } from "react-virtuoso";
-import useSWRInfinite from "swr/infinite";
-import { Button } from "@mantine/core";
+import useSWRInfinite from 'swr/infinite';
+import { Button } from '@mantine/core';
+import CategoryLayout from '@/components/GlobalLayout/CategoryLayout';
 
 export async function getServerSideProps() {
-  const data = await fetchMethod("GET", "product");
+  const data = await fetchMethod('GET', 'product');
   return {
     props: {
       initialData: data,
@@ -92,7 +93,8 @@ export default function SearchResult({ initialData }) {
               return (
                 <ProductCard
                   key={`product-card-key-${index}-${e?.id}`}
-                  src={e?.additionalImage?.images?.[0]}
+                  src={e?.additionalImage?.[0]}
+                  additionalImages={e.additionalImage?.slice(1)}
                   data={e}
                 />
               );
