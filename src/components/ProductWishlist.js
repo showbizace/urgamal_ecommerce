@@ -24,7 +24,7 @@ const ProductWishlist = ({ data, refresh }) => {
   const handleDelete = async () => {
     const token = getCookie("token");
     const requestOption = {
-      productid: data.productid,
+      productid: data?.productid,
     };
     const res = await fetchMethod(
       "DELETE",
@@ -38,7 +38,7 @@ const ProductWishlist = ({ data, refresh }) => {
         icon: <IconCheck />,
         color: "green",
       });
-      wishlist.removeItem(data.productid);
+      wishlist.removeItem(data?.productid);
     } else {
       showNotification({
         message: res?.message,
@@ -61,7 +61,7 @@ const ProductWishlist = ({ data, refresh }) => {
     if (token) {
       setLoading(true);
       const body = {
-        product_id: data.productid,
+        product_id: data?.productid,
         quantity: 1,
       };
       const res = await fetchMethod("POST", "cart/add", token, body);
@@ -104,35 +104,36 @@ const ProductWishlist = ({ data, refresh }) => {
       className="divide-b-4 divide-slate-700 w-full"
       style={{ borderBottom: "2px solid #DADEDE" }}
     >
-      <div className="flex flex-row p-4  ">
-        {data.product.additionalImage.length > 0 ? (
-          <Image
-            loader={() => data.product.additionalImage[0].url}
-            src={data.product.additionalImage[0].url}
-            alt={data.product.additionalImage[0].url}
-            width={100}
-            height={150}
-            className="w-32 h-32 object-contain"
-          />
-        ) : (
-          <div className="product-card-img flex flex-col gap-2 justify-center items-center bg-gray-50 rounded-md w-32 h-32 ">
-            <ThemeIcon size="lg" variant="light" color="green">
-              <IconPhotoOff size="80%" stroke={0.5} />
-            </ThemeIcon>
+      <div className="flex flex-col sm:flex-row p-4">
+        <div>
+          {data?.product?.additionalImage?.length > 0 ? (
+            <Image
+              loader={() => data?.product?.additionalImage[0]?.url}
+              src={data?.product?.additionalImage[0]?.url}
+              alt={data?.product?.additionalImage[0]?.url}
+              width={128}
+              height={128}
+              className="sm:w-32 sm:h-32 h-48 object-contain"
+            />
+          ) : (
+            <div className="product-card-img flex flex-col gap-2 justify-center items-center bg-gray-50 rounded-md sm:w-32 h-48 sm:h-32">
+              <ThemeIcon size="lg" variant="light" color="green">
+                <IconPhotoOff size="80%" stroke={0.5} />
+              </ThemeIcon>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col justify-evenly sm:ml-3 mt-2 sm:mt-0">
+          <p className="font-semibold text-sm lg:text-base">{data.name}</p>
+          <div className="flex flex-row items-center mt-1">
+            <p className="text-sm lg:text-base">
+              Ширхэг: {data?.product.balance}
+            </p>
+            <p className="ml-4 text-sm lg:text-base">
+              Нэгж үнэ: {data?.product.listPrice}₮
+            </p>
           </div>
-        )}
-
-        <div className="flex flex-col justify-between ml-3 ">
-          <Text size={"lg"}>{data.name}</Text>
-          <div className="flex flex-row items-center">
-            <Text className="" size={"sm"}>
-              Ширхэг: {data.product.balance}
-            </Text>
-            <Text className="ml-4" size={"sm"}>
-              Нэгж үнэ: {data.product.listPrice}
-            </Text>
-          </div>
-          <div className="flex flex-row">
+          <div className="flex flex-row mt-2">
             <Button
               variant={"filled"}
               className="mr-4"
@@ -147,7 +148,7 @@ const ProductWishlist = ({ data, refresh }) => {
                   <Loader color="white" size={"xs"} />
                 </div>
               ) : (
-                "Сагсанд хийх"
+                <p className="text-xs lg:text-base"> Сагсанд хийх</p>
               )}
             </Button>
             <Button
@@ -156,7 +157,7 @@ const ProductWishlist = ({ data, refresh }) => {
               style={{ fontWeight: "normal", padding: "6px" }}
               onClick={handleDelete}
             >
-              Арилгах
+              <p className="text-xs lg:text-base">Арилгах</p>
             </Button>
           </div>
         </div>

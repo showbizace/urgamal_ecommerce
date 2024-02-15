@@ -295,8 +295,8 @@ const Profile = () => {
   return (
     <GlobalLayout>
       <div className="bg-grey-back w-full lg:px-6 lg:py-8">
-        <div className="w-full h-56 bg-white rounded-md relative">
-          <div className="absolute lg:left-14 lg:w-36 lg:h-36 lg:top-12 w-32 h-32 top-14 left-4">
+        <div className="h-56 bg-white rounded-md relative mx-4 mt-2 lg:mx-0 lg:mt-0">
+          <div className="absolute lg:left-14 lg:w-36 lg:h-36 lg:top-12 h-32 top-14 left-4 flex flex-1">
             {userInfo?.picture ? (
               <Image
                 src={userInfo.picture}
@@ -304,11 +304,9 @@ const Profile = () => {
                 height={150}
                 style={{
                   objectFit: "cover",
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: "100%",
                   border: "3px solid #EBEFEE",
                 }}
+                className="rounded-full w-28 h-28"
               />
             ) : (
               <Image
@@ -317,11 +315,9 @@ const Profile = () => {
                 height={150}
                 style={{
                   objectFit: "cover",
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: "100%",
                   border: "3px solid #EBEFEE",
                 }}
+                className="rounded-full w-28 h-28"
               />
             )}
             {/* <div
@@ -340,15 +336,15 @@ const Profile = () => {
             />
           </div>
           <div
-            className="w-full bg-white lg:pl-56 flex flex-row justify-between items-center lg:-mt-2 pl-36"
+            className="bg-white flex flex-1 flex-col sm:flex-row sm:justify-between items-start pl-36 pt-4 sm:pt-8"
             style={{ height: "50%" }}
           >
-            <div className="flex flex-col">
-              <p className="lg:text-2xl lg:mb-4">
+            <div>
+              <p className="text-base">
                 {userInfo?.family_name} {userInfo?.given_name}
               </p>
             </div>
-            <div className="2xs:hidden sm:block">
+            <div className="mt-1">
               <Button
                 leftIcon={
                   <Image
@@ -362,7 +358,7 @@ const Profile = () => {
                 className="mr-16"
                 onClick={() => logOut()}
               >
-                Системээс гарах
+                <p className="text-xs">Системээс гарах</p>
               </Button>
             </div>
           </div>
@@ -608,7 +604,7 @@ const Profile = () => {
               />
             )}
           </div>
-          <div className="w-full lg:pl-4 px-4 py-6 lg:py-0">
+          <div className="w-full lg:pl-4 py-6 lg:py-0">
             {loading ? (
               <div className="w-full h-full flex items-center justify-center bg-white">
                 <Loader color="yellow" />
