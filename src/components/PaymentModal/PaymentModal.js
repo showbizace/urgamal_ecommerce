@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import socket from "@/utils/Socket";
-import { Button, Card, Stack, Tabs, Text } from "@mantine/core";
+import { Button, Card, Stack, Tabs, Text, rem } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
+import { IconCheck, IconCircleXFilled } from "@tabler/icons-react";
 import axios from "axios";
 import { getCookie } from "cookies-next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
 
 export default function PaymentModal({ context, id, innerProps }) {
   const router = useRouter();
@@ -45,8 +46,31 @@ export default function PaymentModal({ context, id, innerProps }) {
         `${process.env.NEXT_PUBLIC_API_URL}/order/payment/inquiry/${invoiceId}`,
         axiosReqOption
       )
-      .then((_) => {})
-      .catch((_) => {});
+      .then((res) => {
+        if (res.data?.result.success) {
+          showNotification({
+            message: "Төлбөр амжилттай төлөгдлөө устлаа.",
+            icon: <IconCheck />,
+            color: "green",
+          });
+        } else {
+          showNotification({
+            message: "Төлбөр төлөгдөөгүй байна",
+            color: "red",
+            icon: (
+              <IconCircleXFilled
+                style={{
+                  width: rem(30),
+                  height: rem(30),
+                }}
+              />
+            ),
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err, "err");
+      });
     setLoading(false);
   };
   return (
@@ -54,7 +78,7 @@ export default function PaymentModal({ context, id, innerProps }) {
       <Tabs defaultValue="qpay" classNames={{ panel: "mt-6" }} color="yellow">
         <Tabs.List grow>
           <Tabs.Tab value="qpay">Qpay- р төлөх</Tabs.Tab>
-          <Tabs.Tab value="others">Бусад апп</Tabs.Tab>
+          {/* <Tabs.Tab value="others">Бусад апп</Tabs.Tab> */}
         </Tabs.List>
         <Tabs.Panel value="qpay">
           <Stack align="center">

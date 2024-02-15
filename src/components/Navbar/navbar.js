@@ -3,13 +3,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Avatar, Button, Group, Text, rem } from "@mantine/core";
+import {
+  Autocomplete,
+  Avatar,
+  Button,
+  Group,
+  Select,
+  Text,
+  Tooltip,
+  rem,
+  Popover,
+} from "@mantine/core";
 import { forwardRef, useContext, useEffect, useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
 import {
   IconPackage,
   IconSearch,
   IconCircleXFilled,
+  IconHomeEco,
+  IconReportSearch,
 } from "@tabler/icons-react";
 
 import useSWR from "swr";
@@ -21,6 +33,7 @@ import { getCart } from "@/utils/Store";
 import { showNotification } from "@mantine/notifications";
 import NavbarBottom from "./NavbarBottom";
 import useWishlist from "@/hooks/useWishlist";
+import Notification from "../Notification";
 const Navbar = (props) => {
   const { address } = props;
   const router = useRouter();
@@ -33,13 +46,13 @@ const Navbar = (props) => {
   const [userInfo, setUserInfo] = useState({ name: "", picture: "" });
   const route = useRouter();
   const [number, setNumber] = useState("");
-  // const {
-  //   data: categories,
-  //   error: catsError,
-  //   isLoading: catsLoading,
-  // } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
-  //   refreshInterval: 0,
-  // });
+  const {
+    data: categories,
+    error: catsError,
+    isLoading: catsLoading,
+  } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/product/cats`, fetcher, {
+    refreshInterval: 0,
+  });
   const { data, error, isLoading, mutate, isValidating } = useSWR(
     `${process.env.NEXT_PUBLIC_API_URL}/product?limit=${10}${
       debounced && `&query=${debounced}`
@@ -256,6 +269,7 @@ const Navbar = (props) => {
       </>
     );
   };
+
   return (
     <div
       className="sticky top-0 z-30 "
@@ -266,7 +280,7 @@ const Navbar = (props) => {
     >
       <div className="flex justify-between items-center py-2 px-12 max-sm:px-2 border-b">
         <Link href={"/home"} className="flex flex-row items-center gap-2">
-          <div className="font-open">ТАРИМАЛ</div>
+          <div className="font-open hidden md:block">ТАРИМАЛ</div>
           <div className="flex justify-center items-center ">
             {userContext?.address?.logo ? (
               <Image
@@ -286,10 +300,11 @@ const Navbar = (props) => {
               />
             )}
           </div>
-          <div className="font-open">УРГАМАЛ</div>
+          <div className="font-open hidden md:block">УРГАМАЛ</div>
         </Link>
         <div className="flex justify-end md:justify-center items-center gap-8 md:gap-3 flex-grow ml-6 md:mx-11">
-          {/* {categories && (
+          {catsError && <div>error</div>}
+          {categories && (
             <Tooltip
               withArrow
               label="Танд зөвхөн уг төрлийн бараа, ангиллууд харагдана"
@@ -335,7 +350,7 @@ const Navbar = (props) => {
                 }
               />
             </Tooltip>
-          )} */}
+          )}
 
           {/* <div
             id="scroll"
@@ -354,39 +369,100 @@ const Navbar = (props) => {
               </>
             )}
           </div> */}
-
-          <div className="block md:hidden">
-            <button
-              className="w-full m-auto h-full bg-background-sort p-3 rounded-full max-xs:w-11 max-xs:h-11 max-xs:flex max-xs:items-center max-xs:justify-center max-xs:p-0 max-xs:px-0 "
-              onClick={() => {
-                setShowSearch(!showSearch);
+          <div className="hidden md:block flex-grow ">
+            <Autocomplete
+              className="w-full"
+              size={"md"}
+              placeholder="Бараа хайх..."
+              itemComponent={AutocompleteItem}
+              data={suggestions ? suggestions : []}
+              limit={10}
+              styles={{
+                root: {
+                  paddingLeft: isMobile ? "0px" : "5px",
+                  paddingRight: 0,
+                  borderRadius: 25,
+                },
+                input: {
+                  borderRadius: 25,
+                  "::placeholder": {
+                    fontSize: ".95rem",
+                  },
+                },
+                rightSection: {
+                  margin: 0,
+                  padding: 0,
+                },
               }}
-            >
-              <IconSearch
-                color="white"
-                size="1.2rem"
-                stroke={2.5}
-                className="max-xs:w-4 max-xs:h-4"
-              />
-            </button>
+              value={searchQuery}
+              onChange={setSearchQuery}
+              onKeyDown={(e) => {
+                if (e.code === "Enter") {
+                  router.push({
+                    pathname: "/products",
+                    query: { q: searchQuery },
+                  });
+                }
+              }}
+              onItemSubmit={({ id }) =>
+                router.push({
+                  pathname: "/product/[id]",
+                  query: { id },
+                })
+              }
+              rightSection={
+                <button
+                  className="m-auto h-full  bg-background-sort p-2 px-3.5 rounded-full max-xs:w-11 max-xs:flex max-xs:items-center max-xs:justify-center max-xs:p-0 max-xs:px-0 "
+                  onClick={() => {
+                    router.push({
+                      pathname: "/products",
+                      query: { q: searchQuery },
+                    });
+                  }}
+                >
+                  <IconSearch
+                    color="white"
+                    size="1.2rem"
+                    stroke={2.5}
+                    className="max-xs:w-4 max-xs:h-4"
+                  />
+                </button>
+              }
+            />
           </div>
+        </div>
+        <div className="block md:hidden">
+          <button
+            className="w-full m-auto h-full bg-background-sort p-3 rounded-full max-xs:w-11 max-xs:h-11 max-xs:flex max-xs:items-center max-xs:justify-center max-xs:p-0 max-xs:px-0 "
+            onClick={() => {
+              setShowSearch(!showSearch);
+            }}
+          >
+            <IconSearch
+              color="white"
+              size="1.2rem"
+              stroke={2.5}
+              className="max-xs:w-4 max-xs:h-4"
+            />
+          </button>
         </div>
         <div className="flex items-center gap-4 max-xs:gap-2">
           <div className="hidden md:block">
+            <Notification />
             <Button
               variant={"transparent"}
-              styles={() => ({
-                root: { paddingRight: rem(10) },
-              })}
               onClick={() => linkToHeart()}
+              styles={() => ({
+                root: { paddingLeft: 0, paddingRight: rem(13), margin: 0 },
+              })}
               className="mr-1"
               leftIcon={<HearthButtonImage />}
             />
             <Button
-              variant={"transparent"}
               styles={() => ({
-                root: { padding: 0 },
+                root: { paddingLeft: 0, paddingRight: rem(0), margin: 0 },
               })}
+              variant={"transparent"}
               onClick={() => linkToCart()}
               leftIcon={<TrolleyButtonImage />}
             >
@@ -402,7 +478,7 @@ const Navbar = (props) => {
             <Button
               variant={"transparent"}
               styles={() => ({
-                root: { padding: 0 },
+                root: { padding: 0, margin: 0 },
               })}
               leftIcon={<ProfileButtonImage />}
               onClick={() => {
@@ -426,7 +502,7 @@ const Navbar = (props) => {
         </div>
       </div>
       <div>
-        {/* {showSearch && (
+        {showSearch && (
           <div>
             <Autocomplete
               className="w-full"
@@ -471,15 +547,8 @@ const Navbar = (props) => {
               }
             />
           </div>
-        )} */}
+        )}
       </div>
-      <NavbarBottom
-        AutocompleteItem={AutocompleteItem}
-        suggestions={suggestions}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        address={address}
-      />
     </div>
   );
 };

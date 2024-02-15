@@ -79,7 +79,7 @@ const ProfileButton = ({ handleTabs, tabs }) => {
   ];
 
   return (
-    <div className="mt-4 flex flex-row w-full gap-6 flex-wrap">
+    <div className="mt-4 flex flex-col sm:flex-row w-full gap-6 flex-wrap">
       {changeDate.map((item, index) => {
         return (
           <div
@@ -89,7 +89,7 @@ const ProfileButton = ({ handleTabs, tabs }) => {
             onClick={() => item.onClick()}
             key={index}
             id="profile-button"
-            className="flex flex-row bg-white rounded-md drop-shadow-lg py-4 px-3 transition ease-in-out delay-50 hover:-translate-y-1  duration-100 hover:font-semibold "
+            className="flex flex-row bg-white rounded-md drop-shadow-lg py-4 px-3 transition ease-in-out delay-50 hover:-translate-y-1  duration-100 hover:font-semibold"
           >
             <div className="w-full flex flex-row">
               {item.icon}

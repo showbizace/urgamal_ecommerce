@@ -91,9 +91,11 @@ const MyOrder = () => {
               </div>
             </div>
           ) : (
-            orders?.map((e, index) => {
-              return <Order data={e} key={index} />;
-            })
+            <div className="max-h-96 overflow-auto">
+              {orders?.map((e, index) => {
+                return <Order data={e} key={index} />;
+              })}
+            </div>
           )}
         </Tabs.Panel>
       ))}
