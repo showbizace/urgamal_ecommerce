@@ -154,7 +154,6 @@ const Search = () => {
             className="text-sm font-light ml-1 text-[#696A6C] hover:text-black hover:font-semibold "
             onClick={() => router.push("/location")}
           >
-            {" "}
             / Байршил
           </p>
         </div>

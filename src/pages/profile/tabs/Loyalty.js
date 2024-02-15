@@ -44,9 +44,7 @@ const Loyalty = ({ userInfo }) => {
                 <div className="flex flex-row">
                   <p className="text-base text-grey">Огноо : </p>
                   <p className="text-base ml-1">
-                    {dayjs(item?.createdAt)
-                      .add(8, "hours")
-                      .format("YYYY-MM-DD HH:mm")}
+                    {dayjs(item?.createdAt).format("YYYY-MM-DD HH:mm")}
                     {/* {data?.createdAt} */}
                   </p>
                 </div>

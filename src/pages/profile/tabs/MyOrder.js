@@ -77,6 +77,7 @@ const MyOrder = () => {
               <Loader color="yellow" variant="dots" />
             </div>
           )}
+
           {orders && orders.length === 0 ? (
             <div className="w-full flex items-center justify-center h-56">
               <div className="flex flex-col gap-2 items-center">

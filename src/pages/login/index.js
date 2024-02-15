@@ -106,7 +106,6 @@ const Login = () => {
         requestOption
       );
       const data = await res.json();
-      console.log(res, "data");
       if (data.success) {
         const bigDate = 30 * 24 * 60 * 60 * 1000;
         showNotification({
@@ -176,8 +175,6 @@ const Login = () => {
       setCookie("email", form.values.email, { maxAge: bigDate });
 
       const decoded = tokenDecode(token);
-      console.log(socket.id, "socket id");
-      console.log(decoded.userid, "decoded id");
       socket.emit("storeMySocketId", decoded.userid);
 
       router.push("/home");

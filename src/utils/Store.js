@@ -141,6 +141,5 @@ export const rememberMe = (user) => {
 export const rememberMeRemove = () => {
   if (typeof window !== "undefined") {
     localStorage.removeItem("user");
-    console.log("working");
   }
 };

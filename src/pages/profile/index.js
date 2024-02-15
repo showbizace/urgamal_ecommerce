@@ -227,6 +227,7 @@ import {
   IconTruck,
   IconUserEdit,
   IconGift,
+  IconClipboard,
 } from "@tabler/icons-react";
 import { fetchMethod } from "@/utils/fetch";
 import { showNotification } from "@mantine/notifications";
@@ -234,6 +235,7 @@ import Wishlist from "./tabs/Wishlist";
 import Loyalty from "./tabs/Loyalty";
 import Feedback from "./tabs/Feedback";
 import { UserConfigContext } from "@/utils/userConfigContext";
+import Invoice from "./tabs/Invoice";
 
 const Profile = () => {
   const router = useRouter();
@@ -562,6 +564,40 @@ const Profile = () => {
                 id={6}
               />
             )}
+            {tabs === 7 ? (
+              <ProfileTabs
+                icon={
+                  <IconClipboard
+                    style={{
+                      width: rem(30),
+                      height: rem(30),
+                      color: "#fff",
+                    }}
+                    stroke={1.5}
+                  />
+                }
+                text={"Нэхэмжлэл"}
+                onClickTabs={() => onClickTabs(7)}
+                id={7}
+                first={true}
+              />
+            ) : (
+              <ProfileTabs
+                icon={
+                  <IconClipboard
+                    style={{
+                      width: rem(30),
+                      height: rem(30),
+                      color: "#F9BC60",
+                    }}
+                    stroke={1.5}
+                  />
+                }
+                text={"Нэхэмжлэл"}
+                onClickTabs={() => onClickTabs(7)}
+                id={7}
+              />
+            )}
           </div>
           <div className="w-full pl-8">
             {loading ? (
@@ -582,6 +618,7 @@ const Profile = () => {
             {tabs === 4 && <MyOrder />}
             {tabs === 5 && <Feedback />}
             {tabs === 6 && <Loyalty userInfo={userInfo} />}
+            {tabs === 7 && <Invoice />}
           </div>
         </div>
       </div>

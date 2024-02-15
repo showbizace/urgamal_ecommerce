@@ -29,7 +29,6 @@ const Forget = () => {
   const [email, setEmail] = useState("");
 
   const handleSend = async () => {
-    console.log(email, "email");
     if (email.length > 0) {
       if (/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(email)) {
         setError(false);

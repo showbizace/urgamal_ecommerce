@@ -1,15 +1,19 @@
 // import { Collapse, Grid } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { IconChevronRight } from "@tabler/icons-react";
+import { IconChevronDown, IconChevronRight } from "@tabler/icons-react";
 import Image from "next/image";
 import useCategories from "@/hooks/useCategories";
-import { Container, Grid } from "@mantine/core";
+import { Container, Grid, rem } from "@mantine/core";
 import { Accordion, AccordionItem } from "@nextui-org/react";
+import { useState } from "react";
 
 const Category = ({ padding }) => {
   const router = useRouter();
   const { catId } = router.query;
   const categories = useCategories();
+  const [selectParent, setSelectParent] = useState(new Set([""]));
+  const [selectChild, setSelectChild] = useState(new Set([""]));
+  const [selectInner, setSelectInner] = useState("");
   const itemClasses = {
     base: "py-0 w-full",
     title: "font-normal text-medium",
@@ -18,28 +22,59 @@ const Category = ({ padding }) => {
     indicator: "text-medium",
     content: "text-small px-2",
   };
+  const childItemClasses = {
+    base: "py-0 w-full",
+    title: "font-normal text-medium",
+    trigger:
+      " py-0 rounded-lg h-10 flex items-center data-[focus-visible=true]:outline-0 focus:outline-none",
+    indicator: "text-medium",
+    content: "text-small",
+  };
   return (
     <div className="p-3 rounded-md bg-white overflow-y-auto max-h-screen xl:block lg:block md:block sm:hidden xs2:hidden xs:hidden z-10 min-w-[350px] w-[350px] max-w-[350px]">
       <div className="flex flex-row justify-between w-full">
         <span className="text-xl font-semibold">Бүх ангилал</span>
       </div>
-
       <Accordion
         showDivider={false}
         itemClasses={itemClasses}
         className="p-2 flex flex-col gap-1 w-full max-w-[300px]"
         variant="shadow"
+        selectedKeys={selectParent}
+        onSelectionChange={setSelectParent}
       >
         {categories &&
           categories?.categories?.map((el, index) => {
             return (
               <AccordionItem
-                key={index.toString()}
+                key={el.id}
                 aria-label={el?.name}
-                indicator={<IconChevronRight color="#fcbc60" key={index} />}
+                indicator={
+                  catId === el.id ? (
+                    <IconChevronDown
+                      color="#fcbc60"
+                      key={index}
+                      size={rem(20)}
+                    />
+                  ) : selectParent.currentKey === el.id ? (
+                    <IconChevronDown
+                      color="#fcbc60"
+                      key={index}
+                      size={rem(20)}
+                    />
+                  ) : (
+                    <IconChevronRight key={index} size={rem(20)} />
+                  )
+                }
                 title={
                   <span
-                    className={`hover:text-[#fd7e14] ${catId === el.id && ""}`}
+                    className={`hover:text-[#fd7e14] ${
+                      catId === el.id
+                        ? "font-semibold"
+                        : selectParent.currentKey === el.id
+                        ? "font-semibold"
+                        : "font-normal"
+                    }`}
                     key={index}
                   >
                     {el?.name}
@@ -62,26 +97,82 @@ const Category = ({ padding }) => {
                 }}
               >
                 <div className="flex flex-col gap-2">
-                  {el?.child_cats &&
-                    el?.child_cats.map((el, index) => {
-                      console.log(el);
+                  {el?.secondary_cats &&
+                    el?.secondary_cats.map((el, index) => {
                       return (
-                        <div
-                          onClick={() => {
-                            router.push({
-                              pathname: `/category/${el.id}`,
-                            });
-                          }}
+                        <Accordion
                           key={index}
-                          className="pl-10 py-1 overflow-auto scrollbar-hide flex flex-row justify-between
-                            hover:text-[#fd7e14] cursor-pointer
-                            "
+                          showDivider={false}
+                          itemClasses={childItemClasses}
+                          className="w-full  px-0 pl-3"
+                          variant="shadow"
+                          selectedKeys={selectChild}
+                          onSelectionChange={setSelectChild}
                         >
-                          <span className="">{el?.name}</span>
-                          <span className="">
-                            <IconChevronRight color="#fcbc60" key={index} />
-                          </span>
-                        </div>
+                          <AccordionItem
+                            key={index.toString()}
+                            aria-label={el?.name}
+                            indicator={
+                              catId === el.id ? (
+                                <IconChevronDown
+                                  color="#fcbc60"
+                                  key={index}
+                                  size={rem(20)}
+                                />
+                              ) : (
+                                <IconChevronRight key={index} size={rem(20)} />
+                              )
+                            }
+                            title={
+                              <span
+                                className={`hover:text-[#fd7e14] ${
+                                  catId === el.id && "font-semibold"
+                                }`}
+                                key={index}
+                              >
+                                {el?.name}
+                              </span>
+                            }
+                            startContent={
+                              el?.icon && (
+                                <Image
+                                  alt="category-icon"
+                                  src={el.icon}
+                                  width={24}
+                                  height={24}
+                                />
+                              )
+                            }
+                            onPress={() => {
+                              router.push({
+                                pathname: `/category/${el.id}`,
+                              });
+                            }}
+                          >
+                            <div
+                              title={el?.name}
+                              onClick={() => {
+                                setSelectInner(el.id);
+                                router.push({
+                                  pathname: `/category/${el.id}`,
+                                });
+                              }}
+                              key={index}
+                              className="pl-5 py-1 overflow-auto scrollbar-hide flex flex-row justify-between
+                            hover:text-[#fd7e14] cursor-pointer"
+                            >
+                              <span
+                                className={`${
+                                  selectInner === el.id
+                                    ? "font-semibold"
+                                    : "font-normal"
+                                }`}
+                              >
+                                {el?.name}
+                              </span>
+                            </div>
+                          </AccordionItem>
+                        </Accordion>
                       );
                     })}
                 </div>

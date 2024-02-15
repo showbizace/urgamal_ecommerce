@@ -40,7 +40,6 @@ export default function PaymentModal({ context, id, innerProps }) {
         "Content-Type": "application/json",
       },
     };
-    console.log(invoiceId, "invoice");
     axios
       .get(
         `${process.env.NEXT_PUBLIC_API_URL}/order/payment/inquiry/${invoiceId}`,

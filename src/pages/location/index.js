@@ -67,7 +67,7 @@ const Location = ({ data }) => {
                         src={el}
                         alt="image"
                         fill
-                        className="object-cover rounded-lg"
+                        className="object-contain rounded-lg"
                       />
                     </div>
                   </Carousel.Slide>
