@@ -66,7 +66,7 @@ export default function CategoryLayout({
         >
           <Navbar getValue={getValue} address={userContext?.address} />
           <div className="flex flex-row">
-            <aside className="hidden lg:block h-screen sticky top-0">
+            <aside className=" hidden lg:block h-screen sticky top-0">
               <Category />
             </aside>
             {children}

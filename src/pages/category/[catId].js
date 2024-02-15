@@ -85,7 +85,7 @@ const CategoryPage = ({ initialData }) => {
 
   return (
     <CategoryLayout>
-      <div>
+      <div className="flex-1">
         <div className="px-4 md:px-10 h-full">
           <div className="h-full flex flex-row py-6 md:py-12 justify-between gap-10">
             <div

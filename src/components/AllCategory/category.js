@@ -1,9 +1,9 @@
 // import { Collapse, Grid } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { IconChevronDown, IconChevronRight } from "@tabler/icons-react";
+import { IconChevronRight } from "@tabler/icons-react";
 import Image from "next/image";
 import useCategories from "@/hooks/useCategories";
-import { Container, Grid, rem } from "@mantine/core";
+import { rem } from "@mantine/core";
 import { Accordion, AccordionItem, Divider } from "@nextui-org/react";
 import { useState } from "react";
 
@@ -13,7 +13,6 @@ const Category = ({ padding }) => {
   const categories = useCategories();
   const [selectParent, setSelectParent] = useState(new Set([""]));
   const [selectChild, setSelectChild] = useState(new Set([""]));
-  const [selectInner, setSelectInner] = useState("");
   const itemClasses = {
     base: "pl-2 w-full rounded-lg data-[open=true]:bg-[#F9FAFB]",
     title:
@@ -35,9 +34,8 @@ const Category = ({ padding }) => {
   };
 
   return (
-    <div className="font-open pt-2 rounded-md bg-white overflow-y-auto max-h-screen xl:block lg:block md:block  z-10 min-w-[400px] w-[350px] max-w-[450px]">
+    <div className="font-open pt-2 rounded-md bg-white max-h-screen xl:block lg:block md:block z-10 w-full lg:min-w-[300px] lg:w-[350px] lg:max-w-[450px] lg:overflow-y-auto">
       <Accordion
-        className="p-0"
         showDivider={false}
         itemClasses={itemClasses}
         selectedKeys={selectParent}
@@ -74,7 +72,6 @@ const Category = ({ padding }) => {
               >
                 {el?.secondary_cats &&
                   el?.secondary_cats.map((el, index) => {
-                    console.log(el?.icon);
                     return (
                       <Accordion
                         key={index}
@@ -94,10 +91,7 @@ const Category = ({ padding }) => {
                             el?.icon && (
                               <Image
                                 alt="category-icon"
-                                src={
-                                  el?.icon
-                                  // "https://api.urga.mn/dev/public/category/c4331a20-bc59-4712-b74d-fe9fe42a231f-icon.webp"
-                                }
+                                src={el?.icon}
                                 width={24}
                                 height={24}
                               />

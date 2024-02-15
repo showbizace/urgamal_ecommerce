@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import AllCategory from "./AllCategory";
 import { fetchMethod, getCategory } from "@/utils/fetch";
 import { IoIosArrowForward } from "react-icons/io";
 import { Loader, rem } from "@mantine/core";
