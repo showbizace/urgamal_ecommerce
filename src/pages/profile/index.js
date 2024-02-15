@@ -279,6 +279,9 @@ const Profile = () => {
     if (router.query.hasOwnProperty("wishlist")) {
       setTabs(3);
     }
+    if (router.query.hasOwnProperty("cr")) {
+      setTabs(4);
+    }
   }, [router]);
 
   const logOut = () => {
@@ -291,9 +294,9 @@ const Profile = () => {
 
   return (
     <GlobalLayout>
-      <div className="bg-grey-back w-full px-32 py-8">
+      <div className="bg-grey-back w-full lg:px-6 lg:py-8">
         <div className="w-full h-56 bg-white rounded-md relative">
-          <div className="absolute left-14 w-36 h-36 top-12">
+          <div className="absolute lg:left-14 lg:w-36 lg:h-36 lg:top-12 w-32 h-32 top-14 left-4">
             {userInfo?.picture ? (
               <Image
                 src={userInfo.picture}
@@ -321,45 +324,51 @@ const Profile = () => {
                 }}
               />
             )}
-            <div
+            {/* <div
               className="absolute bottom-0 left-28 w-8 h-8 flex justify-center items-center bg-grey-back rounded-full"
               style={{ border: "3px solid white" }}
             >
               <Image width={20} height={20} src={"/icons/change-pic.svg"} />
-            </div>
+            </div> */}
           </div>
           <div className="w-full" style={{ height: "50%" }}>
             <Image
               src={"/profile-back.jpg"}
               height={1000}
-              width={100}
+              width={1000}
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </div>
           <div
-            className="w-full bg-white pl-56 pt-0 flex flex-row justify-between items-center -mt-2"
+            className="w-full bg-white lg:pl-56 flex flex-row justify-between items-center lg:-mt-2 pl-36"
             style={{ height: "50%" }}
           >
             <div className="flex flex-col">
-              <p className="text-2xl mb-4">
+              <p className="lg:text-2xl lg:mb-4">
                 {userInfo?.family_name} {userInfo?.given_name}
               </p>
             </div>
-            <Button
-              leftIcon={
-                <Image src={"/icons/logout-icon.svg"} width={20} height={20} />
-              }
-              variant="outline"
-              color="red"
-              className="mr-16"
-              onClick={() => logOut()}
-            >
-              Системээс гарах
-            </Button>
+            <div className="2xs:hidden sm:block">
+              <Button
+                leftIcon={
+                  <Image
+                    src={"/icons/logout-icon.svg"}
+                    width={20}
+                    height={20}
+                  />
+                }
+                variant="outline"
+                color="red"
+                className="mr-16"
+                onClick={() => logOut()}
+              >
+                Системээс гарах
+              </Button>
+            </div>
           </div>
         </div>
-        <div className="mt-6 flex flex-row">
-          <div className="bg-white rounded-md w-4/12 py-6 h-fit">
+        <div className="mt-4 flex  flex-col lg:flex-row">
+          <div className="bg-white rounded-md lg:w-4/12 py-6 mx-4 lg:mx-0">
             {tabs === 1 ? (
               <ProfileTabs
                 icon={
@@ -599,7 +608,7 @@ const Profile = () => {
               />
             )}
           </div>
-          <div className="w-full pl-8">
+          <div className="w-full lg:pl-4 px-4 py-6 lg:py-0">
             {loading ? (
               <div className="w-full h-full flex items-center justify-center bg-white">
                 <Loader color="yellow" />

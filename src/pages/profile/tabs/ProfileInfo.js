@@ -25,7 +25,7 @@ const ProfileInfo = (props) => {
   };
 
   return (
-    <div className="flex flex-col w-full bg-white px-8 py-6 rounded-md">
+    <div className="flex flex-col w-full bg-white lg:px-8 px-4 py-6 rounded-md">
       {tabs === "info" && (
         <>
           <Title order={3}>Хувийн мэдээлэл</Title>

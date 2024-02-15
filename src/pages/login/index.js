@@ -7,6 +7,7 @@ import {
   PasswordInput,
   Text,
   Checkbox,
+  Loader,
 } from "@mantine/core";
 import React, { useContext, useEffect, useState } from "react";
 import { isNotEmpty, useForm } from "@mantine/form";
@@ -25,6 +26,7 @@ const Login = () => {
   const router = useRouter();
   const { login } = useContext(UserConfigContext);
   const [remember, setRemember] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
   const form = useForm({
     initialValues: {
       email: "",
@@ -162,6 +164,7 @@ const Login = () => {
       email: values.email,
       password: values.password,
     };
+    setLoginLoading(true);
     const data = await fetchMethod("POST", `auth/login`, "", requestOption);
     if (data?.success) {
       if (remember) {
@@ -169,20 +172,20 @@ const Login = () => {
       } else {
         rememberMeRemove();
       }
-      const token = data.token;
-      const bigDate = 30 * 24 * 60 * 60 * 1000;
-      login(token);
-      setCookie("email", form.values.email, { maxAge: bigDate });
-
-      const decoded = tokenDecode(token);
-      socket.emit("storeMySocketId", decoded.userid);
-
-      router.push("/home");
       showNotification({
         message: "Амжилттай нэвтэрлээ.",
         color: "green",
       });
+      const token = data.token;
+      const bigDate = 30 * 24 * 60 * 60 * 1000;
+      login(token);
+      setCookie("email", form.values.email, { maxAge: bigDate });
+      const decoded = tokenDecode(token);
+      socket.emit("storeMySocketId", decoded.userid);
+      setLoginLoading(false);
+      router.push("/home");
     } else {
+      setLoginLoading(false);
       showNotification({
         message: data.message,
         color: "red",
@@ -273,8 +276,14 @@ const Login = () => {
               className="mt-4"
               w={"100%"}
               type="submit"
+              disabled={loginLoading && true}
             >
-              Нэвтрэх
+              <div className="flex flex-row items-center">
+                Нэвтрэх
+                {loginLoading && (
+                  <Loader color="lime" size={"xs"} className="ml-2" />
+                )}
+              </div>
             </Button>
           </form>
           <Buttons

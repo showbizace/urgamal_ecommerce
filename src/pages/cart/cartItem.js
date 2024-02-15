@@ -63,6 +63,7 @@ const CartItems = (props) => {
   const userToken = getCookie("token");
   const addToCart = getCookie("addToCart");
   const [total, setTotal] = useState(0);
+  const [loadingOrder, setLoadingOrder] = useState(false);
   const [selectedShippingData, setSelectedShippingData] = useState({});
   const [select, setSelect] = useState(false);
   const [buttonPressed, setButtonPressed] = useState(false);
@@ -365,6 +366,7 @@ const CartItems = (props) => {
             });
           } else {
             openLoader();
+            setLoadingOrder(true);
             const axiosReqOption = {
               headers: {
                 Authorization: "Bearer " + userToken,
@@ -387,6 +389,7 @@ const CartItems = (props) => {
                 const data = await res.json();
                 if (data.success === true) {
                   // open();
+                  setLoadingOrder(false);
                   setOrderId(data.orderid);
                   let temp = [];
                   const cartItems = cartItem;
@@ -430,15 +433,18 @@ const CartItems = (props) => {
                       }
                     });
                 } else {
+                  setLoadingOrder(false);
                   ErrorNotification({ title: "Алдаа гарлаа." });
                 }
               } else if (res.status === 500) {
+                setLoadingOrder(false);
                 showNotification({
                   message: "Сагсанд бараа байхгүй байна!",
                   color: "red",
                 });
               }
             } catch (error) {
+              setLoadingOrder(false);
               showNotification({
                 message: "Захиалга үүсгэхэд алдаа гарлаа!",
                 color: "red",
@@ -1069,12 +1075,16 @@ const CartItems = (props) => {
                   },
                 })}
                 color="yellow"
+                disabled={loadingOrder && true}
                 variant="filled"
                 radius="md"
                 size="md"
                 uppercase
                 onClick={() => makeOrder()}
               >
+                {loadingOrder && (
+                  <Loader size={"xs"} color="white" className="mr-2" />
+                )}
                 Захиалга хийх
               </Button>
             </div>

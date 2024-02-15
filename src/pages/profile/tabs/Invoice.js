@@ -6,7 +6,7 @@ import { getCookie } from "cookies-next";
 import React, { useEffect, useState } from "react";
 import { openContextModal } from "@mantine/modals";
 import { showNotification } from "@mantine/notifications";
-import { IconCircleXFilled } from "@tabler/icons-react";
+import { IconCircleXFilled, IconReportOff } from "@tabler/icons-react";
 const Invoice = () => {
   const [invoiceList, setInvoiceList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -75,7 +75,7 @@ const Invoice = () => {
         <div className="w-full h-96 flex items-center justify-center">
           <Loader color="yellow" size={"md"} />
         </div>
-      ) : (
+      ) : invoiceList.length > 0 ? (
         <div className="mt-4">
           {invoiceList.map((item, index) => (
             <InvoiceItem
@@ -85,6 +85,13 @@ const Invoice = () => {
               handleInvoice={handleInvoice}
             />
           ))}
+        </div>
+      ) : (
+        <div className="w-full flex-col h-96 flex items-center justify-center">
+          <IconReportOff size="2rem" stroke={1.5} />
+          <span className="mt-2 font-medium text-base text-grey">
+            Нэхэмжлэл байхгүй байна.
+          </span>
         </div>
       )}
     </div>

@@ -195,6 +195,12 @@ body,
   }
 }
 
+@media screen and (max-width: 640px) {
+  #profile-button {
+    width: calc(100%);
+  }
+}
+
 .profile-icon :hover {
   color: "white";
 }

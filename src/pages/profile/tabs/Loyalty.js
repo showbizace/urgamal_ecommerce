@@ -29,7 +29,7 @@ const Loyalty = ({ userInfo }) => {
           <Loader color="yellow" />
         </div>
       ) : loyalty?.length > 0 ? (
-        <div className="mt-4">
+        <div className="mt-4 max-h-96 overflow-auto">
           {loyalty?.map((item, index) => (
             <div
               key={index}

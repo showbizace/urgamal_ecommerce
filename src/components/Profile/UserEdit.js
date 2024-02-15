@@ -60,7 +60,7 @@ const UserEdit = (props) => {
   return (
     <>
       <div className="mt-4">
-        <div className="w-full flex flex-row gap-8 mt-4">
+        <div className="w-full flex flex-col sm:flex-row lg:gap-8 sm:gap-4 lg:mt-4">
           <div className="w-full">
             <TextInput
               size="sm"
@@ -124,7 +124,7 @@ const UserEdit = (props) => {
             />
           </div>
         </div>
-        <div className="w-full flex flex-row gap-8 mt-4">
+        <div className="w-full flex flex-col sm:flex-row lg:gap-8 sm:gap-4 lg:mt-4">
           <div className="w-full">
             <TextInput
               size="sm"
@@ -188,7 +188,7 @@ const UserEdit = (props) => {
             />
           </div>
         </div>
-        <div className="w-full flex flex-row gap-8 mt-4">
+        <div className="w-full flex flex-col sm:flex-row lg:gap-8 sm:gap-4 lg:mt-4">
           <div className="w-full">
             <PasswordInput
               size="sm"
@@ -237,7 +237,6 @@ const UserEdit = (props) => {
               valueFormat="YYYY/MM/DD"
               label="Төрсөн огноо"
               placeholder="Төрсөн огноо"
-              maw={400}
               mx="auto"
               styles={(theme) => ({
                 label: {
@@ -249,7 +248,7 @@ const UserEdit = (props) => {
             />
           </div>
         </div>
-        <div className="w-full flex flex-row gap-8 mt-4">
+        <div className="w-full flex flex-col sm:flex-row lg:gap-8 sm:gap-4 lg:mt-4">
           <div className="w-full">
             <Select
               placeholder="Хүйс"
