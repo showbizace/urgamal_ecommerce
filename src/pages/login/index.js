@@ -180,8 +180,6 @@ const Login = () => {
       const bigDate = 30 * 24 * 60 * 60 * 1000;
       login(token);
       setCookie("email", form.values.email, { maxAge: bigDate });
-      const decoded = tokenDecode(token);
-      socket.emit("storeMySocketId", decoded.userid);
       setLoginLoading(false);
       router.push("/home");
     } else {

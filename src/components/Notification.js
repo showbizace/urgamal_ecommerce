@@ -1,8 +1,34 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import socket from "@/utils/Socket";
+import { tokenDecode } from "@/utils/utils";
 import { Button, Popover, rem } from "@mantine/core";
+import { getCookie } from "cookies-next";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 
 const Notification = ({ icon }) => {
+  useEffect(() => {
+    const token = getCookie("token");
+    let decode = "";
+    if (token) {
+      decode = tokenDecode(token);
+    }
+
+    console.log(socket, "connected true");
+    socket.on("connection", () => {
+      console.log("connected");
+    });
+    socket.on("notificationData", (data) => {
+      console.log(data, "data notification");
+    });
+
+    socket.emit("myNotification", {
+      userid: decode.userid,
+      limit: 10,
+      offset: 0,
+    });
+  }, []);
+
   return (
     <Popover position="bottom" withArrow shadow="md">
       <Popover.Target>
