@@ -78,7 +78,7 @@ export default function PaymentModal({ context, id, innerProps }) {
       <Tabs defaultValue="qpay" classNames={{ panel: "mt-6" }} color="yellow">
         <Tabs.List grow>
           <Tabs.Tab value="qpay">Qpay- р төлөх</Tabs.Tab>
-          {/* <Tabs.Tab value="others">Бусад апп</Tabs.Tab> */}
+          <Tabs.Tab value="others">Бусад апп</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="qpay">
           <Stack align="center">
@@ -95,30 +95,33 @@ export default function PaymentModal({ context, id, innerProps }) {
           </Stack>
         </Tabs.Panel>
         <Tabs.Panel value="others">
-          <Stack align="center">
+          <Stack align="start" spacing={6}>
             <Text size="sm">
               Та доорх төлбөрийн хэрэгслүүдээр төлбөрөө гар утаснаасаа шууд хийх
               боломжтой
             </Text>
-            <div className="flex flex-wrap gap-4 justify-center">
-              {innerProps.paymentData?.urls.map((e, index) => {
+            <Text color="dimmed" size="sm" fw={"500"}>
+              Зөвхөн гар утаснаас үйлдлийг хийх боломжтой
+            </Text>
+            <div className="flex flex-wrap gap-4 justify-center mt-1">
+              {innerProps.paymentData?.urls?.map((e, index) => {
                 return (
-                  <Card component="a" href={e.link} radius="lg" key={index}>
+                  <Card component="a" href={e?.link} radius="lg" key={index}>
                     <div
-                      key={e.name}
+                      key={e?.name}
                       className="flex flex-col gap-2 w-14 max-w-14 justify-center items-center"
                     >
                       <div className="relative h-12 w-12">
                         <Image
-                          loader={() => e.logo}
-                          src={e.logo}
-                          alt={e.description}
+                          loader={() => e?.logo}
+                          src={e?.logo}
+                          alt={e?.description}
                           fill
                           className="rounded-md"
                         />
                       </div>
                       <Text size="xs" align="center">
-                        {e.description}
+                        {e?.description}
                       </Text>
                     </div>
                   </Card>

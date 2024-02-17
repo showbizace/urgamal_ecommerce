@@ -280,7 +280,12 @@ const Profile = () => {
       setTabs(3);
     }
     if (router.query.hasOwnProperty("cr")) {
-      setTabs(4);
+      if (router.query?.cr === "order") {
+        setTabs(4);
+      }
+      if (router.query?.cr === "invoice") {
+        setTabs(7);
+      }
     }
   }, [router]);
 
@@ -336,14 +341,13 @@ const Profile = () => {
             />
           </div>
           <div
-            className="bg-white flex flex-1 flex-col sm:flex-row sm:justify-between items-start pl-36 pt-4 sm:pt-8"
+            className="bg-white flex flex-1 flex-col sm:flex-row sm:justify-between items-start pl-36 lg:pl-44 pt-4 sm:pt-8"
             style={{ height: "50%" }}
           >
-            <div>
-              <p className="text-base">
-                {userInfo?.family_name} {userInfo?.given_name}
-              </p>
-            </div>
+            <p className="text-base">
+              {userInfo?.family_name} {userInfo?.given_name}
+            </p>
+
             <div className="mt-1">
               <Button
                 leftIcon={

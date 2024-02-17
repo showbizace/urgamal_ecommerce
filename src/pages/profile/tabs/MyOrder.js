@@ -55,13 +55,14 @@ const MyOrder = () => {
 
   return (
     <Tabs
-      variant="outline"
+      variant="default"
       value={tabs}
       onTabChange={setTabs}
       classNames={{
         root: "bg-white w-full rounded-md px-4 py-2 overflow-y-auto",
         panel: "my-4 pl-2 flex-grow h-full ",
       }}
+      color="yellow"
     >
       <Tabs.List>
         {orderTypes.map((e) => (

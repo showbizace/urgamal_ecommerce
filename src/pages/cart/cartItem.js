@@ -62,15 +62,15 @@ const CartItems = (props) => {
   const [orderId, setOrderId] = useState();
   const userToken = getCookie("token");
   const addToCart = getCookie("addToCart");
-  const [total, setTotal] = useState(0);
   const [loadingOrder, setLoadingOrder] = useState(false);
   const [selectedShippingData, setSelectedShippingData] = useState({});
   const [select, setSelect] = useState(false);
-  const [buttonPressed, setButtonPressed] = useState(false);
   const [loadingCart, setLoadingCart] = useState(false);
+
   const [loaderOpened, { open: openLoader, close: closeLoader }] =
     useDisclosure(false);
-  const [opened, { open, close }] = useDisclosure(false);
+  const [optionOpened, { open: optionOpen, close: optionClose }] =
+    useDisclosure(false);
   const [inputOpened, { open: openInput, close: closeInput }] =
     useDisclosure(false);
   const handleBack = () => {
@@ -349,7 +349,7 @@ const CartItems = (props) => {
   };
 
   const handleInvoice = () => {
-    close();
+    optionClose();
     openInput();
   };
 
@@ -357,7 +357,7 @@ const CartItems = (props) => {
     if (cartItem?.cart_items?.length > 0) {
       if (auth) {
         if (select) {
-          open();
+          optionOpen();
         } else {
           if (checked === false) {
             showNotification({
@@ -464,19 +464,15 @@ const CartItems = (props) => {
     }
   };
 
-  const handleInvoiceInput = async (name, phone, setError, setErrorPhone) => {
-    if (!name) {
-      return setError(true);
-    }
-    if (!phone) {
-      return setErrorPhone(true);
-    }
+  const handleInvoiceInput = async (values) => {
     const addressData = `Хот: ${selectedShippingData?.city}, Дүүрэг: ${selectedShippingData?.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData?.street}, Байр: ${selectedShippingData?.apartment}, Тоот: ${selectedShippingData?.number}`;
     const requestOption = {
       address: addressData,
       method: "invoice",
-      companyName: name,
-      contact: phone,
+      companyName: values?.companyName,
+      contact: values?.contact,
+      email: values?.email,
+      registry: values?.registry,
     };
     const token = getCookie("token");
     const data = await fetchMethod(
@@ -495,8 +491,13 @@ const CartItems = (props) => {
         setCartItem(temp);
         emptyCart();
         closeInput();
+        router.push({
+          pathname: "/profile",
+          query: { cr: "invoice" },
+        });
       })
       .catch(() => {
+        closeInput();
         showNotification({
           message: data?.message,
           color: "red",
@@ -909,8 +910,8 @@ const CartItems = (props) => {
       </Modal>
 
       <InvoiceModal
-        opened={opened}
-        onClose={close}
+        opened={optionOpened}
+        onClose={optionClose}
         handleOrder={handleOrder}
         handleInvoice={handleInvoice}
       />

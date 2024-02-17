@@ -74,7 +74,6 @@ const Category = ({ padding }) => {
               >
                 {el?.secondary_cats &&
                   el?.secondary_cats.map((el, index) => {
-                    console.log(el?.icon);
                     return (
                       <Accordion
                         key={index}
