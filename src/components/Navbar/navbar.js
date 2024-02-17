@@ -519,9 +519,12 @@ const Navbar = (props) => {
                   flexGrow: 4,
                 },
                 input: {
-                  borderRadius: 25,
+                  borderWidth: 0,
                   "::placeholder": {
                     fontSize: ".95rem",
+                  },
+                  "&:focus": {
+                    outline: "none",
                   },
                 },
                 rightSection: {

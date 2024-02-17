@@ -11,7 +11,7 @@ const InvoiceItem = ({ data, index, handleInvoice }) => {
     <div>
       <div
         key={index}
-        className="flex flex-row justify-between items-center p-2 hover:bg-gray-50 hover:cursor-pointer"
+        className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 hover:bg-gray-50 hover:cursor-pointer"
         onClick={toggle}
         style={{ borderBottom: "1px solid rgba(0, 30, 29, 0.23)" }}
       >
@@ -27,7 +27,7 @@ const InvoiceItem = ({ data, index, handleInvoice }) => {
             </p>
           </div>
         </div>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row justify-end sm:justify-start gap-2 mt-1 sm:mt-0">
           <Button
             variant="outline"
             color="orange"
@@ -48,7 +48,7 @@ const InvoiceItem = ({ data, index, handleInvoice }) => {
                 return (
                   <div
                     key={index}
-                    className="flex flex-row gap-4 pt-2 pb-4  w-full"
+                    className="flex flex-col sm:flex-row p-4 w-full"
                     style={{ borderBottom: "2px solid #DADEDE" }}
                   >
                     {item?.product?.additionalImage?.lengh > 0 ? (
@@ -58,21 +58,27 @@ const InvoiceItem = ({ data, index, handleInvoice }) => {
                         alt={item?.product?.additionalImage[0]?.url}
                         width={100}
                         height={150}
-                        className="w-32 h-32 object-contain"
+                        className="sm:w-32 sm:h-32 h-48 object-contain"
                       />
                     ) : (
-                      <div className="product-card-img flex flex-col gap-2 justify-center items-center bg-gray-50 rounded-md w-32 h-32 ">
+                      <div className="product-card-img flex flex-col gap-2 justify-center items-center bg-gray-50 rounded-md sm:w-32 h-48 sm:h-32">
                         <ThemeIcon size="lg" variant="light" color="green">
                           <IconPhotoOff size="80%" stroke={0.5} />
                         </ThemeIcon>
                       </div>
                     )}
-                    <div className="flex flex-col justify-evenly">
-                      <Text size={"lg"}>{item?.name}</Text>
-
-                      <Text size={"sm"}>Ширхэг: {item?.qty}</Text>
-
-                      <Text size={"sm"}>Нэгж үнэ: {item?.price}</Text>
+                    <div className="flex flex-col sm:justify-evenly sm:ml-3 sm:mt-2">
+                      <p className="font-semibold text-sm lg:text-base">
+                        {item?.name}
+                      </p>
+                      <div className="flex flex-row items-center mt-1">
+                        <p className="text-sm lg:text-base">
+                          Ширхэг: {item?.qty}
+                        </p>
+                        <p className="ml-4 text-sm lg:text-base">
+                          Нэгж үнэ: {item?.price}₮
+                        </p>
+                      </div>
                     </div>
                   </div>
                 );

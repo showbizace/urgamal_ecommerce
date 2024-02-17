@@ -39,7 +39,7 @@ const Wishlist = () => {
   };
 
   return (
-    <div className="flex flex-col w-full bg-white px-8 py-6 rounded-md">
+    <div className="flex flex-col w-full bg-white px-4 lg:px-8 py-6 rounded-md">
       <Title order={3}>Хадгалсан бараа</Title>
       <div className="mt-4 overflow-auto max-h-96 w-full">
         {loading ? (
