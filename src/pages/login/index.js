@@ -10,23 +10,23 @@ import {
   Loader,
 } from "@mantine/core";
 import React, { useContext, useEffect, useState } from "react";
-import { isNotEmpty, useForm } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
-import { getCookie, setCookie } from "cookies-next";
+import { setCookie } from "cookies-next";
 import { IconAt, IconCheck, IconLock } from "@tabler/icons-react";
 import Buttons from "../../components/Buttons";
 import { fetchMethod } from "@/utils/fetch";
 import { showNotification } from "@mantine/notifications";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { rememberMe, rememberMeRemove } from "@/utils/Store";
-import { tokenDecode } from "@/utils/utils";
-import socket from "@/utils/Socket";
+import useSocket from "@/hooks/useSocket";
 
 const Login = () => {
   const router = useRouter();
   const { login } = useContext(UserConfigContext);
   const [remember, setRemember] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
+  const socketContext = useSocket();
   const form = useForm({
     initialValues: {
       email: "",

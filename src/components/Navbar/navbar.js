@@ -33,7 +33,7 @@ import { getCart } from "@/utils/Store";
 import { showNotification } from "@mantine/notifications";
 import NavbarBottom from "./NavbarBottom";
 import useWishlist from "@/hooks/useWishlist";
-import Notification from "../Notification";
+import Notification from "../Notification/Notification";
 const Navbar = (props) => {
   const { address } = props;
   const router = useRouter();
@@ -43,9 +43,12 @@ const Navbar = (props) => {
   const userContext = useContext(UserConfigContext);
   const [showSearch, setShowSearch] = useState(false);
   const [cartItem, setCartItem] = useState([]);
-  const [userInfo, setUserInfo] = useState({ name: "", picture: "" });
+  const [userInfo, setUserInfo] = useState({
+    name: "",
+    picture: "",
+    mobile: "",
+  });
   const route = useRouter();
-  const [number, setNumber] = useState("");
   const {
     data: categories,
     error: catsError,
@@ -96,7 +99,6 @@ const Navbar = (props) => {
       >
         <Group noWrap>
           <Avatar src={image} alt="Зураг">
-            {" "}
             <IconPackage stroke={1.5} />
           </Avatar>
           <div>
@@ -145,8 +147,9 @@ const Navbar = (props) => {
       const data = await fetchMethod("GET", "user/profile", token);
       if (data.success) {
         setUserInfo({
-          picture: data.data.picture,
-          name: data.data.given_name,
+          picture: data?.data?.picture,
+          name: data?.data?.given_name,
+          mobile: data?.data?.mobile,
         });
       } else {
         showNotification({
@@ -179,10 +182,6 @@ const Navbar = (props) => {
       setCartItem(data);
     }
     getUserInfo();
-    const number = getCookie("number");
-    if (number) {
-      setNumber(number);
-    }
   }, []);
 
   const [userConfigValue, setUserConfigValue] = useState(
@@ -493,7 +492,7 @@ const Navbar = (props) => {
                 <div className="flex flex-col font-open font-light text-sm-2 text-[#001E1D] gap-1">
                   Сайн байна уу?
                   <div className="font-open font-semibold text-xs">
-                    {userInfo.name}
+                    {userInfo.name ? userInfo?.name : userInfo?.mobile}
                   </div>
                 </div>
               )}

@@ -291,10 +291,6 @@ const Profile = () => {
 
   const logOut = () => {
     userContext.logout();
-    deleteCookie("token");
-    deleteCookie("preference_config");
-    deleteCookie("number");
-    router.push("/login");
   };
 
   return (

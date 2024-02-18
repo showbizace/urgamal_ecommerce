@@ -169,10 +169,9 @@ const ProductCard = ({ src, data, shouldScale = true, additionalImages }) => {
       padding="lg"
       radius="md"
       component="a"
-      href={`/product/${data.id}`}
       target="_blank"
       onClick={(event) => {
-        event.stopPropagation();
+        clickProduct(event);
       }}
       className={
         shouldScale &&

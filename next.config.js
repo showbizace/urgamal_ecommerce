@@ -8,6 +8,7 @@ const nextConfig = {
       "api.urga.mn",
       "lh3.googleusercontent.com",
       "platform-lookaside.fbsbx.com",
+      "test.test.com",
     ],
     remotePatterns: [
       {

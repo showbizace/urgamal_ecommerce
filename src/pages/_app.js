@@ -14,6 +14,7 @@ import WishlistProvider from "@/utils/wishlistProvider";
 import InvoiceModal from "@/components/InvoiceModal/InvoiceModal";
 import InvoiceFileModal from "@/components/InvoiceModal/InvoiceFileModal";
 import { NextUIProvider } from "@nextui-org/react";
+import SocketProvider from "@/utils/SocketProvider";
 
 const commissioner = Commissioner({
   subsets: ["latin"],
@@ -36,37 +37,39 @@ export default function App({ Component, pageProps }) {
           },
         }}
       >
-        <Notifications />
-        <UserConfigProvider>
-          <WishlistProvider>
-            <ModalsProvider
-              modals={{
-                login: LoginModal,
-                payment: PaymentModal,
-                invoice: InvoiceModal,
-                bankInfo: BankInfoModal,
-                refundDescription: RefundRichText,
-                invoiceFile: InvoiceFileModal,
-              }}
-            >
-              <CategoryContextProvider>
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                  }}
-                >
-                  <main
-                    className={`${commissioner.variable}`}
-                    style={{ width: "100%", height: "100%" }}
+        <SocketProvider>
+          <Notifications />
+          <UserConfigProvider>
+            <WishlistProvider>
+              <ModalsProvider
+                modals={{
+                  login: LoginModal,
+                  payment: PaymentModal,
+                  invoice: InvoiceModal,
+                  bankInfo: BankInfoModal,
+                  refundDescription: RefundRichText,
+                  invoiceFile: InvoiceFileModal,
+                }}
+              >
+                <CategoryContextProvider>
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                    }}
                   >
-                    <Component {...pageProps} />
-                  </main>
-                </div>
-              </CategoryContextProvider>
-            </ModalsProvider>
-          </WishlistProvider>
-        </UserConfigProvider>
+                    <main
+                      className={`${commissioner.variable}`}
+                      style={{ width: "100%", height: "100%" }}
+                    >
+                      <Component {...pageProps} />
+                    </main>
+                  </div>
+                </CategoryContextProvider>
+              </ModalsProvider>
+            </WishlistProvider>
+          </UserConfigProvider>
+        </SocketProvider>
       </MantineProvider>
     </NextUIProvider>
   );
