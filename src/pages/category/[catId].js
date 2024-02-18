@@ -87,9 +87,11 @@ const CategoryPage = ({ initialData }) => {
 
   return (
     <CategoryLayout>
-      <div>
-        <div className="px-4 md:px-5 h-full">
+
+      <div className="flex-1">
+         <div className="px-4 md:px-5 h-full">
           <div className="h-full flex flex-row py-6 md:py-6 justify-between gap-10">
+
             <div
               className="flex flex-row w-full h-full"
               style={{ gap: '30px', flexWrap: 'wrap' }}
