@@ -1,22 +1,22 @@
-import { ActionIcon, SimpleGrid, Stack, Text } from "@mantine/core";
-import MySkeleton from "../MySkeleton";
+import { ActionIcon, SimpleGrid, Stack, Text } from '@mantine/core';
+import MySkeleton from '../MySkeleton';
 import {
   IconChevronLeft,
   IconChevronRight,
   IconSearch,
-} from "@tabler/icons-react";
-import Image from "next/image";
-import { SwiperSlide, Swiper } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import { Navigation } from "swiper";
-import ProductCard from "../product-card";
-import { useRef, useState } from "react";
-import useSWR from "swr";
-import axios from "axios";
-import Link from "next/link";
-import { fetcher } from "@/utils/fetch";
-import { PAGE_SIZE } from "@/utils/constant";
+} from '@tabler/icons-react';
+import Image from 'next/image';
+import { SwiperSlide, Swiper } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import { Navigation } from 'swiper';
+import ProductCard from '../product-card';
+import { useRef, useState } from 'react';
+import useSWR from 'swr';
+import axios from 'axios';
+import Link from 'next/link';
+import { fetcher } from '@/utils/fetch';
+import { PAGE_SIZE } from '@/utils/constant';
 
 export default function ProductListWithCategory({
   categoryName,
@@ -75,7 +75,7 @@ export default function ProductListWithCategory({
           >
             Бүгдийг үзэх
           </p>
-          <IconChevronRight size={"1.1rem"} />
+          <IconChevronRight size={'1.1rem'} />
         </Link>
       </div>
       <Swiper
@@ -128,33 +128,6 @@ export default function ProductListWithCategory({
             </SwiperSlide>
           ))}
       </Swiper>
-      {/* <SimpleGrid
-        cols={cols}
-        spacing={20}
-        verticalSpacing={20}
-        className={`flex-grow mt-6`}
-        breakpoints={[
-          { maxWidth: "62rem", cols: 3, spacing: "md" },
-          { maxWidth: "48rem", cols: 2, spacing: "sm" },
-          { maxWidth: "36rem", cols: 1, spacing: "sm" },
-        ]}
-      >
-        {error && JSON.stringify(error)}
-        {isLoading &&
-          new Array(5)
-            .fill(null)
-            .map((e, index) => (
-              <MySkeleton key={`product-skeleton-${index}`} />
-            ))}
-        {data &&
-          data.map((e, index) => (
-            <ProductCard
-              key={`product-card-key-${index}-${e.id}`}
-              src={e.product_image?.images?.[0]}
-              data={e}
-            />
-          ))}
-      </SimpleGrid> */}
     </div>
   );
 }

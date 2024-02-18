@@ -15,7 +15,6 @@ import axios from "axios";
 import { useDisclosure } from "@mantine/hooks";
 import { Drawer, ScrollArea, Text } from "@mantine/core";
 import useSWR from "swr";
-import AllCategory from "./AllCategory/AllCategory";
 import { fetchMethod } from "@/utils/fetch";
 import { getCookie } from "cookies-next";
 import { emptyCart, getCart, syncCart } from "@/utils/Store";
@@ -87,20 +86,14 @@ const BottomNavBar = () => {
   return (
     <>
       <Drawer
+        w={"100%"}
+        padding={10}
         opened={categoryDrawerOpened}
         onClose={closeCategoryDrawer}
         title={<Text fw="lighter">Ангилал</Text>}
         scrollAreaComponent={ScrollArea.Autosize}
       >
-        {/* {categoriesLoading && <div></div>} */}
-        {
-          <Category />
-          // <AllCategory
-          //   type="drawer"
-          //   categories={categories}
-          //   isLoading={categoriesLoading}
-          // />
-        }
+        <Category />
       </Drawer>
       <div className="block lg:hidden sticky bottom-0 z-50">
         <div className="relative">
