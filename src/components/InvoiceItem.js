@@ -1,11 +1,19 @@
-import { Button, Collapse, Text, ThemeIcon } from "@mantine/core";
+import { Button, Collapse, ThemeIcon } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconPhotoOff } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconCircleXFilled,
+  IconPhotoOff,
+} from "@tabler/icons-react";
+import { openContextModal } from "@mantine/modals";
 import dayjs from "dayjs";
 import Image from "next/image";
 import React from "react";
+import { fetchMethod } from "@/utils/fetch";
+import { getCookie } from "cookies-next";
+import { showNotification } from "@mantine/notifications";
 
-const InvoiceItem = ({ data, index, handleInvoice }) => {
+const InvoiceItem = ({ data, index }) => {
   const [opened, { toggle }] = useDisclosure(false);
   return (
     <div>
@@ -27,24 +35,13 @@ const InvoiceItem = ({ data, index, handleInvoice }) => {
             </p>
           </div>
         </div>
-        <div className="flex flex-row justify-end sm:justify-start gap-2 mt-1 sm:mt-0">
-          <Button
-            variant="outline"
-            color="orange"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleInvoice(data?.order?.orderid);
-            }}
-          >
-            Дэлгэрэнгүй
-          </Button>
-        </div>
+        <StatusButton status={data.status} data={data} />
       </div>
       <Collapse in={opened}>
         <div>
           <div className="w-full py-2 flex flex-row items-center">
-            {data?.order_item &&
-              data?.order_item.map((item, index) => {
+            {data?.order?.order_item &&
+              data?.order?.order_item?.map((item, index) => {
                 return (
                   <div
                     key={index}
@@ -67,7 +64,7 @@ const InvoiceItem = ({ data, index, handleInvoice }) => {
                         </ThemeIcon>
                       </div>
                     )}
-                    <div className="flex flex-col sm:justify-evenly sm:ml-3 sm:mt-2">
+                    <div className="flex flex-col sm:justify-evenly sm:ml-3 ">
                       <p className="font-semibold text-sm lg:text-base">
                         {item?.name}
                       </p>
@@ -86,7 +83,7 @@ const InvoiceItem = ({ data, index, handleInvoice }) => {
           </div>
           <div className="flex justify-end">
             <p className="text-grey">Нийт үнийн дүн :</p>
-            <p className="ml-1 font-semibold">{data?.total}₮</p>
+            <p className="ml-1 font-semibold">{data?.order?.total}₮</p>
           </div>
         </div>
       </Collapse>
@@ -94,4 +91,79 @@ const InvoiceItem = ({ data, index, handleInvoice }) => {
   );
 };
 
+const StatusButton = ({ status, data }) => {
+  const handleInvoice = () => {
+    openContextModal({
+      modal: "invoiceFile",
+      title: "Нэхэмжлэл дэлгэрэнгүй",
+      centered: true,
+      style: { padding: "8px" },
+      innerProps: { data },
+    });
+  };
+
+  const paymentDone = async () => {
+    const token = getCookie("token");
+    const res = await fetchMethod(
+      "GET",
+      `order/invoice/payment?orderid=${data?.orderid}`,
+      token
+    );
+    if (res?.success) {
+      showNotification({
+        message: "Төлбөрийн мэдээлэл амжилттай илгээгдлээ.",
+        icon: <IconCheck />,
+        color: "green",
+      });
+    } else {
+      showNotification({
+        message: res?.message,
+        color: "red",
+        icon: (
+          <IconCircleXFilled
+            style={{
+              width: rem(30),
+              height: rem(30),
+            }}
+          />
+        ),
+      });
+    }
+  };
+
+  switch (status) {
+    case 100:
+      return (
+        <div className="flex flex-row justify-end sm:justify-start gap-2 mt-1 sm:mt-0">
+          <Button
+            variant="outline"
+            color="orange"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleInvoice();
+            }}
+          >
+            Дэлгэрэнгүй
+          </Button>
+        </div>
+      );
+    case 200:
+      return (
+        <div className="flex flex-row justify-end sm:justify-start gap-2 mt-1 sm:mt-0">
+          <Button
+            variant="filled"
+            color="orange"
+            onClick={(e) => {
+              e.stopPropagation();
+              paymentDone();
+            }}
+          >
+            Төлбөр хийгдсэн
+          </Button>
+        </div>
+      );
+    default:
+      null;
+  }
+};
 export default InvoiceItem;

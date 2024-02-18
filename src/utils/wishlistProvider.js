@@ -18,13 +18,17 @@ const WishlistProvider = ({ children }) => {
         },
       };
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/user/wishlist`,
-        requestOption
-      );
-      if (res.status === 200) {
-        const data = await res.json();
-        setWishlistData(data.data);
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/user/wishlist`,
+          requestOption
+        );
+        if (res.status === 200) {
+          const data = await res.json();
+          setWishlistData(data.data);
+        }
+      } catch (err) {
+        console.log(err, "err");
       }
     }
   };

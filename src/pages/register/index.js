@@ -128,10 +128,10 @@ const Register = () => {
 
   return (
     <div className="w-full h-full flex flex-row absolute">
-      <div className="w-4/6 h-full relative">
+      <div className="w-4/6 md:w-7/12 lg:w-8/12 xl:w-9/12  h-full relative hidden md:block">
         <Image fill src={"/plant.jpg"} alt="plant" objectFit="cover" />
       </div>
-      <div className="flex flex-col relative items-center justify-center w-2/6">
+      <div className="flex flex-col relative items-center justify-center flex-1">
         <Image src="/logo.png" width={100} height={100} alt="logo" />
         <p className="text-xl font-bold mt-4">Бүртгүүлэх</p>
         <form

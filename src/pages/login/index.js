@@ -180,8 +180,6 @@ const Login = () => {
       const bigDate = 30 * 24 * 60 * 60 * 1000;
       login(token);
       setCookie("email", form.values.email, { maxAge: bigDate });
-      const decoded = tokenDecode(token);
-      socket.emit("storeMySocketId", decoded.userid);
       setLoginLoading(false);
       router.push("/home");
     } else {
@@ -203,13 +201,13 @@ const Login = () => {
 
   return (
     <div className="w-full h-full flex flex-row absolute">
-      <div className="w-4/6 h-full relative">
+      <div className="w-4/6 h-full relative hidden md:block lg:w-8/12 xl:w-9/12">
         <Image fill src={"/plant.jpg"} alt="plant" objectFit="cover" />
       </div>
-      <div className="flex flex-col relative items-center justify-center w-2/6">
+      <div className="flex flex-col relative items-center justify-center flex-1">
         <Image src="/logo.png" width={100} height={100} alt="logo" />
         <p className="text-xl font-bold mt-4">Нэвтрэх</p>
-        <div className="mt-5 w-4/6">
+        <div className="mt-5 px-8 xl:px-12">
           <form onSubmit={form.onSubmit((values) => loginFetchData(values))}>
             <TextInput
               label="Цахим шуудан"

@@ -27,7 +27,7 @@ const BottomFooter = ({ address, links }) => {
       {/* desktop */}
       <div className="hidden md:block">
         <div
-          className="flex flex-row px-16 border-t-1 border-black py-8 bg-green2  justify-between w-full max-xs:px-1 max-xs:py-4 max-xs:gap-2"
+          className="flex flex-row px-16 py-8 bg-green2  justify-between w-full max-xs:px-1 max-xs:py-4 max-xs:gap-2"
           style={{
             backgroundColor: address?.footer_color
               ? address?.footer_color

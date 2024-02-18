@@ -1,99 +1,116 @@
 import InvoiceItem from "@/components/InvoiceItem";
-import { fetchMethod } from "@/utils/fetch";
-import { Loader, Title, rem } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { Loader, Tabs, Text } from "@mantine/core";
 import { getCookie } from "cookies-next";
-import React, { useEffect, useState } from "react";
-import { openContextModal } from "@mantine/modals";
-import { showNotification } from "@mantine/notifications";
-import { IconCircleXFilled, IconReportOff } from "@tabler/icons-react";
+import React, { useMemo, useState } from "react";
+
+import { IconFileOff, IconPackageOff } from "@tabler/icons-react";
+import useSWR from "swr";
+import axios from "axios";
 const Invoice = () => {
-  const [invoiceList, setInvoiceList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const accessToken = getCookie("token");
+  const invoiceType = useMemo(
+    () => [
+      { value: "all", title: "Бүгд" },
+      { value: "100", title: "Үүссэн" },
+      { value: "101", title: "Илгээгдсэн" },
+      { value: "200", title: "Баталгаажсан" },
+      { value: "201", title: "Төлбөр илгээгдсэн" },
+      { value: "202", title: "Төлбөр баталгаажсан" },
+      { value: "300", title: "Цуцалсан" },
+      { value: "301", title: "Хугацаа дууссан" },
+    ],
+    []
+  );
+  const [tabs, setTabs] = useState();
+  const config = {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  };
 
-  const getInvoice = async () => {
-    setLoading(true);
-    const token = getCookie("token");
-    const requestOption = {
-      status: "all",
-    };
-    const data = await fetchMethod("POST", "user/order", token, requestOption);
-    if (data?.success) {
-      const filtered = data?.data?.filter(
-        (item) => item?.method === "invoicing"
+  const fetcher = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/order/invoice?status=${
+          tabs === "all" ? "" : tabs
+        }`,
+        config
       );
-      setInvoiceList(filtered);
-      setLoading(false);
-    } else {
-      console.log(data?.message, "err");
+      return response.data.invoice;
+    } catch (error) {
+      console.error("Fetch error:", error);
+      throw new Error("Network response was not ok.");
     }
-    setLoading(false);
   };
 
-  useEffect(() => {
-    getInvoice();
-  }, []);
-
-  const handleInvoice = async (id) => {
-    openContextModal({
-      modal: "invoiceFile",
-      title: "Нэхэмжлэл дэлгэрэнгүй",
-      centered: true,
-      style: { padding: "8px" },
-    });
-    // const data = await fetchMethod("GET", `order/invoice/file?orderid=${id}`);
-    // if (data.success) {
-    //   openContextModal({
-    //     modal: "invoiceFile",
-    //     title: "Нэхэмжлэл дэлгэрэнгүй",
-    //     centered: true,
-    //     innerProps: {
-    //       data: data.invoice,
-    //     },
-    //     size: "lg",
-    //   });
-    // } else {
-    //   showNotification({
-    //     message: data?.message,
-    //     color: "red",
-    //     icon: (
-    //       <IconCircleXFilled
-    //         style={{
-    //           width: rem(30),
-    //           height: rem(30),
-    //         }}
-    //       />
-    //     ),
-    //   });
-    // }
-  };
+  const {
+    data: invoice,
+    error,
+    isLoading,
+  } = useSWR(
+    `${process.env.NEXT_PUBLIC_API_URL}/order/invoice?status=${
+      tabs === "all" ? "" : tabs
+    }`,
+    fetcher
+  );
 
   return (
     <div className="flex flex-col w-full bg-white px-8 py-6 rounded-md">
-      <Title order={3}>Нэхэмжлэл</Title>
-      {loading ? (
-        <div className="w-full h-96 flex items-center justify-center">
-          <Loader color="yellow" size={"md"} />
-        </div>
-      ) : invoiceList.length > 0 ? (
-        <div className="mt-4">
-          {invoiceList.map((item, index) => (
-            <InvoiceItem
-              data={item}
-              index={index}
-              key={index}
-              handleInvoice={handleInvoice}
-            />
+      <Tabs
+        color="yellow"
+        variant="default"
+        value={tabs}
+        onTabChange={setTabs}
+        defaultValue="all"
+        classNames={{
+          root: "bg-white w-full rounded-md  py-2 overflow-y-auto",
+          panel: "my-4 pl-2 flex-grow h-full ",
+        }}
+      >
+        <Tabs.List>
+          {invoiceType.map((item, index) => (
+            <Tabs.Tab key={index} value={item.value}>
+              {item.title}
+            </Tabs.Tab>
           ))}
-        </div>
-      ) : (
-        <div className="w-full flex-col h-96 flex items-center justify-center">
-          <IconReportOff size="2rem" stroke={1.5} />
-          <span className="mt-2 font-medium text-base text-grey">
-            Нэхэмжлэл байхгүй байна.
-          </span>
-        </div>
-      )}
+          {invoiceType.map((e) => (
+            <Tabs.Panel key={e.title} value={e.value}>
+              {isLoading && (
+                <div className="h-full w-full flex items-center justify-center">
+                  <Loader color="yellow" variant="dots" />
+                </div>
+              )}
+
+              {invoice && invoice.length === 0 ? (
+                <div className="w-full flex items-center justify-center h-56">
+                  <div className="flex flex-col gap-2 items-center">
+                    <IconFileOff size={"3rem"} stroke={1.2} />
+                    <Text span weight={500}>
+                      {
+                        invoiceType.find((types) => types.value === e.value)
+                          .title
+                      }
+                    </Text>
+                    <span className="mt-2 font-medium text-base text-grey">
+                      нэхэмжлэл одоогоор байхгүй байна.
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="max-h-96 overflow-auto">
+                  {invoice?.map((e, index) => {
+                    return (
+                      <InvoiceItem
+                        data={e}
+                        key={index}
+                        length={invoice?.length}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </Tabs.Panel>
+          ))}
+        </Tabs.List>
+      </Tabs>
     </div>
   );
 };

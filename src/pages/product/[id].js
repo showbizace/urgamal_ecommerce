@@ -2,16 +2,31 @@
 import { useEffect, useContext, useState } from "react";
 import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { Button, Badge, Grid, Loader, Text, ThemeIcon } from "@mantine/core";
+import {
+  Button,
+  Badge,
+  Grid,
+  Loader,
+  Text,
+  ThemeIcon,
+  rem,
+} from "@mantine/core";
 import { addCart } from "@/utils/Store";
 import { getCookie } from "cookies-next";
 import { SuccessNotification } from "../../utils/SuccessNotification";
-import { IconHeart, IconPhotoOff } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconCircleXFilled,
+  IconHeart,
+  IconPhotoOff,
+} from "@tabler/icons-react";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 import { fetchMethod, getCategory } from "@/utils/fetch";
 import Image from "next/image";
 import useCategories from "@/hooks/useCategories";
 import CategoryLayout from "@/components/GlobalLayout/CategoryLayout";
+import { showNotification } from "@mantine/notifications";
+import useWishlist from "@/hooks/useWishlist";
 
 export async function getServerSideProps({ params }) {
   const requestOption = {
@@ -42,31 +57,9 @@ const ProductDetail = ({ product, cats }) => {
   const [loading, setLoading] = useState(false);
   const categories = useCategories();
   const [renderImage, setRenderImage] = useState("");
-  const token = getCookie("token");
-
-  // const addToCartHandler = async () => {
-  //   dispatch({
-  //     type: "CART_ADD_ITEM",
-  //     payload: { ...product, quantity: 1, purchaseCount: 1 },
-  //   });
-  //   if (token) {
-  //     setLoading(true);
-  //     const body = {
-  //       product_id: product.product.Id,
-  //       quantity: 1,
-  //     };
-  //     const fetchData = await fetchMethod("POST", "cart/add", token, body);
-  //     if (fetchData?.success) {
-  //       setLoading(false);
-  //     }
-  //   }
-  //   SuccessNotification({
-  //     message: "Сагсанд амжилттай орлоо!",
-  //     title: `${product?.name}`,
-  //   });
-  // };
-
+  const wishlist = useWishlist();
   const addToCartHandler = async () => {
+    const token = getCookie("token");
     if (token) {
       setLoading(true);
       const body = {
@@ -93,6 +86,54 @@ const ProductDetail = ({ product, cats }) => {
     }
   };
 
+  const addToWishlist = async () => {
+    const token = getCookie("token");
+    if (token) {
+      const requestOption = {
+        productid: product.id,
+      };
+      const data = await fetchMethod(
+        "POST",
+        "user/wishlist",
+        token,
+        requestOption
+      );
+      if (data.success) {
+        wishlist.addItem(data);
+        showNotification({
+          message: res.message,
+          icon: <IconCheck />,
+          color: "green",
+        });
+      } else {
+        showNotification({
+          message: data.message,
+          color: "red",
+          icon: (
+            <IconCircleXFilled
+              style={{
+                width: rem(30),
+                height: rem(30),
+              }}
+            />
+          ),
+        });
+      }
+    } else {
+      showNotification({
+        message: "Нэвтрэх шаардлагатай",
+        color: "red",
+        icon: (
+          <IconCircleXFilled
+            style={{
+              width: rem(30),
+              height: rem(30),
+            }}
+          />
+        ),
+      });
+    }
+  };
   const clickImage = (item) => {
     setRenderImage(item?.url);
   };
@@ -342,6 +383,7 @@ const ProductDetail = ({ product, cats }) => {
                   }}
                   color={"red"}
                   className="flex-grow flex justify-between items-center px-5 py-3 rounded-md"
+                  onClick={() => addToWishlist()}
                 >
                   Хадгалах
                 </Button>
