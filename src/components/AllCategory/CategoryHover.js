@@ -4,52 +4,69 @@ import { IoIosArrowForward } from "react-icons/io";
 import { Loader, rem } from "@mantine/core";
 import CategoryHoverItem from "./CategoryHoverItem";
 import CategoryHoverResult from "./CategoryHoverResult";
+import { IconMacroOff } from "@tabler/icons-react";
 import Image from "next/image";
 import { showNotification } from "@mantine/notifications";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import Link from "next/link";
+import CategoryHoverInner from "./CategoryHoverInner";
 
-const CategoryHover = ({ setIsHovered, loading, categories }) => {
+const CategoryHover = ({ loading, categories, parentId }) => {
   const [filterData, setFilterData] = useState([]);
+  const [secondaryId, setSecondaryId] = useState("");
 
-  const handleEnter = (item) => {
-    setIsHovered(true);
-    setFilterData(item);
-  };
-
-  return (
-    <div
-      className="flex flex-row bg-white absolute left-0 top-14 rounded-md py-6 px-6 w-full h-[32rem] overflow-auto"
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className="flex flex-row relative w-full">
-        {loading ? (
-          <div className="w-full justify-center items-center flex h-96">
-            <Loader color="yellow" />
-          </div>
-        ) : (
-          <div className="flex flex-row w-full h-full ">
-            <div className="flex flex-col">
-              {categories?.map((item, index) => (
-                <Link
-                  href={`/category/${item.id}`}
-                  key={index}
-                  className="flex flex-row gap-2 items-center w-80"
-                  onMouseEnter={() => handleEnter(item, index)}
-                >
-                  {item.icon && (
-                    <Image src={item.icon} width={24} height={24} alt="icon" />
-                  )}
-                  <CategoryHoverItem item={item} index={index} />
-                </Link>
-              ))}
-            </div>
-            <div className="w-full relative h-full  ">
-              <CategoryHoverResult item={filterData} />
-            </div>
-          </div>
-        )}
+  return loading ? (
+    <div className="w-full justify-center items-center flex h-96">
+      <Loader color="yellow" />
+    </div>
+  ) : categories?.length > 0 ? (
+    <div className="flex flex-row h-full w-full">
+      <div className="flex flex-col items-center justify-start">
+        {categories &&
+          categories?.map((item, index) => (
+            <Link
+              href={{
+                pathname: `/category/${item?.id}`,
+                query: { parent_id: parentId, secondary_id: item?.id },
+              }}
+              key={index}
+              className="flex flex-row gap-2 items-center w-80"
+              onMouseEnter={() => {
+                setFilterData(item?.tertiary_cats);
+                setSecondaryId(item?.id);
+              }}
+            >
+              {item.icon && (
+                <Image src={item.icon} width={24} height={24} alt="icon" />
+              )}
+              <CategoryHoverItem item={item} index={index} />
+            </Link>
+          ))}
       </div>
+      <div className="w-[30rem] max-w-[40rem] h-full flex flex-col pl-8">
+        {filterData?.map((item, index) => (
+          <Link
+            href={{
+              pathname: `/category/${item?.id}`,
+              query: {
+                parent_id: parentId,
+                secondary_id: secondaryId,
+                tertiary_id: item?.id,
+              },
+            }}
+            key={index}
+            className="py-2 text-sm hover:text-primary text-grey600 font-semibold flex flex-row justify-between items-center hover:text-[#F9BC60]"
+          >
+            {item?.name}
+            <IoIosArrowForward size={rem(16)} />
+          </Link>
+        ))}
+      </div>
+    </div>
+  ) : (
+    <div className="bg-red-500 flex-col flex justify-center items-center gap-3 font-semibold text-md-1">
+      <IconMacroOff color="#F9BC60" size={40} />
+      <span>Ангилал хоосон байна.</span>
     </div>
   );
 };

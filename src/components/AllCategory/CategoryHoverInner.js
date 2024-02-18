@@ -6,7 +6,7 @@ import { IoIosArrowForward } from "react-icons/io";
 
 const CategoryHoverInner = ({ item }) => {
   return (
-    <div className="flex flex-col flex-wrap items-start px-8 h-[31rem]">
+    <div>
       {item?.child_cats?.length > 0 ? (
         <>
           <span className="mt-1 mb-3 text-grey600 text-base">

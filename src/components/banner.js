@@ -3,39 +3,72 @@ import "swiper/css";
 import { useState } from "react";
 import "swiper/css/navigation";
 import { Carousel } from "@mantine/carousel";
+import Link from "next/link";
 import { rem } from "@mantine/core";
 import Category from "./AllCategory/category";
+import { IconMacroOff } from "@tabler/icons-react";
 import CategoryHover from "./AllCategory/CategoryHover";
 import useCategories from "@/hooks/useCategories";
 import { IconChevronRight } from "@tabler/icons-react";
 
 const Banner = () => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [hoveredCategory, setHoveredCategory] = useState([]);
+  const [parentId, setParentId] = useState("");
   const [loading, setLoading] = useState(false);
   const categories = useCategories();
 
   return (
-    <div className="flex mx-auto w-[90%] h-[180px] lg:h-[32rem]">
-      <div className="py-2 px-8 bg-red-200 h-full scrollbar-hide overscroll-contain overflow-y-auto	">
-        {categories &&
-          categories?.categories?.map((item, idx) => {
-            return (
-              <div className="flex flex-row" key={idx}>
-                <span>{item?.name}</span>
-                <span>
-                  <IconChevronRight size={rem(20)} />
-                </span>
-              </div>
-            );
-          })}
+    <div className="mt-10 flex relative mx-auto w-[90%] h-[180px] border rounded-lg lg:h-[28rem]">
+      <div
+        className="flex-row hidden lg:flex"
+        onMouseLeave={() => {
+          setHoveredCategory([]);
+        }}
+      >
+        <div className="py-4 px-4 h-full scrollbar-hide overscroll-contain overflow-y-auto">
+          {categories &&
+            categories?.categories?.map((item, idx) => {
+              return (
+                <Link
+                  href={{
+                    pathname: `/category/${item?.id}`,
+                    query: { parent_id: item?.id },
+                  }}
+                  className="py-2 flex flex-row justify-between items-center hover:text-[#F9BC60]"
+                  key={idx}
+                  onMouseEnter={() => {
+                    setHoveredCategory(item?.secondary_cats);
+                    setParentId(item?.id);
+                  }}
+                >
+                  <div className="flex felx-row items-center gap-2">
+                    {item?.icon && (
+                      <Image
+                        src={item?.icon ?? ""}
+                        width={40}
+                        height={40}
+                        alt="icons"
+                      />
+                    )}
+                    <span>{item?.name}</span>
+                  </div>
+                  <IconChevronRight size={rem(16)} />
+                </Link>
+              );
+            })}
+        </div>
+        {hoveredCategory.length > 0 ? (
+          <div className="relative z-10 py-4 pr-6 h-full max-w-[40rem] overflow-auto flex flex-row items-center justify-start rounded-md">
+            <CategoryHover
+              parentId={parentId}
+              setIsHovered={setHoveredCategory}
+              categories={hoveredCategory}
+              loading={loading}
+            />
+          </div>
+        ) : null}
       </div>
-      {isHovered && (
-        <CategoryHover
-          setIsHovered={setIsHovered}
-          categories={categories}
-          loading={loading}
-        />
-      )}
+
       <Carousel
         withIndicators
         height="100%"
@@ -60,23 +93,23 @@ const Banner = () => {
         }}
       >
         <Carousel.Slide>
-          <div className="relative w-full h-full rounded-lg">
+          <div className="relative w-full h-full ">
             <Image
               alt="banner2"
               src="/banner2.png"
               fill
-              className="rounded object-fill md:object-cover  max-h-full"
+              className="rounded-r-lg object-fill md:object-cover  max-h-full"
               draggable={false}
             />
           </div>
         </Carousel.Slide>
         <Carousel.Slide>
-          <div className="relative w-full h-full rounded-lg">
+          <div className="relative w-full h-full ">
             <Image
               alt="banner"
               src="/banner.png"
               fill
-              className="rounded object-fill md:object-cover  max-h-full"
+              className="rounded-r-lg object-fill md:object-cover  max-h-full"
               draggable={false}
             />
           </div>

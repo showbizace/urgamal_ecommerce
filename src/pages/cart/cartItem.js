@@ -62,7 +62,6 @@ const CartItems = (props) => {
   const [orderId, setOrderId] = useState();
   const userToken = getCookie("token");
   const addToCart = getCookie("addToCart");
-  const [total, setTotal] = useState(0);
   const [loadingOrder, setLoadingOrder] = useState(false);
   const [selectedShippingData, setSelectedShippingData] = useState({});
   const [select, setSelect] = useState(false);
@@ -256,13 +255,41 @@ const CartItems = (props) => {
 
   const handleClick = (e) => {
     let newArr = [...cartItem?.cart_items];
+
     newArr.forEach((item) => {
       if (item.id === e.id) {
         item.isChecked = !e.isChecked;
       }
     });
-    setCartItem({ ...cartItem, cart_items: newArr });
+
+    // Calculate total price of selected items
+    const selectedItemsTotal = newArr
+      .filter((item) => item.isChecked)
+      .reduce((total, item) => total + item.quantity * item.listPrice, 0);
+
+    console.log(selectedItemsTotal);
+    setCartItem({
+      ...cartItem,
+      cart_items: newArr,
+      selectedItemsTotal: selectedItemsTotal,
+    });
   };
+
+  console.log(cartItem);
+
+  // const handleClick = (e) => {
+  //   let newArr = [...cartItem?.cart_items];
+
+  //   console.log(newArr);
+  //   newArr.forEach((item) => {
+  //     if (item.id === e.id) {
+  //       item.isChecked = !e.isChecked;
+  //     }
+  //   });
+  //   setCartItem({ ...cartItem, cart_items: newArr });
+
+  //   console.log(cartItem);
+  // };
 
   const handleOrder = async () => {
     close();
@@ -1012,7 +1039,7 @@ const CartItems = (props) => {
               <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
                 Нийт үнэ
                 <span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
-                  {cartItem?.total || 0}
+                  {cartItem?.selectedItemsTotal || 0}
                 </span>
               </span>
               <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
@@ -1050,9 +1077,9 @@ const CartItems = (props) => {
               </div>
               <hr className="h-px my-1 border-0 border-t-dashed bg-gray-300" />
               <span className="flex justify-between mb-1 font-[400] lg:text-[1.1rem] text-sm text-[#212529af]">
-                Нийлбэр үнэ{" "}
+                Нийлбэр үнэ
                 <span className="font-[500] lg:text-[1.1rem] text-sm text-[#212529]">
-                  {cartItem?.total || 0}
+                  {cartItem?.selectedItemsTotal || 0}
                 </span>
               </span>
               <Button
