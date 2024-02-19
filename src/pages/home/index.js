@@ -10,6 +10,7 @@ import { UserConfigContext } from "@/utils/userConfigContext";
 import { useDisclosure } from "@mantine/hooks";
 import ProductListWithCategory from "@/components/ProductListWithCategory/ProductListWithCategory";
 import useCategories from "@/hooks/useCategories";
+import SpecialDeal from "@/components/SpecialDeal";
 
 const PAGE_SIZE = 20;
 
@@ -29,13 +30,20 @@ export async function getStaticProps() {
       requestOption
     );
 
+    const specialDeal = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/product/specials`,
+      requestOption
+    );
+
     const cats = await catResponse.json();
 
     const data = await res.json();
+    const dealData = await specialDeal.json();
     return {
       props: {
         data,
         cats,
+        dealData,
       },
     };
   } catch (error) {
@@ -43,12 +51,13 @@ export async function getStaticProps() {
       props: {
         data: [],
         cats: [],
+        dealData: [],
       },
     };
   }
 }
 
-export default function Home({ data, cats }) {
+export default function Home({ data, cats, dealData }) {
   const userConfigs = useContext(UserConfigContext);
   const { preference_cookie, configId } = userConfigs;
   const categories = useCategories();
@@ -117,13 +126,32 @@ export default function Home({ data, cats }) {
               {configId &&
                 cats?.success &&
                 cats?.result?.categories.map((item, idx) => {
+                  if (idx === 0) {
+                    return (
+                      <ProductListWithCategory
+                        key={`list-with-category-${idx}`}
+                        categoryId={item?.id}
+                        categoryName={item?.name}
+                        // categoryIcon={el?.icon}
+                        cols={5}
+                        className="mt-12"
+                      />
+                    );
+                  }
+                })}
+            </div>
+            <div className="px-12">
+              {dealData &&
+                dealData?.data &&
+                dealData?.data.map((item, index) => {
                   return (
-                    <ProductListWithCategory
-                      key={`list-with-category-${idx}`}
+                    <SpecialDeal
+                      key={`list-with-category-${index}`}
                       categoryId={item?.id}
                       categoryName={item?.name}
-                      // categoryIcon={el?.icon}
+                      categoryIcon={item?.icon}
                       cols={5}
+                      product={item}
                       className="mt-12"
                     />
                   );
