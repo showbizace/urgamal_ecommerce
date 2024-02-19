@@ -48,7 +48,11 @@ const Category = ({ padding }) => {
                 key={el?.id}
                 aria-label={el?.name}
                 indicator={<IconChevronRight key={index} size={rem(20)} />}
-                title={<span key={el?.id}>{el?.name}</span>}
+                title={
+                  <span className="font-semibold" key={el?.id}>
+                    {el?.name}
+                  </span>
+                }
                 startContent={
                   el?.icon && (
                     <Image

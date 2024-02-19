@@ -7,6 +7,7 @@ import ProductModal from "../Profile/ProfileModal";
 import { useState } from "react";
 import { getCookie } from "cookies-next";
 import { showNotification } from "@mantine/notifications";
+
 export default function UserAddress({ data, refresh }) {
   const cookie = getCookie("token");
   const [opened, { open, close }] = useDisclosure(false);
