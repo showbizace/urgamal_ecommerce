@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useContext, useState } from "react";
-import GlobalLayout from "../../components/GlobalLayout/GlobalLayout";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import {
   Button,
@@ -210,7 +209,7 @@ const ProductDetail = ({ product, cats }) => {
 
   return (
     <CategoryLayout title={product?.name}>
-      <div className="flex flex-col w-full min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 lg:py-12  items-start py-4 px-4 ">
+      <div className="flex flex-col min-h-screen xl:px-10 lg:px-20 md:px-16 sm:px-11 lg:py-12  items-start py-4 px-4 min-w-96">
         <div className="flex w-full lg:gap-20 justify-start ">
           <div className="flex lg:gap-14 gap-4 justify-center xl:flex-row lg:flex-col md:flex-col  sm:flex-col xs:flex-col xs2:flex-col flex-col lg:none w-full">
             <div className="flex flex-col">
@@ -382,7 +381,7 @@ const ProductDetail = ({ product, cats }) => {
                     label: { fontWeight: 500 },
                   }}
                   color={"red"}
-                  className="flex-grow flex justify-between items-center px-5 py-3 rounded-md"
+                  className=" flex justify-between items-center px-5 py-3 rounded-md"
                   onClick={() => addToWishlist()}
                 >
                   Хадгалах
@@ -391,7 +390,7 @@ const ProductDetail = ({ product, cats }) => {
                   variant={"filled"}
                   size="md"
                   color={"orange"}
-                  className="flex-grow flex justify-between items-center px-5 py-3 rounded-md"
+                  className="flex justify-between items-center px-5 py-3 rounded-md"
                   disabled={loading}
                   rightIcon={
                     loading ? (
@@ -413,17 +412,17 @@ const ProductDetail = ({ product, cats }) => {
         </div>
 
         <hr className="my-12 lg:my-14 w-full border" />
-        <div className="w-full flex flex-col ">
+        <div className="w-full flex flex-col">
           {cats?.success &&
             cats?.result?.categories.map((item, idx) => {
-              if (idx === 1) {
+              if (idx === 0) {
                 return (
                   <ProductListWithCategory
                     key={`list-with-category-${idx}`}
                     categoryId={item?.id}
                     categoryName={"Санал болгож буй бүтээгдэхүүн"}
                     // categoryIcon={el?.icon}
-                    cols={5}
+                    cols={3}
                     className="mt-0 lg:12"
                   />
                 );
