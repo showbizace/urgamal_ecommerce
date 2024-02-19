@@ -105,10 +105,6 @@ const CartItems = (props) => {
     }
   }, [userToken]);
 
-  const initializeCartItem = (items) => {
-    return items.map((item) => ({ ...item, isChecked: true }));
-  };
-
   const storageToCart = async () => {
     let dataStorage = getCart();
     if (dataStorage) {
@@ -131,28 +127,6 @@ const CartItems = (props) => {
       } else {
         ErrorNotification({ title: "Алдаа гарлаа." });
       }
-    }
-  };
-
-  const getUserCart = async () => {
-    const data = await fetchMethod("GET", "cart", userToken);
-    if (data?.success) {
-      if (data?.cart) {
-        if (data?.cart?.cart_items?.length === 0) {
-          setCartItem(data?.cart);
-          emptyCart();
-        } else {
-          const initializedData = initializeCartItem(data?.cart?.cart_items);
-          setCartItem({ ...data.cart, cart_items: initializedData });
-          syncCart(data?.cart);
-        }
-      } else {
-        setCartItem({ cart: { cart_items: [] } });
-        emptyCart();
-      }
-    } else {
-      setCartItem({ cart: { cart_items: [] } });
-      emptyCart();
     }
   };
 
@@ -694,6 +668,44 @@ const CartItems = (props) => {
     // }
   };
 
+  const setCartItemWithChecked = (cartData) => {
+    const updatedCartItems = cartData.cart_items.map((item) => {
+      const existingItem = cartItem?.cart_items.find(
+        (existingItem) => existingItem.id === item.id
+      );
+      return {
+        ...item,
+        isChecked: existingItem ? existingItem.isChecked : false,
+      };
+    });
+
+    setCartItem({ ...cartData, cart_items: updatedCartItems });
+  };
+
+  const getUserCart = async (item) => {
+    const data = await fetchMethod("GET", "cart", userToken);
+    if (data?.success) {
+      if (data?.cart) {
+        if (data?.cart?.cart_items?.length === 0) {
+          setCartItem(data?.cart);
+          emptyCart();
+        } else {
+          const cartItems = data?.cart?.cart_items.map((cartItem) => ({
+            ...cartItem,
+          }));
+          setCartItemWithChecked({ ...data.cart, cart_items: cartItems });
+          syncCart(data?.cart);
+        }
+      } else {
+        setCartItem({ cart: { cart_items: [] } });
+        emptyCart();
+      }
+    } else {
+      setCartItem({ cart: { cart_items: [] } });
+      emptyCart();
+    }
+  };
+
   const minusQuantity = async (count, product) => {
     const initialStock = product.balance;
     count--;
@@ -721,7 +733,7 @@ const CartItems = (props) => {
         };
         const data = await fetchMethod("PUT", "cart", userToken, requestOption);
         if (data?.success) {
-          getUserCart();
+          getUserCart(product);
         } else {
           ErrorNotification({ title: "Алдаа гарлаа." });
         }
@@ -759,7 +771,7 @@ const CartItems = (props) => {
         };
         const data = await fetchMethod("PUT", "cart", userToken, requestOption);
         if (data?.success) {
-          getUserCart();
+          getUserCart(product);
           // setCartItem({ ...cartItem, cart_items: temp });
           // addQuantityProduct(temp);
         } else {
@@ -777,25 +789,20 @@ const CartItems = (props) => {
     }
   };
 
-  const handleClick = (e) => {
-    let newArr = [...cartItem?.cart_items];
-
-    newArr.forEach((item) => {
-      if (item.id === e.id) {
-        item.isChecked = !e.isChecked;
+  const handleClick = (clickedItem) => {
+    const updatedCartItems = cartItem.cart_items.map((item) => {
+      if (item.id === clickedItem.id) {
+        return { ...item, isChecked: !item.isChecked };
       }
+      return item;
     });
 
-    const total = newArr
-      ?.filter((item) => item.isChecked)
-      ?.reduce((acc, item) => acc + item.quantity * item.listPrice, 0);
+    const total = updatedCartItems
+      .filter((item) => item.isChecked)
+      .reduce((acc, item) => acc + item.quantity * item.listPrice, 0);
 
     setSelectedItemsTotal(total);
-
-    setCartItem({
-      ...cartItem,
-      cart_items: newArr,
-    });
+    setCartItem({ ...cartItem, cart_items: updatedCartItems });
   };
 
   const handleSelectAll = () => {
