@@ -58,7 +58,8 @@ const CategoryHover = ({ loading, categories, parentId }) => {
             className="py-2 text-sm hover:text-primary text-grey600 font-semibold flex flex-row justify-between items-center hover:text-[#F9BC60]"
           >
             {item?.name}
-            <IoIosArrowForward size={rem(16)} />
+            {/* //! pisd sum neheed bvl butsaagarai ..... */}
+            {/* <IoIosArrowForward size={rem(16)} /> */}
           </Link>
         ))}
       </div>

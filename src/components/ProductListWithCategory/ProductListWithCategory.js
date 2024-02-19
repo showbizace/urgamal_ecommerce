@@ -1,22 +1,22 @@
-import { ActionIcon, SimpleGrid, Stack, Text } from '@mantine/core';
-import MySkeleton from '../MySkeleton';
+import { ActionIcon, SimpleGrid, Stack, Text } from "@mantine/core";
+import MySkeleton from "../MySkeleton";
 import {
   IconChevronLeft,
   IconChevronRight,
   IconSearch,
-} from '@tabler/icons-react';
-import Image from 'next/image';
-import { SwiperSlide, Swiper } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import { Navigation } from 'swiper';
-import ProductCard from '../product-card';
-import { useRef, useState } from 'react';
-import useSWR from 'swr';
-import axios from 'axios';
-import Link from 'next/link';
-import { fetcher } from '@/utils/fetch';
-import { PAGE_SIZE } from '@/utils/constant';
+} from "@tabler/icons-react";
+import Image from "next/image";
+import { SwiperSlide, Swiper } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation } from "swiper";
+import ProductCard from "../product-card";
+import { useRef, useState } from "react";
+import useSWR from "swr";
+import axios from "axios";
+import Link from "next/link";
+import { fetcher } from "@/utils/fetch";
+import { PAGE_SIZE } from "@/utils/constant";
 
 export default function ProductListWithCategory({
   categoryName,
@@ -75,7 +75,7 @@ export default function ProductListWithCategory({
           >
             Бүгдийг үзэх
           </p>
-          <IconChevronRight size={'1.1rem'} />
+          <IconChevronRight size={"1.1rem"} />
         </Link>
       </div>
       <Swiper

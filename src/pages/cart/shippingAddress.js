@@ -105,7 +105,7 @@ const Address = ({ setSelectedShippingData, setSelect }) => {
             color: "green",
           });
           getShippingData();
-          close;
+          close();
         } else {
           showNotification({
             message: result.message,

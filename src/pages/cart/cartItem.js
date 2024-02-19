@@ -51,7 +51,7 @@ import InvoiceModal from "@/components/InvoiceModal/InvoiceModal";
 import InvoiceInputModal from "@/components/InvoiceModal/InvoiceInputModal";
 
 const CartItems = (props) => {
-  const [isCheckAll, setIsCheckAll] = useState(false);
+  const [isCheckAll, setIsCheckAll] = useState(true);
   const router = useRouter();
   const { auth } = useContext(UserConfigContext);
   const [cartItem, setCartItem] = useState();
@@ -64,6 +64,7 @@ const CartItems = (props) => {
   const [selectedShippingData, setSelectedShippingData] = useState({});
   const [select, setSelect] = useState(false);
   const [loadingCart, setLoadingCart] = useState(false);
+  const [selectedItemsTotal, setSelectedItemsTotal] = useState(0);
 
   const [loaderOpened, { open: openLoader, close: closeLoader }] =
     useDisclosure(false);
@@ -73,20 +74,6 @@ const CartItems = (props) => {
     useDisclosure(false);
   const handleBack = () => {
     router.push("/");
-  };
-
-  const handleSelectAll = () => {
-    setIsCheckAll(!isCheckAll);
-    const newData = cartItem?.cart_items?.map((item) => {
-      if (isCheckAll) {
-        item.isChecked = false;
-        return item;
-      } else {
-        item.isChecked = true;
-        return item;
-      }
-    });
-    setCartItem({ ...cartItem, cart_items: newData });
   };
 
   useEffect(() => {
@@ -117,6 +104,10 @@ const CartItems = (props) => {
       setAddressVisible(false);
     }
   }, [userToken]);
+
+  const initializeCartItem = (items) => {
+    return items.map((item) => ({ ...item, isChecked: true }));
+  };
 
   const storageToCart = async () => {
     let dataStorage = getCart();
@@ -151,7 +142,8 @@ const CartItems = (props) => {
           setCartItem(data?.cart);
           emptyCart();
         } else {
-          setCartItem(data?.cart);
+          const initializedData = initializeCartItem(data?.cart?.cart_items);
+          setCartItem({ ...data.cart, cart_items: initializedData });
           syncCart(data?.cart);
         }
       } else {
@@ -176,6 +168,20 @@ const CartItems = (props) => {
     };
     addedCartItems();
   }, [addToCart]);
+
+  useEffect(() => {
+    const allItemsChecked = cartItem?.cart_items?.every(
+      (item) => item.isChecked
+    );
+
+    setIsCheckAll(allItemsChecked);
+
+    const total = cartItem?.cart_items
+      ?.filter((item) => item.isChecked)
+      ?.reduce((acc, item) => acc + item.quantity * item.listPrice, 0);
+
+    setSelectedItemsTotal(total);
+  }, [cartItem]);
 
   const deleteFromCart = async () => {
     let check = true;
@@ -207,8 +213,6 @@ const CartItems = (props) => {
         if (temp.length === 0) {
           const data = await fetchMethod("DELETE", "cart/whole", userToken);
           if (data?.success) {
-            // setCartItem({ ...cartItem, cart_items: temp });
-            // removeFromCart(temp);
             getUserCart();
             SuccessNotification({
               message: "Бараа амжилттай устлаа.",
@@ -251,44 +255,6 @@ const CartItems = (props) => {
       removedArr = [];
     }
   };
-
-  const handleClick = (e) => {
-    let newArr = [...cartItem?.cart_items];
-
-    newArr.forEach((item) => {
-      if (item.id === e.id) {
-        item.isChecked = !e.isChecked;
-      }
-    });
-
-    // Calculate total price of selected items
-    const selectedItemsTotal = newArr
-      .filter((item) => item.isChecked)
-      .reduce((total, item) => total + item.quantity * item.listPrice, 0);
-
-    console.log(selectedItemsTotal);
-    setCartItem({
-      ...cartItem,
-      cart_items: newArr,
-      selectedItemsTotal: selectedItemsTotal,
-    });
-  };
-
-  console.log(cartItem);
-
-  // const handleClick = (e) => {
-  //   let newArr = [...cartItem?.cart_items];
-
-  //   console.log(newArr);
-  //   newArr.forEach((item) => {
-  //     if (item.id === e.id) {
-  //       item.isChecked = !e.isChecked;
-  //     }
-  //   });
-  //   setCartItem({ ...cartItem, cart_items: newArr });
-
-  //   console.log(cartItem);
-  // };
 
   const handleOrder = async () => {
     optionClose();
@@ -381,106 +347,113 @@ const CartItems = (props) => {
 
   const makeOrder = async () => {
     if (cartItem?.cart_items?.length > 0) {
-      if (auth) {
-        if (select) {
-          optionOpen();
-        } else {
-          if (checked === false) {
-            showNotification({
-              message: "Хаяг сонгоно уу эсвэл очиж авахыг идэвхжүүлнэ үү",
-              color: "red",
-            });
+      const checkedItems = cartItem.cart_items.filter((item) => item.isChecked);
+      if (checkedItems.length > 0) {
+        if (auth) {
+          if (select) {
+            optionOpen();
           } else {
-            openLoader();
-            setLoadingOrder(true);
-            const axiosReqOption = {
-              headers: {
-                Authorization: "Bearer " + userToken,
-                "Content-Type": "application/json",
-              },
-            };
-            const requestOption = {
-              method: "POST",
-              headers: {
-                Authorization: "Bearer " + userToken,
-                "Content-Type": "application/json",
-              },
-            };
-            try {
-              const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/order`,
-                requestOption
-              );
-              if (res.status === 200) {
-                const data = await res.json();
-                if (data.success === true) {
-                  // open();
-                  setLoadingOrder(false);
-                  setOrderId(data.orderid);
-                  let temp = [];
-                  const cartItems = cartItem;
-                  setCartItem(temp);
-                  emptyCart();
-                  SuccessNotification({
-                    message: data.message,
-                    title: "Захиалга",
-                  });
-                  axios
-                    .post(
-                      `${process.env.NEXT_PUBLIC_API_URL}/payment`,
-                      { orderid: data.orderid },
-                      axiosReqOption
-                    )
-                    .then((res) => {
-                      openContextModal({
-                        modal: "payment",
-                        title: "Төлбөр төлөлт",
-                        innerProps: {
-                          paymentData: res.data.data,
-                          shouldRedirect: true,
-                        },
-                        centered: true,
-                        size: "lg",
-                        closeOnClickOutside: false,
-                        withCloseButton: false,
-                      });
-                    })
-                    .catch((err) => {
-                      if (err.response) {
-                        showNotification({
-                          message: err.response.data,
-                          color: "red",
-                        });
-                      } else {
-                        showNotification({
-                          message: "Төлбөрийн мэдээлэл авахад алдаа гарлаа",
-                          color: "red",
-                        });
-                      }
+            if (checked === false) {
+              showNotification({
+                message: "Хаяг сонгоно уу эсвэл очиж авахыг идэвхжүүлнэ үү",
+                color: "red",
+              });
+            } else {
+              openLoader();
+              setLoadingOrder(true);
+              const axiosReqOption = {
+                headers: {
+                  Authorization: "Bearer " + userToken,
+                  "Content-Type": "application/json",
+                },
+              };
+              const requestOption = {
+                method: "POST",
+                headers: {
+                  Authorization: "Bearer " + userToken,
+                  "Content-Type": "application/json",
+                },
+              };
+              try {
+                const res = await fetch(
+                  `${process.env.NEXT_PUBLIC_API_URL}/order`,
+                  requestOption
+                );
+                if (res.status === 200) {
+                  const data = await res.json();
+                  if (data.success === true) {
+                    // open();
+                    setLoadingOrder(false);
+                    setOrderId(data.orderid);
+                    let temp = [];
+                    setCartItem(temp);
+                    emptyCart();
+                    SuccessNotification({
+                      message: data.message,
+                      title: "Захиалга",
                     });
-                } else {
+                    axios
+                      .post(
+                        `${process.env.NEXT_PUBLIC_API_URL}/payment`,
+                        { orderid: data.orderid },
+                        axiosReqOption
+                      )
+                      .then((res) => {
+                        openContextModal({
+                          modal: "payment",
+                          title: "Төлбөр төлөлт",
+                          innerProps: {
+                            paymentData: res.data.data,
+                            shouldRedirect: true,
+                          },
+                          centered: true,
+                          size: "lg",
+                          closeOnClickOutside: false,
+                          withCloseButton: false,
+                        });
+                      })
+                      .catch((err) => {
+                        if (err.response) {
+                          showNotification({
+                            message: err.response.data,
+                            color: "red",
+                          });
+                        } else {
+                          showNotification({
+                            message: "Төлбөрийн мэдээлэл авахад алдаа гарлаа",
+                            color: "red",
+                          });
+                        }
+                      });
+                  } else {
+                    setLoadingOrder(false);
+                    ErrorNotification({ title: "Алдаа гарлаа." });
+                  }
+                } else if (res.status === 500) {
                   setLoadingOrder(false);
-                  ErrorNotification({ title: "Алдаа гарлаа." });
+                  showNotification({
+                    message: "Сагсанд бараа байхгүй байна!",
+                    color: "red",
+                  });
                 }
-              } else if (res.status === 500) {
+              } catch (error) {
                 setLoadingOrder(false);
                 showNotification({
-                  message: "Сагсанд бараа байхгүй байна!",
+                  message: "Захиалга үүсгэхэд алдаа гарлаа!",
                   color: "red",
                 });
               }
-            } catch (error) {
-              setLoadingOrder(false);
-              showNotification({
-                message: "Захиалга үүсгэхэд алдаа гарлаа!",
-                color: "red",
-              });
+              closeLoader();
             }
-            closeLoader();
           }
+        } else {
+          router.push("/login");
         }
       } else {
-        router.push("/login");
+        showNotification({
+          message: "Захиалга хийхийн тулд бараа сонгоно уу.",
+          color: "red",
+        });
       }
     } else {
       showNotification({
@@ -734,6 +707,12 @@ const CartItems = (props) => {
           temp[index] = clone;
         }
       });
+
+      const total = temp
+        ?.filter((item) => item.isChecked)
+        ?.reduce((acc, item) => acc + item.quantity * item.listPrice, 0);
+      setSelectedItemsTotal(total);
+
       if (userToken) {
         const requestOption = {
           cart_item_id: product.id,
@@ -743,8 +722,6 @@ const CartItems = (props) => {
         const data = await fetchMethod("PUT", "cart", userToken, requestOption);
         if (data?.success) {
           getUserCart();
-          // setCartItem({ ...cartItem, cart_items: temp });
-          // removeQuantityProduct(temp);
         } else {
           ErrorNotification({ title: "Алдаа гарлаа." });
         }
@@ -768,6 +745,12 @@ const CartItems = (props) => {
           temp[index] = clone;
         }
       });
+
+      const total = temp
+        ?.filter((item) => item.isChecked)
+        ?.reduce((acc, item) => acc + item.quantity * item.listPrice, 0);
+      setSelectedItemsTotal(total);
+
       if (userToken) {
         const requestOption = {
           cart_item_id: product.id,
@@ -792,6 +775,49 @@ const CartItems = (props) => {
         color: "red",
       });
     }
+  };
+
+  const handleClick = (e) => {
+    let newArr = [...cartItem?.cart_items];
+
+    newArr.forEach((item) => {
+      if (item.id === e.id) {
+        item.isChecked = !e.isChecked;
+      }
+    });
+
+    const total = newArr
+      ?.filter((item) => item.isChecked)
+      ?.reduce((acc, item) => acc + item.quantity * item.listPrice, 0);
+
+    setSelectedItemsTotal(total);
+
+    setCartItem({
+      ...cartItem,
+      cart_items: newArr,
+    });
+  };
+
+  const handleSelectAll = () => {
+    setIsCheckAll(!isCheckAll);
+    const newData = cartItem?.cart_items?.map((item) => {
+      if (isCheckAll) {
+        item.isChecked = false;
+        setIsCheckAll(false);
+        return item;
+      } else {
+        item.isChecked = true;
+        setIsCheckAll(true);
+        return item;
+      }
+    });
+    setCartItem({ ...cartItem, cart_items: newData });
+
+    const total = newData
+      ?.filter((item) => item.isChecked)
+      ?.reduce((acc, item) => acc + item.quantity * item.listPrice, 0);
+
+    setSelectedItemsTotal(total);
   };
 
   const ths = (
@@ -1039,7 +1065,7 @@ const CartItems = (props) => {
               <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
                 Нийт үнэ
                 <span className="font-[500] lg:text-[1.05rem] text-sm text-[#212529]">
-                  {cartItem?.selectedItemsTotal || 0}
+                  {selectedItemsTotal || 0}
                 </span>
               </span>
               <span className="flex justify-between font-[400] lg:text-[1.05rem] text-sm text-[#2125297a]">
@@ -1079,7 +1105,7 @@ const CartItems = (props) => {
               <span className="flex justify-between mb-1 font-[400] lg:text-[1.1rem] text-sm text-[#212529af]">
                 Нийлбэр үнэ
                 <span className="font-[500] lg:text-[1.1rem] text-sm text-[#212529]">
-                  {cartItem?.selectedItemsTotal || 0}
+                  {selectedItemsTotal || 0}
                 </span>
               </span>
               <Button
