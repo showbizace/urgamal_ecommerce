@@ -160,24 +160,27 @@ const ProductCard = ({ src, data, shouldScale = true, additionalImages }) => {
   };
 
   function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+    return x?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, "'");
   }
 
   return (
     <Card
-      shadow="xl"
+      shadow="md"
+      withBorder
       padding="lg"
       radius="md"
       component="a"
-      href={`/product/${data.id}`}
       target="_blank"
       onClick={(event) => {
-        event.stopPropagation();
+        clickProduct(event);
       }}
       className={
         shouldScale &&
         "transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-101"
       }
+      style={{
+        border: "0.5px solid #f3f3f3",
+      }}
     >
       <Card.Section>
         <div className="relative block border-b">

@@ -33,7 +33,7 @@ import { getCart } from "@/utils/Store";
 import { showNotification } from "@mantine/notifications";
 import NavbarBottom from "./NavbarBottom";
 import useWishlist from "@/hooks/useWishlist";
-import Notification from "../Notification";
+import Notification from "../Notification/Notification";
 const Navbar = (props) => {
   const { address } = props;
   const router = useRouter();
@@ -43,9 +43,12 @@ const Navbar = (props) => {
   const userContext = useContext(UserConfigContext);
   const [showSearch, setShowSearch] = useState(false);
   const [cartItem, setCartItem] = useState([]);
-  const [userInfo, setUserInfo] = useState({ name: "", picture: "" });
+  const [userInfo, setUserInfo] = useState({
+    name: "",
+    picture: "",
+    mobile: "",
+  });
   const route = useRouter();
-  const [number, setNumber] = useState("");
   const {
     data: categories,
     error: catsError,
@@ -96,7 +99,6 @@ const Navbar = (props) => {
       >
         <Group noWrap>
           <Avatar src={image} alt="Зураг">
-            {" "}
             <IconPackage stroke={1.5} />
           </Avatar>
           <div>
@@ -136,6 +138,7 @@ const Navbar = (props) => {
           />
         ),
       });
+      router.push("/login");
     }
   };
 
@@ -145,8 +148,9 @@ const Navbar = (props) => {
       const data = await fetchMethod("GET", "user/profile", token);
       if (data.success) {
         setUserInfo({
-          picture: data.data.picture,
-          name: data.data.given_name,
+          picture: data?.data?.picture,
+          name: data?.data?.given_name,
+          mobile: data?.data?.mobile,
         });
       } else {
         showNotification({
@@ -179,10 +183,6 @@ const Navbar = (props) => {
       setCartItem(data);
     }
     getUserInfo();
-    const number = getCookie("number");
-    if (number) {
-      setNumber(number);
-    }
   }, []);
 
   const [userConfigValue, setUserConfigValue] = useState(
@@ -280,7 +280,7 @@ const Navbar = (props) => {
     >
       <div className="flex justify-between items-center py-2 px-12 max-sm:px-2 border-b">
         <Link href={"/home"} className="flex flex-row items-center gap-2">
-          <div className="font-open hidden md:block">ТАРИМАЛ</div>
+          <div className="font-open hidden lg:block">ТАРИМАЛ</div>
           <div className="flex justify-center items-center ">
             {userContext?.address?.logo ? (
               <Image
@@ -300,7 +300,7 @@ const Navbar = (props) => {
               />
             )}
           </div>
-          <div className="font-open hidden md:block">УРГАМАЛ</div>
+          <div className="font-open hidden lg:block">УРГАМАЛ</div>
         </Link>
         <div className="flex justify-end md:justify-center items-center gap-8 md:gap-3 flex-grow ml-6 md:mx-11">
           {catsError && <div>error</div>}
@@ -466,7 +466,7 @@ const Navbar = (props) => {
               onClick={() => linkToCart()}
               leftIcon={<TrolleyButtonImage />}
             >
-              <div className="flex flex-col font-open font-light text-sm-2 text-[#001E1D] gap-1 ml-2">
+              <div className="hidden lg:flex flex-col font-open font-light text-sm-2 text-[#001E1D] gap-1 ml-2">
                 Таны сагсанд
                 <div className="font-open font-semibold text-xs">
                   {cartItem?.total || 0}₮
@@ -493,7 +493,7 @@ const Navbar = (props) => {
                 <div className="flex flex-col font-open font-light text-sm-2 text-[#001E1D] gap-1">
                   Сайн байна уу?
                   <div className="font-open font-semibold text-xs">
-                    {userInfo.name}
+                    {userInfo.name ? userInfo?.name : userInfo?.mobile}
                   </div>
                 </div>
               )}

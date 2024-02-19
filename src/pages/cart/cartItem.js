@@ -47,8 +47,6 @@ import axios from "axios";
 import Image from "next/image";
 import { UserConfigContext } from "@/utils/userConfigContext";
 import { fetchMethod } from "@/utils/fetch";
-import socket from "@/utils/Socket";
-import { tokenDecode } from "@/utils/utils";
 import InvoiceModal from "@/components/InvoiceModal/InvoiceModal";
 import InvoiceInputModal from "@/components/InvoiceModal/InvoiceInputModal";
 
@@ -293,7 +291,7 @@ const CartItems = (props) => {
   // };
 
   const handleOrder = async () => {
-    close();
+    optionClose();
     openLoader();
     const data = `Хот: ${selectedShippingData?.city}, Дүүрэг: ${selectedShippingData?.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData?.street}, Байр: ${selectedShippingData?.apartment}, Тоот: ${selectedShippingData?.number}, Утас: ${selectedShippingData?.phone}`;
     const axiosReqOption = {
@@ -378,7 +376,7 @@ const CartItems = (props) => {
 
   const handleInvoice = () => {
     optionClose();
-    openInput();
+    inputOpened();
   };
 
   const makeOrder = async () => {

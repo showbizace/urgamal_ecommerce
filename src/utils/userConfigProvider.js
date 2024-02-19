@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { tokenDecode } from "./utils";
-import socket from "@/utils/Socket";
+import useSocket from "@/hooks/useSocket";
 
 const userToken = getCookie("token");
 const userConfigs = getCookie("preference_config");
@@ -18,6 +18,7 @@ export const UserConfigProvider = ({ children }) => {
   const [configId, setConfigId] = useState(null);
   const [address, setAddress] = useState(null);
   const [links, setLinks] = useState(null);
+  const socketContext = useSocket();
   // auth
   const login = (token) => {
     const bigDate = 30 * 24 * 60 * 60 * 1000;
@@ -25,10 +26,18 @@ export const UserConfigProvider = ({ children }) => {
       maxAge: bigDate,
     });
     const decoded = tokenDecode(token);
-    socket.emit("storeMySocketId", decoded.userid);
+    socketContext.connect();
+    socketContext.socketLogin(decoded.userid);
     setAuth(true);
   };
-  const logout = () => setAuth(false);
+  const logout = () => {
+    setAuth(false);
+    deleteCookie("token");
+    deleteCookie("preference_config");
+    deleteCookie("number");
+    socketContext.disconnect();
+    router.push("/login");
+  };
 
   const preference_cookie = (val) => {
     setCookie("preference_config", val);

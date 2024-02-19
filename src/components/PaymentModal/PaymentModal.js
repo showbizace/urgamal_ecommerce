@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import socket from "@/utils/Socket";
+import useSocket from "@/hooks/useSocket";
 import { Button, Card, Stack, Tabs, Text, rem } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { IconCheck, IconCircleXFilled } from "@tabler/icons-react";
@@ -12,10 +12,10 @@ import { useEffect, useState } from "react";
 export default function PaymentModal({ context, id, innerProps }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-
+  const socket = useSocket();
   useEffect(() => {
-    if (socket.connected) {
-      socket.on("inquiryStatus", (data) => {
+    if (socket?.socket?.connected) {
+      socket?.socket?.on("inquiryStatus", (data) => {
         if (data.success) {
           callInquiry(innerProps.paymentData?.invoice_id);
           context.closeModal(id);

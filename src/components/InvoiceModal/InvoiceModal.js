@@ -15,7 +15,7 @@ const InvoiceModal = ({ opened, onClose, handleOrder, handleInvoice }) => {
         </div>
         <div
           className="flex flex-col flex-1 items-center justify-center rounded hover:bg-button-yellow hover:text-white"
-          onClick={() => handleInvoice("invoice")}
+          onClick={() => handleInvoice()}
         >
           <IconFileInvoice stroke={1.5} size={rem(50)} />
           <p className="mt-2 text-md">Нэхэмжлэл</p>
