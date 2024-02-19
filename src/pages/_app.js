@@ -15,6 +15,7 @@ import InvoiceModal from "@/components/InvoiceModal/InvoiceModal";
 import InvoiceFileModal from "@/components/InvoiceModal/InvoiceFileModal";
 import { NextUIProvider } from "@nextui-org/react";
 import SocketProvider from "@/utils/SocketProvider";
+import ChangeModal from "@/components/ChangeModal";
 
 const commissioner = Commissioner({
   subsets: ["latin"],
@@ -49,6 +50,7 @@ export default function App({ Component, pageProps }) {
                   bankInfo: BankInfoModal,
                   refundDescription: RefundRichText,
                   invoiceFile: InvoiceFileModal,
+                  changeModal: ChangeModal,
                 }}
               >
                 <CategoryContextProvider>

@@ -138,6 +138,7 @@ const Navbar = (props) => {
           />
         ),
       });
+      router.push("/login");
     }
   };
 
@@ -279,7 +280,7 @@ const Navbar = (props) => {
     >
       <div className="flex justify-between items-center py-2 px-12 max-sm:px-2 border-b">
         <Link href={"/home"} className="flex flex-row items-center gap-2">
-          <div className="font-open hidden md:block">ТАРИМАЛ</div>
+          <div className="font-open hidden lg:block">ТАРИМАЛ</div>
           <div className="flex justify-center items-center ">
             {userContext?.address?.logo ? (
               <Image
@@ -299,7 +300,7 @@ const Navbar = (props) => {
               />
             )}
           </div>
-          <div className="font-open hidden md:block">УРГАМАЛ</div>
+          <div className="font-open hidden lg:block">УРГАМАЛ</div>
         </Link>
         <div className="flex justify-end md:justify-center items-center gap-8 md:gap-3 flex-grow ml-6 md:mx-11">
           {catsError && <div>error</div>}
@@ -465,7 +466,7 @@ const Navbar = (props) => {
               onClick={() => linkToCart()}
               leftIcon={<TrolleyButtonImage />}
             >
-              <div className="flex flex-col font-open font-light text-sm-2 text-[#001E1D] gap-1 ml-2">
+              <div className="hidden lg:flex flex-col font-open font-light text-sm-2 text-[#001E1D] gap-1 ml-2">
                 Таны сагсанд
                 <div className="font-open font-semibold text-xs">
                   {cartItem?.total || 0}₮

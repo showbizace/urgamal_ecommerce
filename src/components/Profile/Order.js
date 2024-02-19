@@ -48,6 +48,14 @@ const Order = ({ data }) => {
     });
   };
 
+  const handleChange = () => {
+    openContextModal({
+      modal: "changeModal",
+      title: "Солиулалт хийх",
+      centered: true,
+      size: "md",
+    });
+  };
   const fetchPaymentData = async (orderId) => {
     setLoading(true);
     const axiosReqOption = {
@@ -120,17 +128,30 @@ const Order = ({ data }) => {
           )}
 
           {data.refund_request === null && data.status.toString() === "200" ? (
-            <Button
-              variant="light"
-              color="red.5"
-              loading={loading}
-              onClick={(e) => {
-                e.stopPropagation();
-                refundFormRequest();
-              }}
-            >
-              Буцаалт хийх
-            </Button>
+            <>
+              <Button
+                variant="light"
+                color="red.5"
+                loading={loading}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  refundFormRequest();
+                }}
+              >
+                Буцаалт хийх
+              </Button>
+              <Button
+                variant="outline"
+                color="orange.5"
+                loading={loading}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleChange();
+                }}
+              >
+                Солиулалт хийх
+              </Button>
+            </>
           ) : data.refund_request?.status === 100 ? (
             <Badge color="voilet.4" radius="xs" p={15}>
               Хүлээгдэж байна

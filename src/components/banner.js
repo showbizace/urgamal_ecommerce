@@ -98,7 +98,7 @@ const Banner = () => {
               alt="banner2"
               src="/banner2.png"
               fill
-              className="rounded-r-lg object-fill md:object-cover  max-h-full"
+              className="rounded-r-lg object-contain md:object-fill  max-h-full"
               draggable={false}
             />
           </div>
@@ -109,7 +109,7 @@ const Banner = () => {
               alt="banner"
               src="/banner.png"
               fill
-              className="rounded-r-lg object-fill md:object-cover  max-h-full"
+              className="rounded-r-lg object-contain md:object-fill  max-h-full"
               draggable={false}
             />
           </div>

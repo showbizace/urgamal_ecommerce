@@ -6,18 +6,33 @@ import { getCookie } from "cookies-next";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import NotificationItem from "./NotificationItem";
+import { fetchMethod } from "@/utils/fetch";
+import { showNotification } from "@mantine/notifications";
+import { IconCircleXFilled } from "@tabler/icons-react";
+import { useRouter } from "next/router";
 
 const Notification = () => {
   const socketContext = useSocket();
   const [list, setList] = useState([]);
+  const [opened, setOpened] = useState(false);
+  const router = useRouter();
+  const getNotification = async () => {
+    const token = getCookie("token");
+    const data = await fetchMethod("GET", `user/notification`, token);
+    if (data?.success) {
+      setList(data?.data);
+    } else {
+      console.log(data?.message, "err");
+    }
+  };
+
+  useEffect(() => {
+    getNotification();
+  }, []);
 
   const handleNew = (data) => {
-    console.log(data, "new data");
+    console.log(data, "Data");
     // setList(data);
-  };
-  const handleData = (data) => {
-    console.log(data, "data");
-    setList(data);
   };
 
   useEffect(() => {
@@ -33,19 +48,43 @@ const Notification = () => {
         socketContext?.socket.on("newNotification", function (data) {
           handleNew(data);
         });
-        socketContext?.socket.on("notificationData", function (data) {
-          console.log(data, "data");
-          handleData(data);
-        });
       }
     }
     return () => socketContext?.socket?.off;
   }, []);
 
   return (
-    <Popover position="bottom" withArrow shadow="md">
+    <Popover
+      position="bottom"
+      withArrow
+      shadow="md"
+      opened={opened}
+      onChange={setOpened}
+    >
       <Popover.Target>
-        <Button variant="transparent">
+        <Button
+          variant="transparent"
+          onClick={() => {
+            const token = getCookie("token");
+            if (token) {
+              setOpened((prev) => !prev);
+            } else {
+              showNotification({
+                message: "Нэвтрэх шаардлагатай",
+                color: "red",
+                icon: (
+                  <IconCircleXFilled
+                    style={{
+                      width: rem(30),
+                      height: rem(30),
+                    }}
+                  />
+                ),
+              });
+              router.push("/login");
+            }
+          }}
+        >
           <NotificationButtonImage list={list} />
         </Button>
       </Popover.Target>
