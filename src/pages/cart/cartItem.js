@@ -65,7 +65,7 @@ const CartItems = (props) => {
   const [select, setSelect] = useState(false);
   const [loadingCart, setLoadingCart] = useState(false);
   const [selectedItemsTotal, setSelectedItemsTotal] = useState(0);
-
+  const [selectedItemsIds, setSelectedItemsIds] = useState([]);
   const [loaderOpened, { open: openLoader, close: closeLoader }] =
     useDisclosure(false);
   const [optionOpened, { open: optionOpen, close: optionClose }] =
@@ -147,13 +147,22 @@ const CartItems = (props) => {
     const allItemsChecked = cartItem?.cart_items?.every(
       (item) => item.isChecked
     );
-
     setIsCheckAll(allItemsChecked);
 
-    const total = cartItem?.cart_items
-      ?.filter((item) => item.isChecked)
-      ?.reduce((acc, item) => acc + item.quantity * item.listPrice, 0);
+    const checkIsChecked = cartItem?.cart_items?.filter(
+      (item) => item.isChecked
+    );
 
+    const ids = checkIsChecked?.map((item) => {
+      if (item?.id) {
+        return item?.id;
+      }
+    });
+    setSelectedItemsIds(ids);
+    let total = checkIsChecked?.reduce(
+      (acc, item) => acc + item.quantity * item.listPrice,
+      0
+    );
     setSelectedItemsTotal(total);
   }, [cartItem]);
 
@@ -233,7 +242,9 @@ const CartItems = (props) => {
   const handleOrder = async () => {
     optionClose();
     openLoader();
-    const data = `Хот: ${selectedShippingData?.city}, Дүүрэг: ${selectedShippingData?.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData?.street}, Байр: ${selectedShippingData?.apartment}, Тоот: ${selectedShippingData?.number}, Утас: ${selectedShippingData?.phone}`;
+    let data = checked
+      ? "Очиж авна"
+      : `Хот: ${selectedShippingData?.city}, Дүүрэг: ${selectedShippingData?.district}, Хороо: ${selectedShippingData?.committee}, Гудамж: ${selectedShippingData?.street}, Байр: ${selectedShippingData?.apartment}, Тоот: ${selectedShippingData?.number}, Утас: ${selectedShippingData?.phone}`;
     const axiosReqOption = {
       headers: {
         Authorization: "Bearer " + userToken,
@@ -248,6 +259,7 @@ const CartItems = (props) => {
       },
       body: JSON.stringify({
         address: data,
+        cart_items: selectedItemsIds,
       }),
     };
     try {
@@ -316,13 +328,12 @@ const CartItems = (props) => {
 
   const handleInvoice = () => {
     optionClose();
-    inputOpened();
+    openInput();
   };
 
   const makeOrder = async () => {
     if (cartItem?.cart_items?.length > 0) {
-      const checkedItems = cartItem.cart_items.filter((item) => item.isChecked);
-      if (checkedItems.length > 0) {
+      if (selectedItemsIds.length > 0) {
         if (auth) {
           if (select) {
             optionOpen();
@@ -333,91 +344,7 @@ const CartItems = (props) => {
                 color: "red",
               });
             } else {
-              openLoader();
-              setLoadingOrder(true);
-              const axiosReqOption = {
-                headers: {
-                  Authorization: "Bearer " + userToken,
-                  "Content-Type": "application/json",
-                },
-              };
-              const requestOption = {
-                method: "POST",
-                headers: {
-                  Authorization: "Bearer " + userToken,
-                  "Content-Type": "application/json",
-                },
-              };
-              try {
-                const res = await fetch(
-                  `${process.env.NEXT_PUBLIC_API_URL}/order`,
-                  requestOption
-                );
-                if (res.status === 200) {
-                  const data = await res.json();
-                  if (data.success === true) {
-                    // open();
-                    setLoadingOrder(false);
-                    setOrderId(data.orderid);
-                    let temp = [];
-                    setCartItem(temp);
-                    emptyCart();
-                    SuccessNotification({
-                      message: data.message,
-                      title: "Захиалга",
-                    });
-                    axios
-                      .post(
-                        `${process.env.NEXT_PUBLIC_API_URL}/payment`,
-                        { orderid: data.orderid },
-                        axiosReqOption
-                      )
-                      .then((res) => {
-                        openContextModal({
-                          modal: "payment",
-                          title: "Төлбөр төлөлт",
-                          innerProps: {
-                            paymentData: res.data.data,
-                            shouldRedirect: true,
-                          },
-                          centered: true,
-                          size: "lg",
-                          closeOnClickOutside: false,
-                          withCloseButton: false,
-                        });
-                      })
-                      .catch((err) => {
-                        if (err.response) {
-                          showNotification({
-                            message: err.response.data,
-                            color: "red",
-                          });
-                        } else {
-                          showNotification({
-                            message: "Төлбөрийн мэдээлэл авахад алдаа гарлаа",
-                            color: "red",
-                          });
-                        }
-                      });
-                  } else {
-                    setLoadingOrder(false);
-                    ErrorNotification({ title: "Алдаа гарлаа." });
-                  }
-                } else if (res.status === 500) {
-                  setLoadingOrder(false);
-                  showNotification({
-                    message: "Сагсанд бараа байхгүй байна!",
-                    color: "red",
-                  });
-                }
-              } catch (error) {
-                setLoadingOrder(false);
-                showNotification({
-                  message: "Захиалга үүсгэхэд алдаа гарлаа!",
-                  color: "red",
-                });
-              }
-              closeLoader();
+              optionOpen();
             }
           }
         } else {
@@ -438,7 +365,7 @@ const CartItems = (props) => {
   };
 
   const handleInvoiceInput = async (values) => {
-    const addressData = `Хот: ${selectedShippingData?.city}, Дүүрэг: ${selectedShippingData?.district}, Хороо: ${selectedShippingData.committee}, Гудамж: ${selectedShippingData?.street}, Байр: ${selectedShippingData?.apartment}, Тоот: ${selectedShippingData?.number}`;
+    const addressData = `Хот: ${selectedShippingData?.city}, Дүүрэг: ${selectedShippingData?.district}, Хороо: ${selectedShippingData?.committee}, Гудамж: ${selectedShippingData?.street}, Байр: ${selectedShippingData?.apartment}, Тоот: ${selectedShippingData?.number}`;
     const requestOption = {
       address: addressData,
       method: "invoice",

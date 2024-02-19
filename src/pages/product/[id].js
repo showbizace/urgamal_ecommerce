@@ -26,33 +26,33 @@ import useCategories from "@/hooks/useCategories";
 import CategoryLayout from "@/components/GlobalLayout/CategoryLayout";
 import { showNotification } from "@mantine/notifications";
 import useWishlist from "@/hooks/useWishlist";
-
+import SpecialDeal from "../../components/SpecialDeal";
 export async function getServerSideProps({ params }) {
   const requestOption = {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   };
 
-  const catResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/config/home`,
-    requestOption
-  );
-
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/product/id/${params.id}`,
     requestOption
   );
-  const cats = await catResponse.json();
   const data = await res.json();
+
+  const specialDeal = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/product/specials`,
+    requestOption
+  );
+  const dealData = await specialDeal.json();
   return {
     props: {
       product: data,
-      cats,
+      dealData: dealData,
     },
   };
 }
 
-const ProductDetail = ({ product, cats }) => {
+const ProductDetail = ({ product, dealData }) => {
   const [loading, setLoading] = useState(false);
   const categories = useCategories();
   const [renderImage, setRenderImage] = useState("");
@@ -412,18 +412,20 @@ const ProductDetail = ({ product, cats }) => {
         </div>
 
         <hr className="my-12 lg:my-14 w-full border" />
-        <div className="w-full flex flex-col">
-          {cats?.success &&
-            cats?.result?.categories.map((item, idx) => {
-              if (idx === 0) {
+        <div className="w-full">
+          {dealData &&
+            dealData?.data &&
+            dealData?.data.map((item, index) => {
+              if (index === 0) {
                 return (
-                  <ProductListWithCategory
-                    key={`list-with-category-${idx}`}
+                  <SpecialDeal
+                    key={`list-with-category-${index}`}
+                    suggest={true}
                     categoryId={item?.id}
                     categoryName={"Санал болгож буй бүтээгдэхүүн"}
-                    // categoryIcon={el?.icon}
-                    cols={3}
-                    className="mt-0 lg:12"
+                    cols={5}
+                    product={item}
+                    className="mt-12"
                   />
                 );
               }
