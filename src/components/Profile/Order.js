@@ -96,7 +96,7 @@ const Order = ({ data }) => {
   return (
     <div>
       <div
-        className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 hover:bg-gray-50 hover:cursor-pointer"
+        className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-2 py-3 hover:bg-gray-50 hover:cursor-pointer"
         onClick={toggle}
         style={{ borderBottom: "1px solid rgba(0, 30, 29, 0.23)" }}
       >
@@ -185,7 +185,7 @@ const Order = ({ data }) => {
       </div>
       <Collapse in={opened}>
         <div>
-          <div className="w-full py-2 flex flex-row items-center">
+          <div className="w-full py-2 flex flex-col items-center">
             {data?.order_item &&
               data?.order_item.map((item, index) => {
                 return (
@@ -194,11 +194,11 @@ const Order = ({ data }) => {
                     className="flex flex-col sm:flex-row p-4 w-full"
                     style={{ borderBottom: "2px solid #DADEDE" }}
                   >
-                    {item?.product?.additionalImage?.lengh > 0 ? (
+                    {item?.product?.additionalImage?.length > 0 ? (
                       <Image
-                        loader={() => item?.product?.additionalImage[0]?.url}
-                        src={item?.product?.additionalImage[0]?.url}
-                        alt={item?.product?.additionalImage[0]?.url}
+                        loader={() => item?.product?.additionalImage?.[0]?.url}
+                        src={item?.product?.additionalImage?.[0]?.url}
+                        alt={item?.product?.additionalImage?.[0]?.url}
                         width={128}
                         height={128}
                         className="sm:w-32 sm:h-32 h-48 object-contain"

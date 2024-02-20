@@ -39,7 +39,7 @@ const InvoiceItem = ({ data, index }) => {
       </div>
       <Collapse in={opened}>
         <div>
-          <div className="w-full py-2 flex flex-row items-center">
+          <div className="w-full py-2 flex flex-col items-center">
             {data?.order?.order_item &&
               data?.order?.order_item?.map((item, index) => {
                 return (

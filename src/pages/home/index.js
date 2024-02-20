@@ -20,36 +20,22 @@ export async function getStaticProps() {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     };
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/product?offset=0&limit=${PAGE_SIZE}`,
-      requestOption
-    );
-
-    const catResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/config/home`,
-      requestOption
-    );
 
     const specialDeal = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/product/specials`,
       requestOption
     );
 
-    const cats = await catResponse.json();
-
-    const data = await res.json();
     const dealData = await specialDeal.json();
     return {
       props: {
-        data,
-        cats,
         dealData,
       },
     };
   } catch (error) {
+    console.log(error, "error");
     return {
       props: {
-        data: [],
         cats: [],
         dealData: [],
       },
@@ -57,7 +43,7 @@ export async function getStaticProps() {
   }
 }
 
-export default function Home({ data, cats, dealData }) {
+export default function Home({ cats, dealData }) {
   const userConfigs = useContext(UserConfigContext);
   const { preference_cookie, configId } = userConfigs;
   const categories = useCategories();
@@ -122,7 +108,7 @@ export default function Home({ data, cats, dealData }) {
                 <Banner />
               </div>
             </div>
-            <div className="px-12">
+            {/* <div className="px-12">
               {configId &&
                 cats?.success &&
                 cats?.result?.categories.map((item, idx) => {
@@ -139,7 +125,7 @@ export default function Home({ data, cats, dealData }) {
                     );
                   }
                 })}
-            </div>
+            </div> */}
             <div className="px-12">
               {dealData &&
                 dealData?.data &&
