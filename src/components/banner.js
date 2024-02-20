@@ -1,15 +1,16 @@
 import Image from "next/image";
-import "swiper/css";
 import { useState } from "react";
-import "swiper/css/navigation";
 import { Carousel } from "@mantine/carousel";
 import Link from "next/link";
 import { rem } from "@mantine/core";
-import Category from "./AllCategory/category";
-import { IconMacroOff } from "@tabler/icons-react";
 import CategoryHover from "./AllCategory/CategoryHover";
 import useCategories from "@/hooks/useCategories";
 import { IconChevronRight } from "@tabler/icons-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const Banner = () => {
   const [hoveredCategory, setHoveredCategory] = useState([]);
@@ -20,7 +21,7 @@ const Banner = () => {
   return (
     <div className="mt-10 flex relative mx-auto w-[90%] h-[180px] border rounded-lg lg:h-[28rem]">
       <div
-        className="flex-row hidden lg:flex w-full"
+        className="flex-row hidden lg:flex"
         onMouseLeave={() => {
           setHoveredCategory([]);
         }}
@@ -67,54 +68,84 @@ const Banner = () => {
             />
           </div>
         ) : null}
-
-        <Carousel
-          withIndicators
-          height="100%"
-          sx={{ flex: 1 }}
-          slideSize="100%"
-          breakpoints={[
-            { maxWidth: "md", slideSize: "100%" },
-            { maxWidth: "sm", slideSize: "100%", slideGap: 0 },
-          ]}
-          slideGap="md"
-          loop
-          align="center"
-          slidesToScroll={1}
-          draggable={true}
-          styles={{
-            control: {
-              "&[data-inactive]": {
-                opacity: 0,
-                cursor: "default",
-              },
-            },
-          }}
-        >
-          <Carousel.Slide>
-            <div className="relative w-full h-full ">
-              <Image
-                alt="banner2"
-                src="/banner2.png"
-                fill
-                className="rounded-r-lg object-contain md:object-fill  max-h-full"
-                draggable={false}
-              />
-            </div>
-          </Carousel.Slide>
-          <Carousel.Slide>
-            <div className="relative w-full h-full ">
-              <Image
-                alt="banner"
-                src="/banner.png"
-                fill
-                className="rounded-r-lg object-contain md:object-fill  max-h-full"
-                draggable={false}
-              />
-            </div>
-          </Carousel.Slide>
-        </Carousel>
       </div>
+
+      <Swiper
+        navigation
+        pagination={{
+          dynamicBullets: true,
+        }}
+        loop={true}
+        className="mySwiper"
+        modules={[Navigation, Pagination]}
+        slidesPerView={1}
+      >
+        <SwiperSlide>
+          <Image
+            alt="banner2"
+            src="/banner2.png"
+            fill
+            className="rounded-r-lg object-contain md:object-fill  max-h-full"
+            draggable={false}
+          />
+        </SwiperSlide>
+        <SwiperSlide>
+          <Image
+            alt="banner"
+            src="/banner.png"
+            fill
+            className="rounded-r-lg object-contain md:object-fill  max-h-full"
+            draggable={false}
+          />
+        </SwiperSlide>
+      </Swiper>
+      {/* 
+      <Carousel
+        withIndicators
+        height="100%"
+        sx={{ flex: 1 }}
+        slideSize="100%"
+        breakpoints={[
+          { maxWidth: "md", slideSize: "100%" },
+          { maxWidth: "sm", slideSize: "100%", slideGap: 0 },
+        ]}
+        slideGap="md"
+        loop
+        align="center"
+        slidesToScroll={1}
+        draggable={true}
+        styles={{
+          control: {
+            "&[data-inactive]": {
+              opacity: 0,
+              cursor: "default",
+            },
+          },
+        }}
+      >
+        <Carousel.Slide>
+          <div className="relative w-full h-full ">
+            <Image
+              alt="banner2"
+              src="/banner2.png"
+              fill
+              className="rounded-r-lg object-contain md:object-fill  max-h-full"
+              draggable={false}
+            />
+          </div>
+        </Carousel.Slide>
+        <Carousel.Slide>
+          <div className="relative w-full h-full ">
+            <Image
+              alt="banner"
+              src="/banner.png"
+              fill
+              className="rounded-r-lg object-contain md:object-fill  max-h-full"
+              draggable={false}
+            />
+          </div>
+        </Carousel.Slide>
+      </Carousel> */}
     </div>
   );
 };
